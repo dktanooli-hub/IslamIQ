@@ -1,0 +1,6 @@
+{
+  "name": "IslamIQ",
+  "description": "Modern, mobile-first Islamic learning app with Kids & Adult modes, verified Quran, Hadith & Duas, accurate Qibla Direction compass with live sensors and GPS, Urdu & English quizzes, Salah tracker, Tasbih, and Islamic Status Creator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
