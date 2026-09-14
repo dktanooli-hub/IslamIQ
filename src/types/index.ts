@@ -2,6 +2,7 @@ export type UserMode = 'adult' | 'kids';
 export type ContentLanguage = 'urdu' | 'english';
 export type QuizDifficulty = 'beginner' | 'intermediate' | 'advanced';
 export type QuizCategory = 'Pillars' | 'Quran' | 'Prophets' | 'Manners' | 'Seerah' | 'Duas' | 'Salah' | 'Aqeedah' | string;
+export type AppTab = 'home' | 'quiz' | 'salah' | 'tasbih' | 'search' | 'status' | 'qibla' | 'about' | 'contact' | 'privacy-policy' | 'terms' | 'disclaimer';
 
 export interface QuizQuestion {
   id: string;

@@ -15,7 +15,8 @@ import {
   IslamicReminder,
   QuizCategory,
   QuizDifficulty,
-  QuizAttemptRecord
+  QuizAttemptRecord,
+  AppTab
 } from '../types';
 import {
   DHIKR_LIST,
@@ -34,8 +35,8 @@ interface AppContextType {
   setUserMode: (mode: UserMode) => void;
   contentLang: ContentLanguage;
   setContentLang: (lang: ContentLanguage) => void;
-  activeTab: 'home' | 'quiz' | 'salah' | 'tasbih' | 'search' | 'status' | 'qibla';
-  setActiveTab: (tab: 'home' | 'quiz' | 'salah' | 'tasbih' | 'search' | 'status' | 'qibla') => void;
+  activeTab: AppTab;
+  setActiveTab: (tab: AppTab) => void;
   
   // User Profile & Gamification
   userStats: UserStats;
@@ -207,7 +208,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Navigation & General Preferences
   const [userMode, setUserModeState] = useState<UserMode>('adult');
   const [contentLang, setContentLangState] = useState<ContentLanguage>('urdu'); // Urdu by default as requested
-  const [activeTab, setActiveTab] = useState<'home' | 'quiz' | 'salah' | 'tasbih' | 'search' | 'status' | 'qibla'>('home');
+  const [activeTab, setActiveTab] = useState<AppTab>('home');
 
   // Dates
   const [todayDateStr] = useState<string>(getTodayStr());
