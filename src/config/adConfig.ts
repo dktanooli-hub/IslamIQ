@@ -20,11 +20,11 @@ export const AD_CONFIG = {
   // Toggle ads on or off globally
   ENABLE_ADS: true,
 
-  // When true, displays safe placeholder banners or test ad containers without risking policy violation
-  IS_TEST_MODE: true,
+  // When false, loads real Google AdSense units for approved domains
+  IS_TEST_MODE: false,
 
-  // Replace with your real Google AdSense Publisher ID (e.g., "ca-pub-XXXXXXXXXXXXXXXX")
-  ADSENSE_CLIENT_ID: 'ca-pub-PLACEHOLDER',
+  // Google AdSense Publisher ID
+  ADSENSE_CLIENT_ID: 'ca-pub-9108925465688012',
 
   // Google AdSense Unit Slots
   SLOTS: {
