@@ -8,6 +8,17 @@ export const Footer: React.FC = () => {
   const isUrdu = contentLang === 'urdu';
   const isKids = userMode === 'kids';
 
+  const hubLinks: { id: AppTab; label: string; labelUrdu: string }[] = [
+    { id: 'islamic-quiz', label: 'Islamic Quiz', labelUrdu: 'اسلامی کوئز' },
+    { id: 'kids-islamic-quiz', label: 'Kids Islamic Quiz', labelUrdu: 'بچوں کے سوالات' },
+    { id: 'islamic-questions-answers', label: 'Islamic Q&A', labelUrdu: 'اسلامی سوال جواب' },
+    { id: 'daily-quran-verse', label: 'Daily Quran Verse', labelUrdu: 'روزانہ کی قرآنی آیت' },
+    { id: 'daily-hadith', label: 'Daily Hadith', labelUrdu: 'روزانہ کی حدیث' },
+    { id: 'daily-dua', label: 'Daily Dua', labelUrdu: 'روزانہ کی دعا' },
+    { id: 'salah-learning', label: 'Salah Learning', labelUrdu: 'نماز سیکھیں' },
+    { id: 'islamic-general-knowledge', label: 'General Knowledge', labelUrdu: 'اسلامی معلومات' },
+  ];
+
   const navLinks: { id: AppTab; label: string; labelUrdu: string }[] = [
     { id: 'about', label: 'About Us', labelUrdu: 'ہمارے متعلق' },
     { id: 'contact', label: 'Contact Us', labelUrdu: 'رابطہ کریں' },
@@ -64,8 +75,36 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
+        {/* SEO Content Hub Links */}
+        <div className="space-y-2">
+          <p className="text-[11px] font-bold text-center uppercase tracking-wider text-emerald-800">
+            {isUrdu ? 'اسلامی سیکھنے کے رہنما عنوانات (Islamic Learning Hub)' : 'Islamic Learning Guides'}
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-xs font-semibold">
+            {hubLinks.map((link) => {
+              const isSelected = activeTab === link.id;
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => {
+                    setActiveTab(link.id);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className={`py-1 px-2.5 rounded-lg transition-all ${
+                    isSelected
+                      ? 'bg-emerald-700 text-white shadow-xs font-bold'
+                      : 'text-slate-600 hover:text-emerald-700 hover:bg-slate-100'
+                  }`}
+                >
+                  {isUrdu ? link.labelUrdu : link.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Legal & Information Navigation Links */}
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold">
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs font-medium border-t border-slate-200/50 pt-3">
           {navLinks.map((link) => {
             const isSelected = activeTab === link.id;
             return (
@@ -75,10 +114,10 @@ export const Footer: React.FC = () => {
                   setActiveTab(link.id);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
-                className={`py-1 px-2.5 rounded-lg transition-all ${
+                className={`py-0.5 px-2 rounded-md transition-all ${
                   isSelected
-                    ? 'bg-emerald-700 text-white shadow-xs font-bold'
-                    : 'text-slate-600 hover:text-emerald-700 hover:bg-slate-100'
+                    ? 'bg-slate-800 text-white font-bold'
+                    : 'text-slate-500 hover:text-slate-900'
                 }`}
               >
                 {isUrdu ? link.labelUrdu : link.label}

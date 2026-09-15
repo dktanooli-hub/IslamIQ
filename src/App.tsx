@@ -17,6 +17,14 @@ import { ContactPage } from './components/pages/ContactPage';
 import { PrivacyPolicyPage } from './components/pages/PrivacyPolicyPage';
 import { TermsPage } from './components/pages/TermsPage';
 import { DisclaimerPage } from './components/pages/DisclaimerPage';
+import { IslamicQuizHub } from './components/seo/IslamicQuizHub';
+import { KidsIslamicQuizHub } from './components/seo/KidsIslamicQuizHub';
+import { IslamicQAHub } from './components/seo/IslamicQAHub';
+import { DailyQuranVerseHub } from './components/seo/DailyQuranVerseHub';
+import { DailyHadithHub } from './components/seo/DailyHadithHub';
+import { DailyDuaHub } from './components/seo/DailyDuaHub';
+import { SalahLearningHub } from './components/seo/SalahLearningHub';
+import { IslamicGeneralKnowledgeHub } from './components/seo/IslamicGeneralKnowledgeHub';
 import { Footer } from './components/Footer';
 import { AppTab } from './types';
 import { trackPageView } from './utils/analytics';
@@ -26,12 +34,26 @@ export const App: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
-  // Sync URL hash / clean path for SEO & direct linking (/about, /contact, /privacy-policy, /terms, /disclaimer)
+  // Sync URL hash / clean path for SEO & direct linking (/islamic-quiz, /about, etc.)
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.replace(/^\//, '').toLowerCase();
-      const validLegalTabs: AppTab[] = ['about', 'contact', 'privacy-policy', 'terms', 'disclaimer'];
-      if (validLegalTabs.includes(path as AppTab)) {
+      const validCleanTabs: AppTab[] = [
+        'about',
+        'contact',
+        'privacy-policy',
+        'terms',
+        'disclaimer',
+        'islamic-quiz',
+        'kids-islamic-quiz',
+        'islamic-questions-answers',
+        'daily-quran-verse',
+        'daily-hadith',
+        'daily-dua',
+        'salah-learning',
+        'islamic-general-knowledge'
+      ];
+      if (validCleanTabs.includes(path as AppTab)) {
         setActiveTab(path as AppTab);
       }
     };
@@ -43,7 +65,7 @@ export const App: React.FC = () => {
 
   // Update document title & clean URL whenever active tab changes
   useEffect(() => {
-    const legalMeta: Record<string, { title: string; path: string; desc: string }> = {
+    const cleanRoutesMeta: Record<string, { title: string; path: string; desc: string }> = {
       about: {
         title: 'About Us • IslamIQ — Learn • Quiz • Grow',
         path: '/about',
@@ -68,17 +90,57 @@ export const App: React.FC = () => {
         title: 'Disclaimer • IslamIQ — Islamic Educational Notice',
         path: '/disclaimer',
         desc: 'Official Islamic educational disclaimer: IslamIQ is an educational platform and not a replacement for a qualified Islamic scholar or Mufti.'
+      },
+      'islamic-quiz': {
+        title: 'Islamic Quiz Online • Questions & Answers | IslamIQ',
+        path: '/islamic-quiz',
+        desc: 'Test your Islamic knowledge with authentic multiple choice quiz questions on Quran, Pillars of Islam, Prophets, Salah, and Seerah with verified references.'
+      },
+      'kids-islamic-quiz': {
+        title: 'Islamic Quiz for Kids • Fun Islamic Questions | IslamIQ',
+        path: '/kids-islamic-quiz',
+        desc: 'Fun, engaging and educational Islamic quiz for Muslim children. Learn about Allah, Prophet Muhammad (PBUH), 5 Pillars of Islam, and good manners.'
+      },
+      'islamic-questions-answers': {
+        title: 'Islamic Questions & Answers with Authentic References | IslamIQ',
+        path: '/islamic-questions-answers',
+        desc: 'Authentic Islamic questions and answers on Aqeedah, Salah, Fasting, Quran, and daily manners. Supported by verified references.'
+      },
+      'daily-quran-verse': {
+        title: 'Daily Quran Verse with Translation & Meaning | IslamIQ',
+        path: '/daily-quran-verse',
+        desc: 'Read inspiring Daily Quran Verses with Arabic text, authentic Urdu and English translations, Surah and Ayah numbers, and thematic reflections.'
+      },
+      'daily-hadith': {
+        title: 'Daily Hadith • Authentic Sahih Hadith with Lessons | IslamIQ',
+        path: '/daily-hadith',
+        desc: 'Daily authentic Hadiths from Sahih al-Bukhari and Sahih Muslim. Learn practical daily lessons, authentic narrators, and Islamic teachings.'
+      },
+      'daily-dua': {
+        title: 'Daily Dua with Meaning & Reference • Masnoon Duas | IslamIQ',
+        path: '/daily-dua',
+        desc: 'Essential daily Islamic supplications (Duas) with Arabic text, transliteration, authentic Urdu & English translations, and references.'
+      },
+      'salah-learning': {
+        title: 'Namaz & Salah Learning • How to Pray, Rakats & Timings | IslamIQ',
+        path: '/salah-learning',
+        desc: 'Comprehensive Islamic guide to learning Namaz (Salah). Discover prayer methods, rakats for all 5 daily prayers, prerequisites, and tracker.'
+      },
+      'islamic-general-knowledge': {
+        title: 'Islamic General Knowledge • Pillars, Prophets & Quran Facts | IslamIQ',
+        path: '/islamic-general-knowledge',
+        desc: 'Comprehensive Islamic general knowledge guide covering the 5 Pillars of Islam, 6 Pillars of Faith, Prophets in the Quran, and Islamic history.'
       }
     };
 
-    if (legalMeta[activeTab]) {
-      document.title = legalMeta[activeTab].title;
-      if (window.location.pathname !== legalMeta[activeTab].path) {
-        window.history.pushState({ tab: activeTab }, '', legalMeta[activeTab].path);
+    if (cleanRoutesMeta[activeTab]) {
+      document.title = cleanRoutesMeta[activeTab].title;
+      if (window.location.pathname !== cleanRoutesMeta[activeTab].path) {
+        window.history.pushState({ tab: activeTab }, '', cleanRoutesMeta[activeTab].path);
       }
       const metaTag = document.querySelector('meta[name="description"]');
       if (metaTag) {
-        metaTag.setAttribute('content', legalMeta[activeTab].desc);
+        metaTag.setAttribute('content', cleanRoutesMeta[activeTab].desc);
       }
     } else {
       document.title = 'IslamIQ • Learn • Quiz • Grow';
@@ -92,7 +154,7 @@ export const App: React.FC = () => {
     }
 
     // Track SPA navigation in Google Analytics 4
-    const pagePath = legalMeta[activeTab] ? legalMeta[activeTab].path : (activeTab === 'home' ? '/' : `/${activeTab}`);
+    const pagePath = cleanRoutesMeta[activeTab] ? cleanRoutesMeta[activeTab].path : (activeTab === 'home' ? '/' : `/${activeTab}`);
     trackPageView(pagePath, document.title);
   }, [activeTab]);
 
@@ -143,6 +205,16 @@ export const App: React.FC = () => {
         {activeTab === 'privacy-policy' && <PrivacyPolicyPage />}
         {activeTab === 'terms' && <TermsPage />}
         {activeTab === 'disclaimer' && <DisclaimerPage />}
+
+        {/* SEO-friendly Islamic Content Hub Pages */}
+        {activeTab === 'islamic-quiz' && <IslamicQuizHub />}
+        {activeTab === 'kids-islamic-quiz' && <KidsIslamicQuizHub />}
+        {activeTab === 'islamic-questions-answers' && <IslamicQAHub />}
+        {activeTab === 'daily-quran-verse' && <DailyQuranVerseHub />}
+        {activeTab === 'daily-hadith' && <DailyHadithHub />}
+        {activeTab === 'daily-dua' && <DailyDuaHub />}
+        {activeTab === 'salah-learning' && <SalahLearningHub />}
+        {activeTab === 'islamic-general-knowledge' && <IslamicGeneralKnowledgeHub />}
       </main>
 
       {/* Public Footer */}

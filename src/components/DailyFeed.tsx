@@ -5,6 +5,7 @@ import { BookOpen, Sparkles, Share2, Copy, Check, Heart, Volume2, ShieldCheck, F
 import { SpeechEngine } from '../utils/audio';
 import { AdBanner } from './AdBanner';
 import { AD_CONFIG } from '../config/adConfig';
+import { ContentHubCard } from './seo/ContentHubCard';
 
 interface DailyFeedProps {
   onNavigateToStatusWithText: (text: string, ref: string) => void;
@@ -168,6 +169,9 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
           </div>
         </div>
       </div>
+
+      {/* Islamic Content Hub Quick Access */}
+      <ContentHubCard />
 
       {/* 1. DAILY QURAN VERSE */}
       <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 transition-all hover:shadow-md">

@@ -2,7 +2,27 @@ export type UserMode = 'adult' | 'kids';
 export type ContentLanguage = 'urdu' | 'english';
 export type QuizDifficulty = 'beginner' | 'intermediate' | 'advanced';
 export type QuizCategory = 'Pillars' | 'Quran' | 'Prophets' | 'Manners' | 'Seerah' | 'Duas' | 'Salah' | 'Aqeedah' | string;
-export type AppTab = 'home' | 'quiz' | 'salah' | 'tasbih' | 'search' | 'status' | 'qibla' | 'about' | 'contact' | 'privacy-policy' | 'terms' | 'disclaimer';
+export type AppTab = 
+  | 'home' 
+  | 'quiz' 
+  | 'salah' 
+  | 'tasbih' 
+  | 'search' 
+  | 'status' 
+  | 'qibla' 
+  | 'about' 
+  | 'contact' 
+  | 'privacy-policy' 
+  | 'terms' 
+  | 'disclaimer'
+  | 'islamic-quiz'
+  | 'kids-islamic-quiz'
+  | 'islamic-questions-answers'
+  | 'daily-quran-verse'
+  | 'daily-hadith'
+  | 'daily-dua'
+  | 'salah-learning'
+  | 'islamic-general-knowledge';
 
 export interface QuizQuestion {
   id: string;
