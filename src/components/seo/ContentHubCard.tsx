@@ -92,9 +92,11 @@ export const ContentHubCard: React.FC = () => {
         {hubLinks.map((item) => {
           const IconComp = item.icon;
           return (
-            <button
+            <a
               key={item.id}
-              onClick={() => {
+              href={`/${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
                 setActiveTab(item.id);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -119,7 +121,7 @@ export const ContentHubCard: React.FC = () => {
                   {isUrdu ? item.descUrdu : item.descEn}
                 </p>
               </div>
-            </button>
+            </a>
           );
         })}
       </div>

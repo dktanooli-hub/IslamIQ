@@ -206,9 +206,42 @@ const defaultKidsProgress: ModeProgress = {
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Navigation & General Preferences
-  const [userMode, setUserModeState] = useState<UserMode>('adult');
+  const [userMode, setUserModeState] = useState<UserMode>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.replace(/^\//, '').toLowerCase();
+      if (path === 'kids-islamic-quiz') {
+        return 'kids';
+      }
+      const savedMode = localStorage.getItem('islamiq_user_mode');
+      if (savedMode === 'kids' || savedMode === 'adult') return savedMode;
+    }
+    return 'adult';
+  });
   const [contentLang, setContentLangState] = useState<ContentLanguage>('urdu'); // Urdu by default as requested
-  const [activeTab, setActiveTab] = useState<AppTab>('home');
+  const [activeTab, setActiveTab] = useState<AppTab>(() => {
+    if (typeof window !== 'undefined') {
+      const path = window.location.pathname.replace(/^\//, '').toLowerCase();
+      const validCleanTabs: AppTab[] = [
+        'about',
+        'contact',
+        'privacy-policy',
+        'terms',
+        'disclaimer',
+        'islamic-quiz',
+        'kids-islamic-quiz',
+        'islamic-questions-answers',
+        'daily-quran-verse',
+        'daily-hadith',
+        'daily-dua',
+        'salah-learning',
+        'islamic-general-knowledge'
+      ];
+      if (validCleanTabs.includes(path as AppTab)) {
+        return path as AppTab;
+      }
+    }
+    return 'home';
+  });
 
   // Dates
   const [todayDateStr] = useState<string>(getTodayStr());

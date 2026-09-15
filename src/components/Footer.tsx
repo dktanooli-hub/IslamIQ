@@ -84,9 +84,11 @@ export const Footer: React.FC = () => {
             {hubLinks.map((link) => {
               const isSelected = activeTab === link.id;
               return (
-                <button
+                <a
                   key={link.id}
-                  onClick={() => {
+                  href={`/${link.id}`}
+                  onClick={(e) => {
+                    e.preventDefault();
                     setActiveTab(link.id);
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
@@ -97,7 +99,7 @@ export const Footer: React.FC = () => {
                   }`}
                 >
                   {isUrdu ? link.labelUrdu : link.label}
-                </button>
+                </a>
               );
             })}
           </div>
@@ -108,9 +110,11 @@ export const Footer: React.FC = () => {
           {navLinks.map((link) => {
             const isSelected = activeTab === link.id;
             return (
-              <button
+              <a
                 key={link.id}
-                onClick={() => {
+                href={`/${link.id}`}
+                onClick={(e) => {
+                  e.preventDefault();
                   setActiveTab(link.id);
                   window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
@@ -121,7 +125,7 @@ export const Footer: React.FC = () => {
                 }`}
               >
                 {isUrdu ? link.labelUrdu : link.label}
-              </button>
+              </a>
             );
           })}
         </div>

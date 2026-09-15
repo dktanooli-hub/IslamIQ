@@ -103,9 +103,11 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
         {related.map((item) => {
           const IconComp = item.icon;
           return (
-            <button
+            <a
               key={item.id}
-              onClick={() => {
+              href={`/${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
                 setActiveTab(item.id);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -129,7 +131,7 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
                   {isUrdu ? item.descUrdu : item.descEn}
                 </p>
               </div>
-            </button>
+            </a>
           );
         })}
       </div>
