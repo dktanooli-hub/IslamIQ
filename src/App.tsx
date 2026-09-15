@@ -19,6 +19,7 @@ import { TermsPage } from './components/pages/TermsPage';
 import { DisclaimerPage } from './components/pages/DisclaimerPage';
 import { Footer } from './components/Footer';
 import { AppTab } from './types';
+import { trackPageView } from './utils/analytics';
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, toastMessage } = useApp();
@@ -89,6 +90,10 @@ export const App: React.FC = () => {
         metaTag.setAttribute('content', 'IslamIQ is an Islamic learning and educational platform designed for Kids and Adults featuring Islamic Quiz, Salah Tracker, Tasbih Counter, Qibla Direction, and Daily Quran & Hadith.');
       }
     }
+
+    // Track SPA navigation in Google Analytics 4
+    const pagePath = legalMeta[activeTab] ? legalMeta[activeTab].path : (activeTab === 'home' ? '/' : `/${activeTab}`);
+    trackPageView(pagePath, document.title);
   }, [activeTab]);
 
   // Status Creator text passing
