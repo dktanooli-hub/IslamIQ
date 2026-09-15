@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/((?!assets/|ads.txt|robots.txt|sitemap.xml|favicon.ico).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ],
