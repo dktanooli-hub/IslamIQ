@@ -29,6 +29,7 @@ import {
 } from '../data/verifiedContent';
 import { sounds } from '../utils/audio';
 import { AdminAuthService } from '../services/adminAuth';
+import { FirestoreService } from '../services/firestoreService';
 
 interface AppContextType {
   userMode: UserMode;
@@ -130,6 +131,9 @@ interface AppContextType {
   addCategory: (cat: string) => void;
   deleteCategory: (cat: string) => void;
   resetAllContentToDefaults: () => void;
+  migrateLocalToFirestore: () => Promise<{ success: boolean; migratedCount: number; error?: string }>;
+  isCloudSyncing: boolean;
+  cloudSyncError: string | null;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -361,6 +365,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Admin Security (Server-backed & Token-based)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
   const [isAdminSetupComplete, setIsAdminSetupComplete] = useState<boolean>(true);
+  const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
+  const [cloudSyncError, setCloudSyncError] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -388,7 +394,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch {}
   }, []);
 
-  // Load Admin DB on mount
+  // 1. Initial load from LocalStorage as fast local cache/fallback
   useEffect(() => {
     try {
       const savedAdmin = localStorage.getItem(LOCAL_STORAGE_ADMIN_KEY);
@@ -421,7 +427,47 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []);
 
-  // Save Admin DB on updates
+  // 2. Real-time / Cloud sync with Firestore for questions and shared content
+  useEffect(() => {
+    setIsCloudSyncing(true);
+    // Realtime subscription to Firestore questions collection
+    const unsubscribeQuestions = FirestoreService.listenQuestions((remoteQuestions) => {
+      if (remoteQuestions && remoteQuestions.length > 0) {
+        setQuestions(remoteQuestions);
+      }
+      setIsCloudSyncing(false);
+      setCloudSyncError(null);
+    });
+
+    // Fetch initial daily feeds & categories from Firestore
+    const fetchRemoteFeeds = async () => {
+      try {
+        const [verses, hadithsList, duasList, remindersList, remoteCats] = await Promise.all([
+          FirestoreService.getQuranVerses(),
+          FirestoreService.getHadiths(),
+          FirestoreService.getDuas(),
+          FirestoreService.getReminders(),
+          FirestoreService.getCategories()
+        ]);
+        if (verses.length > 0) setQuranVerses(verses);
+        if (hadithsList.length > 0) setHadiths(hadithsList);
+        if (duasList.length > 0) setDuas(duasList);
+        if (remindersList.length > 0) setReminders(remindersList);
+        if (remoteCats && remoteCats.length > 0) setCategories(remoteCats);
+      } catch (err: any) {
+        console.warn('[Firestore] Sync warning:', err);
+        setCloudSyncError('Operating in offline/cached mode');
+      }
+    };
+
+    fetchRemoteFeeds();
+
+    return () => {
+      unsubscribeQuestions();
+    };
+  }, []);
+
+  // Save Admin DB to LocalStorage as offline cache (does not overwrite or replace Firestore)
   useEffect(() => {
     try {
       const adminData = {
@@ -482,7 +528,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     showToast('Logged out of Admin Panel.');
   };
 
-  // Admin Question CRUD
+  // Safe One-Time Migration: Local Storage -> Firestore
+  const migrateLocalToFirestore = async (): Promise<{ success: boolean; migratedCount: number; error?: string }> => {
+    if (!isAdminAuthenticated) {
+      return { success: false, migratedCount: 0, error: 'Authentication required for migration' };
+    }
+    setIsCloudSyncing(true);
+    const res = await FirestoreService.migrateLocalContentToFirestore({
+      questions,
+      quranVerses,
+      hadiths,
+      duas,
+      reminders,
+      categories
+    });
+    setIsCloudSyncing(false);
+    if (res.success) {
+      showToast(`Successfully synced ${res.migratedCount} items to Firestore! ☁️`);
+    } else {
+      showToast(`Migration error: ${res.error || 'Check network'}`);
+    }
+    return res;
+  };
+
+  // Admin Question CRUD with Firestore Cloud Persistence
   const addQuestion = (q: Omit<QuizQuestion, 'id'>) => {
     const newId = `q-adm-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const newQuestion: QuizQuestion = {
@@ -490,110 +559,176 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       id: newId,
       isActive: true
     };
+    // Optimistic local update
     setQuestions(prev => [newQuestion, ...prev]);
-    showToast('Quiz question created successfully! ✅');
+    showToast('Quiz question created! Syncing to Firestore... ☁️');
+
+    // Async Firestore write
+    FirestoreService.saveQuestion(newQuestion).then(res => {
+      if (res.success) {
+        showToast('Question live across all users! ✅');
+      } else {
+        console.warn('Firestore write warning:', res.error);
+      }
+    });
   };
 
   const updateQuestion = (id: string, updated: Partial<QuizQuestion>) => {
-    setQuestions(prev => prev.map(item => item.id === id ? { ...item, ...updated } : item));
-    showToast('Quiz question updated successfully! ✏️');
+    const existing = questions.find(item => item.id === id);
+    if (!existing) return;
+    const merged = { ...existing, ...updated };
+
+    // Optimistic local update
+    setQuestions(prev => prev.map(item => item.id === id ? merged : item));
+    showToast('Updating question in Firestore... ✏️');
+
+    // Async Firestore update
+    FirestoreService.saveQuestion(merged).then(res => {
+      if (res.success) {
+        showToast('Question updated in Firestore! ✅');
+      }
+    });
   };
 
   const deleteQuestion = (id: string) => {
+    // Optimistic local update
     setQuestions(prev => prev.filter(item => item.id !== id));
-    showToast('Question deleted.');
+    showToast('Deleting question from Firestore... 🗑️');
+
+    // Async Firestore delete
+    FirestoreService.deleteQuestion(id).then(res => {
+      if (res.success) {
+        showToast('Question deleted from Firestore.');
+      }
+    });
   };
 
   const toggleQuestionActive = (id: string) => {
-    setQuestions(prev => prev.map(item => {
-      if (item.id === id) {
-        const nextState = item.isActive === false ? true : false;
-        showToast(nextState ? 'Question activated ✅' : 'Question deactivated ⏸️');
-        return { ...item, isActive: nextState };
-      }
-      return item;
-    }));
+    const existing = questions.find(item => item.id === id);
+    if (!existing) return;
+    const nextState = existing.isActive === false;
+    const merged = { ...existing, isActive: nextState };
+
+    // Optimistic local update
+    setQuestions(prev => prev.map(item => item.id === id ? merged : item));
+    showToast(nextState ? 'Question activated ✅' : 'Question deactivated ⏸️');
+
+    // Async Firestore update
+    FirestoreService.saveQuestion(merged);
   };
 
-  // Admin Content CRUD
+  // Admin Content CRUD with Firestore
   const addQuranVerse = (v: Omit<QuranVerse, 'id'>) => {
     const id = `verse-adm-${Date.now()}`;
-    setQuranVerses(prev => [{ ...v, id }, ...prev]);
-    showToast('Quran verse added successfully! 📖');
+    const newVerse: QuranVerse = { ...v, id };
+    setQuranVerses(prev => [newVerse, ...prev]);
+    showToast('Quran verse added! 📖');
+    FirestoreService.saveQuranVerse(newVerse);
   };
 
   const updateQuranVerse = (id: string, v: Partial<QuranVerse>) => {
-    setQuranVerses(prev => prev.map(item => item.id === id ? { ...item, ...v } : item));
+    const existing = quranVerses.find(item => item.id === id);
+    if (!existing) return;
+    const merged = { ...existing, ...v };
+    setQuranVerses(prev => prev.map(item => item.id === id ? merged : item));
     showToast('Quran verse updated!');
+    FirestoreService.saveQuranVerse(merged);
   };
 
   const deleteQuranVerse = (id: string) => {
     setQuranVerses(prev => prev.filter(item => item.id !== id));
     showToast('Quran verse deleted.');
+    FirestoreService.deleteQuranVerse(id);
   };
 
   const addHadith = (h: Omit<HadithItem, 'id'>) => {
     const id = `hadith-adm-${Date.now()}`;
-    setHadiths(prev => [{ ...h, id }, ...prev]);
-    showToast('Hadith added successfully! 📜');
+    const newHadith: HadithItem = { ...h, id };
+    setHadiths(prev => [newHadith, ...prev]);
+    showToast('Hadith added! 📜');
+    FirestoreService.saveHadith(newHadith);
   };
 
   const updateHadith = (id: string, h: Partial<HadithItem>) => {
-    setHadiths(prev => prev.map(item => item.id === id ? { ...item, ...h } : item));
+    const existing = hadiths.find(item => item.id === id);
+    if (!existing) return;
+    const merged = { ...existing, ...h };
+    setHadiths(prev => prev.map(item => item.id === id ? merged : item));
     showToast('Hadith updated!');
+    FirestoreService.saveHadith(merged);
   };
 
   const deleteHadith = (id: string) => {
     setHadiths(prev => prev.filter(item => item.id !== id));
     showToast('Hadith deleted.');
+    FirestoreService.deleteHadith(id);
   };
 
   const addDua = (d: Omit<DuaItem, 'id'>) => {
     const id = `dua-adm-${Date.now()}`;
-    setDuas(prev => [{ ...d, id }, ...prev]);
-    showToast('Dua added successfully! 🤲');
+    const newDua: DuaItem = { ...d, id };
+    setDuas(prev => [newDua, ...prev]);
+    showToast('Dua added! 🤲');
+    FirestoreService.saveDua(newDua);
   };
 
   const updateDua = (id: string, d: Partial<DuaItem>) => {
-    setDuas(prev => prev.map(item => item.id === id ? { ...item, ...d } : item));
+    const existing = duas.find(item => item.id === id);
+    if (!existing) return;
+    const merged = { ...existing, ...d };
+    setDuas(prev => prev.map(item => item.id === id ? merged : item));
     showToast('Dua updated!');
+    FirestoreService.saveDua(merged);
   };
 
   const deleteDua = (id: string) => {
     setDuas(prev => prev.filter(item => item.id !== id));
     showToast('Dua deleted.');
+    FirestoreService.deleteDua(id);
   };
 
   const addReminder = (r: Omit<IslamicReminder, 'id'>) => {
     const id = `rem-adm-${Date.now()}`;
-    setReminders(prev => [{ ...r, id }, ...prev]);
+    const newReminder: IslamicReminder = { ...r, id };
+    setReminders(prev => [newReminder, ...prev]);
     showToast('Islamic reminder added! 💡');
+    FirestoreService.saveReminder(newReminder);
   };
 
   const updateReminder = (id: string, r: Partial<IslamicReminder>) => {
-    setReminders(prev => prev.map(item => item.id === id ? { ...item, ...r } : item));
+    const existing = reminders.find(item => item.id === id);
+    if (!existing) return;
+    const merged = { ...existing, ...r };
+    setReminders(prev => prev.map(item => item.id === id ? merged : item));
     showToast('Reminder updated!');
+    FirestoreService.saveReminder(merged);
   };
 
   const deleteReminder = (id: string) => {
     setReminders(prev => prev.filter(item => item.id !== id));
     showToast('Reminder deleted.');
+    FirestoreService.deleteReminder(id);
   };
 
   const addCategory = (cat: string) => {
     const trimmed = cat.trim();
     if (!trimmed || categories.includes(trimmed)) return;
-    setCategories(prev => [...prev, trimmed]);
+    const nextList = [...categories, trimmed];
+    setCategories(nextList);
     showToast(`Category "${trimmed}" added! 🏷️`);
+    FirestoreService.saveCategories(nextList);
   };
 
   const deleteCategory = (cat: string) => {
-    setCategories(prev => prev.filter(c => c !== cat));
+    const nextList = categories.filter(c => c !== cat);
+    setCategories(nextList);
     showToast(`Category "${cat}" removed.`);
+    FirestoreService.saveCategories(nextList);
   };
 
   const resetAllContentToDefaults = () => {
-    setQuestions(VERIFIED_QUESTIONS.map(q => ({ ...q, isActive: true })));
+    const defQuestions = VERIFIED_QUESTIONS.map(q => ({ ...q, isActive: true }));
+    setQuestions(defQuestions);
     setQuranVerses(VERIFIED_QURAN_VERSES);
     setHadiths(VERIFIED_HADITHS);
     setDuas(VERIFIED_DUAS);
@@ -1111,7 +1246,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteReminder,
         addCategory,
         deleteCategory,
-        resetAllContentToDefaults
+        resetAllContentToDefaults,
+        migrateLocalToFirestore,
+        isCloudSyncing,
+        cloudSyncError
       }}
     >
       {children}

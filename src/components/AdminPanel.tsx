@@ -29,7 +29,10 @@ import {
   DollarSign,
   Globe,
   Smartphone,
-  ExternalLink
+  ExternalLink,
+  Cloud,
+  CloudOff,
+  Database
 } from 'lucide-react';
 
 interface AdminPanelProps {
@@ -72,8 +75,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     resetAllContentToDefaults,
     showToast,
     adultProgress,
-    kidsProgress
+    kidsProgress,
+    migrateLocalToFirestore,
+    isCloudSyncing,
+    cloudSyncError
   } = useApp();
+
+  // Migration running state
+  const [isMigrating, setIsMigrating] = useState(false);
 
   // Login Passkey State
   const [passkeyInput, setPasskeyInput] = useState('');
@@ -666,6 +675,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Cloud Firestore Status Badge */}
+            <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-[11px] font-medium text-slate-700">
+              <Cloud className={`w-3.5 h-3.5 ${isCloudSyncing ? 'text-amber-500 animate-pulse' : 'text-emerald-600'}`} />
+              <span>{isCloudSyncing ? 'Syncing...' : 'Firestore Connected'}</span>
+            </div>
+
             <button
               onClick={() => setIsChangingPasskey(true)}
               className="px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition-all shadow-2xs"
@@ -1335,6 +1350,55 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                     Save New Passkey 🔐
                   </button>
                 </form>
+              </div>
+
+              {/* Cloud Firestore Integration & Migration */}
+              <div className="bg-emerald-50/50 p-5 rounded-2xl border border-emerald-200/80 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-emerald-900">
+                    <Database className="w-4 h-4 text-emerald-700" />
+                    <h3 className="text-sm font-bold">Cloud Firestore Central Database</h3>
+                  </div>
+                  <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    Project: islamiq-35329
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Questions and Islamic content are automatically synchronized with Firebase Cloud Firestore in real-time. Any questions added, edited, or removed here are instantly visible to all users on <span className="font-semibold text-emerald-900">https://learnislamiq.com</span>.
+                </p>
+
+                {cloudSyncError && (
+                  <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>{cloudSyncError}</span>
+                  </div>
+                )}
+
+                <div className="pt-1 flex flex-wrap items-center gap-3">
+                  <button
+                    onClick={async () => {
+                      setIsMigrating(true);
+                      try {
+                        const res = await migrateLocalToFirestore();
+                        if (res.success) {
+                          showToast(`Successfully migrated ${res.migratedCount} items to Firestore! ☁️`);
+                        }
+                      } finally {
+                        setIsMigrating(false);
+                      }
+                    }}
+                    disabled={isMigrating || isCloudSyncing}
+                    className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-2xs"
+                  >
+                    <Cloud className={`w-3.5 h-3.5 ${isMigrating ? 'animate-spin' : ''}`} />
+                    <span>{isMigrating ? 'Migrating to Cloud...' : 'Sync Local Content to Firestore ☁️'}</span>
+                  </button>
+
+                  <span className="text-[11px] text-slate-500">
+                    Safely copies questions, verses, hadiths, and duas from local cache into the Firestore database without overwriting.
+                  </span>
+                </div>
               </div>
 
               {/* Database Factory Reset */}
