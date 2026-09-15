@@ -55,6 +55,8 @@ export const App: React.FC = () => {
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         setActiveTab(path as AppTab);
+      } else if (path === '' || path === 'home') {
+        setActiveTab('home');
       }
     };
 
