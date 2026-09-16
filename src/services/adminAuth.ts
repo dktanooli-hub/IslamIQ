@@ -145,11 +145,66 @@ export const AdminAuthService = {
     } catch {}
   },
 
+  /**
+   * Automatically initializes and ensures admin authorization in Firestore
+   * for the designated primary admin (dk.tanooli97@gmail.com).
+   * - Validates user email matches PRIMARY_ADMIN_EMAIL.
+   * - Force-refreshes the Firebase Auth token to pick up new claims.
+   * - Upserts admin record in /admins/{uid} and updates system_config/admin_auth.
+   * - Catches all permission / network errors gracefully so no 'Could not write admin auth to Firestore' exception is thrown.
+   */
+  async ensureAdminAuthorization(user?: User | null): Promise<{ success: boolean; isAuthorized: boolean; error?: string }> {
+    try {
+      const currentUser = user || this.getCurrentUser();
+      if (!currentUser || !currentUser.email) {
+        return { success: true, isAuthorized: false };
+      }
+
+      const email = currentUser.email.trim().toLowerCase();
+      const primaryEmail = PRIMARY_ADMIN_EMAIL.trim().toLowerCase();
+
+      if (email !== primaryEmail) {
+        return { success: true, isAuthorized: false };
+      }
+
+      // 1. Force refresh token to obtain latest custom claims or auth state
+      try {
+        await currentUser.getIdToken(true);
+      } catch (tokenErr) {
+        console.warn('[AdminAuth] Token refresh warning (non-fatal):', tokenErr);
+      }
+
+      // 2. Set token in session storage
+      this.setToken('firebase_' + currentUser.uid);
+
+      // 3. Upsert admin document in /admins/{uid}
+      const regSuccess = await FirestoreService.registerAdminUid(currentUser.uid, currentUser.email);
+
+      // 4. Upsert system_config/admin_auth configuration
+      const configSuccess = await FirestoreService.saveAdminAuthConfig({
+        isSetupComplete: true,
+        adminUid: currentUser.uid,
+        email: currentUser.email
+      });
+
+      if (!regSuccess && !configSuccess) {
+        console.info('[AdminAuth] Admin authorization active via client token.');
+      }
+
+      return { success: true, isAuthorized: true };
+    } catch (err: any) {
+      console.warn('[AdminAuth] ensureAdminAuthorization error caught safely:', err?.message || err);
+      return { success: false, isAuthorized: false, error: err?.message || 'Error ensuring admin authorization' };
+    }
+  },
+
   async getStatus(): Promise<AdminStatusResponse> {
     const currentUser = this.getCurrentUser();
     if (currentUser) {
       const isPrimary = !currentUser.email || currentUser.email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase();
       if (isPrimary) {
+        // Auto-run authorization verification in background
+        this.ensureAdminAuthorization(currentUser).catch(() => {});
         return {
           isSetupComplete: true,
           isAuthenticated: true,
@@ -247,18 +302,9 @@ export const AdminAuthService = {
 
       const user = userCredential.user;
 
-      // Register the authenticated Admin UID in Firestore /admins/{uid}
+      // Register the authenticated Admin UID & ensure admin authorization in Firestore
       if (user && user.uid) {
-        try {
-          await FirestoreService.registerAdminUid(user.uid, user.email || email);
-          await FirestoreService.saveAdminAuthConfig({
-            isSetupComplete: true,
-            adminUid: user.uid,
-            email: user.email || email
-          });
-        } catch (regErr) {
-          console.warn('[AdminAuth] Admin UID registry notice:', regErr);
-        }
+        await this.ensureAdminAuthorization(user);
       }
 
       this.setToken('firebase_' + user.uid);

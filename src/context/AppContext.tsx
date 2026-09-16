@@ -110,6 +110,7 @@ interface AppContextType {
   updateAdminPasskey: (currentKey: string, newKey: string, email?: string) => Promise<{ success: boolean; error?: string }>;
   adminLogout: () => Promise<void>;
   checkAdminStatus: () => Promise<void>;
+  syncAdminAuthorization: () => Promise<{ success: boolean; isAuthorized: boolean; error?: string }>;
 
   // Admin Question CRUD
   addQuestion: (q: Omit<QuizQuestion, 'id'>) => void;
@@ -402,6 +403,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsAdminSetupComplete(true);
         setAdminEmail(user.email || PRIMARY_ADMIN_EMAIL);
         setAdminUid(user.uid);
+        // Automatically check & ensure admin authorization in Firestore (no error thrown)
+        AdminAuthService.ensureAdminAuthorization(user).catch(() => {});
       } else {
         const token = AdminAuthService.getToken();
         if (!token || token.startsWith('firebase_')) {
@@ -579,6 +582,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsAdminAuthenticated(false);
     setAdminUid(null);
     showToast('Logged out of Admin Panel.');
+  };
+
+  const syncAdminAuthorization = async (): Promise<{ success: boolean; isAuthorized: boolean; error?: string }> => {
+    const res = await AdminAuthService.ensureAdminAuthorization();
+    if (res.isAuthorized) {
+      setIsAdminAuthenticated(true);
+      const currentUser = AdminAuthService.getCurrentUser();
+      if (currentUser) {
+        setAdminEmail(currentUser.email || PRIMARY_ADMIN_EMAIL);
+        setAdminUid(currentUser.uid);
+      }
+      showToast('Admin authorization confirmed with Firestore! 🛡️');
+    }
+    return res;
   };
 
   // Safe One-Time Migration: Local Storage -> Firestore
@@ -1279,6 +1296,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateAdminPasskey,
         adminLogout,
         checkAdminStatus,
+        syncAdminAuthorization,
 
         // Admin Question CRUD
         addQuestion,

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { QuizQuestion, QuizCategory, QuizDifficulty, QuranVerse, HadithItem, DuaItem, IslamicReminder, UserMode } from '../types';
 import {
@@ -50,6 +50,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     setupAdminMasterPassword,
     updateAdminPasskey,
     adminLogout,
+    syncAdminAuthorization,
     questions,
     addQuestion,
     updateQuestion,
@@ -244,6 +245,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const avgAccuracy = totalAttempts > 0
     ? Math.round(quizAttempts.reduce((acc, a) => acc + (a.accuracy || 0), 0) / totalAttempts)
     : 85;
+
+  // On mounting the admin panel in authenticated state, ensure Firestore admin doc & claims are synced
+  useEffect(() => {
+    if (isAdminAuthenticated) {
+      syncAdminAuthorization().catch(() => {});
+    }
+  }, [isAdminAuthenticated]);
 
   // Handle Setup Submit (First-time initialization by authorized owner)
   const handleSetupSubmit = async (e: React.FormEvent) => {
@@ -698,12 +706,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Authenticated Admin Badge */}
-            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] font-medium text-emerald-800" title={`Authorized UID: ${adminUid || 'Verified'}`}>
+            {/* Authenticated Admin Badge with Click-to-Verify */}
+            <button
+              onClick={() => syncAdminAuthorization()}
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200 text-[11px] font-medium text-emerald-800 transition-colors cursor-pointer"
+              title="Click to re-sync Admin Authorization with Firestore"
+            >
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
               <span className="font-semibold">{adminEmail}</span>
               {adminUid && <span className="text-[9px] bg-emerald-200/70 px-1.5 py-0.2 rounded-md font-mono text-emerald-900">{adminUid.slice(0, 6)}...</span>}
-            </div>
+            </button>
 
             {/* Cloud Firestore Status Badge */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-[11px] font-medium text-slate-700">

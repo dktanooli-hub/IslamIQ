@@ -13,13 +13,20 @@ service cloud.firestore {
     }
     
     // Checks if the user is the authorized Admin:
-    // 1. Matches the authorized primary admin email (dk.tanooli97@gmail.com)
+    // 1. Matches the authorized primary admin email (dk.tanooli97@gmail.com, case-insensitive)
     // 2. OR possesses the 'admin' custom claim in their Firebase ID token
     // 3. OR has an authorized entry in the /admins/{uid} collection
+    function isPrimaryAdmin() {
+      return isAuthenticated() && (
+        (request.auth.token.keys().hasAll(['email']) && 
+          (request.auth.token.email == 'dk.tanooli97@gmail.com' || request.auth.token.email.matches('(?i)^dk\\.tanooli97@gmail\\.com$'))) ||
+        (request.auth.token.keys().hasAll(['admin']) && request.auth.token.admin == true)
+      );
+    }
+
     function isAdmin() {
       return isAuthenticated() && (
-        (request.auth.token.keys().hasAll(['email']) && request.auth.token.email == 'dk.tanooli97@gmail.com') ||
-        (request.auth.token.keys().hasAll(['admin']) && request.auth.token.admin == true) ||
+        isPrimaryAdmin() ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
     }
@@ -90,7 +97,7 @@ service cloud.firestore {
     // Admins collection mapping verified UIDs to their admin profile.
     match /admins/{adminUid} {
       allow read: if isAuthenticated() && (request.auth.uid == adminUid || isAdmin());
-      allow write: if isAdmin() || (isAuthenticated() && request.auth.token.email == 'dk.tanooli97@gmail.com' && request.auth.uid == adminUid);
+      allow write: if isAdmin() || isPrimaryAdmin() || (isAuthenticated() && request.auth.uid == adminUid && request.auth.token.email.matches('(?i)^dk\\.tanooli97@gmail\\.com$'));
     }
 
     // -------------------------------------------------------------------------
