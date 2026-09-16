@@ -32,7 +32,8 @@ import {
   ExternalLink,
   Cloud,
   CloudOff,
-  Database
+  Database,
+  Mail
 } from 'lucide-react';
 
 interface AdminPanelProps {
@@ -43,6 +44,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const {
     isAdminAuthenticated,
     isAdminSetupComplete,
+    adminEmail,
+    adminUid,
     verifyAdminPasskey,
     setupAdminMasterPassword,
     updateAdminPasskey,
@@ -84,7 +87,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   // Migration running state
   const [isMigrating, setIsMigrating] = useState(false);
 
-  // Login Passkey State
+  // Login State
+  const [emailInput, setEmailInput] = useState(adminEmail || 'dk.tanooli97@gmail.com');
   const [passkeyInput, setPasskeyInput] = useState('');
   const [showPasskeyText, setShowPasskeyText] = useState(false);
   const [loginError, setLoginError] = useState('');
@@ -255,7 +259,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     }
     setIsSubmittingSetup(true);
     try {
-      const res = await setupAdminMasterPassword(setupPassword);
+      const res = await setupAdminMasterPassword(setupPassword, emailInput.trim());
       if (res.success) {
         setSetupPassword('');
         setSetupConfirmPassword('');
@@ -267,17 +271,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     }
   };
 
-  // Handle Login Submit (Server-side PBKDF2 authenticated)
+  // Handle Login Submit (Firebase Authentication)
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
     if (!passkeyInput.trim()) {
-      setLoginError('Please enter admin passkey.');
+      setLoginError('Please enter admin password.');
       return;
     }
     setIsLoggingIn(true);
     try {
-      const res = await verifyAdminPasskey(passkeyInput.trim());
+      const res = await verifyAdminPasskey(passkeyInput.trim(), emailInput.trim());
       if (!res.success) {
         setLoginError(res.error || 'Invalid credentials. Access denied.');
       } else {
@@ -581,7 +585,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                Admin Master Password (خفیہ پاس ورڈ)
+                Authorized Admin Email (ای میل)
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="admin@learnislamiq.com"
+                  className="w-full pl-10 pr-3.5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-emerald-600 focus:bg-white"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                Admin Password (پاس ورڈ)
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -591,7 +614,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                   type={showPasskeyText ? 'text' : 'password'}
                   value={passkeyInput}
                   onChange={(e) => setPasskeyInput(e.target.value)}
-                  placeholder="Enter admin master password..."
+                  placeholder="Enter admin password..."
                   className="w-full pl-10 pr-10 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-emerald-600 focus:bg-white"
                   autoFocus
                   required
@@ -614,7 +637,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
 
             <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-600 flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>Restricted to the verified system owner. All access attempts are monitored and rate-limited.</span>
+              <span>Secured by Firebase Authentication & zero-trust Firestore Security Rules for authorized Admin UID.</span>
             </div>
 
             <div className="flex gap-2 pt-2">
@@ -675,6 +698,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Authenticated Admin Badge */}
+            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-emerald-50 border border-emerald-200 text-[11px] font-medium text-emerald-800" title={`Authorized UID: ${adminUid || 'Verified'}`}>
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+              <span className="font-semibold">{adminEmail}</span>
+              {adminUid && <span className="text-[9px] bg-emerald-200/70 px-1.5 py-0.2 rounded-md font-mono text-emerald-900">{adminUid.slice(0, 6)}...</span>}
+            </div>
+
             {/* Cloud Firestore Status Badge */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-[11px] font-medium text-slate-700">
               <Cloud className={`w-3.5 h-3.5 ${isCloudSyncing ? 'text-amber-500 animate-pulse' : 'text-emerald-600'}`} />

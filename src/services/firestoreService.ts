@@ -268,7 +268,7 @@ export const FirestoreService = {
   // ---------------------------------------------------------------------------
   // ADMIN AUTHENTICATION METADATA (CLOUD SYNCED FOR VERCEL & PREVIEWS)
   // ---------------------------------------------------------------------------
-  async getAdminAuthConfig(): Promise<{ isSetupComplete: boolean; passwordHash?: string; salt?: string } | null> {
+  async getAdminAuthConfig(): Promise<{ isSetupComplete: boolean; passwordHash?: string; salt?: string; adminUid?: string; email?: string } | null> {
     try {
       const authDoc = doc(db, 'system_config', 'admin_auth');
       const snap = await getDoc(authDoc);
@@ -277,7 +277,9 @@ export const FirestoreService = {
         return {
           isSetupComplete: !!d.isSetupComplete,
           passwordHash: d.passwordHash,
-          salt: d.salt
+          salt: d.salt,
+          adminUid: d.adminUid,
+          email: d.email
         };
       }
       return null;
@@ -287,13 +289,46 @@ export const FirestoreService = {
     }
   },
 
-  async saveAdminAuthConfig(config: { isSetupComplete: boolean; passwordHash: string; salt: string }): Promise<boolean> {
+  async saveAdminAuthConfig(config: { isSetupComplete: boolean; passwordHash?: string; salt?: string; adminUid?: string; email?: string }): Promise<boolean> {
     try {
       const authDoc = doc(db, 'system_config', 'admin_auth');
       await setDoc(authDoc, { ...config, updatedAt: Date.now() }, { merge: true });
       return true;
     } catch (e) {
       console.error('[Firestore] saveAdminAuthConfig error:', e);
+      return false;
+    }
+  },
+
+  /**
+   * Registers or updates an authorized Admin UID document in `/admins/{uid}`.
+   * Required for Firestore Security Rules to permit writes by this UID.
+   */
+  async registerAdminUid(uid: string, email: string): Promise<boolean> {
+    try {
+      const adminDocRef = doc(db, 'admins', uid);
+      await setDoc(
+        adminDocRef,
+        {
+          uid,
+          email,
+          role: 'admin',
+          authorizedAt: Date.now()
+        },
+        { merge: true }
+      );
+      return true;
+    } catch (err) {
+      console.warn('[Firestore] Failed to register admin UID:', err);
+      return false;
+    }
+  },
+
+  async isAdminUidRegistered(uid: string): Promise<boolean> {
+    try {
+      const snap = await getDoc(doc(db, 'admins', uid));
+      return snap.exists();
+    } catch {
       return false;
     }
   },

@@ -28,7 +28,7 @@ import {
   ISLAMIC_REMINDERS
 } from '../data/verifiedContent';
 import { sounds } from '../utils/audio';
-import { AdminAuthService } from '../services/adminAuth';
+import { AdminAuthService, PRIMARY_ADMIN_EMAIL } from '../services/adminAuth';
 import { FirestoreService } from '../services/firestoreService';
 
 interface AppContextType {
@@ -103,9 +103,11 @@ interface AppContextType {
   // Admin Security
   isAdminAuthenticated: boolean;
   isAdminSetupComplete: boolean;
-  verifyAdminPasskey: (key: string) => Promise<{ success: boolean; error?: string }>;
-  setupAdminMasterPassword: (password: string) => Promise<{ success: boolean; error?: string }>;
-  updateAdminPasskey: (currentKey: string, newKey: string) => Promise<{ success: boolean; error?: string }>;
+  adminEmail: string;
+  adminUid: string | null;
+  verifyAdminPasskey: (key: string, email?: string) => Promise<{ success: boolean; error?: string }>;
+  setupAdminMasterPassword: (password: string, email?: string) => Promise<{ success: boolean; error?: string }>;
+  updateAdminPasskey: (currentKey: string, newKey: string, email?: string) => Promise<{ success: boolean; error?: string }>;
   adminLogout: () => Promise<void>;
   checkAdminStatus: () => Promise<void>;
 
@@ -365,6 +367,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Admin Security (Server-backed & Token-based)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
   const [isAdminSetupComplete, setIsAdminSetupComplete] = useState<boolean>(true);
+  const [adminEmail, setAdminEmail] = useState<string>(PRIMARY_ADMIN_EMAIL);
+  const [adminUid, setAdminUid] = useState<string | null>(null);
   const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
   const [cloudSyncError, setCloudSyncError] = useState<string | null>(null);
 
@@ -381,6 +385,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const status = await AdminAuthService.getStatus();
       setIsAdminSetupComplete(status.isSetupComplete);
       setIsAdminAuthenticated(status.isAuthenticated);
+      if (status.adminEmail) setAdminEmail(status.adminEmail);
+      if (status.adminUid) setAdminUid(status.adminUid);
     } catch {
       // Fallback
     }
@@ -388,10 +394,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     checkAdminStatus();
+
+    // Subscribe to Firebase Auth state changes for instant cross-tab and refresh persistence
+    const unsubAuth = AdminAuthService.onAuthStateChanged((user) => {
+      if (user) {
+        setIsAdminAuthenticated(true);
+        setIsAdminSetupComplete(true);
+        setAdminEmail(user.email || PRIMARY_ADMIN_EMAIL);
+        setAdminUid(user.uid);
+      } else {
+        const token = AdminAuthService.getToken();
+        if (!token || token.startsWith('firebase_')) {
+          setIsAdminAuthenticated(false);
+          setAdminUid(null);
+        }
+      }
+    });
+
     // Clean up any legacy exposed key in localStorage
     try {
       localStorage.removeItem('islamiq_admin_passkey_v1');
     } catch {}
+
+    return () => {
+      unsubAuth();
+    };
   }, []);
 
   // 1. Initial load from LocalStorage as fast local cache/fallback
@@ -504,11 +531,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }, [questions, quranVerses, hadiths, duas, reminders, categories, quizAttempts]);
 
   // Admin Security Methods
-  const verifyAdminPasskey = async (key: string): Promise<{ success: boolean; error?: string }> => {
-    const res = await AdminAuthService.login(key);
+  const verifyAdminPasskey = async (key: string, email?: string): Promise<{ success: boolean; error?: string }> => {
+    const targetEmail = email || adminEmail || PRIMARY_ADMIN_EMAIL;
+    const res = await AdminAuthService.login(targetEmail, key);
     if (res.success) {
       setIsAdminAuthenticated(true);
-      showToast('Admin access granted! 🔐 (خوش آمدید)');
+      if (res.user) {
+        setAdminEmail(res.user.email || targetEmail);
+        setAdminUid(res.user.uid);
+      }
+      showToast('Admin access granted via Firebase Auth! 🔐 (خوش آمدید)');
       return { success: true };
     }
     const err = res.error || 'Incorrect admin credentials. Access denied.';
@@ -516,12 +548,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return { success: false, error: err };
   };
 
-  const setupAdminMasterPassword = async (password: string): Promise<{ success: boolean; error?: string }> => {
-    const res = await AdminAuthService.setupOwnerPassword(password);
+  const setupAdminMasterPassword = async (password: string, email?: string): Promise<{ success: boolean; error?: string }> => {
+    const targetEmail = email || adminEmail || PRIMARY_ADMIN_EMAIL;
+    const res = await AdminAuthService.setupOwnerPassword(password, targetEmail);
     if (res.success) {
       setIsAdminSetupComplete(true);
       setIsAdminAuthenticated(true);
-      showToast('Owner Master Password set and secured! 🛡️');
+      showToast('Owner account configured & authorized via Firebase! 🛡️');
       return { success: true };
     }
     const err = res.error || 'Failed to initialize master password.';
@@ -529,10 +562,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return { success: false, error: err };
   };
 
-  const updateAdminPasskey = async (currentKey: string, newKey: string): Promise<{ success: boolean; error?: string }> => {
-    const res = await AdminAuthService.changePassword(currentKey, newKey);
+  const updateAdminPasskey = async (currentKey: string, newKey: string, email?: string): Promise<{ success: boolean; error?: string }> => {
+    const targetEmail = email || adminEmail || PRIMARY_ADMIN_EMAIL;
+    const res = await AdminAuthService.changePassword(currentKey, newKey, targetEmail);
     if (res.success) {
-      showToast('Admin passkey updated securely! 🛡️');
+      showToast('Admin password updated securely! 🛡️');
       return { success: true };
     }
     const err = res.error || 'Failed to update passkey.';
@@ -543,6 +577,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const adminLogout = async () => {
     await AdminAuthService.logout();
     setIsAdminAuthenticated(false);
+    setAdminUid(null);
     showToast('Logged out of Admin Panel.');
   };
 
@@ -1237,6 +1272,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // Admin Security
         isAdminAuthenticated,
         isAdminSetupComplete,
+        adminEmail,
+        adminUid,
         verifyAdminPasskey,
         setupAdminMasterPassword,
         updateAdminPasskey,

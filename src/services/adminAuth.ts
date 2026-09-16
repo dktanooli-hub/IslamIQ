@@ -12,18 +12,29 @@
  * - Rate-limited in both server and client sessions to prevent brute force.
  */
 
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  User
+} from 'firebase/auth';
+import { auth } from '../firebase/config';
 import { FirestoreService } from './firestoreService';
 
 const TOKEN_KEY = 'islamiq_admin_session_token';
 const FAILED_ATTEMPTS_KEY = 'islamiq_admin_failed_attempts';
+export const PRIMARY_ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL || 'dk.tanooli97@gmail.com';
 
 export interface AdminStatusResponse {
   isSetupComplete: boolean;
   isAuthenticated: boolean;
   hasOwner: boolean;
+  adminEmail?: string;
+  adminUid?: string;
 }
 
-// Client-side WebCrypto PBKDF2 helper for static hosts (Vercel)
+// Client-side WebCrypto PBKDF2 helper for static hosts
 async function hashPasswordWebCrypto(password: string, saltHex: string): Promise<string> {
   const enc = new TextEncoder();
   const saltBytes = new Uint8Array(saltHex.match(/.{1,2}/g)!.map(byte => parseInt(byte, 16)));
@@ -79,6 +90,30 @@ export const AdminAuthService = {
     } catch {}
   },
 
+  getCurrentUser(): User | null {
+    try {
+      return auth.currentUser;
+    } catch {
+      return null;
+    }
+  },
+
+  getAdminUid(): string | null {
+    try {
+      return auth.currentUser?.uid || null;
+    } catch {
+      return null;
+    }
+  },
+
+  onAuthStateChanged(callback: (user: User | null) => void): () => void {
+    try {
+      return onAuthStateChanged(auth, callback);
+    } catch {
+      return () => {};
+    }
+  },
+
   checkRateLimit(): { isLocked: boolean; waitSeconds: number } {
     try {
       const record = JSON.parse(sessionStorage.getItem(FAILED_ATTEMPTS_KEY) || '{}');
@@ -111,6 +146,20 @@ export const AdminAuthService = {
   },
 
   async getStatus(): Promise<AdminStatusResponse> {
+    const currentUser = this.getCurrentUser();
+    if (currentUser) {
+      const isPrimary = !currentUser.email || currentUser.email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase();
+      if (isPrimary) {
+        return {
+          isSetupComplete: true,
+          isAuthenticated: true,
+          hasOwner: true,
+          adminEmail: currentUser.email || PRIMARY_ADMIN_EMAIL,
+          adminUid: currentUser.uid
+        };
+      }
+    }
+
     const token = this.getToken();
 
     // 1. Try local dev endpoint first
@@ -118,7 +167,6 @@ export const AdminAuthService = {
       const res = await fetch('/api/admin/status', {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
       });
-      // Ensure response is actually JSON and not an SPA index.html fallback
       const contentType = res.headers.get('content-type') || '';
       if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
@@ -128,153 +176,162 @@ export const AdminAuthService = {
       // Endpoint unreachable or running on static Vercel host
     }
 
-    // 2. Vercel/Static Host: Fallback to Firestore System Config
+    // 2. Vercel / Cloud Static Host: Check Firestore System Config
     try {
       const config = await FirestoreService.getAdminAuthConfig();
       if (config && config.isSetupComplete) {
-        const isAuthenticated = !!token && token === 'islamiq_verified_session';
+        const isAuthenticated = !!token && (token.startsWith('firebase_') || token === 'islamiq_verified_session');
         return {
           isSetupComplete: true,
           isAuthenticated,
-          hasOwner: true
+          hasOwner: true,
+          adminEmail: config.email || PRIMARY_ADMIN_EMAIL,
+          adminUid: config.adminUid
         };
       }
-      // If Firestore has no config yet, allow first-time owner setup
       return {
         isSetupComplete: false,
         isAuthenticated: false,
-        hasOwner: false
+        hasOwner: false,
+        adminEmail: PRIMARY_ADMIN_EMAIL
       };
     } catch {
-      return { isSetupComplete: true, isAuthenticated: false, hasOwner: true };
+      return { isSetupComplete: true, isAuthenticated: false, hasOwner: true, adminEmail: PRIMARY_ADMIN_EMAIL };
     }
   },
 
-  async setupOwnerPassword(password: string): Promise<{ success: boolean; error?: string }> {
-    // 1. Try dev endpoint
-    try {
-      const res = await fetch('/api/admin/setup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-      const contentType = res.headers.get('content-type') || '';
-      if (res.ok && contentType.includes('application/json')) {
-        const data = await res.json();
-        if (data.success) {
-          if (data.token) this.setToken(data.token);
-          // Also sync hash to Firestore so Vercel can also authenticate
-          try {
-            const salt = generateRandomSalt();
-            const passwordHash = await hashPasswordWebCrypto(password, salt);
-            await FirestoreService.saveAdminAuthConfig({ isSetupComplete: true, passwordHash, salt });
-          } catch {}
-          return { success: true };
-        }
-        return { success: false, error: data.error };
-      }
-    } catch {
-      // Proceed to static/cloud fallback
-    }
-
-    // 2. Static / Vercel Host: Initialize using WebCrypto and Firestore
-    try {
-      const salt = generateRandomSalt();
-      const passwordHash = await hashPasswordWebCrypto(password, salt);
-      const saved = await FirestoreService.saveAdminAuthConfig({
-        isSetupComplete: true,
-        passwordHash,
-        salt
-      });
-      if (!saved) {
-        return { success: false, error: 'Could not write admin auth to Firestore.' };
-      }
-      this.setToken('islamiq_verified_session');
-      return { success: true };
-    } catch (e: any) {
-      return { success: false, error: e.message || 'Setup failed' };
-    }
+  async setupOwnerPassword(password: string, email: string = PRIMARY_ADMIN_EMAIL): Promise<{ success: boolean; error?: string }> {
+    return this.login(email, password);
   },
 
-  async login(password: string): Promise<{ success: boolean; error?: string }> {
+  /**
+   * Authenticate admin via Firebase Authentication.
+   * Supports both (email, password) and single-argument (password) for backward compatibility.
+   */
+  async login(emailOrPassword: string, maybePassword?: string): Promise<{ success: boolean; user?: User; error?: string }> {
     const rate = this.checkRateLimit();
     if (rate.isLocked) {
       return { success: false, error: `Too many failed attempts. Locked for ${rate.waitSeconds}s.` };
     }
 
-    // 1. Try local dev endpoint
-    try {
-      const res = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-      const contentType = res.headers.get('content-type') || '';
-      if (res.ok && contentType.includes('application/json')) {
-        const data = await res.json();
-        if (data.success) {
-          if (data.token) this.setToken(data.token);
-          this.clearFailedAttempts();
-          return { success: true };
-        }
-        this.recordFailedAttempt();
-        return { success: false, error: data.error || 'Invalid credentials' };
-      }
-    } catch {
-      // Proceed to cloud/Firestore fallback
+    let email = PRIMARY_ADMIN_EMAIL;
+    let password = emailOrPassword;
+
+    if (maybePassword !== undefined) {
+      email = emailOrPassword.trim();
+      password = maybePassword;
     }
 
-    // 2. Static / Vercel Host: Authenticate against Firestore system_config/admin_auth
+    // Attempt Firebase Authentication directly
     try {
-      const config = await FirestoreService.getAdminAuthConfig();
-      if (!config || !config.isSetupComplete || !config.passwordHash || !config.salt) {
-        // Not configured yet
-        return { success: false, error: 'Admin has not been initialized yet.' };
+      let userCredential;
+      try {
+        userCredential = await signInWithEmailAndPassword(auth, email, password);
+      } catch (fbErr: any) {
+        // If user not found in Firebase Auth and this is the designated primary admin,
+        // create their initial Firebase Auth account
+        if (
+          (fbErr.code === 'auth/user-not-found' || fbErr.code === 'auth/invalid-credential') &&
+          email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase()
+        ) {
+          try {
+            userCredential = await createUserWithEmailAndPassword(auth, email, password);
+          } catch (createErr: any) {
+            // If creation fails (e.g. email already exists and password was wrong), throw original error
+            throw fbErr;
+          }
+        } else {
+          throw fbErr;
+        }
       }
 
-      const hash = await hashPasswordWebCrypto(password, config.salt);
-      if (hash === config.passwordHash) {
-        this.setToken('islamiq_verified_session');
-        this.clearFailedAttempts();
-        return { success: true };
-      } else {
-        this.recordFailedAttempt();
-        return { success: false, error: 'Invalid credentials. Access denied.' };
+      const user = userCredential.user;
+
+      // Register the authenticated Admin UID in Firestore /admins/{uid}
+      if (user && user.uid) {
+        try {
+          await FirestoreService.registerAdminUid(user.uid, user.email || email);
+          await FirestoreService.saveAdminAuthConfig({
+            isSetupComplete: true,
+            adminUid: user.uid,
+            email: user.email || email
+          });
+        } catch (regErr) {
+          console.warn('[AdminAuth] Admin UID registry notice:', regErr);
+        }
       }
-    } catch (e: any) {
+
+      this.setToken('firebase_' + user.uid);
+      this.clearFailedAttempts();
+      return { success: true, user };
+    } catch (fbError: any) {
+      console.warn('[AdminAuth] Firebase Auth attempt result:', fbError.code || fbError.message);
+
+      // Handle specific Firebase Auth error codes
+      if (fbError.code === 'auth/wrong-password' || fbError.code === 'auth/invalid-credential') {
+        this.recordFailedAttempt();
+        return { success: false, error: 'Invalid admin credentials. Access denied.' };
+      }
+      if (fbError.code === 'auth/too-many-requests') {
+        return { success: false, error: 'Too many failed login attempts. Please wait a few minutes before trying again.' };
+      }
+
+      // If Firebase Auth API key is not configured or in local dev environment without Firebase Auth:
+      // Fallback gracefully to local dev server endpoint
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password })
+        });
+        const contentType = res.headers.get('content-type') || '';
+        if (res.ok && contentType.includes('application/json')) {
+          const data = await res.json();
+          if (data.success) {
+            if (data.token) this.setToken(data.token);
+            this.clearFailedAttempts();
+            return { success: true };
+          }
+        }
+      } catch {}
+
+      // Fallback to Firestore WebCrypto hash comparison if previously initialized
+      try {
+        const config = await FirestoreService.getAdminAuthConfig();
+        if (config && config.passwordHash && config.salt) {
+          const hash = await hashPasswordWebCrypto(password, config.salt);
+          if (hash === config.passwordHash) {
+            this.setToken('islamiq_verified_session');
+            this.clearFailedAttempts();
+            return { success: true };
+          }
+        }
+      } catch {}
+
       this.recordFailedAttempt();
-      return { success: false, error: e.message || 'Authentication error' };
+      const detailedError = fbError.code === 'auth/api-key-not-valid'
+        ? 'Firebase API key requires configuration in Vercel environment variables (VITE_FIREBASE_API_KEY).'
+        : fbError.message || 'Authentication error. Please verify your credentials.';
+      return { success: false, error: detailedError };
     }
   },
 
-  async changePassword(currentPassword: string, newPassword: string): Promise<{ success: boolean; error?: string }> {
-    // Validate current password first
-    const loginRes = await this.login(currentPassword);
+  async changePassword(currentPassword: string, newPassword: string, email: string = PRIMARY_ADMIN_EMAIL): Promise<{ success: boolean; error?: string }> {
+    const loginRes = await this.login(email, currentPassword);
     if (!loginRes.success) {
       return { success: false, error: 'Current password is incorrect.' };
     }
 
-    // Update in local server if available
-    const token = this.getToken();
-    try {
-      await fetch('/api/admin/change-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify({ currentPassword, newPassword })
-      });
-    } catch {}
-
-    // Update in Firestore
     try {
       const salt = generateRandomSalt();
       const passwordHash = await hashPasswordWebCrypto(newPassword, salt);
+      const uid = this.getAdminUid() || undefined;
       await FirestoreService.saveAdminAuthConfig({
         isSetupComplete: true,
         passwordHash,
-        salt
+        salt,
+        adminUid: uid,
+        email
       });
       return { success: true };
     } catch (e: any) {
@@ -283,6 +340,9 @@ export const AdminAuthService = {
   },
 
   async logout(): Promise<void> {
+    try {
+      await signOut(auth);
+    } catch {}
     const token = this.getToken();
     if (token) {
       try {

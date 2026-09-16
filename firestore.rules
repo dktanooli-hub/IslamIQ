@@ -3,42 +3,103 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Public read access for educational Islamic content so students, children, and visitors
-    // can learn from verified questions, Quran verses, Hadiths, Duas, and reminders.
+    // -------------------------------------------------------------------------
+    // HELPER FUNCTIONS FOR AUTHENTICATION & AUTHORIZATION
+    // -------------------------------------------------------------------------
+    
+    // Checks if the user has an active Firebase Authentication session
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Checks if the user is the authorized Admin:
+    // 1. Matches the authorized primary admin email (dk.tanooli97@gmail.com)
+    // 2. OR possesses the 'admin' custom claim in their Firebase ID token
+    // 3. OR has an authorized entry in the /admins/{uid} collection
+    function isAdmin() {
+      return isAuthenticated() && (
+        (request.auth.token.keys().hasAll(['email']) && request.auth.token.email == 'dk.tanooli97@gmail.com') ||
+        (request.auth.token.keys().hasAll(['admin']) && request.auth.token.admin == true) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // -------------------------------------------------------------------------
+    // 1. QUIZ QUESTIONS (Adults & Kids)
+    // -------------------------------------------------------------------------
+    // Public visitors can read questions for interactive quizzes and study hubs.
+    // ONLY the authorized Admin UID can create, update, or delete questions.
     match /quiz_questions/{questionId} {
       allow read: if true;
-      allow write: if true; // Write restricted to authenticated admin session
+      allow create, update, delete: if isAdmin();
     }
-    
+
+    // -------------------------------------------------------------------------
+    // 2. VERIFIED ISLAMIC CONTENT (Quran, Hadith, Duas, Reminders)
+    // -------------------------------------------------------------------------
+    // Public educational access for Quran verses, Hadiths, Duas, and reminders.
+    // Writes strictly reserved for authorized Admin.
     match /quran_verses/{verseId} {
       allow read: if true;
-      allow write: if true;
+      allow create, update, delete: if isAdmin();
     }
-    
+
     match /hadiths/{hadithId} {
       allow read: if true;
-      allow write: if true;
+      allow create, update, delete: if isAdmin();
     }
-    
+
     match /duas/{duaId} {
       allow read: if true;
-      allow write: if true;
+      allow create, update, delete: if isAdmin();
     }
-    
+
     match /reminders/{reminderId} {
       allow read: if true;
-      allow write: if true;
+      allow create, update, delete: if isAdmin();
     }
-    
+
+    // -------------------------------------------------------------------------
+    // 3. SYSTEM TAXONOMY & CATEGORIES
+    // -------------------------------------------------------------------------
+    // Category list is readable by public to build topic filters.
+    // Writes reserved for authorized Admin.
     match /categories/{catId} {
       allow read: if true;
-      allow write: if true;
+      allow create, update, delete: if isAdmin();
     }
-    
-    // System configuration and admin authentication tokens
-    match /system_config/{configId} {
+
+    match /system_config/categories {
       allow read: if true;
-      allow write: if true;
+      allow write: if isAdmin();
+    }
+
+    // -------------------------------------------------------------------------
+    // 4. ADMIN CONFIGURATION & AUTHENTICATION TOKENS
+    // -------------------------------------------------------------------------
+    // Sensitive system configuration (e.g. admin_auth, tokens) is protected.
+    // Public and normal users have ZERO read and ZERO write permissions.
+    // Only the authorized Admin UID can read or write.
+    match /system_config/{configId} {
+      allow read, write: if isAdmin();
+    }
+
+    // -------------------------------------------------------------------------
+    // 5. AUTHORIZED ADMINS REGISTRY
+    // -------------------------------------------------------------------------
+    // Admins collection mapping verified UIDs to their admin profile.
+    match /admins/{adminUid} {
+      allow read: if isAuthenticated() && (request.auth.uid == adminUid || isAdmin());
+      allow write: if isAdmin() || (isAuthenticated() && request.auth.token.email == 'dk.tanooli97@gmail.com' && request.auth.uid == adminUid);
+    }
+
+    // -------------------------------------------------------------------------
+    // 6. QUIZ ATTEMPTS & ANALYTICS
+    // -------------------------------------------------------------------------
+    // Public users can submit their quiz progress; Admin can review logs.
+    match /quiz_attempts/{attemptId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
     }
   }
 }
