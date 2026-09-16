@@ -431,13 +431,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   useEffect(() => {
     setIsCloudSyncing(true);
     // Realtime subscription to Firestore questions collection
-    const unsubscribeQuestions = FirestoreService.listenQuestions((remoteQuestions) => {
-      if (remoteQuestions && remoteQuestions.length > 0) {
-        setQuestions(remoteQuestions);
+    const unsubscribeQuestions = FirestoreService.listenQuestions(
+      (remoteQuestions) => {
+        if (remoteQuestions && remoteQuestions.length > 0) {
+          setQuestions(prev => {
+            // If remote questions have full dataset (>= 50), use remote directly
+            if (remoteQuestions.length >= 50) {
+              return remoteQuestions;
+            }
+            // Otherwise, merge remote questions over local/verified questions by ID
+            const map = new Map<string, QuizQuestion>();
+            VERIFIED_QUESTIONS.forEach(q => map.set(q.id, { ...q, isActive: true }));
+            prev.forEach(q => map.set(q.id, q));
+            remoteQuestions.forEach(q => map.set(q.id, q));
+            return Array.from(map.values());
+          });
+        }
+        setIsCloudSyncing(false);
+        setCloudSyncError(null);
+      },
+      (err: any) => {
+        console.warn('[Firestore] Questions sync notice:', err);
+        setIsCloudSyncing(false);
+        setCloudSyncError(err?.message || 'Using local verified cache');
       }
-      setIsCloudSyncing(false);
-      setCloudSyncError(null);
-    });
+    );
 
     // Fetch initial daily feeds & categories from Firestore
     const fetchRemoteFeeds = async () => {

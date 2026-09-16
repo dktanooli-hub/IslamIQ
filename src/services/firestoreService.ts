@@ -55,7 +55,10 @@ export const FirestoreService = {
     }
   },
 
-  listenQuestions(callback: (questions: QuizQuestion[]) => void): () => void {
+  listenQuestions(
+    callback: (questions: QuizQuestion[]) => void,
+    onError?: (error: any) => void
+  ): () => void {
     try {
       const qCol = collection(db, 'quiz_questions');
       return onSnapshot(
@@ -69,10 +72,12 @@ export const FirestoreService = {
         },
         error => {
           console.warn('[Firestore] Questions snapshot error:', error);
+          if (onError) onError(error);
         }
       );
     } catch (e) {
       console.warn('[Firestore] listenQuestions init error:', e);
+      if (onError) onError(e);
       return () => {};
     }
   },
