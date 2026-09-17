@@ -66,6 +66,17 @@ export const VERIFIED_QURAN_VERSES: QuranVerse[] = [
     surahNumber: 65,
     ayahNumber: 2,
     theme: 'Taqwa & Provision (تقویٰ و رزق)'
+  },
+  {
+    id: 'verse-7',
+    arabic: 'فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ',
+    translationUrdu: 'پس تم مجھے یاد رکھو، میں تمہیں یاد رکھوں گا، اور میرا شکر ادا کرو اور میری ناشکری نہ کرو۔',
+    translationEn: 'So remember Me; I will remember you. And be grateful to Me and do not deny Me.',
+    surahNameArabic: 'البقرة',
+    surahNameEn: 'Al-Baqarah',
+    surahNumber: 2,
+    ayahNumber: 152,
+    theme: 'Remembrance & Gratitude (ذکر و شکر)'
   }
 ];
 
@@ -129,6 +140,18 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     grade: 'Sahih',
     lessonUrdu: 'خوش اخلاقی اور مسکراہٹ چھوٹا مگر بہت وزنی نیکی کا عمل ہے۔',
     lessonEn: 'A warm smile brings peace and counts as an authentic act of charity.'
+  },
+  {
+    id: 'hadith-6',
+    arabic: 'لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ',
+    textUrdu: 'تم میں سے کوئی شخص اس وقت تک کامل مومن نہیں ہو سکتا جب تک کہ وہ اپنے بھائی کے لیے بھی وہی پسند نہ کرے جو اپنے لیے پسند کرتا ہے۔',
+    textEn: 'None of you truly believes until he loves for his brother what he loves for himself.',
+    narrator: 'Anas ibn Malik (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '13',
+    grade: 'Sahih',
+    lessonUrdu: 'مومن کا دل کینہ اور حسد سے پاک ہوتا ہے، وہ دوسروں کے لیے بھی وہی خیر چاہتا ہے جو اپنے لیے چاہتا ہے۔',
+    lessonEn: 'A hallmark of true faith is wishing well for others and eliminating malice and jealousy.'
   }
 ];
 
@@ -192,6 +215,18 @@ export const VERIFIED_DUAS: DuaItem[] = [
     reference: 'Sahih al-Bukhari 6314',
     occasionUrdu: 'صبح آنکھ کھلتے ہی شکرانے کے طور پر پڑھیں۔',
     occasionEn: 'Recited immediately upon awakening in the morning.'
+  },
+  {
+    id: 'dua-6',
+    titleEn: 'Comprehensive Dua for Good in This Life and the Hereafter',
+    titleUrdu: 'دنیا و آخرت کی بھلائی کی جامع دعا',
+    arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
+    transliteration: 'Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina \'adhaban-nar',
+    translationUrdu: 'اے ہمارے رب! ہمیں دنیا میں بھی بھلائی عطا فرما اور آخرت میں بھی بھلائی عطا فرما، اور ہمیں آگ کے عذاب سے بچا۔',
+    translationEn: 'Our Lord, give us in this world that which is good and in the Hereafter that which is good, and protect us from the punishment of the Fire.',
+    reference: 'Surah Al-Baqarah 2:201 / Sahih al-Bukhari 4522',
+    occasionUrdu: 'ہر نماز کے بعد، طواف میں اور ہر دعا کے آخر میں پڑھنا مسنون اور نہایت بابرکت ہے۔',
+    occasionEn: 'Sunnah to recite frequently during daily prayers, Tawaf, and at the conclusion of supplications.'
   }
 ];
 
@@ -225,6 +260,16 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     category: 'Daily Dhikr',
     practicalTipUrdu: 'آج تسبیح کاؤنٹر کے ذریعے کم از کم 70 یا 100 بار استغفار پڑھیں۔',
     practicalTipEn: 'Use the Tasbih counter to recite Astaghfirullah 70 or 100 times today.'
+  },
+  {
+    id: 'rem-4',
+    titleEn: 'The Weight of Good Character',
+    titleUrdu: 'حسنِ اخلاق کا عظیم وزن',
+    bodyEn: 'The Prophet ﷺ said: "Nothing is heavier on the scale of a believer on the Day of Resurrection than good character." (Jami at-Tirmidhi 2002, Sahih). Sincere kindness, patience, and honesty turn everyday habits into rewarded acts of worship.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "قیامت کے دن مومن کے میزان میں اچھے اخلاق سے زیادہ وزنی کوئی چیز نہیں ہوگی۔" (جامع ترمذی: 2002، صحیح)۔ نرم گفتگو، دیانت داری اور وسعتِ ظرفی مومن کا حقیقی زیور ہیں۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'آج اپنے گھر والوں اور ملنے والوں کے ساتھ خاص مسکراہٹ اور نرم لہجے میں بات کریں۔',
+    practicalTipEn: 'Intentionally practice active patience, a warm smile, and polite speech throughout the day.'
   }
 ];
 
@@ -813,6 +858,189 @@ export const VERIFIED_QUESTIONS: QuizQuestion[] = [
     category: 'Quran',
     difficulty: 'advanced',
     forKids: false
+  },
+  {
+    id: 'islamic-q-1',
+    questionUrdu: 'تہجد (نمازِ شب) کی سب سے افضل ترین اور قبولیت کی خاص گھڑی کون سی ہے؟',
+    questionEn: 'According to authentic Sunnah, which time is most virtuous and blessed for Tahajjud (Night Prayer)?',
+    optionsUrdu: [
+      'نماز عشاء کے فوراً بعد',
+      'رات کا آخری تہائی حصہ (سو کر بیدار ہونے کے بعد)',
+      'صرف نماز مغرب کے بعد',
+      'فجر کی اذان کے بعد'
+    ],
+    optionsEn: [
+      'Immediately following the Isha prayer',
+      'The last third of the night (after sleeping and waking)',
+      'Only immediately after Maghrib',
+      'After the Fajr call to prayer'
+    ],
+    correctIndex: 1,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا کہ رات کے آخری تہائی حصے میں اللہ تعالیٰ آسمانِ دنیا پر نزولِ رحمت فرماتا ہے اور دعائیں قبول فرماتا ہے۔ (صحیح بخاری: 1145، سورۃ الاسراء: 79)۔',
+    explanationEn: 'The Prophet ﷺ stated that Allah descends to the lowest heaven in the final third of the night to answer those who supplicate (Sahih al-Bukhari 1145, Surah Al-Isra 17:79).',
+    category: 'Salah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-1',
+    questionUrdu: 'رسول اللہ ﷺ کی اس مبارک اونٹنی کا کیا نام تھا جس پر سوار ہو کر آپ ﷺ نے مدینہ منورہ ہجرت فرمائی؟',
+    questionEn: 'What was the name of Prophet Muhammad\'s ﷺ she-camel upon which he rode into Madinah during Hijrah?',
+    optionsUrdu: ['القصواء', 'الشهباء', 'العضباء', 'البورق'],
+    optionsEn: ['Al-Qaswa', 'Ash-Shahba', 'Al-Adhba', 'Al-Buraq'],
+    correctIndex: 0,
+    explanationUrdu: 'ہجرتِ مدینہ کے وقت آپ ﷺ کی اونٹنی "القصواء" تھی جس نے مدینہ منورہ میں حضرت ابو ایوب انصاری (رض) کے مکان کے سامنے پڑاؤ ڈالا۔ (صحیح بخاری: 3906)۔',
+    explanationEn: 'The Prophet\'s ﷺ blessed she-camel was named Al-Qaswa, which halted at the dwelling of Abu Ayyub al-Ansari (RA) (Sahih al-Bukhari 3906).',
+    category: 'Seerah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-2',
+    questionUrdu: 'قرآن مجید کے تیسویں اور آخری پارے کو عموماً کس نام سے پکارا جاتا ہے؟',
+    questionEn: 'What is the 30th and final Juz (part) of the Holy Quran commonly called?',
+    optionsUrdu: ['تبارک الذی پارہ', 'عمّ پارہ (Juz Amma)', 'سبحان الذی پارہ', 'قد سمع اللہ پارہ'],
+    optionsEn: ['Juz Tabarak', 'Juz Amma (عمّ پارہ)', 'Juz Subhanalladhi', 'Juz Qad Sami\'a'],
+    correctIndex: 1,
+    explanationUrdu: 'تیسویں پارے کا آغاز سورۃ النبأ کی ابتدائی آیت "عَمَّ يَتَسَاءَلُونَ" سے ہوتا ہے، اس لیے اسے "عمّ پارہ" کہا جاتا ہے۔ (قرآن: سورۃ النبأ 78:1)۔',
+    explanationEn: 'The 30th Juz begins with the opening ayah of Surah An-Naba ("\'Amma yatasa\'aloon"), thus traditionally named Juz Amma (Quran 78:1).',
+    category: 'Quran',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-3',
+    questionUrdu: 'اللہ تعالیٰ کے 99 اسمائے حسنیٰ کو یاد کرنے، سمجھنے اور ان کے تقاضوں پر عمل کرنے والے کے لیے نبی ﷺ نے کیا انعام بیان فرمایا؟',
+    questionEn: 'What divine reward did Prophet Muhammad ﷺ promise for whoever learns, understands, and acts upon the 99 Names of Allah?',
+    optionsUrdu: ['دنیاوی مال و دولت', 'جنت میں داخلہ', 'طویل عمر کی ضمانت', 'بادشاہت'],
+    optionsEn: ['Worldly riches', 'Entrance into Paradise (Jannah)', 'Guaranteed long lifespan', 'Earthly kingdom'],
+    correctIndex: 1,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا: "اللہ تعالیٰ کے ننانوے نام ہیں، جو شخص ان کا احصاء کرے گا (یاد کرے گا اور عمل کرے گا) وہ جنت میں داخل ہوگا۔" (صحیح بخاری: 2736، صحیح مسلم: 2677)۔',
+    explanationEn: 'The Prophet ﷺ said: "Allah has ninety-nine names; whoever enumerates and lives by them will enter Paradise." (Sahih al-Bukhari 2736, Sahih Muslim 2677).',
+    category: 'Aqeedah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-4',
+    questionUrdu: 'کس پیغمبر کے لیے اللہ تعالیٰ کے حکم سے دہکتی ہوئی آگ ٹھنڈی اور سراسر سلامتی والی بن گئی تھی؟',
+    questionEn: 'For which noble Prophet did Allah command the scorching fire to become cool and peaceful?',
+    optionsUrdu: ['حضرت ابراہیم علیہ السلام', 'حضرت موسیٰ علیہ السلام', 'حضرت یوسف علیہ السلام', 'حضرت عیسیٰ علیہ السلام'],
+    optionsEn: ['Prophet Ibrahim (AS)', 'Prophet Musa (AS)', 'Prophet Yusuf (AS)', 'Prophet Isa (AS)'],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید میں اللہ کا ارشاد ہے: "ہم نے فرمایا: اے آگ! ابراہیم پر ٹھنڈی اور سلامتی والی ہو جا۔" (سورۃ الانبیاء: 69)۔',
+    explanationEn: 'Allah declared in the Quran: "O fire, be coolness and safety upon Ibrahim." (Surah Al-Anbiya 21:69).',
+    category: 'Prophets',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-5',
+    questionUrdu: 'اسلام میں جھوٹی گواہی دینے (شہادتِ زور) کی کیا شرعی حیثیت اور وعید ہے؟',
+    questionEn: 'In Islamic law and ethics, what is the severity of giving false testimony (Shahadat az-Zoor)?',
+    optionsUrdu: ['ایک عام لغزش', 'کبائر گناہوں میں سے بدترین گناہ', 'مکروہِ تنزیہی', 'مباح'],
+    optionsEn: ['A minor slip', 'One of the gravest major sins (Kaba\'ir)', 'Mildly discouraged', 'Permissible'],
+    correctIndex: 1,
+    explanationUrdu: 'رسول اللہ ﷺ نے شرک اور والدین کی نافرمانی کے بعد جھوٹ بولنے اور جھوٹی گواہی کو سب سے بڑا کبیرہ گناہ قرار دیا ہے۔ (صحیح بخاری: 2654، صحیح مسلم: 87)۔',
+    explanationEn: 'The Prophet ﷺ warned that false witness is among the greatest destructive sins alongside Shirk and disobedience to parents (Sahih al-Bukhari 2654, Sahih Muslim 87).',
+    category: 'Manners',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'kids-17',
+    questionUrdu: 'ہمارے پیارے نبی حضرت محمد ﷺ کے والد محترم کا کیا نام تھا؟',
+    questionEn: 'What was the name of our beloved Prophet Muhammad\'s ﷺ father?',
+    optionsUrdu: ['حضرت عبداللہ', 'حضرت ابو طالب', 'حضرت عباس', 'حضرت حمزہ'],
+    optionsEn: ['Abdullah', 'Abu Talib', 'Abbas', 'Hamzah'],
+    correctIndex: 0,
+    explanationUrdu: 'ہمارے پیارے نبی ﷺ کے والد محترم کا نام حضرت عبداللہ اور والدہ کا نام بی بی آمنہ تھا۔',
+    explanationEn: 'Our beloved Prophet\'s father was Abdullah, and his mother was Aminah.',
+    category: 'Prophets',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'اللہ کے بندے کے معنی والا پیارا نام!',
+    kidsHintEn: 'A name meaning "Servant of Allah"!'
+  },
+  {
+    id: 'kids-18',
+    questionUrdu: 'مسجد میں داخل ہوتے وقت ہمیں پہلے کون سا پاؤں آگے رکھنا چاہیے؟',
+    questionEn: 'Which foot should we step forward with first when entering the Masjid?',
+    optionsUrdu: ['دایاں پاؤں (Right foot)', 'بایاں پاؤں (Left foot)', 'دونوں پاؤں ایک ساتھ', 'کوئی بھی پاؤں'],
+    optionsEn: ['Right foot', 'Left foot', 'Both feet together', 'Any foot'],
+    correctIndex: 0,
+    explanationUrdu: 'مسجد میں داخل ہوتے وقت دایاں پاؤں پہلے رکھنا اور مسنون دعا پڑھنا پیارے نبی ﷺ کی سنت ہے۔',
+    explanationEn: 'It is Sunnah to step into the Masjid with your right foot and recite the entering dua.',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'ہر اچھے کام کا آغاز دائیں جانب سے!',
+    kidsHintEn: 'Always start blessed places with the right side!'
+  },
+  {
+    id: 'kids-19',
+    questionUrdu: 'کلمہ طیبہ "لَا إِلٰهَ إِلَّا اللّٰهُ" کا کیا مطلب ہے؟',
+    questionEn: 'What is the meaning of the first part of the Kalimah "La ilaha illallah"?',
+    optionsUrdu: [
+      'اللہ کے سوا کوئی عبادت کے لائق نہیں',
+      'اللہ بہت مہربان ہے',
+      'ہم سب اچھے بچے ہیں',
+      'زمین اور آسمان خوبصورت ہیں'
+    ],
+    optionsEn: [
+      'There is no deity worthy of worship except Allah',
+      'Allah is very kind',
+      'We are good children',
+      'The earth and sky are beautiful'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'اس کلمے کا مطلب ہے کہ اللہ ہی ہمارا اکیلا خالق و مالک ہے اور صرف اسی کی عبادت کرنی چاہیے۔',
+    explanationEn: 'This means that Allah alone created us and only He deserves our worship.',
+    category: 'Pillars',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'توحید کا بنیادی مطلب یاد کریں!',
+    kidsHintEn: 'Remember the oneness of Allah!'
+  },
+  {
+    id: 'kids-20',
+    questionUrdu: 'قرآن مجید کی سب سے چھوٹی سورت کون سی ہے جس میں 3 مبارک آیات ہیں؟',
+    questionEn: 'Which is the shortest Surah in the Holy Quran, containing 3 blessed verses?',
+    optionsUrdu: ['سورۃ الکوثر', 'سورۃ الفلق', 'سورۃ الاخلاص', 'سورۃ الناس'],
+    optionsEn: ['Surah Al-Kawthar', 'Surah Al-Falaq', 'Surah Al-Ikhlas', 'Surah An-Nas'],
+    correctIndex: 0,
+    explanationUrdu: 'سورۃ الکوثر قرآن پاک کی سب سے چھوٹی سورت ہے جو "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ" سے شروع ہوتی ہے۔',
+    explanationEn: 'Surah Al-Kawthar is the shortest Surah in the Quran, containing 3 verses.',
+    category: 'Quran',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ سے شروع ہوتی ہے!',
+    kidsHintEn: 'It starts with "Inna A\'taynakal Kawthar"!'
+  },
+  {
+    id: 'kids-21',
+    questionUrdu: 'پانی پیتے وقت پیارے نبی حضرت محمد ﷺ کا کیا مبارک طریقہ تھا؟',
+    questionEn: 'What is the Sunnah way taught by Prophet Muhammad ﷺ for drinking water?',
+    optionsUrdu: [
+      'بیٹھ کر، دائیں ہاتھ سے، بسم اللہ پڑھ کر اور 3 گھونٹ میں',
+      'کھڑے ہو کر جلدی سے ایک ہی سانس میں',
+      'بائیں ہاتھ سے پینا',
+      'چلتے چلتے پینا'
+    ],
+    optionsEn: [
+      'Sitting down, with the right hand, saying Bismillah, in 3 sips',
+      'Standing up and gulping in one breath',
+      'Using the left hand',
+      'Drinking while running'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'پیارے نبی ﷺ نے سکھایا کہ بیٹھ کر، دائیں ہاتھ سے اور تین سانسوں میں آرام سے پانی پینا چاہیے۔',
+    explanationEn: 'Our Prophet ﷺ taught us to sit down, use our right hand, and sip calmly in three breaths.',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'بیٹھ کر، دائیں ہاتھ سے اور 3 گھونٹ میں!',
+    kidsHintEn: 'Sitting down with the right hand and taking 3 calm sips!'
   }
 ];
 
@@ -876,6 +1104,16 @@ export const VERIFIED_QA_DATABASE: VerifiedQA[] = [
     category: 'Salah',
     reference: 'Sahih al-Bukhari 1226, Sahih Muslim 572',
     tags: ['Sujud Sahw', 'Salah', 'Prayer', 'سجدہ سہو']
+  },
+  {
+    id: 'qa-7',
+    questionUrdu: 'نمازِ تہجد (قیام اللیل) کی کیا فضیلت، وقت اور مسنون طریقہ ہے؟',
+    questionEn: 'What is the virtue, time, and recommended method of Tahajjud (Night Prayer)?',
+    answerUrdu: 'تہجد فرض نمازوں کے بعد تمام نفل نمازوں میں سب سے افضل نماز ہے۔ اس کا مستحب وقت رات کا آخری تہائی حصہ ہے جب انسان کچھ دیر سو کر بیدار ہو۔ طریقہ: کم از کم 2 رکعت اور عام طور پر 8 یا 12 رکعت دو دو کر کے ادا کی جاتی ہے اور آخر میں وتر پڑھے جاتے ہیں۔ قرآن مجید میں اللہ نے اس کی پابندی کرنے والوں کے لیے مقامِ محمود اور عظیم اجر کا وعدہ فرمایا ہے۔',
+    answerEn: 'Tahajjud is the most virtuous voluntary prayer after the obligatory prayers. Its best time is the final third of the night after waking from sleep. Method: Prayed in sets of two Rak\'ahs (minimum 2, commonly 8), concluding with Witr. Allah promises a station of praise and honor (Maqam Mahmood) for those who observe it diligently.',
+    category: 'Salah',
+    reference: 'Surah Al-Isra 17:79, Sahih al-Bukhari 1145, Sahih Muslim 758',
+    tags: ['Tahajjud', 'Qiyam al-Layl', 'Salah', 'تہجد', 'نماز']
   }
 ];
 
