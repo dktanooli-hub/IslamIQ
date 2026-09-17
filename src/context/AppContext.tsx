@@ -57,7 +57,7 @@ interface AppContextType {
   // Salah Tracker
   todayDateStr: string;
   todaySalah: SalahDayRecord;
-  toggleSalahPrayer: (prayer: 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' | 'tahajjud') => void;
+  toggleSalahPrayer: (prayer: 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' | 'tahajjud', targetDate?: string) => void;
   salahHistory: Record<string, SalahDayRecord>;
 
   // Tasbih
@@ -1019,18 +1019,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     tahajjud: false
   };
 
-  const toggleSalahPrayer = (prayer: 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' | 'tahajjud') => {
-    const currentStatus = !!todaySalah[prayer];
+  const toggleSalahPrayer = (
+    prayer: 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha' | 'tahajjud',
+    targetDate?: string
+  ) => {
+    const dateToUse = targetDate || todayDateStr;
+
+    // Future dates are not editable
+    if (dateToUse > todayDateStr) {
+      showToast('Future dates cannot be edited.');
+      return;
+    }
+
+    const currentRecord: SalahDayRecord = currentSalahHistory[dateToUse] || {
+      date: dateToUse,
+      fajr: false,
+      dhuhr: false,
+      asr: false,
+      maghrib: false,
+      isha: false,
+      tahajjud: false
+    };
+
+    const currentStatus = !!currentRecord[prayer];
     const newStatus = !currentStatus;
 
-    const updatedToday: SalahDayRecord = {
-      ...todaySalah,
+    const updatedRecord: SalahDayRecord = {
+      ...currentRecord,
       [prayer]: newStatus
     };
 
     setCurrentSalahHistory(prev => ({
       ...prev,
-      [todayDateStr]: updatedToday
+      [dateToUse]: updatedRecord
     }));
 
     if (newStatus) {
@@ -1041,11 +1062,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         salahCompletedTotal: prev.salahCompletedTotal + 1
       }));
 
-      // Check if all 5 prayers logged today
-      const allFive = updatedToday.fajr && updatedToday.dhuhr && updatedToday.asr && updatedToday.maghrib && updatedToday.isha;
+      // Check if all 5 prayers logged for that date
+      const allFive = updatedRecord.fajr && updatedRecord.dhuhr && updatedRecord.asr && updatedRecord.maghrib && updatedRecord.isha;
       if (allFive) {
         unlockBadge('b-salah-guardian');
-        addXP(50, 'All 5 daily prayers completed! Alhamdulillah');
+        addXP(50, `All 5 daily prayers completed for ${dateToUse === todayDateStr ? 'today' : dateToUse}! Alhamdulillah`);
       }
     }
   };

@@ -1,11 +1,50 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { CheckCircle2, Circle, Flame, Sun, Sunrise, Sunset, Moon, Sparkles, Award, Compass, ChevronRight } from 'lucide-react';
+import { SalahDayRecord } from '../types';
+import { CheckCircle2, Circle, Flame, Sun, Sunrise, Sunset, Moon, Sparkles, Compass, ChevronRight } from 'lucide-react';
 
 export const SalahTracker: React.FC = () => {
-  const { todaySalah, toggleSalahPrayer, salahHistory, contentLang, userMode, setActiveTab } = useApp();
+  const { todayDateStr, todaySalah, toggleSalahPrayer, salahHistory, contentLang, userMode, setActiveTab } = useApp();
 
   const isKids = userMode === 'kids';
+
+  // Selected date state (defaults to today)
+  const [selectedDate, setSelectedDate] = React.useState<string>(todayDateStr || new Date().toISOString().split('T')[0]);
+  const prayersContainerRef = React.useRef<HTMLDivElement>(null);
+
+  // Sync if todayDateStr is provided asynchronously
+  React.useEffect(() => {
+    if (!selectedDate && todayDateStr) {
+      setSelectedDate(todayDateStr);
+    }
+  }, [todayDateStr, selectedDate]);
+
+  const isSelectedToday = selectedDate === todayDateStr;
+
+  // Active Salah record for selected date
+  const activeSalahRecord: SalahDayRecord = salahHistory[selectedDate] || {
+    date: selectedDate,
+    fajr: false,
+    dhuhr: false,
+    asr: false,
+    maghrib: false,
+    isha: false,
+    tahajjud: false
+  };
+
+  const formattedSelectedDate = React.useMemo(() => {
+    try {
+      const parts = selectedDate.split('-');
+      const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      return d.toLocaleDateString(contentLang === 'urdu' ? 'ur-PK' : 'en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch {
+      return selectedDate;
+    }
+  }, [selectedDate, contentLang]);
 
   const prayers = [
     {
@@ -61,16 +100,16 @@ export const SalahTracker: React.FC = () => {
   ];
 
   const completedCount = [
-    todaySalah.fajr,
-    todaySalah.dhuhr,
-    todaySalah.asr,
-    todaySalah.maghrib,
-    todaySalah.isha
+    activeSalahRecord.fajr,
+    activeSalahRecord.dhuhr,
+    activeSalahRecord.asr,
+    activeSalahRecord.maghrib,
+    activeSalahRecord.isha
   ].filter(Boolean).length;
 
   const progressPercent = Math.round((completedCount / 5) * 100);
 
-  // 7-day past days array for weekly consistency indicator
+  // 7-day past days array for weekly consistency indicator & date selection
   const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const today = new Date();
   const past7Days = Array.from({ length: 7 }).map((_, i) => {
@@ -80,12 +119,14 @@ export const SalahTracker: React.FC = () => {
     const record = salahHistory[dateStr];
     const done = record
       ? [record.fajr, record.dhuhr, record.asr, record.maghrib, record.isha].filter(Boolean).length
-      : (i === 6 ? completedCount : 0);
+      : 0;
     return {
       dayName: daysOfWeek[d.getDay()],
       dateNum: d.getDate(),
       dateStr,
-      completed: done
+      completed: done,
+      isToday: dateStr === todayDateStr,
+      isFuture: dateStr > todayDateStr
     };
   });
 
@@ -125,7 +166,9 @@ export const SalahTracker: React.FC = () => {
             />
           </div>
           <div className="flex justify-between text-[11px] text-emerald-200">
-            <span>{progressPercent}% Completed Today</span>
+            <span>
+              {progressPercent}% Completed {isSelectedToday ? (contentLang === 'urdu' ? '(آج)' : 'Today') : `(${formattedSelectedDate})`}
+            </span>
             <span>{completedCount === 5 ? 'All 5 Prayed! Alhamdulillah 🌟' : `${5 - completedCount} Prayers remaining`}</span>
           </div>
         </div>
@@ -156,20 +199,44 @@ export const SalahTracker: React.FC = () => {
       </button>
 
       {/* 5 Daily Obligatory Prayers */}
-      <div className="space-y-3">
-        <h2 className="text-sm font-bold text-slate-900 px-1 flex items-center justify-between">
-          <span>{contentLang === 'urdu' ? 'پانچ وقت کی فرض نمازیں:' : 'Five Obligatory Prayers:'}</span>
-          <span className="text-xs text-slate-500 font-normal">Tap to mark completed</span>
-        </h2>
+      <div ref={prayersContainerRef} className="space-y-3">
+        <div className="flex items-center justify-between px-1">
+          <div>
+            <div className="flex items-center gap-2">
+              <h2 className="text-sm font-bold text-slate-900">
+                {contentLang === 'urdu' ? 'پانچ وقت کی فرض نمازیں:' : 'Five Obligatory Prayers:'}
+              </h2>
+              {!isSelectedToday && (
+                <span className="text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-md border border-emerald-200">
+                  {formattedSelectedDate}
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-slate-500 mt-0.5">
+              {isSelectedToday
+                ? (contentLang === 'urdu' ? 'آج کی نمازیں • نشان لگانے کے لیے ٹیپ کریں' : 'Tap to mark completed')
+                : (contentLang === 'urdu' ? `تاریخ ${formattedSelectedDate} کی نمازوں میں ترمیم کریں` : `Editing prayers for ${formattedSelectedDate}`)}
+            </p>
+          </div>
+          {!isSelectedToday && (
+            <button
+              type="button"
+              onClick={() => setSelectedDate(todayDateStr)}
+              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-100/80 hover:bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 transition-all active:scale-95 shadow-2xs"
+            >
+              {contentLang === 'urdu' ? 'آج پر واپس جائیں' : 'Back to Today'}
+            </button>
+          )}
+        </div>
 
         {prayers.map(prayer => {
-          const isDone = !!todaySalah[prayer.id];
+          const isDone = !!activeSalahRecord[prayer.id];
           const IconComp = prayer.icon;
 
           return (
             <button
               key={prayer.id}
-              onClick={() => toggleSalahPrayer(prayer.id)}
+              onClick={() => toggleSalahPrayer(prayer.id, selectedDate)}
               className={`w-full p-4 rounded-3xl border transition-all active:scale-[0.98] text-left flex items-center justify-between ${
                 isDone
                   ? 'bg-emerald-50/80 border-emerald-300 shadow-xs'
@@ -215,16 +282,16 @@ export const SalahTracker: React.FC = () => {
           {contentLang === 'urdu' ? 'نفلی عبادات (Voluntary Prayers):' : 'Voluntary Prayers:'}
         </h3>
         <button
-          onClick={() => toggleSalahPrayer('tahajjud')}
+          onClick={() => toggleSalahPrayer('tahajjud', selectedDate)}
           className={`w-full p-4 rounded-3xl border transition-all active:scale-[0.98] text-left flex items-center justify-between ${
-            todaySalah.tahajjud
+            activeSalahRecord.tahajjud
               ? 'bg-indigo-50/90 border-indigo-300 shadow-xs'
               : 'bg-white border-slate-200 hover:border-slate-300'
           }`}
         >
           <div className="flex items-center space-x-3.5">
             <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${
-              todaySalah.tahajjud ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-700'
+              activeSalahRecord.tahajjud ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-700'
             }`}>
               <Moon className="w-5 h-5" />
             </div>
@@ -244,7 +311,7 @@ export const SalahTracker: React.FC = () => {
           </div>
 
           <div className="shrink-0 pl-2">
-            {todaySalah.tahajjud ? (
+            {activeSalahRecord.tahajjud ? (
               <CheckCircle2 className="w-7 h-7 text-indigo-600 fill-indigo-100" />
             ) : (
               <Circle className="w-7 h-7 text-slate-300" />
@@ -253,25 +320,45 @@ export const SalahTracker: React.FC = () => {
         </button>
       </div>
 
-      {/* 7-Day Consistency History Card */}
+      {/* 7-Day Consistency History Card & Date Selector */}
       <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-sm">
-        <h3 className="text-xs font-bold text-slate-900 mb-3 uppercase tracking-wider flex items-center gap-1.5">
-          <Flame className="w-4 h-4 text-orange-500" />
-          <span>7-Day Prayer Consistency (ہفتہ وار استقامت)</span>
-        </h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
+            <Flame className="w-4 h-4 text-orange-500" />
+            <span>{contentLang === 'urdu' ? '7 دن کی استقامت اور تاریخ کا انتخاب' : '7-Day Prayer Consistency & Date Selector'}</span>
+          </h3>
+          <span className="text-[11px] text-slate-500 font-medium">
+            {contentLang === 'urdu' ? 'ترمیم کے لیے تاریخ چنیں' : 'Tap day to view/edit'}
+          </span>
+        </div>
         <div className="grid grid-cols-7 gap-2 text-center">
           {past7Days.map((item, idx) => {
+            const isSelected = item.dateStr === selectedDate;
             const isFull = item.completed === 5;
             const isPartial = item.completed > 0 && item.completed < 5;
+            const isFuture = item.isFuture;
+
             return (
-              <div
+              <button
                 key={idx}
-                className={`p-2 rounded-2xl border flex flex-col items-center ${
-                  isFull
-                    ? 'bg-emerald-100/80 border-emerald-300 text-emerald-900 font-bold'
+                type="button"
+                disabled={isFuture}
+                onClick={() => {
+                  if (!isFuture) {
+                    setSelectedDate(item.dateStr);
+                    prayersContainerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                  }
+                }}
+                className={`p-2 rounded-2xl border flex flex-col items-center transition-all cursor-pointer ${
+                  isFuture
+                    ? 'opacity-40 cursor-not-allowed bg-slate-50 border-slate-100 text-slate-300'
+                    : isSelected
+                    ? 'ring-2 ring-emerald-600 bg-emerald-100/90 border-emerald-500 text-emerald-950 font-black shadow-xs scale-[1.03]'
+                    : isFull
+                    ? 'bg-emerald-100/80 border-emerald-300 text-emerald-900 font-bold hover:bg-emerald-200/80'
                     : isPartial
-                    ? 'bg-amber-50 border-amber-200 text-amber-900'
-                    : 'bg-slate-50 border-slate-100 text-slate-400'
+                    ? 'bg-amber-50 border-amber-200 text-amber-900 hover:bg-amber-100'
+                    : 'bg-slate-50 border-slate-100 text-slate-500 hover:bg-slate-100'
                 }`}
               >
                 <span className="text-[11px] font-semibold">{item.dayName}</span>
@@ -279,7 +366,18 @@ export const SalahTracker: React.FC = () => {
                 <span className="text-[10px] font-bold">
                   {item.completed}/5
                 </span>
-              </div>
+                {item.isToday ? (
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full mt-1 ${
+                    isSelected ? 'bg-emerald-600 text-white' : 'bg-emerald-200 text-emerald-800'
+                  }`}>
+                    {contentLang === 'urdu' ? 'آج' : 'Today'}
+                  </span>
+                ) : isSelected ? (
+                  <span className="text-[9px] font-bold text-emerald-700 mt-1">
+                    {contentLang === 'urdu' ? 'منتخب' : 'Active'}
+                  </span>
+                ) : null}
+              </button>
             );
           })}
         </div>
