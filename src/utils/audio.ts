@@ -269,6 +269,10 @@ export class ArabicDetector {
     },
     // Common Duas
     {
+      regex: ArabicDetector.makeTermRegex('(?:allahumma\\s*)?bismika\\s*am[o|u]+tu\\s*wa-?\\s*ahya|اللہم\\s*باسمک\\s*اموت\\s*واحیا|اللهم\\s*باسمك\\s*أموت\\s*وأحيا|باسمک\\s*اللہم\\s*اموت\\s*واحیا|اللَّهُمَّ\\s*بِاسْمِكَ\\s*أَمُوتُ\\s*وَأَحْيَا|بِاسْمِكَ\\s*اللَّهُمَّ\\s*أَمُوتُ\\s*وَأَحْيَا'),
+      vocalized: 'اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا'
+    },
+    {
       regex: ArabicDetector.makeTermRegex('rabbi\\s*zidni\\s*[\'a-z]*ilma|رب\\s*زدنی\\s*علما|رَبِّ\\s*زِدْنِي\\s*عِلْمًا'),
       vocalized: 'رَبِّ زِدْنِي عِلْمًا'
     },
