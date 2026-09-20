@@ -431,19 +431,34 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (savedAdmin) {
         const parsed = JSON.parse(savedAdmin);
         if (Array.isArray(parsed.questions) && parsed.questions.length > 0) {
-          setQuestions(parsed.questions);
+          const qMap = new Map<string, QuizQuestion>();
+          VERIFIED_QUESTIONS.forEach(q => qMap.set(q.id, { ...q, isActive: true }));
+          parsed.questions.forEach((q: QuizQuestion) => qMap.set(q.id, q));
+          setQuestions(Array.from(qMap.values()));
         }
         if (Array.isArray(parsed.quranVerses) && parsed.quranVerses.length > 0) {
-          setQuranVerses(parsed.quranVerses);
+          const vMap = new Map<string, QuranVerse>();
+          VERIFIED_QURAN_VERSES.forEach(v => vMap.set(v.id, v));
+          parsed.quranVerses.forEach((v: QuranVerse) => vMap.set(v.id, v));
+          setQuranVerses(Array.from(vMap.values()));
         }
         if (Array.isArray(parsed.hadiths) && parsed.hadiths.length > 0) {
-          setHadiths(parsed.hadiths);
+          const hMap = new Map<string, HadithItem>();
+          VERIFIED_HADITHS.forEach(h => hMap.set(h.id, h));
+          parsed.hadiths.forEach((h: HadithItem) => hMap.set(h.id, h));
+          setHadiths(Array.from(hMap.values()));
         }
         if (Array.isArray(parsed.duas) && parsed.duas.length > 0) {
-          setDuas(parsed.duas);
+          const dMap = new Map<string, DuaItem>();
+          VERIFIED_DUAS.forEach(d => dMap.set(d.id, d));
+          parsed.duas.forEach((d: DuaItem) => dMap.set(d.id, d));
+          setDuas(Array.from(dMap.values()));
         }
         if (Array.isArray(parsed.reminders) && parsed.reminders.length > 0) {
-          setReminders(parsed.reminders);
+          const rMap = new Map<string, IslamicReminder>();
+          ISLAMIC_REMINDERS.forEach(r => rMap.set(r.id, r));
+          parsed.reminders.forEach((r: IslamicReminder) => rMap.set(r.id, r));
+          setReminders(Array.from(rMap.values()));
         }
         if (Array.isArray(parsed.categories) && parsed.categories.length > 0) {
           setCategories(parsed.categories);

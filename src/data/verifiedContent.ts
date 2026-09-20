@@ -77,6 +77,17 @@ export const VERIFIED_QURAN_VERSES: QuranVerse[] = [
     surahNumber: 2,
     ayahNumber: 152,
     theme: 'Remembrance & Gratitude (ذکر و شکر)'
+  },
+  {
+    id: 'verse-8',
+    arabic: 'قُلْ يَا عِبَادِيَ الَّذِينَ أَسْرَفُوا عَلَىٰ أَنفُسِهِمْ لَا تَقْنَطُوا مِن رَّحْمَةِ اللَّهِ ۚ إِنَّ اللَّهَ يَغْفِرُ الذُّنُوبَ جَمِيعًا ۚ إِنَّهُ هُوَ الْغَفُورُ الرَّحِيمُ',
+    translationUrdu: 'آپ فرما دیجیے: اے میرے بندو جنہوں نے اپنی جانوں پر زیادتی کی ہے! تم اللہ کی رحمت سے ناامید مت ہو، یقیناً اللہ تمام گناہوں کو بخش دیتا ہے، بے شک وہ بہت بخشنے والا، نہایت رحم فرمانے والا ہے۔',
+    translationEn: 'Say, "O My servants who have transgressed against themselves [by sinning], do not despair of the mercy of Allah. Indeed, Allah forgives all sins. Indeed, it is He who is the Forgiving, the Merciful."',
+    surahNameArabic: 'الزمر',
+    surahNameEn: 'Az-Zumar',
+    surahNumber: 39,
+    ayahNumber: 53,
+    theme: 'Divine Mercy & Hope (رحمت و مغفرتِ الٰہی)'
   }
 ];
 
@@ -152,6 +163,18 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     grade: 'Sahih',
     lessonUrdu: 'مومن کا دل کینہ اور حسد سے پاک ہوتا ہے، وہ دوسروں کے لیے بھی وہی خیر چاہتا ہے جو اپنے لیے چاہتا ہے۔',
     lessonEn: 'A hallmark of true faith is wishing well for others and eliminating malice and jealousy.'
+  },
+  {
+    id: 'hadith-7',
+    arabic: 'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا، سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ',
+    textUrdu: 'جو شخص علم کی تلاش میں کسی راستے پر چلتا ہے، اللہ تعالیٰ اس کے سبب اس کے لیے جنت کا راستہ آسان فرما دیتا ہے۔',
+    textEn: 'Whoever treads a path in pursuit of knowledge, Allah makes a path to Paradise easy for him.',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '2699',
+    grade: 'Sahih',
+    lessonUrdu: 'دین اور نفع بخش علم حاصل کرنے کی مستقل کوشش کریں، یہ اللہ کی قربت اور جنت کا آسان راستہ ہے۔',
+    lessonEn: 'Consistently seek beneficial Islamic knowledge, as learning is a direct and illuminated pathway to Jannah.'
   }
 ];
 
@@ -227,6 +250,18 @@ export const VERIFIED_DUAS: DuaItem[] = [
     reference: 'Surah Al-Baqarah 2:201 / Sahih al-Bukhari 4522',
     occasionUrdu: 'ہر نماز کے بعد، طواف میں اور ہر دعا کے آخر میں پڑھنا مسنون اور نہایت بابرکت ہے۔',
     occasionEn: 'Sunnah to recite frequently during daily prayers, Tawaf, and at the conclusion of supplications.'
+  },
+  {
+    id: 'dua-7',
+    titleEn: 'Dua for Guidance, Piety, Chastity & Contentment',
+    titleUrdu: 'ہدایت، تقویٰ، پاکدامنی اور بے نیازی کی دعا',
+    arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى',
+    transliteration: 'Allahumma inni as\'alukal-huda, wat-tuqa, wal-\'afafa, wal-ghina',
+    translationUrdu: 'اے اللہ! میں تجھ سے ہدایت، تقویٰ، پاکدامنی اور (لوگوں سے) بے نیازی کا سوال کرتا ہوں۔',
+    translationEn: 'O Allah, I ask You for guidance, piety, chastity, and self-sufficiency (contentment).',
+    reference: 'Sahih Muslim 2721',
+    occasionUrdu: 'ہر نماز کے بعد اور ہر دعا میں مانگنا مسنون اور جامع ترین دعاؤں میں سے ہے۔',
+    occasionEn: 'A comprehensive Sunnah prayer to recite regularly for spiritual uprightness and noble character.'
   }
 ];
 
@@ -270,6 +305,16 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     category: 'Manners & Ethics',
     practicalTipUrdu: 'آج اپنے گھر والوں اور ملنے والوں کے ساتھ خاص مسکراہٹ اور نرم لہجے میں بات کریں۔',
     practicalTipEn: 'Intentionally practice active patience, a warm smile, and polite speech throughout the day.'
+  },
+  {
+    id: 'rem-5',
+    titleEn: 'Trust in Allah\'s Plan (Tawakkul)',
+    titleUrdu: 'اللہ پر سچا توکل اور بھروسا',
+    bodyEn: 'The Prophet ﷺ said: "If you were to rely upon Allah with true reliance, He would provide for you just as He provides for the birds: they go out in the morning with empty stomachs and return full." (Jami at-Tirmidhi 2344, Sahih). Do your best, take rightful means, and leave the outcomes with peaceful confidence to the Almighty.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "اگر تم اللہ پر ویسا توکل کرو جیسا کہ توکل کا حق ہے، تو وہ تمہیں اسی طرح رزق دے گا جس طرح پرندوں کو دیتا ہے کہ صبح بھوکے نکلتے ہیں اور شام کو شکم سیر ہو کر لوٹتے ہیں۔" (جامع ترمذی: 2344، صحیح)۔ اپنی پوری محنت اور جائز تدبیر کریں اور نتائج اللہ کے حوالے کر کے مطمئن رہیں۔',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'آج کسی بھی فکر یا مشکل کے وقت دل سے "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ" پڑھ کر اللہ پر بھروسا رکھیں۔',
+    practicalTipEn: 'Whenever feeling anxious today, consciously recite "Hasbunallahu wa Ni\'mal Wakeel" and place your trust in Allah.'
   }
 ];
 
@@ -1041,6 +1086,159 @@ export const VERIFIED_QUESTIONS: QuizQuestion[] = [
     forKids: true,
     kidsHintUrdu: 'بیٹھ کر، دائیں ہاتھ سے اور 3 گھونٹ میں!',
     kidsHintEn: 'Sitting down with the right hand and taking 3 calm sips!'
+  },
+  {
+    id: 'daily-q-1',
+    questionUrdu: 'قیامت کے دن بندے کے اعمال میں سے سب سے پہلے کس عمل کا حساب لیا جائے گا؟',
+    questionEn: 'On the Day of Resurrection, what is the very first deed for which a servant will be called to account?',
+    optionsUrdu: ['نماز (Salah)', 'روزہ (Fasting)', 'زکوٰۃ (Charity)', 'حج (Pilgrimage)'],
+    optionsEn: ['Salah (Prayer)', 'Fasting (Sawm)', 'Zakat (Obligatory Charity)', 'Hajj (Pilgrimage)'],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا: "قیامت کے دن بندے کے اعمال میں سب سے پہلے نماز کا حساب لیا جائے گا۔ اگر وہ درست نکلی تو وہ کامیاب و کامران ہوا، اور اگر وہ خراب ہوئی تو وہ ناکام اور خسارے میں رہا۔" (جامع ترمذی: 413، سنن نسائی: 465، صحیح الجامع: 2573)۔',
+    explanationEn: 'The Prophet ﷺ said: "The first matter that the slave will be brought to account for on the Day of Judgment is the prayer. If it is sound, then he will succeed and prosper; but if it is corrupt, then he will fail and lose." (Jami at-Tirmidhi 413, Sunan an-Nasa\'i 465).',
+    category: 'Pillars',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-6',
+    questionUrdu: 'قرآن مجید کی کس سورت کو نبی کریم ﷺ نے "قلب القرآن" (قرآن کا دل) قرار دیا ہے؟',
+    questionEn: 'Which Surah of the Holy Quran is described in famous Prophetic traditions as the "Heart of the Quran" (Qalb al-Quran)?',
+    optionsUrdu: ['سورۃ یٰسٓ (Yaseen)', 'سورۃ الرحمن', 'سورۃ الملک', 'سورۃ الکہف'],
+    optionsEn: ['Surah Yaseen', 'Surah Ar-Rahman', 'Surah Al-Mulk', 'Surah Al-Kahf'],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا: "ہر چیز کا ایک دل ہوتا ہے اور قرآن کا دل سورۃ یٰسٓ ہے۔" (جامع ترمذی: 2887، سنن دارمی: 3416)۔',
+    explanationEn: 'The Prophet ﷺ said: "Indeed, everything has a heart, and the heart of the Quran is Surah Yaseen." (Jami at-Tirmidhi 2887, Sunan ad-Darimi 3416).',
+    category: 'Quran',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-7',
+    questionUrdu: 'نبی کریم ﷺ کے اس پیارے اور باوفا صحابی کا کیا نام ہے جنہیں "سیّد الشہداء" (شہیدوں کے سردار) کا لقب عطا ہوا؟',
+    questionEn: 'Which beloved companion and uncle of the Prophet ﷺ was granted the noble title "Sayyid ash-Shuhada" (Leader of the Martyrs)?',
+    optionsUrdu: ['حضرت حمزہ بن عبد المطلب (رض)', 'حضرت جعفر طیار (رض)', 'حضرت مصعب بن عمیر (رض)', 'حضرت سعد بن معاذ (رض)'],
+    optionsEn: ['Hazrat Hamzah ibn Abd al-Muttalib (RA)', 'Hazrat Ja\'far at-Tayyar (RA)', 'Hazrat Mus\'ab ibn Umayr (RA)', 'Hazrat Sa\'d ibn Mu\'adh (RA)'],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ کے چچا حضرت حمزہ بن عبد المطلب (رض) غزوہ احد میں شہید ہوئے اور آپ ﷺ نے انہیں "سیّد الشہداء" کا لقب عطا فرمایا۔ (المستدرک للحاکم: 4882، صحیح الجامع: 3675)۔',
+    explanationEn: 'The Prophet\'s ﷺ uncle Hamzah ibn Abd al-Muttalib (RA) was martyred at Uhud, and the Prophet ﷺ designated him the Leader of Martyrs (Al-Mustadrak al-Hakim 4882, Sahih al-Jami 3675).',
+    category: 'Seerah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-8',
+    questionUrdu: 'جمعہ کے مبارک دن میں کس سورت کی تلاوت کرنے والے کے لیے اگلے جمعہ تک نور روشن رہنے کی نوید دی گئی ہے؟',
+    questionEn: 'Recitation of which Surah on Friday is promised in Sahih Hadith to illuminate light (Noor) for the reader until the next Friday?',
+    optionsUrdu: ['سورۃ الکہف', 'سورۃ الجمعہ', 'سورۃ الواقعہ', 'سورۃ السجدہ'],
+    optionsEn: ['Surah Al-Kahf', 'Surah Al-Jumu\'ah', 'Surah Al-Waqi\'ah', 'Surah As-Sajdah'],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا: "جس نے جمعہ کے دن سورۃ الکہف کی تلاوت کی، اس کے لیے دو جمعوں کے درمیانی فاصلے تک ایک نور روشن کر دیا جاتا ہے۔" (سنن نسائی کبریٰ: 10790، مستدرک حاکم: 3392، صحیح الجامع: 6470)۔',
+    explanationEn: 'The Prophet ﷺ said: "Whoever recites Surah Al-Kahf on Friday, light will shine for him from beneath his feet to the clouds of the sky until the next Friday." (Mustadrak al-Hakim 3392, Sunan an-Nasa\'i al-Kubra 10790).',
+    category: 'Salah',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-9',
+    questionUrdu: 'نبی کریم ﷺ کے اقوال، افعال اور تقریر (سکوت و رضامندی) کو اسلامی اصطلاح میں کیا کہتے ہیں؟',
+    questionEn: 'What Islamic theological term encompasses the spoken statements, actions, and tacit approvals of Prophet Muhammad ﷺ?',
+    optionsUrdu: ['سنت و حدیث', 'اجماع', 'قیاس', 'استحسان'],
+    optionsEn: ['Sunnah and Hadith', 'Ijma', 'Qiyas', 'Istihsan'],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ کے ہر قول، فعل اور جس کام کو آپ ﷺ کے سامنے کیا گیا ہو اور آپ نے منع نہ فرمایا ہو (تقریر)، اسے "سنت و حدیث" کہا جاتا ہے جو شریعت کا دوسرا قطعی ماخذ ہے۔ (مقدمہ ابن الصلاح: ص 12)۔',
+    explanationEn: 'In Islamic sciences, Hadith and Sunnah encompass the Prophet\'s ﷺ statements (Qawl), actions (Fi\'l), and tacit approvals (Taqreer), forming the second primary source of Islamic law (Muqaddimah Ibn al-Salah).',
+    category: 'Hadith',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-10',
+    questionUrdu: 'قرآن مجید کے مطابق کس پیغمبر کو پرندوں کی بولیاں سمجھنے اور ہواؤں پر تصرف کی معجزانہ نعمت عطا فرمائی گئی تھی؟',
+    questionEn: 'According to the Quran, which Prophet was divinely blessed with the miraculous ability to understand the speech of birds and command the winds?',
+    optionsUrdu: ['حضرت سلیمان علیہ السلام', 'حضرت داؤد علیہ السلام', 'حضرت یوسف علیہ السلام', 'حضرت ادریس علیہ السلام'],
+    optionsEn: ['Prophet Sulaiman (Solomon) AS', 'Prophet Dawud (David) AS', 'Prophet Yusuf (Joseph) AS', 'Prophet Idris AS'],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید میں ارشاد ہے: "اور سلیمان داؤد کے وارث ہوئے اور کہنے لگے: اے لوگو! ہمیں پرندوں کی بولی سکھائی گئی ہے اور ہر چیز عطا کی گئی ہے۔" (سورۃ النمل: 16، سورۃ الانبیاء: 81)۔',
+    explanationEn: 'Allah states in the Quran: "And Solomon inherited David. He said: \'O people, we have been taught the language of birds, and we have been given from all things.\'" (Surah An-Naml 27:16, Surah Al-Anbiya 21:81).',
+    category: 'Prophets',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'kids-22',
+    questionUrdu: 'ہمارے پیارے نبی حضرت محمد ﷺ کی والدہ محترمہ کا کیا نام تھا؟',
+    questionEn: 'What was the name of our beloved Prophet Muhammad\'s ﷺ mother?',
+    optionsUrdu: ['حضرت آمنہ', 'حضرت خدیجہ', 'حضرت فاطمہ', 'حضرت عائشہ'],
+    optionsEn: ['Hazrat Aminah', 'Hazrat Khadijah', 'Hazrat Fatimah', 'Hazrat Aisha'],
+    correctIndex: 0,
+    explanationUrdu: 'پیارے نبی حضرت محمد ﷺ کی والدہ ماجدہ کا نام حضرت آمنہ تھا۔',
+    explanationEn: 'The mother of our beloved Prophet Muhammad ﷺ was Hazrat Aminah.',
+    category: 'Seerah',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'ایک پاکیزہ اور پیارا نام، حضرت عبداللہ کی اہلیہ محترمہ!',
+    kidsHintEn: 'A blessed and beautiful name, wife of Hazrat Abdullah!'
+  },
+  {
+    id: 'kids-23',
+    questionUrdu: 'بیت الخلاء (Washroom) میں داخل ہوتے وقت سنت کے مطابق کون سا پاؤں پہلے رکھنا چاہیے؟',
+    questionEn: 'Which foot is Sunnah to step in with first when entering the washroom/bathroom?',
+    optionsUrdu: ['بایاں پاؤں (Left foot)', 'دایاں پاؤں (Right foot)', 'دونوں پاؤں ایک ساتھ', 'کوئی بھی پاؤں'],
+    optionsEn: ['Left foot', 'Right foot', 'Both feet together', 'Any foot'],
+    correctIndex: 0,
+    explanationUrdu: 'بیت الخلاء میں داخل ہوتے وقت بایاں پاؤں پہلے رکھنا اور باہر نکلتے وقت دایاں پاؤں پہلے نکالنا سنت ہے۔',
+    explanationEn: 'It is Sunnah to enter the washroom with the left foot and exit with the right foot.',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'مسجد میں دایاں پاؤں، اور بیت الخلاء میں اس کا الٹ (بایاں پاؤں)!',
+    kidsHintEn: 'Right foot for the Masjid, and the opposite (left foot) for the washroom!'
+  },
+  {
+    id: 'kids-24',
+    questionUrdu: 'اللہ تعالیٰ کے وہ کون سے مقرب فرشتے ہیں جو انبیاء کرام کے پاس اللہ کی وحی لے کر آتے تھے؟',
+    questionEn: 'Which archangel was tasked by Allah with bringing divine revelation (Wahy) to the Prophets?',
+    optionsUrdu: ['حضرت جبرائیل علیہ السلام', 'حضرت میکائیل علیہ السلام', 'حضرت اسرافیل علیہ السلام', 'حضرت عزرائیل علیہ السلام'],
+    optionsEn: ['Angel Jibreel (Gabriel) AS', 'Angel Mika\'il (Michael) AS', 'Angel Israfil AS', 'Angel Azra\'il AS'],
+    correctIndex: 0,
+    explanationUrdu: 'حضرت جبرائیل علیہ السلام اللہ کے حکم سے تمام انبیاء اور ہمارے نبی ﷺ کے پاس وحی اور قرآن لاتے تھے۔',
+    explanationEn: 'Angel Jibreel (AS) brought the Quran and divine messages from Allah to the Prophets.',
+    category: 'Aqeedah',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'جنہوں نے غارِ حرا میں پہلی وحی "اقرأ" پہنچائی تھی!',
+    kidsHintEn: 'The angel who brought the first revelation "Iqra" in Cave Hira!'
+  },
+  {
+    id: 'kids-25',
+    questionUrdu: 'قرآن مجید کی آخری سورت کون سی ہے؟',
+    questionEn: 'Which is the last and final Surah in the Holy Quran?',
+    optionsUrdu: ['سورۃ الناس', 'سورۃ الفلق', 'سورۃ الاخلاص', 'سورۃ النصر'],
+    optionsEn: ['Surah An-Nas', 'Surah Al-Falaq', 'Surah Al-Ikhlas', 'Surah An-Nasr'],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید کی آخری سورت سورۃ الناس ہے (سورت نمبر 114) جو وسوسوں اور برائیوں سے اللہ کی پناہ مانگنے کی سورت ہے۔',
+    explanationEn: 'Surah An-Nas (Chapter 114) is the 114th and final Surah of the Holy Quran.',
+    category: 'Quran',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: '"قُلْ أَعُوذُ بِرَبِّ النَّاسِ" سے شروع ہونے والی سورت!',
+    kidsHintEn: 'The Surah starting with "Qul A\'oodhu bi Rabbin-Nas"!'
+  },
+  {
+    id: 'kids-26',
+    questionUrdu: 'حضرت ابراہیم علیہ السلام کے اس فرمانبردار صاحبزادے کا کیا نام تھا جن کی قربانی کی یاد میں ہم عید الاضحیٰ مناتے ہیں؟',
+    questionEn: 'What was the name of the obedient son of Prophet Ibrahim (AS) commemorated during Eid al-Adha?',
+    optionsUrdu: ['حضرت اسماعیل علیہ السلام', 'حضرت اسحاق علیہ السلام', 'حضرت یعقوب علیہ السلام', 'حضرت یوسف علیہ السلام'],
+    optionsEn: ['Prophet Ismail (Ishmael) AS', 'Prophet Ishaq (Isaac) AS', 'Prophet Ya\'qub (Jacob) AS', 'Prophet Yusuf (Joseph) AS'],
+    correctIndex: 0,
+    explanationUrdu: 'حضرت اسماعیل علیہ السلام حضرت ابراہیم علیہ السلام کے وہ نیک فرزند تھے جنہوں نے اللہ کے حکم کے سامنے خوشی سے سر جھکا دیا تھا۔',
+    explanationEn: 'Prophet Ismail (AS) demonstrated noble obedience to Allah, honored through Eid al-Adha.',
+    category: 'Prophets',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'جنہوں نے اپنے والد کے ساتھ مل کر خانہ کعبہ کی تعمیر بھی کی تھی!',
+    kidsHintEn: 'He helped his father build the Holy Kaaba!'
   }
 ];
 
@@ -1114,6 +1312,16 @@ export const VERIFIED_QA_DATABASE: VerifiedQA[] = [
     category: 'Salah',
     reference: 'Surah Al-Isra 17:79, Sahih al-Bukhari 1145, Sahih Muslim 758',
     tags: ['Tahajjud', 'Qiyam al-Layl', 'Salah', 'تہجد', 'نماز']
+  },
+  {
+    id: 'qa-8',
+    questionUrdu: 'نماز باجماعت کی شرعی فضیلت اور انفرادی نماز پر اس کی کیا برتری ہے؟',
+    questionEn: 'What is the Islamic virtue of congregational prayer (Salah in Jama\'ah) over praying alone?',
+    answerUrdu: 'رسول اللہ ﷺ نے فرمایا: "باجماعت نماز تنہا پڑھی گئی نماز سے ستائیس (27) درجے زیادہ فضیلت رکھتی ہے۔" (صحیح بخاری: 645، صحیح مسلم: 650)۔ جماعت سے نماز ادا کرنا مسلمانوں میں باہمی اخوت، مساوات، وقت کی پابندی اور اتحاد پیدا کرتا ہے، اور مسجد کی طرف جانے والے ہر قدم پر ایک نیکی لکھی جاتی ہے اور ایک گناہ مٹایا جاتا ہے۔',
+    answerEn: 'The Prophet ﷺ stated: "Prayer in congregation is twenty-seven times more virtuous than a prayer performed alone." (Sahih al-Bukhari 645, Sahih Muslim 650). Congregational prayer fosters brotherhood, punctuality, community solidarity, and equality before Allah, with every step toward the Masjid raising the believer\'s rank and erasing a sin.',
+    category: 'Salah',
+    reference: 'Sahih al-Bukhari 645, Sahih Muslim 650',
+    tags: ['Jama\'ah', 'Salah', 'Congregation', 'Prayer', 'نماز باجماعت', 'جماعت']
   }
 ];
 
