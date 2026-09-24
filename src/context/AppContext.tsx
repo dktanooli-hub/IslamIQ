@@ -241,7 +241,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         'daily-hadith',
         'daily-dua',
         'salah-learning',
-        'islamic-general-knowledge'
+        'islamic-general-knowledge',
+        'how-to-perform-salah',
+        'how-to-perform-wudu',
+        '5-pillars-of-islam'
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         return path as AppTab;

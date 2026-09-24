@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { AppTab } from '../../types';
-import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, ArrowRight, ArrowLeft } from 'lucide-react';
+import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, ArrowRight, ArrowLeft } from 'lucide-react';
 
 interface RelatedLearningItem {
   id: AppTab;
@@ -83,6 +83,30 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
       titleUrdu: 'اسلامی جنرل نالج',
       descEn: 'Key facts on Islamic history, the Prophets, Seerah, and Sahabah.',
       descUrdu: 'اسلامی تاریخ، انبیاء کرام علیہم السلام، سیرت النبیﷺ اور صحابہ کرام۔',
+      icon: Compass,
+    },
+    {
+      id: 'how-to-perform-salah',
+      titleEn: 'How to Perform Salah (Namaz)',
+      titleUrdu: 'نماز کا مکمل طریقہ',
+      descEn: 'Step-by-step prayer guide with recitations and authentic Hadith.',
+      descUrdu: 'تکبیر سے سلام تک نماز کا مکمل طریقہ اور مسنون دعائیں۔',
+      icon: CheckSquare,
+    },
+    {
+      id: 'how-to-perform-wudu',
+      titleEn: 'How to Perform Wudu',
+      titleUrdu: 'وضو کا مسنون طریقہ',
+      descEn: 'Learn the 4 Quranic obligations, full Sunnah method, and nullifiers.',
+      descUrdu: 'وضو کے ۴ فرائض، سنتیں، دعائیں اور توڑنے والی چیزیں۔',
+      icon: Droplets,
+    },
+    {
+      id: '5-pillars-of-islam',
+      titleEn: '5 Pillars of Islam Explained',
+      titleUrdu: 'اسلام کے ۵ بنیادی ارکان',
+      descEn: 'Foundations of Islamic belief and practice with Quran and Hadith proofs.',
+      descUrdu: 'کلمہ شہادت، نماز، زکوٰۃ، روزہ اور حج کی جامع قرآنی وضاحت۔',
       icon: Compass,
     },
   ];

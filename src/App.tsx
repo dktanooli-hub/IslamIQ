@@ -29,6 +29,11 @@ import { Footer } from './components/Footer';
 import { AppTab } from './types';
 import { trackPageView } from './utils/analytics';
 
+// Lazy-loaded AdSense Educational Guides
+const HowToPerformSalahGuide = React.lazy(() => import('./components/seo/HowToPerformSalahGuide'));
+const HowToPerformWuduGuide = React.lazy(() => import('./components/seo/HowToPerformWuduGuide'));
+const FivePillarsOfIslamGuide = React.lazy(() => import('./components/seo/FivePillarsOfIslamGuide'));
+
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, toastMessage } = useApp();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -51,7 +56,10 @@ export const App: React.FC = () => {
         'daily-hadith',
         'daily-dua',
         'salah-learning',
-        'islamic-general-knowledge'
+        'islamic-general-knowledge',
+        'how-to-perform-salah',
+        'how-to-perform-wudu',
+        '5-pillars-of-islam'
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         setActiveTab(path as AppTab);
@@ -132,6 +140,21 @@ export const App: React.FC = () => {
         title: 'Islamic General Knowledge • Pillars, Prophets & Quran Facts | IslamIQ',
         path: '/islamic-general-knowledge',
         desc: 'Comprehensive Islamic general knowledge guide covering the 5 Pillars of Islam, 6 Pillars of Faith, Prophets in the Quran, and Islamic history.'
+      },
+      'how-to-perform-salah': {
+        title: 'How to Perform Salah (Namaz) Step by Step Guide | IslamIQ',
+        path: '/how-to-perform-salah',
+        desc: 'Learn how to perform Salah step by step with authentic Hadith references. Complete guide covering prayer prerequisites, postures, recitations, common mistakes, and FAQs.'
+      },
+      'how-to-perform-wudu': {
+        title: 'How to Perform Wudu (Ablution) Step by Step Guide | IslamIQ',
+        path: '/how-to-perform-wudu',
+        desc: 'Complete step-by-step guide on how to perform Wudu (Islamic ablution). Learn the 4 obligatory Fard acts, full Sunnah method, nullifiers, post-wudu dua, and authentic references.'
+      },
+      '5-pillars-of-islam': {
+        title: 'The 5 Pillars of Islam Explained with Authentic References | IslamIQ',
+        path: '/5-pillars-of-islam',
+        desc: 'Comprehensive guide to the Five Pillars of Islam (Arkan al-Islam): Shahadah, Salah, Zakat, Sawm, and Hajj. Detailed Quranic proofs, Hadith evidence, wisdom, and FAQs.'
       }
     };
 
@@ -217,6 +240,17 @@ export const App: React.FC = () => {
         {activeTab === 'daily-dua' && <DailyDuaHub />}
         {activeTab === 'salah-learning' && <SalahLearningHub />}
         {activeTab === 'islamic-general-knowledge' && <IslamicGeneralKnowledgeHub />}
+
+        {/* AdSense Batch 1 Educational Guides */}
+        <React.Suspense fallback={
+          <div className="flex items-center justify-center p-12">
+            <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        }>
+          {activeTab === 'how-to-perform-salah' && <HowToPerformSalahGuide />}
+          {activeTab === 'how-to-perform-wudu' && <HowToPerformWuduGuide />}
+          {activeTab === '5-pillars-of-islam' && <FivePillarsOfIslamGuide />}
+        </React.Suspense>
       </main>
 
       {/* Public Footer */}

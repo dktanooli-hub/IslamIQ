@@ -22,7 +22,10 @@ export type AppTab =
   | 'daily-hadith'
   | 'daily-dua'
   | 'salah-learning'
-  | 'islamic-general-knowledge';
+  | 'islamic-general-knowledge'
+  | 'how-to-perform-salah'
+  | 'how-to-perform-wudu'
+  | '5-pillars-of-islam';
 
 export interface QuizQuestion {
   id: string;

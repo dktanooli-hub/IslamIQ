@@ -16,6 +16,9 @@ export const Footer: React.FC = () => {
     { id: 'daily-hadith', label: 'Daily Hadith', labelUrdu: 'روزانہ کی حدیث' },
     { id: 'daily-dua', label: 'Daily Dua', labelUrdu: 'روزانہ کی دعا' },
     { id: 'salah-learning', label: 'Salah Learning', labelUrdu: 'نماز سیکھیں' },
+    { id: 'how-to-perform-salah', label: 'How to Pray (Salah)', labelUrdu: 'نماز کا طریقہ' },
+    { id: 'how-to-perform-wudu', label: 'How to do Wudu', labelUrdu: 'وضو کا طریقہ' },
+    { id: '5-pillars-of-islam', label: '5 Pillars of Islam', labelUrdu: '۵ ارکانِ اسلام' },
     { id: 'islamic-general-knowledge', label: 'General Knowledge', labelUrdu: 'اسلامی معلومات' },
   ];
 
