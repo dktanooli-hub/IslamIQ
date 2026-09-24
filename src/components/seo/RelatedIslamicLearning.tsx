@@ -133,6 +133,14 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
       descUrdu: 'بچوں اور والدین کے لیے کھانے، سلام اور اخلاق کے نبوی آداب۔',
       icon: Sparkles,
     },
+    {
+      id: 'quran-learning-guide',
+      titleEn: 'Quran Learning & Tajweed Guide',
+      titleUrdu: 'قرآن سیکھنے اور تجوید کا رہنما',
+      descEn: 'Step-by-step roadmap from Noorani Qaida to fluent recitation, Tajweed, and Tadabbur.',
+      descUrdu: 'قاعدہ سے لے کر روانی، تجوید کے قواعد اور روزانہ تلاوت کے معمول کی جامع گائیڈ۔',
+      icon: BookOpen,
+    },
   ];
 
   // Filter out the current active tab to show 3-4 other related links

@@ -23,6 +23,7 @@ export const Footer: React.FC = () => {
     { id: 'salah-for-beginners', label: 'Salah for Beginners', labelUrdu: 'ابتدائی نماز' },
     { id: 'islamic-manners-for-kids', label: 'Manners for Kids', labelUrdu: 'بچوں کے آداب' },
     { id: 'islamic-general-knowledge', label: 'General Knowledge', labelUrdu: 'اسلامی معلومات' },
+    { id: 'quran-learning-guide', label: 'Quran Learning', labelUrdu: 'قرآن سیکھیں' },
   ];
 
   const navLinks: { id: AppTab; label: string; labelUrdu: string }[] = [

@@ -36,6 +36,9 @@ const FivePillarsOfIslamGuide = React.lazy(() => import('./components/seo/FivePi
 const SixArticlesOfFaithGuide = React.lazy(() => import('./components/seo/SixArticlesOfFaithGuide'));
 const SalahForBeginnersGuide = React.lazy(() => import('./components/seo/SalahForBeginnersGuide'));
 const IslamicMannersForKidsGuide = React.lazy(() => import('./components/seo/IslamicMannersForKidsGuide'));
+const IslamicGeneralKnowledgeGuide = React.lazy(() => import('./components/seo/IslamicGeneralKnowledgeGuide'));
+const IslamicQAGuide = React.lazy(() => import('./components/seo/IslamicQAGuide'));
+const QuranLearningGuide = React.lazy(() => import('./components/seo/QuranLearningGuide'));
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, toastMessage } = useApp();
@@ -65,7 +68,8 @@ export const App: React.FC = () => {
         '5-pillars-of-islam',
         'six-articles-of-faith',
         'salah-for-beginners',
-        'islamic-manners-for-kids'
+        'islamic-manners-for-kids',
+        'quran-learning-guide'
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         setActiveTab(path as AppTab);
@@ -118,9 +122,9 @@ export const App: React.FC = () => {
         desc: 'Fun, engaging and educational Islamic quiz for Muslim children. Learn about Allah, Prophet Muhammad (PBUH), 5 Pillars of Islam, and good manners.'
       },
       'islamic-questions-answers': {
-        title: 'Islamic Questions & Answers with Authentic References | IslamIQ',
+        title: 'Islamic Questions & Answers: Authentic Rulings & Evidence | IslamIQ',
         path: '/islamic-questions-answers',
-        desc: 'Authentic Islamic questions and answers on Aqeedah, Salah, Fasting, Quran, and daily manners. Supported by verified references.'
+        desc: 'Comprehensive and authentic Islamic questions and answers on Aqeedah, Salah, Fasting, Zakat, Halal living, and modern ethics with verified Quran and Hadith evidence.'
       },
       'daily-quran-verse': {
         title: 'Daily Quran Verse with Translation & Meaning | IslamIQ',
@@ -143,9 +147,9 @@ export const App: React.FC = () => {
         desc: 'Comprehensive Islamic guide to learning Namaz (Salah). Discover prayer methods, rakats for all 5 daily prayers, prerequisites, and tracker.'
       },
       'islamic-general-knowledge': {
-        title: 'Islamic General Knowledge • Pillars, Prophets & Quran Facts | IslamIQ',
+        title: 'Islamic General Knowledge: Pillars, Prophets, Quran & History | IslamIQ',
         path: '/islamic-general-knowledge',
-        desc: 'Comprehensive Islamic general knowledge guide covering the 5 Pillars of Islam, 6 Pillars of Faith, Prophets in the Quran, and Islamic history.'
+        desc: 'Comprehensive, authentic Islamic general knowledge guide covering the Five Pillars, Articles of Faith, Prophets in the Quran, Quranic statistics, and Islamic historical milestones with references.'
       },
       'how-to-perform-salah': {
         title: 'How to Perform Salah (Namaz) Step by Step Guide | IslamIQ',
@@ -176,6 +180,11 @@ export const App: React.FC = () => {
         title: 'Islamic Manners for Kids (Adab & Akhlaq Guide) | IslamIQ',
         path: '/islamic-manners-for-kids',
         desc: 'Engaging, practical guide teaching Islamic manners (Adab & Akhlaq) to kids and parents. Learn eating etiquette, greetings, honoring parents, kindness to friends, and Sunnah phrases.'
+      },
+      'quran-learning-guide': {
+        title: 'Quran Learning Guide: Tajweed, Reading & Daily Routine | IslamIQ',
+        path: '/quran-learning-guide',
+        desc: 'Step-by-step Quran learning guide for beginners and intermediate students. Master Noorani Qaida, essential Tajweed rules, correct pronunciation, and daily Quran routine.'
       }
     };
 
@@ -255,12 +264,10 @@ export const App: React.FC = () => {
         {/* SEO-friendly Islamic Content Hub Pages */}
         {activeTab === 'islamic-quiz' && <IslamicQuizHub />}
         {activeTab === 'kids-islamic-quiz' && <KidsIslamicQuizHub />}
-        {activeTab === 'islamic-questions-answers' && <IslamicQAHub />}
         {activeTab === 'daily-quran-verse' && <DailyQuranVerseHub />}
         {activeTab === 'daily-hadith' && <DailyHadithHub />}
         {activeTab === 'daily-dua' && <DailyDuaHub />}
         {activeTab === 'salah-learning' && <SalahLearningHub />}
-        {activeTab === 'islamic-general-knowledge' && <IslamicGeneralKnowledgeHub />}
 
         {/* AdSense Educational Guides */}
         <React.Suspense fallback={
@@ -268,6 +275,9 @@ export const App: React.FC = () => {
             <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
           </div>
         }>
+          {activeTab === 'islamic-general-knowledge' && <IslamicGeneralKnowledgeGuide />}
+          {activeTab === 'islamic-questions-answers' && <IslamicQAGuide />}
+          {activeTab === 'quran-learning-guide' && <QuranLearningGuide />}
           {activeTab === 'how-to-perform-salah' && <HowToPerformSalahGuide />}
           {activeTab === 'how-to-perform-wudu' && <HowToPerformWuduGuide />}
           {activeTab === '5-pillars-of-islam' && <FivePillarsOfIslamGuide />}
