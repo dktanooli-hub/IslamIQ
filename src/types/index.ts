@@ -25,7 +25,10 @@ export type AppTab =
   | 'islamic-general-knowledge'
   | 'how-to-perform-salah'
   | 'how-to-perform-wudu'
-  | '5-pillars-of-islam';
+  | '5-pillars-of-islam'
+  | 'six-articles-of-faith'
+  | 'salah-for-beginners'
+  | 'islamic-manners-for-kids';
 
 export interface QuizQuestion {
   id: string;

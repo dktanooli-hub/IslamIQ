@@ -33,6 +33,9 @@ import { trackPageView } from './utils/analytics';
 const HowToPerformSalahGuide = React.lazy(() => import('./components/seo/HowToPerformSalahGuide'));
 const HowToPerformWuduGuide = React.lazy(() => import('./components/seo/HowToPerformWuduGuide'));
 const FivePillarsOfIslamGuide = React.lazy(() => import('./components/seo/FivePillarsOfIslamGuide'));
+const SixArticlesOfFaithGuide = React.lazy(() => import('./components/seo/SixArticlesOfFaithGuide'));
+const SalahForBeginnersGuide = React.lazy(() => import('./components/seo/SalahForBeginnersGuide'));
+const IslamicMannersForKidsGuide = React.lazy(() => import('./components/seo/IslamicMannersForKidsGuide'));
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, toastMessage } = useApp();
@@ -59,7 +62,10 @@ export const App: React.FC = () => {
         'islamic-general-knowledge',
         'how-to-perform-salah',
         'how-to-perform-wudu',
-        '5-pillars-of-islam'
+        '5-pillars-of-islam',
+        'six-articles-of-faith',
+        'salah-for-beginners',
+        'islamic-manners-for-kids'
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         setActiveTab(path as AppTab);
@@ -155,6 +161,21 @@ export const App: React.FC = () => {
         title: 'The 5 Pillars of Islam Explained with Authentic References | IslamIQ',
         path: '/5-pillars-of-islam',
         desc: 'Comprehensive guide to the Five Pillars of Islam (Arkan al-Islam): Shahadah, Salah, Zakat, Sawm, and Hajj. Detailed Quranic proofs, Hadith evidence, wisdom, and FAQs.'
+      },
+      'six-articles-of-faith': {
+        title: '6 Articles of Faith in Islam (Arkan al-Iman) Explained | IslamIQ',
+        path: '/six-articles-of-faith',
+        desc: 'In-depth guide to the 6 Articles of Faith (Iman) in Islam: Belief in Allah, Angels, Books, Prophets, Day of Judgment, and Divine Decree (Qadr) with Quranic and Hadith proofs.'
+      },
+      'salah-for-beginners': {
+        title: 'Salah for Beginners: Complete Step-by-Step Namaz Guide | IslamIQ',
+        path: '/salah-for-beginners',
+        desc: 'Gentle, comprehensive beginner guide to Islamic prayer (Salah / Namaz). Learn exact postures, simple phonetic transliterations, translations, rakat counts, and overcome common beginner anxieties.'
+      },
+      'islamic-manners-for-kids': {
+        title: 'Islamic Manners for Kids (Adab & Akhlaq Guide) | IslamIQ',
+        path: '/islamic-manners-for-kids',
+        desc: 'Engaging, practical guide teaching Islamic manners (Adab & Akhlaq) to kids and parents. Learn eating etiquette, greetings, honoring parents, kindness to friends, and Sunnah phrases.'
       }
     };
 
@@ -241,7 +262,7 @@ export const App: React.FC = () => {
         {activeTab === 'salah-learning' && <SalahLearningHub />}
         {activeTab === 'islamic-general-knowledge' && <IslamicGeneralKnowledgeHub />}
 
-        {/* AdSense Batch 1 Educational Guides */}
+        {/* AdSense Educational Guides */}
         <React.Suspense fallback={
           <div className="flex items-center justify-center p-12">
             <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
@@ -250,6 +271,9 @@ export const App: React.FC = () => {
           {activeTab === 'how-to-perform-salah' && <HowToPerformSalahGuide />}
           {activeTab === 'how-to-perform-wudu' && <HowToPerformWuduGuide />}
           {activeTab === '5-pillars-of-islam' && <FivePillarsOfIslamGuide />}
+          {activeTab === 'six-articles-of-faith' && <SixArticlesOfFaithGuide />}
+          {activeTab === 'salah-for-beginners' && <SalahForBeginnersGuide />}
+          {activeTab === 'islamic-manners-for-kids' && <IslamicMannersForKidsGuide />}
         </React.Suspense>
       </main>
 

@@ -109,6 +109,30 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
       descUrdu: 'کلمہ شہادت، نماز، زکوٰۃ، روزہ اور حج کی جامع قرآنی وضاحت۔',
       icon: Compass,
     },
+    {
+      id: 'six-articles-of-faith',
+      titleEn: '6 Articles of Faith in Islam',
+      titleUrdu: 'اسلام کے ۶ ارکانِ ایمان',
+      descEn: 'Creed (Aqeedah) foundations: Allah, Angels, Books, Prophets, Akhirah, and Qadr.',
+      descUrdu: 'عقائد و ایمانیات: اللہ، فرشتے، کتب، انبیاء، آخرت اور تقدیر پر ایمان۔',
+      icon: Heart,
+    },
+    {
+      id: 'salah-for-beginners',
+      titleEn: 'Salah for Beginners Guide',
+      titleUrdu: 'نوآموزوں کے لیے نماز',
+      descEn: 'Gentle step-by-step introduction to prayer postures, phonetics, and reassurance.',
+      descUrdu: 'ابتدائی سیکھنے والوں کے لیے آسان انداز میں نماز کی تفاصیل اور تسلی۔',
+      icon: CheckSquare,
+    },
+    {
+      id: 'islamic-manners-for-kids',
+      titleEn: 'Islamic Manners for Kids',
+      titleUrdu: 'بچوں کے اسلامی آداب',
+      descEn: 'Practical Sunnah etiquette for eating, greeting, honoring parents, and speech.',
+      descUrdu: 'بچوں اور والدین کے لیے کھانے، سلام اور اخلاق کے نبوی آداب۔',
+      icon: Sparkles,
+    },
   ];
 
   // Filter out the current active tab to show 3-4 other related links

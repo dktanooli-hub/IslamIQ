@@ -19,6 +19,9 @@ export const Footer: React.FC = () => {
     { id: 'how-to-perform-salah', label: 'How to Pray (Salah)', labelUrdu: 'نماز کا طریقہ' },
     { id: 'how-to-perform-wudu', label: 'How to do Wudu', labelUrdu: 'وضو کا طریقہ' },
     { id: '5-pillars-of-islam', label: '5 Pillars of Islam', labelUrdu: '۵ ارکانِ اسلام' },
+    { id: 'six-articles-of-faith', label: '6 Articles of Faith', labelUrdu: '۶ ارکانِ ایمان' },
+    { id: 'salah-for-beginners', label: 'Salah for Beginners', labelUrdu: 'ابتدائی نماز' },
+    { id: 'islamic-manners-for-kids', label: 'Manners for Kids', labelUrdu: 'بچوں کے آداب' },
     { id: 'islamic-general-knowledge', label: 'General Knowledge', labelUrdu: 'اسلامی معلومات' },
   ];
 
