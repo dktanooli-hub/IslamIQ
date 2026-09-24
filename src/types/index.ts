@@ -29,7 +29,10 @@ export type AppTab =
   | 'six-articles-of-faith'
   | 'salah-for-beginners'
   | 'islamic-manners-for-kids'
-  | 'quran-learning-guide';
+  | 'quran-learning-guide'
+  | 'hadith-learning-guide'
+  | 'ramadan-guide'
+  | 'zakat-basics';
 
 export interface QuizQuestion {
   id: string;

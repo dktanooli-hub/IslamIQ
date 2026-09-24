@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { AppTab } from '../../types';
-import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, ArrowRight, ArrowLeft } from 'lucide-react';
+import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, Moon, Coins, ArrowRight, ArrowLeft } from 'lucide-react';
 
 interface RelatedLearningItem {
   id: AppTab;
@@ -140,6 +140,30 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
       descEn: 'Step-by-step roadmap from Noorani Qaida to fluent recitation, Tajweed, and Tadabbur.',
       descUrdu: 'قاعدہ سے لے کر روانی، تجوید کے قواعد اور روزانہ تلاوت کے معمول کی جامع گائیڈ۔',
       icon: BookOpen,
+    },
+    {
+      id: 'hadith-learning-guide',
+      titleEn: 'Hadith Learning Guide',
+      titleUrdu: 'حدیث سیکھنے کی گائیڈ',
+      descEn: 'Prophetic Sunnah, Isnad and Matn criteria, Sahih classification, and Kutub al-Sittah.',
+      descUrdu: 'سنتِ نبوی، اسناد و متن کی جانچ، صحیح کی شرائط اور کتبِ ستہ کا تعارف۔',
+      icon: BookOpen,
+    },
+    {
+      id: 'ramadan-guide',
+      titleEn: 'Ramadan & Fasting Guide',
+      titleUrdu: 'رمضان اور روزے کے احکام',
+      descEn: 'Fasting essentials, Suhoor & Iftar duas, medical exemptions, and Laylat al-Qadr.',
+      descUrdu: 'روزے کے ارکان، سحری و افطار کی مسنون دعائیں، جدید طبی مسائل اور شبِ قدر۔',
+      icon: Moon,
+    },
+    {
+      id: 'zakat-basics',
+      titleEn: 'Zakat Basics & Calculation',
+      titleUrdu: 'زکوٰۃ کے بنیادی احکام',
+      descEn: 'Nisab thresholds (Gold/Silver), 2.5% rate, Hawl rules, and 8 Quranic recipients.',
+      descUrdu: 'سونے چاندی کا نصاب، ڈھائی فیصد کی شرح، سال گزرنے کی شرط اور ۸ قرآنی مصارف۔',
+      icon: Coins,
     },
   ];
 

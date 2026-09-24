@@ -24,6 +24,9 @@ export const Footer: React.FC = () => {
     { id: 'islamic-manners-for-kids', label: 'Manners for Kids', labelUrdu: 'بچوں کے آداب' },
     { id: 'islamic-general-knowledge', label: 'General Knowledge', labelUrdu: 'اسلامی معلومات' },
     { id: 'quran-learning-guide', label: 'Quran Learning', labelUrdu: 'قرآن سیکھیں' },
+    { id: 'hadith-learning-guide', label: 'Hadith Guide', labelUrdu: 'حدیث گائیڈ' },
+    { id: 'ramadan-guide', label: 'Ramadan Guide', labelUrdu: 'رمضان گائیڈ' },
+    { id: 'zakat-basics', label: 'Zakat Basics', labelUrdu: 'زکوٰۃ کے احکام' },
   ];
 
   const navLinks: { id: AppTab; label: string; labelUrdu: string }[] = [

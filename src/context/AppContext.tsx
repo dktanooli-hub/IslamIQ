@@ -248,7 +248,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         'six-articles-of-faith',
         'salah-for-beginners',
         'islamic-manners-for-kids',
-        'quran-learning-guide'
+        'quran-learning-guide',
+        'hadith-learning-guide',
+        'ramadan-guide',
+        'zakat-basics'
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         return path as AppTab;

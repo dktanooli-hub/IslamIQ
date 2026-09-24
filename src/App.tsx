@@ -39,6 +39,9 @@ const IslamicMannersForKidsGuide = React.lazy(() => import('./components/seo/Isl
 const IslamicGeneralKnowledgeGuide = React.lazy(() => import('./components/seo/IslamicGeneralKnowledgeGuide'));
 const IslamicQAGuide = React.lazy(() => import('./components/seo/IslamicQAGuide'));
 const QuranLearningGuide = React.lazy(() => import('./components/seo/QuranLearningGuide'));
+const HadithLearningGuide = React.lazy(() => import('./components/seo/HadithLearningGuide'));
+const RamadanGuide = React.lazy(() => import('./components/seo/RamadanGuide'));
+const ZakatBasicsGuide = React.lazy(() => import('./components/seo/ZakatBasicsGuide'));
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, toastMessage } = useApp();
@@ -69,7 +72,10 @@ export const App: React.FC = () => {
         'six-articles-of-faith',
         'salah-for-beginners',
         'islamic-manners-for-kids',
-        'quran-learning-guide'
+        'quran-learning-guide',
+        'hadith-learning-guide',
+        'ramadan-guide',
+        'zakat-basics'
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         setActiveTab(path as AppTab);
@@ -185,6 +191,21 @@ export const App: React.FC = () => {
         title: 'Quran Learning Guide: Tajweed, Reading & Daily Routine | IslamIQ',
         path: '/quran-learning-guide',
         desc: 'Step-by-step Quran learning guide for beginners and intermediate students. Master Noorani Qaida, essential Tajweed rules, correct pronunciation, and daily Quran routine.'
+      },
+      'hadith-learning-guide': {
+        title: 'Hadith Learning Guide: Traditions, Authenticity & Books | IslamIQ',
+        path: '/hadith-learning-guide',
+        desc: 'Comprehensive Hadith guide explaining Isnad and Matn, Sahih/Hasan/Da\'if classifications, Kutub al-Sittah compilers, and authenticity verification principles.'
+      },
+      'ramadan-guide': {
+        title: 'Ramadan Guide: Fasting Rules, Suhoor, Iftar & Worship | IslamIQ',
+        path: '/ramadan-guide',
+        desc: 'Complete Ramadan educational guide covering Sawm essentials, pre-dawn Suhoor, Iftar duas, medical exemptions (inhalers/drops), Laylat al-Qadr, and Zakat al-Fitr.'
+      },
+      'zakat-basics': {
+        title: 'Zakat Basics: Nisab, Calculation & Eligible Recipients | IslamIQ',
+        path: '/zakat-basics',
+        desc: 'Essential guide to the 3rd Pillar of Islam (Zakat). Learn gold and silver Nisab thresholds, 2.5% rate on cash/investments, Hawl rule, and 8 Quranic recipient categories.'
       }
     };
 
@@ -284,6 +305,9 @@ export const App: React.FC = () => {
           {activeTab === 'six-articles-of-faith' && <SixArticlesOfFaithGuide />}
           {activeTab === 'salah-for-beginners' && <SalahForBeginnersGuide />}
           {activeTab === 'islamic-manners-for-kids' && <IslamicMannersForKidsGuide />}
+          {activeTab === 'hadith-learning-guide' && <HadithLearningGuide />}
+          {activeTab === 'ramadan-guide' && <RamadanGuide />}
+          {activeTab === 'zakat-basics' && <ZakatBasicsGuide />}
         </React.Suspense>
       </main>
 
