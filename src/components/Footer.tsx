@@ -27,6 +27,8 @@ export const Footer: React.FC = () => {
     { id: 'hadith-learning-guide', label: 'Hadith Guide', labelUrdu: 'حدیث گائیڈ' },
     { id: 'ramadan-guide', label: 'Ramadan Guide', labelUrdu: 'رمضان گائیڈ' },
     { id: 'zakat-basics', label: 'Zakat Basics', labelUrdu: 'زکوٰۃ کے احکام' },
+    { id: 'zakat-calculator', label: 'Zakat Calculator', labelUrdu: 'زکوٰۃ کیلکولیٹر' },
+    { id: 'islamic-calendar', label: 'Islamic Calendar', labelUrdu: 'اسلامی کیلنڈر' },
   ];
 
   const navLinks: { id: AppTab; label: string; labelUrdu: string }[] = [

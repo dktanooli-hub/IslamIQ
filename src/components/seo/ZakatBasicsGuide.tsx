@@ -193,6 +193,20 @@ export const ZakatBasicsGuide: React.FC = () => {
             </div>
           ))}
         </div>
+
+        <div className="pt-2 flex justify-center">
+          <button
+            onClick={() => {
+              setActiveTab('zakat-calculator');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="px-5 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shadow-md transition-all active:scale-95"
+          >
+            <Calculator className="w-4 h-4" />
+            <span>{isUrdu ? 'مفت زکوٰۃ کیلکولیٹر سے فوری حساب لگائیں' : 'Calculate Your Zakat with Our Free Calculator'}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
       </section>
 
       {/* Section 5: The 8 Eligible Quranic Recipients */}

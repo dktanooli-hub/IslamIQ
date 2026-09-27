@@ -203,6 +203,8 @@ export const ZAKAT_BASICS_DATA: ZakatBasicsGuideData = {
     }
   ],
   relatedLinks: [
+    { titleEn: "Interactive Zakat Calculator", titleUrdu: "مفت زکوٰۃ کیلکولیٹر", tab: "zakat-calculator" },
+    { titleEn: "Islamic Hijri Calendar", titleUrdu: "اسلامی ہجری کیلنڈر", tab: "islamic-calendar" },
     { titleEn: "5 Pillars of Islam Guide", titleUrdu: "اسلام کے ۵ بنیادی ارکان", tab: "5-pillars-of-islam" },
     { titleEn: "Ramadan & Fasting Guide", titleUrdu: "رمضان المبارک گائیڈ", tab: "ramadan-guide" },
     { titleEn: "Islamic Questions & Answers", titleUrdu: "اسلامی سوال و جواب", tab: "islamic-questions-answers" },

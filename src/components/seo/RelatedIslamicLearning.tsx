@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { AppTab } from '../../types';
-import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, Moon, Coins, ArrowRight, ArrowLeft } from 'lucide-react';
+import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, Moon, Coins, Calculator, Calendar, ArrowRight, ArrowLeft } from 'lucide-react';
 
 interface RelatedLearningItem {
   id: AppTab;
@@ -164,6 +164,22 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
       descEn: 'Nisab thresholds (Gold/Silver), 2.5% rate, Hawl rules, and 8 Quranic recipients.',
       descUrdu: 'سونے چاندی کا نصاب، ڈھائی فیصد کی شرح، سال گزرنے کی شرط اور ۸ قرآنی مصارف۔',
       icon: Coins,
+    },
+    {
+      id: 'zakat-calculator',
+      titleEn: 'Zakat Calculator Tool',
+      titleUrdu: 'مفت زکوٰۃ کیلکولیٹر',
+      descEn: 'Instant 2.5% Zakat calculation on cash, gold, silver, bank balances, and merchandise.',
+      descUrdu: 'نقد، سونا، چاندی اور تجارتی مال پر ۲.۵ فیصد زکوٰۃ کا فوری اور آسان حساب۔',
+      icon: Calculator,
+    },
+    {
+      id: 'islamic-calendar',
+      titleEn: 'Islamic Hijri Calendar',
+      titleUrdu: 'اسلامی ہجری کیلنڈر',
+      descEn: 'Full Hijri calendar with Gregorian conversion, moon sighting offset, and Sunnah fasting days.',
+      descUrdu: 'مکمل قمری تقویم، عیسوی تاریخ، رویتِ ہلال کی ایڈجسٹمنٹ اور مسنون روزوں کی تفصیلات۔',
+      icon: Calendar,
     },
   ];
 

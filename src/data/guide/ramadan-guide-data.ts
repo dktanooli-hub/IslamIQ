@@ -156,6 +156,8 @@ export const RAMADAN_GUIDE_DATA: RamadanGuideData = {
     }
   ],
   relatedLinks: [
+    { titleEn: "Islamic Hijri Calendar", titleUrdu: "اسلامی ہجری کیلنڈر", tab: "islamic-calendar" },
+    { titleEn: "Zakat Calculator Tool", titleUrdu: "زکوٰۃ کیلکولیٹر", tab: "zakat-calculator" },
     { titleEn: "Daily Islamic Supplications (Dua)", titleUrdu: "روزانہ کی مسنون دعائیں", tab: "daily-dua" },
     { titleEn: "Quran Learning & Tajweed Guide", titleUrdu: "قرآن سیکھنے کی گائیڈ", tab: "quran-learning-guide" },
     { titleEn: "How to Perform Salah", titleUrdu: "نماز کا طریقہ", tab: "how-to-perform-salah" },

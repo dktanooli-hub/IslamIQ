@@ -32,7 +32,9 @@ export type AppTab =
   | 'quran-learning-guide'
   | 'hadith-learning-guide'
   | 'ramadan-guide'
-  | 'zakat-basics';
+  | 'zakat-basics'
+  | 'zakat-calculator'
+  | 'islamic-calendar';
 
 export interface QuizQuestion {
   id: string;

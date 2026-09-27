@@ -42,6 +42,8 @@ const QuranLearningGuide = React.lazy(() => import('./components/seo/QuranLearni
 const HadithLearningGuide = React.lazy(() => import('./components/seo/HadithLearningGuide'));
 const RamadanGuide = React.lazy(() => import('./components/seo/RamadanGuide'));
 const ZakatBasicsGuide = React.lazy(() => import('./components/seo/ZakatBasicsGuide'));
+const ZakatCalculator = React.lazy(() => import('./components/tools/ZakatCalculator'));
+const IslamicCalendar = React.lazy(() => import('./components/tools/IslamicCalendar'));
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, toastMessage } = useApp();
@@ -75,7 +77,9 @@ export const App: React.FC = () => {
         'quran-learning-guide',
         'hadith-learning-guide',
         'ramadan-guide',
-        'zakat-basics'
+        'zakat-basics',
+        'zakat-calculator',
+        'islamic-calendar'
       ];
       if (validCleanTabs.includes(path as AppTab)) {
         setActiveTab(path as AppTab);
@@ -206,6 +210,16 @@ export const App: React.FC = () => {
         title: 'Zakat Basics: Nisab, Calculation & Eligible Recipients | IslamIQ',
         path: '/zakat-basics',
         desc: 'Essential guide to the 3rd Pillar of Islam (Zakat). Learn gold and silver Nisab thresholds, 2.5% rate on cash/investments, Hawl rule, and 8 Quranic recipient categories.'
+      },
+      'zakat-calculator': {
+        title: 'Zakat Calculator: Nisab, Cash, Gold & Trade Assets | IslamIQ',
+        path: '/zakat-calculator',
+        desc: 'Calculate your obligatory 2.5% Zakat easily with customizable gold and silver prices, Nisab threshold detection, liability deductions, and instant breakdown.'
+      },
+      'islamic-calendar': {
+        title: 'Islamic Calendar: Hijri Date Today & Monthly Calendar | IslamIQ',
+        path: '/islamic-calendar',
+        desc: 'Accurate Hijri lunar calendar with Gregorian synchronization, moon sighting adjustments, Sunnah fasting days, and major Islamic milestones.'
       }
     };
 
@@ -308,6 +322,8 @@ export const App: React.FC = () => {
           {activeTab === 'hadith-learning-guide' && <HadithLearningGuide />}
           {activeTab === 'ramadan-guide' && <RamadanGuide />}
           {activeTab === 'zakat-basics' && <ZakatBasicsGuide />}
+          {activeTab === 'zakat-calculator' && <ZakatCalculator />}
+          {activeTab === 'islamic-calendar' && <IslamicCalendar />}
         </React.Suspense>
       </main>
 
