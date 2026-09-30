@@ -165,20 +165,64 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
     });
   };
 
-  const handleTestNotification = () => {
-    if (permission !== 'granted') {
+  const [isSendingTest, setIsSendingTest] = useState(false);
+
+  const handleTestNotification = async () => {
+    if (!isSupported) {
       showToast(
         isUrdu
-          ? 'پہلے نوٹیفکیشن کی اجازت فعال فرمائیں'
-          : 'Please enable notification permission first'
+          ? 'آپ کے براؤزر میں نوٹیفکیشن سپورٹ دستیاب نہیں ہے'
+          : 'Notifications are unsupported in this browser'
       );
       return;
     }
-    const sent = notificationService.sendTestNotification(contentLang);
-    if (sent) {
-      showToast(isUrdu ? 'ٹیسٹ نوٹیفکیشن بھیج دیا گیا!' : 'Test notification sent!');
-    } else {
-      showToast(isUrdu ? 'نوٹیفکیشن بھیجنے میں رکاوٹ پیش آئی' : 'Failed to send test notification');
+
+    setIsSendingTest(true);
+
+    try {
+      const res = await notificationService.sendTestNotification(contentLang);
+
+      // Refresh permission state in modal
+      const currentPerm = notificationService.getPermission();
+      setPermission(currentPerm);
+
+      if (res.success) {
+        // Automatically reflect enabled in settings if user just granted
+        if (!settings.enabled) {
+          handleSave({ ...settings, enabled: true });
+        }
+        showToast(
+          isUrdu
+            ? 'ماشاءاللہ! ٹیسٹ نوٹیفکیشن کامیابی سے دکھا دیا گیا 🔔'
+            : 'Test notification displayed successfully! 🔔'
+        );
+      } else if (res.error === 'permission_denied') {
+        showToast(
+          isUrdu
+            ? 'نوٹیفکیشن کی اجازت نہیں دی گئی۔ براؤزر سیٹنگز میں اجازت فعال فرمائیں۔'
+            : 'Notification permission was denied. Please allow in browser settings.'
+        );
+      } else if (res.error === 'unsupported') {
+        showToast(
+          isUrdu
+            ? 'آپ کے براؤزر میں نوٹیفکیشن سپورٹ دستیاب نہیں ہے۔'
+            : 'Notifications are unsupported in this browser environment.'
+        );
+      } else {
+        showToast(
+          isUrdu
+            ? `نوٹیفکیشن ظاہر کرنے میں رکاوٹ: ${res.message || 'براؤزر نے الرٹ روک دیا'}`
+            : `Could not display test notification: ${res.message || 'Browser prevented alert'}`
+        );
+      }
+    } catch (err: any) {
+      showToast(
+        isUrdu
+          ? `غلطی: ${err?.message || 'نوٹیفکیشن فیل ہو گیا'}`
+          : `Error: ${err?.message || 'Failed to send test notification'}`
+      );
+    } finally {
+      setIsSendingTest(false);
     }
   };
 
@@ -339,23 +383,38 @@ export const NotificationSettingsModal: React.FC<NotificationSettingsModalProps>
               </div>
             ) : null}
 
-            {/* Test Notification Button */}
-            {permission === 'granted' && (
-              <div className="pt-1 flex items-center justify-between">
-                <button
-                  type="button"
-                  onClick={handleTestNotification}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors"
-                >
-                  <Send className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>{isUrdu ? 'ٹیسٹ نوٹیفکیشن بھیجیں' : 'Send Test Notification'}</span>
-                </button>
+            {/* Test Notification Row */}
+            <div className="pt-2 border-t border-slate-200/80 flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={handleTestNotification}
+                disabled={isSendingTest}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-all active:scale-95 disabled:opacity-50"
+              >
+                <Send className={`w-3.5 h-3.5 text-emerald-600 ${isSendingTest ? 'animate-pulse' : ''}`} />
+                <span>
+                  {isSendingTest
+                    ? (isUrdu ? 'بھیجا جا رہا ہے...' : 'Sending...')
+                    : (isUrdu ? 'ٹیسٹ نوٹیفکیشن بھیجیں' : 'Send Test Notification')}
+                </span>
+              </button>
+
+              {permission === 'granted' ? (
                 <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1">
                   <CheckCircle2 className="w-3.5 h-3.5" />
                   <span>{isUrdu ? 'اجازت فعال ہے' : 'Permission Active'}</span>
                 </span>
-              </div>
-            )}
+              ) : permission === 'denied' ? (
+                <span className="text-[11px] text-rose-600 font-semibold flex items-center gap-1">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <span>{isUrdu ? 'بلاک شدہ' : 'Blocked'}</span>
+                </span>
+              ) : (
+                <span className="text-[11px] text-amber-700 font-medium">
+                  {isUrdu ? 'کلک پر اجازت طلب ہوگی' : 'Prompts permission on click'}
+                </span>
+              )}
+            </div>
           </div>
 
           {/* 1. Daily Islamic Content Notification */}

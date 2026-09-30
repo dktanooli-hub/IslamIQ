@@ -31,12 +31,38 @@ export const DEFAULT_NOTIFICATION_SETTINGS: AppNotificationSettings = {
   }
 };
 
+export interface NotificationResult {
+  success: boolean;
+  error?: 'unsupported' | 'permission_denied' | 'failed';
+  message?: string;
+}
+
 class NotificationService {
+  constructor() {
+    this.initServiceWorker();
+  }
+
   /**
-   * Check if browser Notification API is supported
+   * Register local client-side Service Worker for PWA / Android Chrome notification support
+   */
+  initServiceWorker(): void {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      try {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+          // Service workers may be blocked in some sandboxed environments; fail gracefully
+        });
+      } catch {
+        // Fail silently
+      }
+    }
+  }
+
+  /**
+   * Check if browser Notification API or Service Worker Notification is supported
    */
   isSupported(): boolean {
-    return typeof window !== 'undefined' && 'Notification' in window;
+    if (typeof window === 'undefined') return false;
+    return 'Notification' in window;
   }
 
   /**
@@ -79,7 +105,7 @@ class NotificationService {
         };
       }
     } catch {
-      // Fallback
+      // Fallback to default
     }
     return DEFAULT_NOTIFICATION_SETTINGS;
   }
@@ -97,26 +123,95 @@ class NotificationService {
   }
 
   /**
-   * Dispatch local browser notification
+   * Dispatch local browser notification directly without any server or backend.
+   * Uses ServiceWorker showNotification if available (for Android Chrome / PWA compliance),
+   * and falls back to standard new Notification() on desktop browsers.
    */
-  sendNotification(title: string, options?: NotificationOptions): boolean {
-    if (!this.isSupported() || Notification.permission !== 'granted') {
-      return false;
+  async sendNotification(title: string, options?: NotificationOptions): Promise<NotificationResult> {
+    if (!this.isSupported()) {
+      return {
+        success: false,
+        error: 'unsupported',
+        message: 'Notification API is not supported in this browser environment.'
+      };
     }
+
+    // 1. Ensure permission is granted, or request it on demand
+    let currentPerm = Notification.permission;
+    if (currentPerm !== 'granted') {
+      try {
+        currentPerm = await Notification.requestPermission();
+      } catch (err: any) {
+        return {
+          success: false,
+          error: 'permission_denied',
+          message: err?.message || 'Notification permission request failed.'
+        };
+      }
+    }
+
+    if (currentPerm !== 'granted') {
+      return {
+        success: false,
+        error: 'permission_denied',
+        message: 'Notification permission was denied by user or browser.'
+      };
+    }
+
+    // Clean options with valid existing app icon
+    const cleanOptions: NotificationOptions = {
+      icon: '/app-icon.png',
+      badge: '/app-icon.png',
+      silent: false,
+      ...options
+    };
+
+    // Strategy A: If Service Worker is registered, use reg.showNotification()
+    // This is mandatory for Android Chrome where new Notification() throws TypeError (Illegal Constructor).
+    if ('serviceWorker' in navigator) {
+      try {
+        const reg =
+          (await navigator.serviceWorker.ready.catch(() => null)) ||
+          (await navigator.serviceWorker.getRegistration().catch(() => null));
+
+        if (reg && typeof reg.showNotification === 'function') {
+          await reg.showNotification(title, cleanOptions);
+          return { success: true };
+        }
+      } catch {
+        // Fall back to Strategy B
+      }
+    }
+
+    // Strategy B: Standard new Notification() constructor (Desktop Chrome, Firefox, Safari, Edge)
     try {
-      const notif = new Notification(title, {
-        icon: '/assets/app-icon.png',
-        badge: '/assets/app-icon.png',
-        silent: false,
-        ...options
-      });
+      const notif = new Notification(title, cleanOptions);
       notif.onclick = () => {
         window.focus();
         notif.close();
       };
-      return true;
-    } catch {
-      return false;
+      return { success: true };
+    } catch (notifErr: any) {
+      // If direct constructor fails (e.g. in some mobile browsers), try registering SW dynamically
+      if ('serviceWorker' in navigator) {
+        try {
+          const reg = await navigator.serviceWorker.register('/sw.js');
+          await reg.showNotification(title, cleanOptions);
+          return { success: true };
+        } catch (regErr: any) {
+          return {
+            success: false,
+            error: 'failed',
+            message: regErr?.message || notifErr?.message || 'Could not display local notification.'
+          };
+        }
+      }
+
+      return {
+        success: false,
+        error: 'failed',
+        message: notifErr?.message || 'Could not display local notification.'
+      };
     }
   }
 
@@ -144,7 +239,10 @@ class NotificationService {
   /**
    * Trigger Daily Content Notification according to selected language and type
    */
-  triggerDailyContentNotification(lang: ContentLanguage, type?: DailyContentTypeOption): boolean {
+  async triggerDailyContentNotification(
+    lang: ContentLanguage,
+    type?: DailyContentTypeOption
+  ): Promise<boolean> {
     const todayStr = this.getTodayDateStr();
     const isUrdu = lang === 'urdu';
     const dayIndex = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
@@ -197,26 +295,27 @@ class NotificationService {
         break;
     }
 
-    const sent = this.sendNotification(title, {
+    const res = await this.sendNotification(title, {
       body,
       tag: `islamiq-daily-${todayStr}`
     });
 
-    if (sent) {
+    if (res.success) {
       try {
         localStorage.setItem(LAST_DAILY_NOTIF_KEY, todayStr);
       } catch {}
+      return true;
     }
-    return sent;
+    return false;
   }
 
   /**
    * Trigger Prayer Notification according to selected language
    */
-  triggerSalahNotification(
+  async triggerSalahNotification(
     prayerKey: 'fajr' | 'dhuhr' | 'asr' | 'maghrib' | 'isha',
     lang: ContentLanguage
-  ): boolean {
+  ): Promise<boolean> {
     const todayStr = this.getTodayDateStr();
     const isUrdu = lang === 'urdu';
 
@@ -262,33 +361,34 @@ class NotificationService {
     const title = isUrdu ? details.titleUrdu : details.titleEn;
     const body = isUrdu ? details.bodyUrdu : details.bodyEn;
 
-    const sent = this.sendNotification(title, {
+    const res = await this.sendNotification(title, {
       body,
       tag: `islamiq-salah-${prayerKey}-${todayStr}`
     });
 
-    if (sent) {
+    if (res.success) {
       try {
         localStorage.setItem(`${LAST_SALAH_NOTIF_PREFIX}${prayerKey}`, todayStr);
       } catch {}
+      return true;
     }
-    return sent;
+    return false;
   }
 
   /**
-   * Immediate test notification for user preview
+   * Immediate test notification with automatic permission request and direct browser delivery
    */
-  sendTestNotification(lang: ContentLanguage): boolean {
+  async sendTestNotification(lang: ContentLanguage): Promise<NotificationResult> {
     const isUrdu = lang === 'urdu';
-    return this.sendNotification(
-      isUrdu ? '🔔 ٹیسٹ نوٹیفکیشن • IslamIQ' : '🔔 Test Notification • IslamIQ',
-      {
-        body: isUrdu
-          ? 'ماشاءاللہ! آپ کے براؤزر کے نوٹیفکیشن درست طریقے سے فعال ہیں۔'
-          : 'MashaAllah! Your IslamIQ browser notifications are working successfully.',
-        tag: `islamiq-test-${Date.now()}`
-      }
-    );
+    const title = isUrdu ? '🔔 ٹیسٹ نوٹیفکیشن • IslamIQ' : '🔔 Test Notification • IslamIQ';
+    const body = isUrdu
+      ? 'ماشاءاللہ! آپ کے براؤزر کے نوٹیفکیشن درست طریقے سے فعال ہیں۔'
+      : 'MashaAllah! Your IslamIQ browser notifications are working successfully.';
+
+    return this.sendNotification(title, {
+      body,
+      tag: `islamiq-test-${Date.now()}`
+    });
   }
 
   /**
