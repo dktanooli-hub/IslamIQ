@@ -227,34 +227,55 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [contentLang, setContentLangState] = useState<ContentLanguage>('urdu'); // Urdu by default as requested
   const [activeTab, setActiveTab] = useState<AppTab>(() => {
     if (typeof window !== 'undefined') {
-      const path = window.location.pathname.replace(/^\//, '').toLowerCase();
-      const validCleanTabs: AppTab[] = [
-        'about',
-        'contact',
-        'privacy-policy',
-        'terms',
-        'disclaimer',
-        'islamic-quiz',
-        'kids-islamic-quiz',
-        'islamic-questions-answers',
-        'daily-quran-verse',
-        'daily-hadith',
-        'daily-dua',
-        'salah-learning',
-        'islamic-general-knowledge',
-        'how-to-perform-salah',
-        'how-to-perform-wudu',
-        '5-pillars-of-islam',
-        'six-articles-of-faith',
-        'salah-for-beginners',
-        'islamic-manners-for-kids',
-        'quran-learning-guide',
-        'hadith-learning-guide',
-        'ramadan-guide',
-        'zakat-basics'
-      ];
-      if (validCleanTabs.includes(path as AppTab)) {
-        return path as AppTab;
+      try {
+        const url = new URL(window.location.href);
+        const tabParam = url.searchParams.get('tab')?.toLowerCase();
+        if (tabParam === 'salah' || tabParam === 'salah-tracker') return 'salah';
+        if (tabParam === 'quiz') return 'quiz';
+        if (tabParam === 'qibla') return 'qibla';
+        if (tabParam === 'tasbih') return 'tasbih';
+        if (tabParam === 'search') return 'search';
+        if (tabParam === 'status') return 'status';
+        if (tabParam === 'daily' || tabParam === 'home') return 'home';
+
+        const path = url.pathname.replace(/^\//, '').toLowerCase();
+        const validCleanTabs: AppTab[] = [
+          'about',
+          'contact',
+          'privacy-policy',
+          'terms',
+          'disclaimer',
+          'islamic-quiz',
+          'kids-islamic-quiz',
+          'islamic-questions-answers',
+          'daily-quran-verse',
+          'daily-hadith',
+          'daily-dua',
+          'salah-learning',
+          'islamic-general-knowledge',
+          'how-to-perform-salah',
+          'how-to-perform-wudu',
+          '5-pillars-of-islam',
+          'six-articles-of-faith',
+          'salah-for-beginners',
+          'islamic-manners-for-kids',
+          'quran-learning-guide',
+          'hadith-learning-guide',
+          'ramadan-guide',
+          'zakat-basics',
+          'zakat-calculator',
+          'islamic-calendar'
+        ];
+        if (validCleanTabs.includes(path as AppTab)) {
+          return path as AppTab;
+        }
+        if (path === 'salah') return 'salah';
+        if (path === 'quiz') return 'quiz';
+        if (path === 'qibla') return 'qibla';
+        if (path === 'tasbih') return 'tasbih';
+        if (path === 'search') return 'search';
+      } catch {
+        // Fallback to home
       }
     }
     return 'home';
@@ -929,11 +950,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   ]);
 
   // Mode switching preserving all data
-  const setUserMode = (mode: UserMode) => {
+  const setUserMode = React.useCallback((mode: UserMode) => {
     setUserModeState(mode);
     setTasbihCount(0);
     showToast(mode === 'kids' ? 'Kids Mode activated! 🎈 (بچوں کا موڈ)' : 'Adult Mode activated 🌿 (بڑوں کا موڈ)');
-  };
+  }, []);
 
   const setContentLang = (lang: ContentLanguage) => {
     setContentLangState(lang);

@@ -13,11 +13,12 @@ self.addEventListener('notificationclick', (event) => {
   const data = event.notification.data || {};
   const targetTab = data.tab || 'home';
   const targetSection = data.section || '';
-  const targetPath = data.url || (targetTab === 'salah' ? '/?tab=salah' : (targetSection === 'daily' ? '/?tab=daily' : '/?tab=home'));
+  const targetPath = data.url || (targetTab === 'salah' ? '/?tab=salah' : (targetSection === 'daily' ? '/?tab=daily' : '/'));
+  const fullUrl = new URL(targetPath, self.location.origin).href;
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // 1. If an existing IslamIQ tab is open, focus it and tell it to navigate in-place
+      // 1. If an existing IslamIQ tab is open, focus it and tell it to navigate
       for (const client of clientList) {
         if ('url' in client && client.url.startsWith(self.location.origin)) {
           if ('postMessage' in client) {
@@ -27,15 +28,17 @@ self.addEventListener('notificationclick', (event) => {
               section: targetSection
             });
           }
+          if ('navigate' in client) {
+            client.navigate(fullUrl).catch(() => {});
+          }
           if ('focus' in client) {
-            client.focus();
+            return client.focus();
           }
           return;
         }
       }
 
       // 2. If no matching window is currently open, open the live target URL directly
-      const fullUrl = new URL(targetPath, self.location.origin).href;
       if (self.clients.openWindow) {
         return self.clients.openWindow(fullUrl);
       }

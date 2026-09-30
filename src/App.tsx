@@ -64,21 +64,25 @@ export const App: React.FC = () => {
 
   // Listen for notification click events (both from Service Worker postMessage & Desktop CustomEvent)
   useEffect(() => {
+    const handleNavigation = (tab?: string, section?: string) => {
+      if (!tab) return;
+      if (section === 'daily' || tab === 'home') {
+        setUserMode('adult');
+        setActiveTab('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (tab === 'salah') {
+        setActiveTab('salah');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        setActiveTab(tab as AppTab);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
     // 1. Service Worker postMessage handler (when notification is clicked on mobile/PWA)
     const handleSwMessage = (event: MessageEvent) => {
       if (event.data?.type === 'ISLAMIQ_NAVIGATE_TAB') {
-        const { tab, section } = event.data;
-        if (section === 'daily' || tab === 'home') {
-          setUserMode('adult');
-          setActiveTab('home');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (tab === 'salah') {
-          setActiveTab('salah');
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else if (tab) {
-          setActiveTab(tab as AppTab);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        handleNavigation(event.data.tab, event.data.section);
       }
     };
 
@@ -90,17 +94,7 @@ export const App: React.FC = () => {
     const handleCustomNavigate = (event: Event) => {
       const customEvt = event as CustomEvent<{ tab?: string; section?: string }>;
       const { tab, section } = customEvt.detail || {};
-      if (section === 'daily' || tab === 'home') {
-        setUserMode('adult');
-        setActiveTab('home');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (tab === 'salah') {
-        setActiveTab('salah');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (tab) {
-        setActiveTab(tab as AppTab);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      handleNavigation(tab, section);
     };
 
     window.addEventListener('islamiq-navigate-tab', handleCustomNavigate);
@@ -111,9 +105,9 @@ export const App: React.FC = () => {
       }
       window.removeEventListener('islamiq-navigate-tab', handleCustomNavigate);
     };
-  }, [setActiveTab, setUserMode]);
+  }, []);
 
-  // Sync URL query params, hash & clean path for SEO, direct linking & notification click
+  // Sync URL query params, hash & clean path for SEO, direct linking & notification click on mount/popstate
   useEffect(() => {
     const handlePopState = () => {
       try {
@@ -132,22 +126,28 @@ export const App: React.FC = () => {
             setActiveTab('salah');
             return;
           }
-          if (tabQuery === 'home') {
-            setActiveTab('home');
+          if (tabQuery === 'quiz') {
+            setActiveTab('quiz');
             return;
           }
-          const validTabs: AppTab[] = [
-            'home', 'quiz', 'salah', 'tasbih', 'search', 'status', 'qibla',
-            'about', 'contact', 'privacy-policy', 'terms', 'disclaimer',
-            'islamic-quiz', 'kids-islamic-quiz', 'islamic-questions-answers',
-            'daily-quran-verse', 'daily-hadith', 'daily-dua', 'salah-learning',
-            'islamic-general-knowledge', 'how-to-perform-salah', 'how-to-perform-wudu',
-            '5-pillars-of-islam', 'six-articles-of-faith', 'salah-for-beginners',
-            'islamic-manners-for-kids', 'quran-learning-guide', 'hadith-learning-guide',
-            'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar'
-          ];
-          if (validTabs.includes(tabQuery as AppTab)) {
-            setActiveTab(tabQuery as AppTab);
+          if (tabQuery === 'qibla') {
+            setActiveTab('qibla');
+            return;
+          }
+          if (tabQuery === 'tasbih') {
+            setActiveTab('tasbih');
+            return;
+          }
+          if (tabQuery === 'search') {
+            setActiveTab('search');
+            return;
+          }
+          if (tabQuery === 'status') {
+            setActiveTab('status');
+            return;
+          }
+          if (tabQuery === 'home') {
+            setActiveTab('home');
             return;
           }
         }
@@ -162,8 +162,24 @@ export const App: React.FC = () => {
           setActiveTab('home');
           return;
         }
-        if (path === 'quiz' || path === 'tasbih' || path === 'qibla' || path === 'search' || path === 'status') {
-          setActiveTab(path as AppTab);
+        if (path === 'quiz') {
+          setActiveTab('quiz');
+          return;
+        }
+        if (path === 'qibla') {
+          setActiveTab('qibla');
+          return;
+        }
+        if (path === 'tasbih') {
+          setActiveTab('tasbih');
+          return;
+        }
+        if (path === 'search') {
+          setActiveTab('search');
+          return;
+        }
+        if (path === 'status') {
+          setActiveTab('status');
           return;
         }
 
@@ -179,11 +195,11 @@ export const App: React.FC = () => {
 
         if (validCleanTabs.includes(path as AppTab)) {
           setActiveTab(path as AppTab);
-        } else {
-          // Never leave the app on an unhandled state that causes a blank screen
+        } else if (path === '' || path === 'home') {
           setActiveTab('home');
         }
       } catch {
+        // Fallback safely to home
         setActiveTab('home');
       }
     };
@@ -191,7 +207,7 @@ export const App: React.FC = () => {
     handlePopState();
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [setActiveTab, setUserMode]);
+  }, []);
 
   // Update document title & clean URL whenever active tab changes
   useEffect(() => {
@@ -344,15 +360,17 @@ export const App: React.FC = () => {
       document.title = 'Tasbih Counter • Digital Dhikr | IslamIQ';
     } else if (activeTab === 'qibla') {
       document.title = 'Qibla Direction • Kaaba Compass | IslamIQ';
+    } else if (activeTab === 'search') {
+      document.title = 'Islamic Q&A Search • Knowledge Finder | IslamIQ';
+    } else if (activeTab === 'status') {
+      document.title = 'Islamic Status Creator • Cards & Quotes | IslamIQ';
     } else {
       document.title = 'IslamIQ • Learn • Quiz • Grow';
-      if (window.location.pathname !== '/' && !window.location.search) {
-        window.history.pushState({}, '', '/');
-      }
-      const metaTag = document.querySelector('meta[name="description"]');
-      if (metaTag) {
-        metaTag.setAttribute('content', 'IslamIQ is an Islamic learning and educational platform designed for Kids and Adults featuring Islamic Quiz, Salah Tracker, Tasbih Counter, Qibla Direction, and Daily Quran & Hadith.');
-      }
+    }
+
+    // Clean URL pathname if navigating away from a clean route
+    if (!cleanRoutesMeta[activeTab] && window.location.pathname !== '/') {
+      window.history.pushState({}, '', '/');
     }
 
     // Track SPA navigation in Google Analytics 4
@@ -385,59 +403,162 @@ export const App: React.FC = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 pt-5 pb-16 sm:pb-20">
-        {activeTab === 'home' && (
+        {activeTab === 'quiz' ? (
+          <QuizSection />
+        ) : activeTab === 'salah' ? (
+          <SalahTracker />
+        ) : activeTab === 'qibla' ? (
+          <QiblaFinder onBack={() => setActiveTab('home')} />
+        ) : activeTab === 'tasbih' ? (
+          <TasbihCounter />
+        ) : activeTab === 'search' ? (
+          <KnowledgeSearch />
+        ) : activeTab === 'status' ? (
+          <StatusCreator
+            initialText={statusInitialText}
+            initialRef={statusInitialRef}
+          />
+        ) : activeTab === 'about' ? (
+          <AboutPage />
+        ) : activeTab === 'contact' ? (
+          <ContactPage />
+        ) : activeTab === 'privacy-policy' ? (
+          <PrivacyPolicyPage />
+        ) : activeTab === 'terms' ? (
+          <TermsPage />
+        ) : activeTab === 'disclaimer' ? (
+          <DisclaimerPage />
+        ) : activeTab === 'islamic-quiz' ? (
+          <IslamicQuizHub />
+        ) : activeTab === 'kids-islamic-quiz' ? (
+          <KidsIslamicQuizHub />
+        ) : activeTab === 'daily-quran-verse' ? (
+          <DailyQuranVerseHub />
+        ) : activeTab === 'daily-hadith' ? (
+          <DailyHadithHub />
+        ) : activeTab === 'daily-dua' ? (
+          <DailyDuaHub />
+        ) : activeTab === 'salah-learning' ? (
+          <SalahLearningHub />
+        ) : activeTab === 'islamic-general-knowledge' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <IslamicGeneralKnowledgeGuide />
+          </React.Suspense>
+        ) : activeTab === 'islamic-questions-answers' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <IslamicQAGuide />
+          </React.Suspense>
+        ) : activeTab === 'quran-learning-guide' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <QuranLearningGuide />
+          </React.Suspense>
+        ) : activeTab === 'how-to-perform-salah' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <HowToPerformSalahGuide />
+          </React.Suspense>
+        ) : activeTab === 'how-to-perform-wudu' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <HowToPerformWuduGuide />
+          </React.Suspense>
+        ) : activeTab === '5-pillars-of-islam' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <FivePillarsOfIslamGuide />
+          </React.Suspense>
+        ) : activeTab === 'six-articles-of-faith' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <SixArticlesOfFaithGuide />
+          </React.Suspense>
+        ) : activeTab === 'salah-for-beginners' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <SalahForBeginnersGuide />
+          </React.Suspense>
+        ) : activeTab === 'islamic-manners-for-kids' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <IslamicMannersForKidsGuide />
+          </React.Suspense>
+        ) : activeTab === 'hadith-learning-guide' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <HadithLearningGuide />
+          </React.Suspense>
+        ) : activeTab === 'ramadan-guide' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <RamadanGuide />
+          </React.Suspense>
+        ) : activeTab === 'zakat-basics' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <ZakatBasicsGuide />
+          </React.Suspense>
+        ) : activeTab === 'zakat-calculator' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <ZakatCalculator />
+          </React.Suspense>
+        ) : activeTab === 'islamic-calendar' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <IslamicCalendar />
+          </React.Suspense>
+        ) : (
           isKids ? (
             <KidsHome onSelectActivity={(tab) => setActiveTab(tab)} />
           ) : (
             <DailyFeed onNavigateToStatusWithText={handleNavigateToStatus} />
           )
         )}
-        {activeTab === 'quiz' && <QuizSection />}
-        {activeTab === 'salah' && <SalahTracker />}
-        {activeTab === 'qibla' && <QiblaFinder onBack={() => setActiveTab('home')} />}
-        {activeTab === 'tasbih' && <TasbihCounter />}
-        {activeTab === 'search' && <KnowledgeSearch />}
-        {activeTab === 'status' && (
-          <StatusCreator
-            initialText={statusInitialText}
-            initialRef={statusInitialRef}
-          />
-        )}
-        {activeTab === 'about' && <AboutPage />}
-        {activeTab === 'contact' && <ContactPage />}
-        {activeTab === 'privacy-policy' && <PrivacyPolicyPage />}
-        {activeTab === 'terms' && <TermsPage />}
-        {activeTab === 'disclaimer' && <DisclaimerPage />}
-
-        {/* SEO-friendly Islamic Content Hub Pages */}
-        {activeTab === 'islamic-quiz' && <IslamicQuizHub />}
-        {activeTab === 'kids-islamic-quiz' && <KidsIslamicQuizHub />}
-        {activeTab === 'daily-quran-verse' && <DailyQuranVerseHub />}
-        {activeTab === 'daily-hadith' && <DailyHadithHub />}
-        {activeTab === 'daily-dua' && <DailyDuaHub />}
-        {activeTab === 'salah-learning' && <SalahLearningHub />}
-
-        {/* AdSense Educational Guides */}
-        <React.Suspense fallback={
-          <div className="flex items-center justify-center p-12">
-            <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        }>
-          {activeTab === 'islamic-general-knowledge' && <IslamicGeneralKnowledgeGuide />}
-          {activeTab === 'islamic-questions-answers' && <IslamicQAGuide />}
-          {activeTab === 'quran-learning-guide' && <QuranLearningGuide />}
-          {activeTab === 'how-to-perform-salah' && <HowToPerformSalahGuide />}
-          {activeTab === 'how-to-perform-wudu' && <HowToPerformWuduGuide />}
-          {activeTab === '5-pillars-of-islam' && <FivePillarsOfIslamGuide />}
-          {activeTab === 'six-articles-of-faith' && <SixArticlesOfFaithGuide />}
-          {activeTab === 'salah-for-beginners' && <SalahForBeginnersGuide />}
-          {activeTab === 'islamic-manners-for-kids' && <IslamicMannersForKidsGuide />}
-          {activeTab === 'hadith-learning-guide' && <HadithLearningGuide />}
-          {activeTab === 'ramadan-guide' && <RamadanGuide />}
-          {activeTab === 'zakat-basics' && <ZakatBasicsGuide />}
-          {activeTab === 'zakat-calculator' && <ZakatCalculator />}
-          {activeTab === 'islamic-calendar' && <IslamicCalendar />}
-        </React.Suspense>
       </main>
 
       {/* Public Footer */}
