@@ -48,7 +48,7 @@ const ZakatCalculator = React.lazy(() => import('./components/tools/ZakatCalcula
 const IslamicCalendar = React.lazy(() => import('./components/tools/IslamicCalendar'));
 
 export const App: React.FC = () => {
-  const { activeTab, setActiveTab, userMode, toastMessage, contentLang } = useApp();
+  const { activeTab, setActiveTab, userMode, setUserMode, toastMessage, contentLang } = useApp();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
@@ -62,40 +62,128 @@ export const App: React.FC = () => {
     return () => clearInterval(interval);
   }, [contentLang]);
 
-  // Sync URL hash / clean path for SEO & direct linking (/islamic-quiz, /about, etc.)
+  // Listen for notification click events (both from Service Worker postMessage & Desktop CustomEvent)
+  useEffect(() => {
+    // 1. Service Worker postMessage handler (when notification is clicked on mobile/PWA)
+    const handleSwMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'ISLAMIQ_NAVIGATE_TAB') {
+        const { tab, section } = event.data;
+        if (section === 'daily' || tab === 'home') {
+          setUserMode('adult');
+          setActiveTab('home');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (tab === 'salah') {
+          setActiveTab('salah');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } else if (tab) {
+          setActiveTab(tab as AppTab);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+      }
+    };
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', handleSwMessage);
+    }
+
+    // 2. Custom event handler (when notification is clicked on desktop)
+    const handleCustomNavigate = (event: Event) => {
+      const customEvt = event as CustomEvent<{ tab?: string; section?: string }>;
+      const { tab, section } = customEvt.detail || {};
+      if (section === 'daily' || tab === 'home') {
+        setUserMode('adult');
+        setActiveTab('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (tab === 'salah') {
+        setActiveTab('salah');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (tab) {
+        setActiveTab(tab as AppTab);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('islamiq-navigate-tab', handleCustomNavigate);
+
+    return () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.removeEventListener('message', handleSwMessage);
+      }
+      window.removeEventListener('islamiq-navigate-tab', handleCustomNavigate);
+    };
+  }, [setActiveTab, setUserMode]);
+
+  // Sync URL query params, hash & clean path for SEO, direct linking & notification click
   useEffect(() => {
     const handlePopState = () => {
-      const path = window.location.pathname.replace(/^\//, '').toLowerCase();
-      const validCleanTabs: AppTab[] = [
-        'about',
-        'contact',
-        'privacy-policy',
-        'terms',
-        'disclaimer',
-        'islamic-quiz',
-        'kids-islamic-quiz',
-        'islamic-questions-answers',
-        'daily-quran-verse',
-        'daily-hadith',
-        'daily-dua',
-        'salah-learning',
-        'islamic-general-knowledge',
-        'how-to-perform-salah',
-        'how-to-perform-wudu',
-        '5-pillars-of-islam',
-        'six-articles-of-faith',
-        'salah-for-beginners',
-        'islamic-manners-for-kids',
-        'quran-learning-guide',
-        'hadith-learning-guide',
-        'ramadan-guide',
-        'zakat-basics',
-        'zakat-calculator',
-        'islamic-calendar'
-      ];
-      if (validCleanTabs.includes(path as AppTab)) {
-        setActiveTab(path as AppTab);
-      } else if (path === '' || path === 'home') {
+      try {
+        const url = new URL(window.location.href);
+        const tabQuery = url.searchParams.get('tab')?.toLowerCase();
+        const path = url.pathname.replace(/^\//, '').toLowerCase();
+
+        // 1. Check query parameter ?tab=... (used for 100% reliable deep links from notifications)
+        if (tabQuery) {
+          if (tabQuery === 'daily' || tabQuery === 'daily-content') {
+            setUserMode('adult');
+            setActiveTab('home');
+            return;
+          }
+          if (tabQuery === 'salah' || tabQuery === 'salah-tracker') {
+            setActiveTab('salah');
+            return;
+          }
+          if (tabQuery === 'home') {
+            setActiveTab('home');
+            return;
+          }
+          const validTabs: AppTab[] = [
+            'home', 'quiz', 'salah', 'tasbih', 'search', 'status', 'qibla',
+            'about', 'contact', 'privacy-policy', 'terms', 'disclaimer',
+            'islamic-quiz', 'kids-islamic-quiz', 'islamic-questions-answers',
+            'daily-quran-verse', 'daily-hadith', 'daily-dua', 'salah-learning',
+            'islamic-general-knowledge', 'how-to-perform-salah', 'how-to-perform-wudu',
+            '5-pillars-of-islam', 'six-articles-of-faith', 'salah-for-beginners',
+            'islamic-manners-for-kids', 'quran-learning-guide', 'hadith-learning-guide',
+            'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar'
+          ];
+          if (validTabs.includes(tabQuery as AppTab)) {
+            setActiveTab(tabQuery as AppTab);
+            return;
+          }
+        }
+
+        // 2. Check clean path (e.g. /salah, /daily, /about)
+        if (path === 'salah' || path === 'salah-tracker') {
+          setActiveTab('salah');
+          return;
+        }
+        if (path === 'daily' || path === 'daily-content' || path === 'daily-feed') {
+          setUserMode('adult');
+          setActiveTab('home');
+          return;
+        }
+        if (path === 'quiz' || path === 'tasbih' || path === 'qibla' || path === 'search' || path === 'status') {
+          setActiveTab(path as AppTab);
+          return;
+        }
+
+        const validCleanTabs: AppTab[] = [
+          'about', 'contact', 'privacy-policy', 'terms', 'disclaimer',
+          'islamic-quiz', 'kids-islamic-quiz', 'islamic-questions-answers',
+          'daily-quran-verse', 'daily-hadith', 'daily-dua', 'salah-learning',
+          'islamic-general-knowledge', 'how-to-perform-salah', 'how-to-perform-wudu',
+          '5-pillars-of-islam', 'six-articles-of-faith', 'salah-for-beginners',
+          'islamic-manners-for-kids', 'quran-learning-guide', 'hadith-learning-guide',
+          'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar'
+        ];
+
+        if (validCleanTabs.includes(path as AppTab)) {
+          setActiveTab(path as AppTab);
+        } else {
+          // Never leave the app on an unhandled state that causes a blank screen
+          setActiveTab('home');
+        }
+      } catch {
         setActiveTab('home');
       }
     };
@@ -103,7 +191,7 @@ export const App: React.FC = () => {
     handlePopState();
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [setActiveTab]);
+  }, [setActiveTab, setUserMode]);
 
   // Update document title & clean URL whenever active tab changes
   useEffect(() => {
@@ -244,9 +332,21 @@ export const App: React.FC = () => {
       if (metaTag) {
         metaTag.setAttribute('content', cleanRoutesMeta[activeTab].desc);
       }
+    } else if (activeTab === 'salah') {
+      document.title = 'Salah Tracker • Daily Namaz Tracker & Timings | IslamIQ';
+      const metaTag = document.querySelector('meta[name="description"]');
+      if (metaTag) {
+        metaTag.setAttribute('content', 'Track your five daily obligatory prayers, view weekly streaks, and build consistent Salah habits with IslamIQ Salah Tracker.');
+      }
+    } else if (activeTab === 'quiz') {
+      document.title = 'Islamic Quiz • Test Your Knowledge | IslamIQ';
+    } else if (activeTab === 'tasbih') {
+      document.title = 'Tasbih Counter • Digital Dhikr | IslamIQ';
+    } else if (activeTab === 'qibla') {
+      document.title = 'Qibla Direction • Kaaba Compass | IslamIQ';
     } else {
       document.title = 'IslamIQ • Learn • Quiz • Grow';
-      if (window.location.pathname !== '/') {
+      if (window.location.pathname !== '/' && !window.location.search) {
         window.history.pushState({}, '', '/');
       }
       const metaTag = document.querySelector('meta[name="description"]');
