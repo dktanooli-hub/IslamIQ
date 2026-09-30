@@ -1,13 +1,14 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Flame, Star, Sparkles, User, Baby, Moon, Globe, ShieldCheck, Compass } from 'lucide-react';
+import { Flame, Star, Sparkles, User, Baby, Moon, Globe, ShieldCheck, Compass, Bell } from 'lucide-react';
 
 interface HeaderProps {
   onOpenProfile: () => void;
   onOpenAdmin?: () => void;
+  onOpenNotifications?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenProfile, onOpenAdmin }) => {
+export const Header: React.FC<HeaderProps> = ({ onOpenProfile, onOpenAdmin, onOpenNotifications }) => {
   const { userMode, setUserMode, contentLang, setContentLang, userStats, isAdminAuthenticated, activeTab, setActiveTab } = useApp();
 
   const isKids = userMode === 'kids';
@@ -124,6 +125,22 @@ export const Header: React.FC<HeaderProps> = ({ onOpenProfile, onOpenAdmin }) =>
             <Flame className="w-3.5 h-3.5 text-orange-400 fill-orange-400" />
             <span>{userStats.streakDays}d Streak</span>
           </div>
+
+          {/* Notification Settings Button */}
+          {onOpenNotifications && (
+            <button
+              onClick={onOpenNotifications}
+              className={`p-2 rounded-xl text-xs font-bold flex items-center border transition-all active:scale-95 ${
+                isKids
+                  ? 'bg-white text-teal-800 border-amber-300 hover:bg-amber-100'
+                  : 'bg-emerald-950/60 text-goldAccent border-emerald-700 hover:bg-emerald-900'
+              }`}
+              title={contentLang === 'urdu' ? 'نوٹیفکیشن ترتیبات (یاد دہانی)' : 'Notification Settings (Alerts)'}
+              aria-label="Notification Settings"
+            >
+              <Bell className="w-4 h-4" />
+            </button>
+          )}
 
           {/* XP Badge & Profile */}
           <button

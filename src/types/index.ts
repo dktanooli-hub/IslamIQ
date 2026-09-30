@@ -198,3 +198,25 @@ export interface QuizAttemptRecord {
   userName: string;
 }
 
+export interface PrayerNotificationItem {
+  enabled: boolean;
+  time: string; // "HH:MM" 24h format
+}
+
+export type DailyContentTypeOption = 'all' | 'verse' | 'hadith' | 'dua' | 'reminder';
+
+export interface AppNotificationSettings {
+  enabled: boolean;
+  dailyContentEnabled: boolean;
+  dailyContentTime: string; // e.g. "09:00"
+  dailyContentType: DailyContentTypeOption;
+  salahEnabled: boolean;
+  prayers: {
+    fajr: PrayerNotificationItem;
+    dhuhr: PrayerNotificationItem;
+    asr: PrayerNotificationItem;
+    maghrib: PrayerNotificationItem;
+    isha: PrayerNotificationItem;
+  };
+}
+

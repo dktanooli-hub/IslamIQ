@@ -1,7 +1,8 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { SalahDayRecord } from '../types';
-import { CheckCircle2, Circle, Flame, Sun, Sunrise, Sunset, Moon, Sparkles, Compass, ChevronRight } from 'lucide-react';
+import { CheckCircle2, Circle, Flame, Sun, Sunrise, Sunset, Moon, Sparkles, Compass, ChevronRight, Bell } from 'lucide-react';
+import { NotificationSettingsModal } from './NotificationSettingsModal';
 
 export const SalahTracker: React.FC = () => {
   const { todayDateStr, todaySalah, toggleSalahPrayer, salahHistory, contentLang, userMode, setActiveTab } = useApp();
@@ -10,6 +11,7 @@ export const SalahTracker: React.FC = () => {
 
   // Selected date state (defaults to today)
   const [selectedDate, setSelectedDate] = React.useState<string>(todayDateStr || new Date().toISOString().split('T')[0]);
+  const [isNotifModalOpen, setIsNotifModalOpen] = React.useState(false);
   const prayersContainerRef = React.useRef<HTMLDivElement>(null);
 
   // Sync if todayDateStr is provided asynchronously
@@ -218,15 +220,26 @@ export const SalahTracker: React.FC = () => {
                 : (contentLang === 'urdu' ? `تاریخ ${formattedSelectedDate} کی نمازوں میں ترمیم کریں` : `Editing prayers for ${formattedSelectedDate}`)}
             </p>
           </div>
-          {!isSelectedToday && (
+          <div className="flex items-center gap-2">
+            {!isSelectedToday && (
+              <button
+                type="button"
+                onClick={() => setSelectedDate(todayDateStr)}
+                className="text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-100/80 hover:bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 transition-all active:scale-95 shadow-2xs"
+              >
+                {contentLang === 'urdu' ? 'آج پر واپس جائیں' : 'Back to Today'}
+              </button>
+            )}
             <button
               type="button"
-              onClick={() => setSelectedDate(todayDateStr)}
-              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-100/80 hover:bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300 transition-all active:scale-95 shadow-2xs"
+              onClick={() => setIsNotifModalOpen(true)}
+              className="text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-xl border border-emerald-200 flex items-center gap-1.5 transition-all active:scale-95"
+              title={contentLang === 'urdu' ? 'نماز کے اوقات اور الرٹس کی ترتیبات' : 'Prayer times & alerts settings'}
             >
-              {contentLang === 'urdu' ? 'آج پر واپس جائیں' : 'Back to Today'}
+              <Bell className="w-3.5 h-3.5 text-emerald-700" />
+              <span className="hidden sm:inline">{contentLang === 'urdu' ? 'نماز الرٹس' : 'Prayer Alerts'}</span>
             </button>
-          )}
+          </div>
         </div>
 
         {prayers.map(prayer => {
@@ -382,6 +395,12 @@ export const SalahTracker: React.FC = () => {
           })}
         </div>
       </div>
+
+      {/* Notification Settings Modal */}
+      <NotificationSettingsModal
+        isOpen={isNotifModalOpen}
+        onClose={() => setIsNotifModalOpen(false)}
+      />
 
     </div>
   );

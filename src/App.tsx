@@ -26,6 +26,8 @@ import { DailyDuaHub } from './components/seo/DailyDuaHub';
 import { SalahLearningHub } from './components/seo/SalahLearningHub';
 import { IslamicGeneralKnowledgeHub } from './components/seo/IslamicGeneralKnowledgeHub';
 import { Footer } from './components/Footer';
+import { NotificationSettingsModal } from './components/NotificationSettingsModal';
+import { notificationService } from './services/notificationService';
 import { AppTab } from './types';
 import { trackPageView } from './utils/analytics';
 
@@ -46,9 +48,19 @@ const ZakatCalculator = React.lazy(() => import('./components/tools/ZakatCalcula
 const IslamicCalendar = React.lazy(() => import('./components/tools/IslamicCalendar'));
 
 export const App: React.FC = () => {
-  const { activeTab, setActiveTab, userMode, toastMessage } = useApp();
+  const { activeTab, setActiveTab, userMode, toastMessage, contentLang } = useApp();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+
+  // Periodic background check for scheduled notifications
+  useEffect(() => {
+    notificationService.checkScheduled(contentLang);
+    const interval = setInterval(() => {
+      notificationService.checkScheduled(contentLang);
+    }, 30000);
+    return () => clearInterval(interval);
+  }, [contentLang]);
 
   // Sync URL hash / clean path for SEO & direct linking (/islamic-quiz, /about, etc.)
   useEffect(() => {
@@ -268,6 +280,7 @@ export const App: React.FC = () => {
       <Header
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenNotifications={() => setIsNotificationsOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -338,6 +351,16 @@ export const App: React.FC = () => {
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenNotifications={() => {
+          setIsProfileOpen(false);
+          setIsNotificationsOpen(true);
+        }}
+      />
+
+      {/* Notification Settings Modal */}
+      <NotificationSettingsModal
+        isOpen={isNotificationsOpen}
+        onClose={() => setIsNotificationsOpen(false)}
       />
 
       {/* Built-in Secure Admin Panel */}
