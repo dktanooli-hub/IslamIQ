@@ -158,18 +158,12 @@ class NotificationService {
       };
     }
 
-    // Clean options with valid existing app icon and navigation target metadata
+    // Clean options with valid existing app icon
     const cleanOptions: NotificationOptions = {
       icon: '/app-icon.png',
       badge: '/app-icon.png',
       silent: false,
-      ...options,
-      data: {
-        tab: options?.data?.tab || 'home',
-        section: options?.data?.section || '',
-        url: options?.data?.url || '/?tab=home',
-        ...(options?.data || {})
-      }
+      ...options
     };
 
     // Strategy A: If Service Worker is registered, use reg.showNotification()
@@ -195,13 +189,6 @@ class NotificationService {
       notif.onclick = () => {
         window.focus();
         notif.close();
-        const targetTab = cleanOptions.data?.tab || 'home';
-        const targetSection = cleanOptions.data?.section || '';
-        window.dispatchEvent(
-          new CustomEvent('islamiq-navigate-tab', {
-            detail: { tab: targetTab, section: targetSection }
-          })
-        );
       };
       return { success: true };
     } catch (notifErr: any) {
@@ -310,12 +297,7 @@ class NotificationService {
 
     const res = await this.sendNotification(title, {
       body,
-      tag: `islamiq-daily-${todayStr}`,
-      data: {
-        tab: 'home',
-        section: 'daily',
-        url: '/?tab=daily'
-      }
+      tag: `islamiq-daily-${todayStr}`
     });
 
     if (res.success) {
@@ -381,12 +363,7 @@ class NotificationService {
 
     const res = await this.sendNotification(title, {
       body,
-      tag: `islamiq-salah-${prayerKey}-${todayStr}`,
-      data: {
-        tab: 'salah',
-        section: 'salah',
-        url: '/?tab=salah'
-      }
+      tag: `islamiq-salah-${prayerKey}-${todayStr}`
     });
 
     if (res.success) {
@@ -410,12 +387,7 @@ class NotificationService {
 
     return this.sendNotification(title, {
       body,
-      tag: `islamiq-test-${Date.now()}`,
-      data: {
-        tab: 'home',
-        section: 'home',
-        url: '/?tab=home'
-      }
+      tag: `islamiq-test-${Date.now()}`
     });
   }
 
