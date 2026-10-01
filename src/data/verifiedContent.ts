@@ -88,6 +88,17 @@ export const VERIFIED_QURAN_VERSES: QuranVerse[] = [
     surahNumber: 39,
     ayahNumber: 53,
     theme: 'Divine Mercy & Hope (رحمت و مغفرتِ الٰہی)'
+  },
+  {
+    id: 'verse-9',
+    arabic: 'يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ ۚ إِنَّ اللَّهَ مَعَ الصَّابِرِينَ',
+    translationUrdu: 'اے ایمان والو! صبر اور نماز کے ذریعے (اللہ کی) مدد طلب کرو، بے شک اللہ صبر کرنے والوں کے ساتھ ہے۔',
+    translationEn: 'O you who have believed, seek help through patience and prayer. Indeed, Allah is with the patient.',
+    surahNameArabic: 'البقرة',
+    surahNameEn: 'Al-Baqarah',
+    surahNumber: 2,
+    ayahNumber: 153,
+    theme: 'Patience & Prayer (صبر اور نماز)'
   }
 ];
 
@@ -175,6 +186,18 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     grade: 'Sahih',
     lessonUrdu: 'دین اور نفع بخش علم حاصل کرنے کی مستقل کوشش کریں، یہ اللہ کی قربت اور جنت کا آسان راستہ ہے۔',
     lessonEn: 'Consistently seek beneficial Islamic knowledge, as learning is a direct and illuminated pathway to Jannah.'
+  },
+  {
+    id: 'hadith-8',
+    arabic: 'مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ',
+    textUrdu: 'جو شخص اللہ اور یومِ آخرت پر ایمان رکھتا ہو، اسے چاہیے کہ اچھی بات کہے یا پھر خاموش رہے۔',
+    textEn: 'Whoever believes in Allah and the Last Day should speak good or remain silent.',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '6011',
+    grade: 'Sahih',
+    lessonUrdu: 'گفتگو کرنے سے پہلے اپنے الفاظ کا وزن کریں؛ اچھی اور نفع بخش بات کریں ورنہ خاموشی بہترین عافیت ہے۔',
+    lessonEn: 'Weigh your words carefully before speaking; share beneficial goodness or maintain peaceful silence.'
   }
 ];
 
@@ -262,6 +285,18 @@ export const VERIFIED_DUAS: DuaItem[] = [
     reference: 'Sahih Muslim 2721',
     occasionUrdu: 'ہر نماز کے بعد اور ہر دعا میں مانگنا مسنون اور جامع ترین دعاؤں میں سے ہے۔',
     occasionEn: 'A comprehensive Sunnah prayer to recite regularly for spiritual uprightness and noble character.'
+  },
+  {
+    id: 'dua-8',
+    titleEn: 'Dua for Protection from All Harm & Affliction',
+    titleUrdu: 'ہر قسم کے نقصان، آفت اور بیماری سے حفاظت کی دعا',
+    arabic: 'بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ',
+    transliteration: 'Bismillahilladhee la yadurru ma\'as-mihi shay\'un fil-ardi wa la fis-samaa\'i wa Huwas-Samee\'ul-\'Aleem',
+    translationUrdu: 'اللہ کے نام کے ساتھ جس کے نام کی برکت سے زمین اور آسمان میں کوئی چیز نقصان نہیں پہنچا سکتی، اور وہی سب کچھ سننے والا، جاننے والا ہے۔',
+    translationEn: 'In the Name of Allah, with Whose Name nothing can cause harm in the earth nor in the heavens, and He is the All-Hearing, the All-Knowing.',
+    reference: 'Sunan Abi Dawud 5088, Jami at-Tirmidhi 3388 (Sahih)',
+    occasionUrdu: 'صبح اور شام 3 مرتبہ پڑھنا مسنون ہے، جس سے ہر ناگہانی آفت سے حفاظت رہتی ہے۔',
+    occasionEn: 'Sunnah to recite 3 times in the morning and evening for divine protection against all harm.'
   }
 ];
 
@@ -315,6 +350,16 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     category: 'Spiritual Growth',
     practicalTipUrdu: 'آج کسی بھی فکر یا مشکل کے وقت دل سے "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ" پڑھ کر اللہ پر بھروسا رکھیں۔',
     practicalTipEn: 'Whenever feeling anxious today, consciously recite "Hasbunallahu wa Ni\'mal Wakeel" and place your trust in Allah.'
+  },
+  {
+    id: 'rem-6',
+    titleEn: 'The Beauty of Gratitude in Hardship and Ease',
+    titleUrdu: 'شکر گزاری کی برکت اور وسعت',
+    bodyEn: 'The Prophet ﷺ said: "How wonderful is the affair of the believer, for all his affairs are good! If good happens to him, he is grateful, and that is good for him. If hardship befalls him, he is patient, and that is good for him." (Sahih Muslim 2999). Gratitude turns whatever we have into abundance and preserves inner peace.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "مومن کا معاملہ بھی خوب ہے، اس کے ہر معاملے میں خیر ہے۔ اگر اسے کوئی خوشی حاصل ہو تو وہ شکر کرتا ہے، جو اس کے لیے خیر ہے؛ اور اگر اسے کوئی تکلیف پہنچے تو وہ صبر کرتا ہے، جو اس کے لیے خیر ہے۔" (صحیح مسلم: 2999)۔ شکر گزاری نعمتوں کو قائم رکھتی ہے اور دل کو مطمئن بناتی ہے۔',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'آج ان تین چھوٹی نعمتوں پر دل سے غور کر کے اللہ کا شکر ادا کریں جن پر ہم عام طور پر توجہ نہیں دیتے۔',
+    practicalTipEn: 'Consciously identify three everyday blessings today and whisper heartfelt thanks to Allah.'
   }
 ];
 
@@ -1239,6 +1284,209 @@ export const VERIFIED_QUESTIONS: QuizQuestion[] = [
     forKids: true,
     kidsHintUrdu: 'جنہوں نے اپنے والد کے ساتھ مل کر خانہ کعبہ کی تعمیر بھی کی تھی!',
     kidsHintEn: 'He helped his father build the Holy Kaaba!'
+  },
+  {
+    id: 'daily-q-2',
+    questionUrdu: 'اسلام میں صبح کی وہ کون سی مبارک نماز ہے جسے ادا کرنے والا دن بھر اللہ کے ذمہ اور پناہ میں آ جاتا ہے؟',
+    questionEn: 'Which obligatory morning prayer places the believer under the divine covenant and protection of Allah throughout the day?',
+    optionsUrdu: ['نمازِ فجر (Fajr)', 'نمازِ ظہر (Dhuhr)', 'نمازِ عصر (Asr)', 'نمازِ عشاء (Isha)'],
+    optionsEn: ['Fajr Prayer', 'Dhuhr Prayer', 'Asr Prayer', 'Isha Prayer'],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا: "جس نے فجر کی نماز باجماعت ادا کی وہ اللہ کی امان اور ضمانت میں ہے۔" (صحیح مسلم: 657)۔ فجر کی دو رکعت سنتیں دنیا و مافیہا سے افضل ہیں۔ (صحیح مسلم: 725)۔',
+    explanationEn: 'The Prophet ﷺ stated: "Whoever prays the morning prayer (Fajr) is under the covenant and protection of Allah." (Sahih Muslim 657). Its two Sunnah units are superior to the world and all it contains (Sahih Muslim 725).',
+    category: 'Salah',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-11',
+    questionUrdu: 'قرآن مجید کے نازل ہونے کی کل مدت کتنے سالوں پر محیط ہے؟',
+    questionEn: 'Over approximately how many total years was the Holy Quran revealed to Prophet Muhammad ﷺ?',
+    optionsUrdu: ['تقریباً 23 سال', 'تقریباً 10 سال', 'تقریباً 15 سال', 'تقریباً 30 سال'],
+    optionsEn: ['Approximately 23 years', 'Approximately 10 years', 'Approximately 15 years', 'Approximately 30 years'],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید پہلی وحی (غارِ حرا) سے لے کر نبی ﷺ کے وصال مبارک تک تقریباً 23 سال کے عرصے میں بتدریج نازل ہوا۔ (مقدمہ تفسیر ابن کثیر: ج 1 ص 15)۔',
+    explanationEn: 'The Holy Quran was revealed gradually over approximately 23 years (13 years in Makkah and 10 in Madinah) addressing the community\'s spiritual and moral growth (Tafsir Ibn Kathir).',
+    category: 'Quran',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-12',
+    questionUrdu: 'شریعتِ اسلامی میں سونے پر زکوٰۃ کا کم از کم نصاب کتنا مقرر ہے؟',
+    questionEn: 'According to Islamic jurisprudence, what is the minimum Nisab threshold for gold upon which Zakat becomes due?',
+    optionsUrdu: ['ساڑھے سات (7.5) تولہ (تقریباً 87.48 گرام)', 'ساڑھے باون (52.5) تولہ', 'دس تولہ', 'پندرہ تولہ'],
+    optionsEn: ['7.5 Tola (approx. 87.48 grams / 20 Dinars)', '52.5 Tola', '10 Tola', '15 Tola'],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ کی احادیث کے مطابق سونے کا نصاب 20 دینار ہے جو 7.5 تولہ یا تقریباً 87.48 گرام بنتا ہے۔ قمری سال گزرنے پر اس پر 2.5 فیصد زکوٰۃ واجب ہوتی ہے۔ (سنن ابی داؤد: 1573)۔',
+    explanationEn: 'The Prophet ﷺ determined the Nisab of gold at 20 Dinars (equal to 7.5 Tolas or approx. 87.48 grams). Once held for a full lunar year, 2.5% Zakat is obligatory (Sunan Abi Dawud 1573).',
+    category: 'Pillars',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-13',
+    questionUrdu: 'سن 6 ہجری میں مسلمانوں اور قریشِ مکہ کے درمیان ہونے والے تاریخی امن معاہدے کو کس نام سے جانا جاتا ہے؟',
+    questionEn: 'What is the name of the pivotal peace treaty signed in 6 AH between Prophet Muhammad ﷺ and the Quraysh of Makkah?',
+    optionsUrdu: ['صلح حدیبیہ (Treaty of Hudaybiyyah)', 'میثاقِ مدینہ', 'بیعتِ عقبہ اولیٰ', 'حلف الفضول'],
+    optionsEn: ['Treaty of Hudaybiyyah (صلح حدیبیہ)', 'Constitution of Madinah (Mithaq al-Madinah)', 'Pledge of Aqabah', 'Hilf al-Fudul'],
+    correctIndex: 0,
+    explanationUrdu: 'ذی القعدہ 6 ہجری میں حدیبیہ کے مقام پر دس سالہ امن کا تاریخی معاہدہ ہوا جسے قرآن مجید کی سورۃ الفتح میں "فتحاً مبیناً" (کھلی فتح) قرار دیا گیا۔ (صحیح بخاری: 2731، سورۃ الفتح 48:1)۔',
+    explanationEn: 'The Treaty of Hudaybiyyah took place in 6 AH. Allah described this peaceful truce in Surah Al-Fat-h as a clear victory ("Fat-han Mubeena") for the expansion of Islam (Sahih al-Bukhari 2731, Quran 48:1).',
+    category: 'Seerah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-14',
+    questionUrdu: 'قرآن مجید میں حضرت موسیٰ علیہ السلام کے سگے بھائی اور ساتھی پیغمبر کا کیا نام بیان ہوا ہے؟',
+    questionEn: 'According to the Holy Quran, who was the brother and fellow Prophet of Prophet Musa (Moses) AS?',
+    optionsUrdu: ['حضرت ہارون علیہ السلام', 'حضرت یوشع علیہ السلام', 'حضرت شعیب علیہ السلام', 'حضرت خضر علیہ السلام'],
+    optionsEn: ['Prophet Harun (Aaron) AS', 'Prophet Yusha (Joshua) AS', 'Prophet Shu\'ayb AS', 'Prophet Khidr AS'],
+    correctIndex: 0,
+    explanationUrdu: 'حضرت موسیٰ علیہ السلام کی دعا پر اللہ تعالیٰ نے ان کے بھائی حضرت ہارون علیہ السلام کو نبوت عطا فرمائی: "وَأَخِي هَارُونُ هُوَ أَفْصَحُ مِنِّي لِسَانًا"۔ (سورۃ القصص: 34، سورۃ طٰہٰ: 29-30)۔',
+    explanationEn: 'Allah answered Prophet Musa\'s prayer by granting Prophethood to his brother Harun (Aaron) AS: "And my brother Aaron is more eloquent than me in speech." (Surah Al-Qasas 28:34, Surah Ta-Ha 20:29-30).',
+    category: 'Prophets',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-15',
+    questionUrdu: 'مشہور حدیث کے مطابق انسان کے دنیا سے رخصت ہونے کے بعد جن 3 اعمال کا ثواب جاری رہتا ہے (صدقہ جاریہ)، ان میں کون سے شامل ہیں؟',
+    questionEn: 'According to the authentic Hadith in Sahih Muslim, which three continuous deeds (Sadaqah Jariyah) benefit a person even after death?',
+    optionsUrdu: [
+      'صدقہ جاریہ، نفع بخش علم، اور نیک اولاد کی دعا',
+      'دنیاوی شہرت، بڑا مکان، اور مال و دولت',
+      'صرف تجارتی منافع اور کارخانہ',
+      'زیادہ سے زیادہ سفر کرنا'
+    ],
+    optionsEn: [
+      'Continuous charity, beneficial knowledge, and a righteous child who prays for them',
+      'Worldly fame, a large mansion, and saved wealth',
+      'Commercial profits and factories only',
+      'Frequent worldly travels'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا: "جب انسان فوت ہو جاتا ہے تو اس کے اعمال کا سلسلہ منقطع ہو جاتا ہے سوائے تین چیزوں کے: صدقہ جاریہ، ایسا علم جس سے لوگ نفع اٹھائیں، اور نیک اولاد جو اس کے لیے دعا کرے۔" (صحیح مسلم: 1631)۔',
+    explanationEn: 'The Prophet ﷺ said: "When a person dies, their deeds come to an end except for three: ongoing charity, beneficial knowledge, or a righteous child who prays for them." (Sahih Muslim 1631).',
+    category: 'Hadith',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'kids-27',
+    questionUrdu: 'جب ایک مسلمان دوسرے مسلمان سے ملے تو سلام کے لیے کیا مسنون الفاظ کہنے چاہییں؟',
+    questionEn: 'What are the blessed greeting words we say when we meet another Muslim?',
+    optionsUrdu: [
+      'اَلسَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللّٰهِ',
+      'گڈ مارننگ',
+      'ہیلو دوست',
+      'بائے بائے'
+    ],
+    optionsEn: [
+      'Assalamu Alaikum wa Rahmatullahi',
+      'Good morning',
+      'Hello friend',
+      'Bye bye'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'مسلمانوں کو آپس میں "السلام علیکم" کہنا چاہیے، جس کا مطلب ہے "تم پر اللہ کی سلامتی ہو"۔ یہ سلام پیار اور برکت پھیلاتا ہے۔',
+    explanationEn: 'Saying "Assalamu Alaikum" means "Peace be upon you from Allah", spreading warmth and kindness between believers.',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'سلامتی کی پیاری اسلامی دعا یاد کریں!',
+    kidsHintEn: 'The Islamic greeting of peace!'
+  },
+  {
+    id: 'kids-28',
+    questionUrdu: 'قرآن مجید کی ہر سورت (سوائے سورۃ التوبہ کے) کس مبارک کلمے سے شروع ہوتی ہے؟',
+    questionEn: 'Which blessed phrase appears at the very beginning of almost every Surah in the Quran?',
+    optionsUrdu: [
+      'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+      'الحمد للہ رب العالمین',
+      'اللہ اکبر کبیرا',
+      'لا الہ الا اللہ'
+    ],
+    optionsEn: [
+      'Bismillahir Rahmanir Raheem',
+      'Alhamdulillahi Rabbil \'Alameen',
+      'Allahu Akbaru Kabeera',
+      'La ilaha illallah'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن کی 113 سورتوں کے آغاز میں "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" لکھی ہے، جس کا مطلب ہے "اللہ کے نام سے جو نہایت مہربان بہت رحم والا ہے"۔',
+    explanationEn: '"Bismillahir Rahmanir Raheem" means "In the Name of Allah, the Entirely Merciful, the Especially Merciful" and begins 113 Surahs.',
+    category: 'Quran',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'شروع اللہ کے نام سے جو بڑا مہربان نہایت رحم والا ہے!',
+    kidsHintEn: 'In the Name of Allah, the Most Merciful!'
+  },
+  {
+    id: 'kids-29',
+    questionUrdu: 'پوری دنیا کے مسلمان اپنی پانچوں نمازوں میں کس مبارک عمارت کی طرف منہ کر کے سجدہ ریز ہوتے ہیں؟',
+    questionEn: 'Which holy building do Muslims all around the world face towards during their daily prayers?',
+    optionsUrdu: [
+      'خانہ کعبہ (مکہ مکرمہ)',
+      'مسجد نبوی (مدینہ منورہ)',
+      'مسجد اقصیٰ (یروشلم)',
+      'جامع مسجد'
+    ],
+    optionsEn: [
+      'The Holy Kaaba (in Makkah)',
+      'Masjid an-Nabawi (in Madinah)',
+      'Masjid al-Aqsa',
+      'Any local Masjid'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'خانہ کعبہ مکہ مکرمہ میں اللہ کا پہلا گھر ہے جسے قبلہ کہا جاتا ہے، اور ہم سب اسی رخ پر نماز پڑھتے ہیں۔',
+    explanationEn: 'The Holy Kaaba in Makkah is our blessed Qibla, uniting all Muslims across the world in one prayer direction.',
+    category: 'Pillars',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'مکہ مکرمہ میں اللہ کا مبارک گھر!',
+    kidsHintEn: 'Allah\'s blessed House in Makkah!'
+  },
+  {
+    id: 'kids-30',
+    questionUrdu: 'اسلام ہمیں جانوروں اور پرندوں کے ساتھ کیسا برتاؤ کرنے کی تعلیم دیتا ہے؟',
+    questionEn: 'How does Islam teach us to treat animals, birds, and pets?',
+    optionsUrdu: [
+      'رحم، پیار اور کھانا پانی دینے کی',
+      'انہیں بلاوجہ مارنے اور ستانے کی',
+      'انہیں تنگ کرنے کی',
+      'ان کا خیال نہ رکھنے کی'
+    ],
+    optionsEn: [
+      'With gentleness, mercy, and feeding them',
+      'Hurting them without reason',
+      'Teasing and scaring them',
+      'Neglecting them'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'پیارے نبی ﷺ نے فرمایا کہ جانوروں پر بھی رحم کرو، بے زبان جانوروں کو پانی اور خوراک دینا عظیم نیکی ہے۔',
+    explanationEn: 'Prophet Muhammad ﷺ taught us to show mercy to all living creatures. Feeding and protecting animals is rewarded by Allah.',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'رحمت اور مہربانی اسلام کا خوبصورت سبق ہے!',
+    kidsHintEn: 'Kindness and mercy are beautiful teachings of Islam!'
+  },
+  {
+    id: 'kids-31',
+    questionUrdu: 'رمضان المبارک میں روزہ رکھنے والے صبح صادق سے پہلے جو مسنون کھانا کھاتے ہیں، اسے کیا کہتے ہیں؟',
+    questionEn: 'What is the blessed pre-dawn meal called that Muslims eat before beginning their fast in Ramadan?',
+    optionsUrdu: ['سحری (Suhoor)', 'افطاری (Iftar)', 'دوپہر کا کھانا', 'رات کا کھانا'],
+    optionsEn: ['Suhoor (سحری)', 'Iftar (افطاری)', 'Lunch', 'Midnight Snack'],
+    correctIndex: 0,
+    explanationUrdu: 'پیارے نبی ﷺ نے فرمایا: "سحری کھایا کرو، کیونکہ سحری کھانے میں برکت ہے۔" (صحیح بخاری: 1923)۔',
+    explanationEn: 'The Prophet ﷺ said: "Eat Suhoor, for indeed there is blessing in Suhoor." (Sahih al-Bukhari 1923).',
+    category: 'Pillars',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'روزہ شروع کرنے کے لیے صبح سویرے کھایا جانے والا بابرکت کھانا!',
+    kidsHintEn: 'The blessed meal eaten in the early morning before dawn!'
   }
 ];
 
@@ -1322,6 +1570,16 @@ export const VERIFIED_QA_DATABASE: VerifiedQA[] = [
     category: 'Salah',
     reference: 'Sahih al-Bukhari 645, Sahih Muslim 650',
     tags: ['Jama\'ah', 'Salah', 'Congregation', 'Prayer', 'نماز باجماعت', 'جماعت']
+  },
+  {
+    id: 'qa-9',
+    questionUrdu: 'نمازِ فجر کے بعد کے مسنون اذکار اور ان کی کیا فضیلت ہے؟',
+    questionEn: 'What are the recommended Sunnah adhkar after Fajr prayer and their virtue?',
+    answerUrdu: 'نمازِ فجر کے بعد باوقار انداز میں اپنی جگہ پر بیٹھ کر تسبیح و تہلیل کرنا، آیت الکرسی پڑھنا، اور معوذتین (سورۃ الفلق اور سورۃ الناس) کی تلاوت کرنا مسنون ہے۔ رسول اللہ ﷺ نے فرمایا کہ جو شخص فجر کی نماز باجماعت پڑھ کر طلوعِ آفتاب تک اللہ کے ذکر میں بیٹھا رہے اور پھر دو رکعت نماز (اشراق) پڑھے، اس کے لیے ایک مکمل حج اور عمرے کا ثواب لکھا جاتا ہے۔ (جامع ترمذی: 586، صحیح الجامع: 6346)۔',
+    answerEn: 'It is Sunnah after the Fajr prayer to remain seated remembering Allah, reciting Ayat al-Kursi, the Mu\'awwidhat (Surah Al-Falaq and Surah An-Nas), and morning supplications. The Prophet ﷺ taught that whoever performs Fajr in congregation and sits remembering Allah until sunrise, then prays two units of prayer (Ishraq), will have the reward of a complete Hajj and Umrah (Jami at-Tirmidhi 586, Sahih al-Jami 6346).',
+    category: 'Salah',
+    reference: 'Jami at-Tirmidhi 586, Sahih Muslim 707',
+    tags: ['Fajr', 'Adhkar', 'Dhikr', 'Morning', 'Salah', 'فجر', 'اذکار', 'نماز']
   }
 ];
 
