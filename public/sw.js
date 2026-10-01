@@ -10,23 +10,26 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  // Root URL of the existing live site without any special path, query, or hash
-  const rootUrl = self.registration.scope || '/';
+  const origin = self.location.origin;
+  const targetUrl = origin + '/';
 
   event.waitUntil(
-    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // 1. If IslamIQ is already open, focus the existing IslamIQ window/tab
+    self.clients.matchAll({
+      type: 'window',
+      includeUncontrolled: true
+    }).then((clientList) => {
+      // 1. If an existing IslamIQ window is found, focus it and do NOT call openWindow()
       for (const client of clientList) {
-        if ('url' in client && client.url.startsWith(self.registration.scope)) {
+        if ('url' in client && client.url.startsWith(origin)) {
           if ('focus' in client) {
             return client.focus();
           }
         }
       }
 
-      // 2. If it is not open, open the exact existing live site root URL
+      // 2. Only if no existing IslamIQ window is found, open targetUrl
       if (self.clients.openWindow) {
-        return self.clients.openWindow(rootUrl);
+        return self.clients.openWindow(targetUrl);
       }
     })
   );
