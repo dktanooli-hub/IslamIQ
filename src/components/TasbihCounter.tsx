@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { DHIKR_LIST } from '../data/verifiedContent';
-import { RotateCcw, Volume2, Sparkles, ChevronDown, Check, Trophy, Heart, History, PlusCircle, Trash2, Calendar, Clock, Edit3 } from 'lucide-react';
+import { RotateCcw, Volume2, Sparkles, ChevronDown, Check, Trophy, Heart, History, PlusCircle, Trash2, Calendar, Clock, Edit3, Maximize2, Minimize2 } from 'lucide-react';
 import { DhikrType } from '../types';
 import { AdBanner } from './AdBanner';
 import { AD_CONFIG } from '../config/adConfig';
@@ -32,6 +32,19 @@ export const TasbihCounter: React.FC = () => {
   const [showCustomDhikrModal, setShowCustomDhikrModal] = useState(false);
   const [historyTab, setHistoryTab] = useState<'all' | 'today' | 'week'>('all');
   const [showHistorySection, setShowHistorySection] = useState(false);
+  const [isFocusMode, setIsFocusMode] = useState(false);
+
+  // Listen for Escape key to exit focus mode smoothly
+  React.useEffect(() => {
+    if (!isFocusMode) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsFocusMode(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isFocusMode]);
 
   // Form state for Custom Dhikr editor
   const [editCustomTitle, setEditCustomTitle] = useState(customDhikrData.transliteration);
@@ -102,9 +115,21 @@ export const TasbihCounter: React.FC = () => {
             </span>
           </div>
 
-          <div className="flex items-center space-x-1.5 text-xs text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full">
-            <Trophy className="w-3.5 h-3.5 text-amber-500" />
-            <span>Lifetime: {userStats.tasbihTotalLifetime}</span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setIsFocusMode(true)}
+              className="px-3 py-1 rounded-full text-xs font-bold bg-slate-900 hover:bg-slate-800 text-emerald-300 flex items-center gap-1.5 transition-all active:scale-95 shadow-xs border border-slate-800"
+              title="Enter dark fullscreen Focus Mode"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>{contentLang === 'urdu' ? 'فوکس موڈ' : 'Focus Mode'}</span>
+            </button>
+
+            <div className="flex items-center space-x-1.5 text-xs text-emerald-700 font-bold bg-emerald-50 px-2.5 py-1 rounded-full">
+              <Trophy className="w-3.5 h-3.5 text-amber-500" />
+              <span>Lifetime: {userStats.tasbihTotalLifetime}</span>
+            </div>
           </div>
         </div>
 
@@ -272,8 +297,18 @@ export const TasbihCounter: React.FC = () => {
           </div>
         </button>
 
-        {/* Reset & History Controls */}
-        <div className="flex items-center space-x-3 mt-6">
+        {/* Reset, History & Focus Controls */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 mt-6">
+          <button
+            type="button"
+            onClick={() => setIsFocusMode(true)}
+            className="px-4 py-2 rounded-2xl bg-slate-900 hover:bg-slate-800 text-emerald-300 text-xs font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all border border-slate-800"
+            title="Enter dark fullscreen Focus Mode"
+          >
+            <Maximize2 className="w-3.5 h-3.5" />
+            <span>{contentLang === 'urdu' ? 'فوکس موڈ' : 'Focus Mode'}</span>
+          </button>
+
           <button
             onClick={resetTasbih}
             className="px-4 py-2 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 text-xs font-bold flex items-center gap-1.5 shadow-xs active:scale-95 transition-all"
@@ -534,6 +569,111 @@ export const TasbihCounter: React.FC = () => {
           labelEn="Google Sponsored Ad"
           className="mt-4"
         />
+      )}
+
+      {/* FULLSCREEN PURE DARK TASBIH FOCUS MODE */}
+      {isFocusMode && (
+        <div
+          className="fixed inset-0 z-50 bg-[#080808] text-white flex flex-col justify-between p-4 sm:p-8 select-none overflow-hidden"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Tasbih Focus Mode"
+        >
+          {/* Top Bar: Minimal Dhikr Context & Minimal Actions */}
+          <header className="flex items-start justify-between gap-4 max-w-xl w-full mx-auto pt-2 z-10">
+            <div className="space-y-0.5">
+              <div className="arabic-text text-xl sm:text-2xl font-bold text-emerald-400">
+                {displayArabic}
+              </div>
+              <div className="text-xs sm:text-sm font-semibold text-neutral-300 flex items-center gap-2">
+                <span>{displayTitle}</span>
+                {tasbihLaps > 0 && (
+                  <span className="text-[10px] bg-emerald-950/80 border border-emerald-800 text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+                    Lap {tasbihLaps}
+                  </span>
+                )}
+              </div>
+              <div className="text-[11px] text-neutral-400">
+                {contentLang === 'urdu'
+                  ? `ہدف: ${tasbihTarget} تسبیحات`
+                  : `Target: ${tasbihTarget} counts`}
+              </div>
+            </div>
+
+            {/* Top Right: Minimal Reset & Exit Focus Mode */}
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={resetTasbih}
+                className="px-3 py-1.5 rounded-full bg-neutral-900/90 hover:bg-neutral-800 border border-neutral-700/60 text-neutral-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95"
+                title="Reset counter"
+                aria-label="Reset counter"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Reset</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsFocusMode(false)}
+                className="px-3.5 py-1.5 rounded-full bg-emerald-950/90 hover:bg-emerald-900 border border-emerald-700/80 text-emerald-200 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition-all active:scale-95 shadow-xs"
+                title="Exit Focus Mode (Esc)"
+                aria-label="Exit Focus Mode"
+              >
+                <Minimize2 className="w-3.5 h-3.5" />
+                <span>{contentLang === 'urdu' ? 'باہر نکلیں' : 'Exit Focus'}</span>
+              </button>
+            </div>
+          </header>
+
+          {/* Center: Large Centered Counting Circle */}
+          <main className="flex-1 flex flex-col items-center justify-center py-4">
+            <button
+              type="button"
+              onClick={incrementTasbih}
+              className="w-72 h-72 sm:w-84 sm:h-84 md:w-96 md:h-96 rounded-full flex flex-col items-center justify-center text-center relative transition-transform active:scale-95 focus:outline-none select-none cursor-pointer bg-gradient-to-b from-[#101b15] to-[#040806] border-4 border-emerald-500/30 text-white ring-8 ring-emerald-950/40 shadow-[0_0_60px_rgba(16,185,129,0.12)]"
+              aria-label="Tap to count Dhikr"
+            >
+              {/* Subtle inner ring */}
+              <div className="absolute inset-3 sm:inset-4 rounded-full border border-emerald-500/10 pointer-events-none" />
+
+              {/* Sub-label inside circle */}
+              <span className="text-xs sm:text-sm font-semibold text-emerald-400/90 tracking-wide mb-1">
+                {displayTitle}
+              </span>
+
+              {/* Large Counter Number */}
+              <span className="text-7xl sm:text-8xl md:text-9xl font-black text-white tracking-tight drop-shadow-md">
+                {tasbihCount}
+              </span>
+
+              {/* Target info inside circle */}
+              <span className="text-xs sm:text-sm font-medium text-neutral-400 mt-2">
+                of <span className="text-amber-300 font-bold">{tasbihTarget}</span>
+              </span>
+
+              {/* Minimal tap cue */}
+              <span className="mt-4 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-[11px] font-semibold text-emerald-300/80 tracking-wider uppercase">
+                {contentLang === 'urdu' ? 'گننے کے لیے ٹیپ کریں' : 'Tap to count'}
+              </span>
+            </button>
+          </main>
+
+          {/* Bottom Bar: Subtle progress line & serene reminder */}
+          <footer className="max-w-md w-full mx-auto pb-4 text-center space-y-2">
+            <div className="w-full bg-neutral-900 border border-neutral-800 rounded-full h-1.5 overflow-hidden">
+              <div
+                className="bg-emerald-500 h-full rounded-full transition-all duration-200"
+                style={{ width: `${Math.min(100, (tasbihCount / tasbihTarget) * 100)}%` }}
+              />
+            </div>
+            <p className="text-[11px] text-neutral-500 tracking-wide">
+              {contentLang === 'urdu'
+                ? 'اللہ کے ذکر سے دلوں کو اطمینان ملتا ہے • فوکس موڈ'
+                : 'Focus Mode • Complete stillness in remembrance of Allah'}
+            </p>
+          </footer>
+        </div>
       )}
 
     </div>
