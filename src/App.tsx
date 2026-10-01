@@ -26,8 +26,6 @@ import { DailyDuaHub } from './components/seo/DailyDuaHub';
 import { SalahLearningHub } from './components/seo/SalahLearningHub';
 import { IslamicGeneralKnowledgeHub } from './components/seo/IslamicGeneralKnowledgeHub';
 import { Footer } from './components/Footer';
-import { NotificationSettingsModal } from './components/NotificationSettingsModal';
-import { notificationService } from './services/notificationService';
 import { AppTab } from './types';
 import { trackPageView } from './utils/analytics';
 
@@ -51,137 +49,28 @@ export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, setUserMode, toastMessage, contentLang } = useApp();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  // Periodic background check for scheduled notifications
+  // Safely clean up any leftover notification settings from LocalStorage
   useEffect(() => {
-    notificationService.checkScheduled(contentLang);
-    const interval = setInterval(() => {
-      notificationService.checkScheduled(contentLang);
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [contentLang]);
-
-  // Listen for notification click events (both from Service Worker postMessage & Desktop CustomEvent)
-  useEffect(() => {
-    const handleNavigation = (tab?: string, section?: string) => {
-      if (!tab) return;
-      if (section === 'daily' || tab === 'home') {
-        setUserMode('adult');
-        setActiveTab('home');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (tab === 'salah') {
-        setActiveTab('salah');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        setActiveTab(tab as AppTab);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      localStorage.removeItem('islamiq_notification_settings');
+      localStorage.removeItem('islamiq_last_daily_notif');
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && (k.startsWith('islamiq_last_salah_notif_') || k.startsWith('islamiq_notif_'))) {
+          keysToRemove.push(k);
+        }
       }
-    };
-
-    // 1. Service Worker postMessage handler (when notification is clicked on mobile/PWA)
-    const handleSwMessage = (event: MessageEvent) => {
-      if (event.data?.type === 'ISLAMIQ_NAVIGATE_TAB') {
-        handleNavigation(event.data.tab, event.data.section);
-      }
-    };
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.addEventListener('message', handleSwMessage);
-    }
-
-    // 2. Custom event handler (when notification is clicked on desktop)
-    const handleCustomNavigate = (event: Event) => {
-      const customEvt = event as CustomEvent<{ tab?: string; section?: string }>;
-      const { tab, section } = customEvt.detail || {};
-      handleNavigation(tab, section);
-    };
-
-    window.addEventListener('islamiq-navigate-tab', handleCustomNavigate);
-
-    return () => {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.removeEventListener('message', handleSwMessage);
-      }
-      window.removeEventListener('islamiq-navigate-tab', handleCustomNavigate);
-    };
+      keysToRemove.forEach(k => localStorage.removeItem(k));
+    } catch {}
   }, []);
 
-  // Sync URL query params, hash & clean path for SEO, direct linking & notification click on mount/popstate
+  // Sync URL clean path for SEO & direct linking on mount/popstate
   useEffect(() => {
     const handlePopState = () => {
       try {
-        const url = new URL(window.location.href);
-        const tabQuery = url.searchParams.get('tab')?.toLowerCase();
-        const path = url.pathname.replace(/^\//, '').toLowerCase();
-
-        // 1. Check query parameter ?tab=... (used for 100% reliable deep links from notifications)
-        if (tabQuery) {
-          if (tabQuery === 'daily' || tabQuery === 'daily-content') {
-            setUserMode('adult');
-            setActiveTab('home');
-            return;
-          }
-          if (tabQuery === 'salah' || tabQuery === 'salah-tracker') {
-            setActiveTab('salah');
-            return;
-          }
-          if (tabQuery === 'quiz') {
-            setActiveTab('quiz');
-            return;
-          }
-          if (tabQuery === 'qibla') {
-            setActiveTab('qibla');
-            return;
-          }
-          if (tabQuery === 'tasbih') {
-            setActiveTab('tasbih');
-            return;
-          }
-          if (tabQuery === 'search') {
-            setActiveTab('search');
-            return;
-          }
-          if (tabQuery === 'status') {
-            setActiveTab('status');
-            return;
-          }
-          if (tabQuery === 'home') {
-            setActiveTab('home');
-            return;
-          }
-        }
-
-        // 2. Check clean path (e.g. /salah, /daily, /about)
-        if (path === 'salah' || path === 'salah-tracker') {
-          setActiveTab('salah');
-          return;
-        }
-        if (path === 'daily' || path === 'daily-content' || path === 'daily-feed') {
-          setUserMode('adult');
-          setActiveTab('home');
-          return;
-        }
-        if (path === 'quiz') {
-          setActiveTab('quiz');
-          return;
-        }
-        if (path === 'qibla') {
-          setActiveTab('qibla');
-          return;
-        }
-        if (path === 'tasbih') {
-          setActiveTab('tasbih');
-          return;
-        }
-        if (path === 'search') {
-          setActiveTab('search');
-          return;
-        }
-        if (path === 'status') {
-          setActiveTab('status');
-          return;
-        }
+        const path = window.location.pathname.replace(/^\//, '').toLowerCase();
 
         const validCleanTabs: AppTab[] = [
           'about', 'contact', 'privacy-policy', 'terms', 'disclaimer',
@@ -195,11 +84,22 @@ export const App: React.FC = () => {
 
         if (validCleanTabs.includes(path as AppTab)) {
           setActiveTab(path as AppTab);
+        } else if (path === 'salah') {
+          setActiveTab('salah');
+        } else if (path === 'quiz') {
+          setActiveTab('quiz');
+        } else if (path === 'qibla') {
+          setActiveTab('qibla');
+        } else if (path === 'tasbih') {
+          setActiveTab('tasbih');
+        } else if (path === 'search') {
+          setActiveTab('search');
+        } else if (path === 'status') {
+          setActiveTab('status');
         } else if (path === '' || path === 'home') {
           setActiveTab('home');
         }
       } catch {
-        // Fallback safely to home
         setActiveTab('home');
       }
     };
@@ -398,7 +298,6 @@ export const App: React.FC = () => {
       <Header
         onOpenProfile={() => setIsProfileOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
-        onOpenNotifications={() => setIsNotificationsOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -572,16 +471,6 @@ export const App: React.FC = () => {
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
         onOpenAdmin={() => setIsAdminOpen(true)}
-        onOpenNotifications={() => {
-          setIsProfileOpen(false);
-          setIsNotificationsOpen(true);
-        }}
-      />
-
-      {/* Notification Settings Modal */}
-      <NotificationSettingsModal
-        isOpen={isNotificationsOpen}
-        onClose={() => setIsNotificationsOpen(false)}
       />
 
       {/* Built-in Secure Admin Panel */}

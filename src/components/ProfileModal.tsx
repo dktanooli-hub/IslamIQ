@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { X, Trophy, Flame, Star, Sparkles, User, ShieldCheck, Download, Upload, LogOut, CheckCircle2, Lock, Smile, Compass, Globe, Bell } from 'lucide-react';
+import { X, Trophy, Flame, Star, Sparkles, User, ShieldCheck, Download, Upload, LogOut, CheckCircle2, Lock, Smile, Compass, Globe } from 'lucide-react';
 
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOpenAdmin?: () => void;
-  onOpenNotifications?: () => void;
 }
 
-export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onOpenAdmin, onOpenNotifications }) => {
+export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onOpenAdmin }) => {
   const {
     userMode,
     setUserMode,
@@ -364,27 +363,6 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, onO
               ))}
             </div>
           </div>
-
-          {/* Notification Settings */}
-          {onOpenNotifications && (
-            <div className="pt-2 border-t border-slate-100">
-              <button
-                onClick={() => {
-                  onClose();
-                  onOpenNotifications();
-                }}
-                className="w-full py-2.5 px-3 rounded-2xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-xs font-bold text-emerald-900 flex items-center justify-between transition-all active:scale-95"
-              >
-                <div className="flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-emerald-700" />
-                  <span>{contentLang === 'urdu' ? 'نوٹیفکیشن ترتیبات (یاد دہانی)' : 'Notification & Prayer Alert Settings'}</span>
-                </div>
-                <span className="text-[10px] bg-white text-emerald-800 px-2.5 py-0.5 rounded-lg border border-emerald-200 font-semibold">
-                  {contentLang === 'urdu' ? 'ترتیب دیں' : 'Configure'}
-                </span>
-              </button>
-            </div>
-          )}
 
           {/* Data Backup & Restore */}
           <div className="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
