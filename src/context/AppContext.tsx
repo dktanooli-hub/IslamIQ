@@ -87,7 +87,7 @@ interface AppContextType {
   isSpeaking: boolean;
   setIsSpeaking: (speaking: boolean) => void;
 
-  // Notification / Toast
+  // In-App Toast
   toastMessage: string | null;
   showToast: (msg: string) => void;
 

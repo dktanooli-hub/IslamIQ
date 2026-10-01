@@ -478,7 +478,7 @@ export const App: React.FC = () => {
         <AdminPanel onClose={() => setIsAdminOpen(false)} />
       )}
 
-      {/* Toast Notification */}
+      {/* In-App Toast Message */}
       {toastMessage && (
         <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 animate-bounce">
           <div className="bg-slate-900/90 backdrop-blur-md text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold border border-white/20 flex items-center gap-2">
