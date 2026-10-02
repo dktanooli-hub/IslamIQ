@@ -650,6 +650,52 @@ export class SpeechEngine {
   }
 
   /**
+   * Speak Arabic text using native ar-SA / Arabic voice specifically.
+   * Guarantees that Arabic is pronounced with proper Arabic phonetics rather than Urdu/English.
+   */
+  static speakArabic(
+    text: string,
+    onStart?: () => void,
+    onEnd?: () => void
+  ) {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      onEnd?.();
+      return;
+    }
+
+    this.stop();
+    const runId = ++this.currentRunId;
+    this.isSpeaking = true;
+    onStart?.();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    this.configureUtterance(utterance, 'arabic');
+
+    let hasEnded = false;
+    const finish = () => {
+      if (hasEnded) return;
+      hasEnded = true;
+      if (this.currentRunId === runId) {
+        this.isSpeaking = false;
+        onEnd?.();
+      }
+    };
+
+    utterance.onend = finish;
+    utterance.onerror = (err) => {
+      console.warn('SpeechSynthesis Arabic error:', err);
+      finish();
+    };
+
+    try {
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn('SpeechSynthesis speak error:', err);
+      finish();
+    }
+  }
+
+  /**
    * Sequential speech runner that reads question then options 1-4
    * one by one with a clear audible pause between each item.
    * Accurately dispatches Arabic TTS voice for Arabic text / Islamic terms.
@@ -833,15 +879,15 @@ export class SpeechEngine {
     this.isSpeaking = true;
 
     const phrases = lang === 'urdu' ? [
-      'السلام علیکم! آج آپ کیا کرنا چاہتے ہیں؟',
-      'کوئز کرنا ہے؟',
+      'السلام علیکم! آج آپ کیا سیکھنا چاہتے ہیں؟',
+      'کوئز کھیلنا ہے؟',
       'نماز سیکھنی ہے؟',
-      'تسبیح کرنی ہے؟'
+      'تسبیح سیکھنی ہے؟'
     ] : [
-      'Assalamu Alaikum! What would you like to do today?',
+      'Assalamu Alaikum! What would you like to learn today?',
       'Play Quiz?',
-      'Learn Salah?',
-      'Do Tasbih?'
+      'Learn Namaz?',
+      'Learn Tasbih?'
     ];
 
     const allSegments: SpeechSegment[] = [];

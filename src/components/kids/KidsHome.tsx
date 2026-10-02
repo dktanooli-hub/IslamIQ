@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { KidsCharacter, KidsCharacterMood, KidsCharacterType } from './KidsCharacter';
 import { KidsEnvironment, KidsEnvironmentType } from './KidsEnvironment';
+import { KidsNamazLearning } from './KidsNamazLearning';
+import { KidsTasbihLearning } from './KidsTasbihLearning';
 import { SpeechEngine, sounds } from '../../utils/audio';
 import { kidsVoiceListener, isSpeechRecognitionSupported, VoiceActivityType } from '../../utils/speechRecognition';
 import { Mic, MicOff, Volume2, VolumeX, RotateCcw, Sparkles, HelpCircle, CheckSquare, Compass } from 'lucide-react';
@@ -14,6 +16,9 @@ interface KidsHomeProps {
 export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
   const { contentLang } = useApp();
   const isUrdu = contentLang === 'urdu';
+
+  // Section switcher within Kids Learning Mode
+  const [kidsSection, setKidsSection] = useState<'welcome' | 'namaz' | 'tasbih'>('welcome');
 
   // Character and Environment state with localStorage persistence
   const [characterType, setCharacterType] = useState<KidsCharacterType>(() => {
@@ -75,15 +80,15 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
     setActiveVoiceStep(0);
 
     const greetingPhrases = isUrdu ? [
-      'السلام علیکم! آج آپ کیا کرنا چاہتے ہیں؟',
-      'Quiz کرنا ہے؟',
-      'نماز سیکھنی ہے؟',
-      'تسبیح کرنی ہے؟'
+      'السلام علیکم! آج آپ کیا سیکھنا چاہتے ہیں؟',
+      'Quiz کھیلنا ہے؟',
+      'Namaz سیکھنی ہے؟',
+      'Tasbih سیکھنی ہے؟'
     ] : [
-      'Assalamu Alaikum! What would you like to do today?',
+      'Assalamu Alaikum! What would you like to learn today?',
       'Play Quiz?',
-      'Learn Salah?',
-      'Do Tasbih?'
+      'Learn Namaz?',
+      'Learn Tasbih?'
     ];
 
     setCustomBubble(greetingPhrases[0]);
@@ -99,7 +104,7 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
         setIsSpeaking(false);
         setActiveVoiceStep(null);
         setCharacterMood('idle');
-        setCustomBubble(isUrdu ? 'بول کر بتائیں یا بٹن دبائیں! 👇' : 'Speak or tap a button below! 👇');
+        setCustomBubble(isUrdu ? 'بول کر بتائیں یا نیچے دیے گئے ۳ بٹن دبائیں! 👇' : 'Speak or tap one of the 3 buttons below! 👇');
       }
     );
   };
@@ -123,13 +128,13 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
   const handleCharacterTap = () => {
     sounds.buttonClick();
     const greetings = isUrdu ? [
-      'السلام علیکم! آئیے کچھ نیا سیکھیں!',
-      'کوئز، نماز یا تسبیح — آپ کیا پسند کریں گے؟',
-      'ماشاءاللہ! آپ بہت اچھے بچے ہیں!',
+      'السلام علیکم! آج آپ کیا سیکھنا چاہتے ہیں؟',
+      'Quiz، Namaz یا Tasbih — آپ کیا پسند کریں گے؟',
+      'ماشاءاللہ! آپ بہت پیارے اور اچھے بچے ہیں!',
       'مائیکروفون کا بٹن دبا کر بولیں بھی!'
     ] : [
-      'Assalamu Alaikum! Let\'s learn something good today!',
-      'Quiz, Salah or Tasbih — what would you like?',
+      'Assalamu Alaikum! What would you like to learn today?',
+      'Quiz, Namaz or Tasbih — what would you like?',
       'Masha\'Allah! You are a wonderful learner!',
       'Tap the mic button and speak to me!'
     ];
@@ -172,30 +177,39 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
         en: 'Masha\'Allah! Let\'s play the Islamic Quiz!'
       },
       salah: {
-        urdu: 'ماشاءاللہ! چلیں نماز کا طریقہ سیکھتے ہیں!',
-        en: 'Masha\'Allah! Let\'s learn how to pray Salah!'
+        urdu: 'ماشاءاللہ! چلیں نماز سیکھتے ہیں!',
+        en: 'Masha\'Allah! Let\'s learn Namaz!'
       },
       tasbih: {
-        urdu: 'سبحان اللہ! چلیں تسبیح پڑھتے ہیں!',
-        en: 'SubhanAllah! Let\'s do Tasbih together!'
+        urdu: 'سبحان اللہ! چلیں تسبیح سیکھتے ہیں!',
+        en: 'SubhanAllah! Let\'s learn Tasbih!'
       }
     };
 
     const text = isUrdu ? guidanceMessages[activity].urdu : guidanceMessages[activity].en;
     setCustomBubble(text);
 
-    if (!isSoundMuted) {
-      SpeechEngine.speakActivityGuidance(activity, isUrdu ? 'urdu' : 'english', () => {
-        onSelectActivity(activity);
-      });
-      // Safety navigation timeout
+    if (activity === 'quiz') {
+      if (!isSoundMuted) {
+        SpeechEngine.speakActivityGuidance(activity, isUrdu ? 'urdu' : 'english', () => {
+          onSelectActivity('quiz');
+        });
+        setTimeout(() => {
+          onSelectActivity('quiz');
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          onSelectActivity('quiz');
+        }, 600);
+      }
+    } else if (activity === 'salah') {
       setTimeout(() => {
-        onSelectActivity(activity);
-      }, 1600);
-    } else {
+        setKidsSection('namaz');
+      }, 400);
+    } else if (activity === 'tasbih') {
       setTimeout(() => {
-        onSelectActivity(activity);
-      }, 700);
+        setKidsSection('tasbih');
+      }, 400);
     }
   };
 
@@ -216,7 +230,7 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
     sounds.buttonClick();
     setVoiceTranscript('');
     setVoiceFeedback({
-      text: isUrdu ? 'سن رہا ہوں... بولیے "کوئز"، "نماز" یا "تسبیح"' : 'Listening... Say "Quiz", "Salah", or "Tasbih"',
+      text: isUrdu ? 'سن رہا ہوں... بولیے "کوئز"، "نماز" یا "تسبیح"' : 'Listening... Say "Quiz", "Namaz", or "Tasbih"',
       type: 'info'
     });
     setCharacterMood('thinking');
@@ -236,7 +250,7 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
         } else if (result.transcript) {
           // Heard something not matched yet
           setVoiceFeedback({
-            text: `"${result.transcript}" — ${isUrdu ? 'کہیے: کوئز، نماز، یا تسبیح' : 'Say: Quiz, Salah, or Tasbih'}`,
+            text: `"${result.transcript}" — ${isUrdu ? 'کہیے: کوئز، نماز، یا تسبیح' : 'Say: Quiz, Namaz, or Tasbih'}`,
             type: 'info'
           });
         }
@@ -246,17 +260,17 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
         setCharacterMood('reacting');
         if (err === 'not-allowed') {
           setVoiceFeedback({
-            text: isUrdu ? 'مائیکروفون کی اجازت نہیں ملی۔ آپ بٹن دبا سکتے ہیں!' : 'Microphone permission denied. Tap a button!',
+            text: isUrdu ? 'مائیکروفون کی اجازت نہیں ملی۔ آپ نیچے دیے گئے ۳ بٹنز دبا سکتے ہیں!' : 'Microphone permission denied. Tap a button below!',
             type: 'warning'
           });
         } else if (err === 'no-speech') {
           setVoiceFeedback({
-            text: isUrdu ? 'آواز نہیں سنی گئی۔ دوبارہ کوشش کریں!' : 'No voice heard. Please try again!',
+            text: isUrdu ? 'آواز نہیں سنی گئی۔ دوبارہ کوشش کریں یا نیچے سے بٹن دبائیں!' : 'No voice heard. Please try again or tap a button!',
             type: 'info'
           });
         } else {
           setVoiceFeedback({
-            text: isUrdu ? 'کوئی بات نہیں! آپ بٹن دبا کر بھی منتخب کر سکتے ہیں!' : 'You can also tap the buttons below!',
+            text: isUrdu ? 'کوئی بات نہیں! آپ نیچے دیے گئے ۳ بٹنز دبا کر بھی منتخب کر سکتے ہیں!' : 'You can also tap the 3 buttons below!',
             type: 'info'
           });
         }
@@ -272,6 +286,15 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
 
     stopVoiceRef.current = stopFn;
   };
+
+  // Render Sub-sections if child clicked Namaz or Tasbih
+  if (kidsSection === 'namaz') {
+    return <KidsNamazLearning onBackToKidsMenu={() => setKidsSection('welcome')} />;
+  }
+
+  if (kidsSection === 'tasbih') {
+    return <KidsTasbihLearning onBackToKidsMenu={() => setKidsSection('welcome')} />;
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-4">
@@ -358,11 +381,11 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
             <h2 className="text-base sm:text-lg font-black text-amber-950 flex items-center justify-center gap-1.5">
               <span>🌟</span>
               <span className={isUrdu ? 'urdu-text' : ''}>
-                {isUrdu ? 'السلام علیکم! آج آپ کیا کرنا چاہتے ہیں؟' : 'Assalamu Alaikum! What would you like to do?'}
+                {isUrdu ? 'السلام علیکم! آج آپ کیا سیکھنا چاہتے ہیں؟' : 'Assalamu Alaikum! What would you like to learn today?'}
               </span>
             </h2>
             <p className="text-xs text-amber-900/80 font-bold mt-0.5">
-              {isUrdu ? 'نیچے دیے گئے بٹن دبائیں یا بول کر بتائیں!' : 'Tap a button below or speak with your voice!'}
+              {isUrdu ? 'نیچے دیے گئے ۳ بٹنز میں سے چنیں یا مائیک دبائیں!' : 'Choose from the 3 options below or tap mic!'}
             </p>
           </div>
         </div>
@@ -386,7 +409,7 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
             <p className="text-xs sm:text-sm text-amber-100 font-medium mt-0.5">
               {isUrdu
                 ? 'کہیے: "کوئز"، "نماز"، یا "تسبیح" — اور جادو دیکھیں!'
-                : 'Say: "Quiz", "Salah", or "Tasbih" — and watch the magic!'}
+                : 'Say: "Quiz", "Namaz", or "Tasbih" — and watch the magic!'}
             </p>
           </div>
 
@@ -421,7 +444,7 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
 
             {!isVoiceSupported && (
               <span className="text-[10px] text-amber-200 mt-1">
-                {isUrdu ? 'براؤزر بٹنز کو ترجیح دیں' : 'Use the cards below'}
+                {isUrdu ? 'نیچے والے بٹنز استعمال کریں' : 'Use the 3 buttons below'}
               </span>
             )}
           </div>
@@ -442,10 +465,10 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
         )}
       </div>
 
-      {/* 3 LARGE CHILD-FRIENDLY ACTIVITY BUTTONS */}
+      {/* 3 LARGE CHILD-FRIENDLY ACTIVITY BUTTONS (ALWAYS AVAILABLE AS FALLBACK) */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 pt-1">
         
-        {/* 1. QUIZ BUTTON (کوئز) */}
+        {/* 1. QUIZ BUTTON (🧠 Quiz) */}
         <button
           onClick={() => triggerActivity('quiz')}
           className={`group relative overflow-hidden rounded-3xl p-5 text-right transition-all duration-300 transform active:scale-98 hover:-translate-y-1 shadow-md border-3 flex flex-col justify-between min-h-[140px] sm:min-h-[160px] ${
@@ -462,28 +485,28 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
               🧠
             </span>
             <span className="bg-amber-500 text-white font-black text-[11px] px-2.5 py-0.5 rounded-full shadow-2xs">
-              {isUrdu ? 'مرحلہ ۱' : 'Activity 1'}
+              {isUrdu ? 'آپشن ۱' : 'Option 1'}
             </span>
           </div>
 
           <div className="mt-4 relative z-10">
             <h4 className="text-lg sm:text-xl font-black text-amber-950 flex items-center gap-1.5">
-              <span>{isUrdu ? 'کوئز کھیلیں' : 'Play Quiz'}</span>
+              <span>{isUrdu ? 'Quiz (اسلامک کوئز)' : '🧠 Quiz'}</span>
               <span className="text-amber-600 text-sm group-hover:translate-x-1 transition-transform">⭐</span>
             </h4>
             <p className="text-xs text-amber-900/80 font-medium mt-1">
-              {isUrdu ? 'دلچسپ اسلامی سوالات، ستارے اور پوائنٹس جیتیں!' : 'Fun Islamic questions, stars and points!'}
+              {isUrdu ? 'دلچسپ اسلامی سوالات، ستارے اور پوائنٹس جیتیں!' : 'Fun Islamic quiz questions, stars and points!'}
             </p>
           </div>
 
           {/* Action indicator */}
           <div className="mt-3 flex items-center justify-between text-xs font-bold text-amber-800 pt-2 border-t border-amber-200/60">
-            <span>{isUrdu ? 'شروع کریں' : 'Start'}</span>
+            <span>{isUrdu ? 'کوئز کھیلیں' : 'Play Quiz'}</span>
             <span className="text-base font-black">←</span>
           </div>
         </button>
 
-        {/* 2. SALAH BUTTON (نماز) */}
+        {/* 2. NAMAZ BUTTON (🕌 Namaz سیکھیں) */}
         <button
           onClick={() => triggerActivity('salah')}
           className={`group relative overflow-hidden rounded-3xl p-5 text-right transition-all duration-300 transform active:scale-98 hover:-translate-y-1 shadow-md border-3 flex flex-col justify-between min-h-[140px] sm:min-h-[160px] ${
@@ -500,28 +523,28 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
               🕌
             </span>
             <span className="bg-emerald-600 text-white font-black text-[11px] px-2.5 py-0.5 rounded-full shadow-2xs">
-              {isUrdu ? 'مرحلہ ۲' : 'Activity 2'}
+              {isUrdu ? 'آپشن ۲' : 'Option 2'}
             </span>
           </div>
 
           <div className="mt-4 relative z-10">
             <h4 className="text-lg sm:text-xl font-black text-emerald-950 flex items-center gap-1.5">
-              <span>{isUrdu ? 'نماز سیکھیں' : 'Learn Salah'}</span>
+              <span>{isUrdu ? 'Namaz سیکھیں' : '🕌 Namaz سیکھیں'}</span>
               <span className="text-emerald-600 text-sm group-hover:translate-x-1 transition-transform">✨</span>
             </h4>
             <p className="text-xs text-emerald-900/80 font-medium mt-1">
-              {isUrdu ? 'وضو اور پانچوں نمازوں کا خوبصورت و آسان طریقہ!' : 'Easy step-by-step Wudu and 5 prayers!'}
+              {isUrdu ? '۱۰ مرحلہ وار اسباق، تسبیحات، عربی آواز اور درست تلفظ!' : '10 locked step-by-step levels with Arabic audio & Urdu meaning!'}
             </p>
           </div>
 
           {/* Action indicator */}
           <div className="mt-3 flex items-center justify-between text-xs font-bold text-emerald-800 pt-2 border-t border-emerald-200/60">
-            <span>{isUrdu ? 'نماز ٹریکر' : 'Salah Tracker'}</span>
+            <span>{isUrdu ? 'نماز سیکھیں' : 'Learn Namaz'}</span>
             <span className="text-base font-black">←</span>
           </div>
         </button>
 
-        {/* 3. TASBIH BUTTON (تسبیح) */}
+        {/* 3. TASBIH BUTTON (📿 Tasbih سیکھیں) */}
         <button
           onClick={() => triggerActivity('tasbih')}
           className={`group relative overflow-hidden rounded-3xl p-5 text-right transition-all duration-300 transform active:scale-98 hover:-translate-y-1 shadow-md border-3 flex flex-col justify-between min-h-[140px] sm:min-h-[160px] ${
@@ -538,23 +561,23 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
               📿
             </span>
             <span className="bg-violet-600 text-white font-black text-[11px] px-2.5 py-0.5 rounded-full shadow-2xs">
-              {isUrdu ? 'مرحلہ ۳' : 'Activity 3'}
+              {isUrdu ? 'آپشن ۳' : 'Option 3'}
             </span>
           </div>
 
           <div className="mt-4 relative z-10">
             <h4 className="text-lg sm:text-xl font-black text-violet-950 flex items-center gap-1.5">
-              <span>{isUrdu ? 'تسبیح کریں' : 'Do Tasbih'}</span>
+              <span>{isUrdu ? 'Tasbih سیکھیں' : '📿 Tasbih سیکھیں'}</span>
               <span className="text-violet-600 text-sm group-hover:translate-x-1 transition-transform">💫</span>
             </h4>
             <p className="text-xs text-violet-900/80 font-medium mt-1">
-              {isUrdu ? 'سبحان اللہ، الحمدللہ اور مسنون دعائیں!' : 'SubhanAllah, Alhamdulillah & daily Dhikr!'}
+              {isUrdu ? '۶ مبارک کلماتِ ذکر، خوبصورت کاؤنٹر اور عربی آواز!' : '6 blessed Dhikr words, child counter & Arabic audio!'}
             </p>
           </div>
 
           {/* Action indicator */}
           <div className="mt-3 flex items-center justify-between text-xs font-bold text-violet-800 pt-2 border-t border-violet-200/60">
-            <span>{isUrdu ? 'ڈیجیٹل تسبیح' : 'Digital Tasbih'}</span>
+            <span>{isUrdu ? 'تسبیح سیکھیں' : 'Learn Tasbih'}</span>
             <span className="text-base font-black">←</span>
           </div>
         </button>
@@ -573,3 +596,4 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
     </div>
   );
 };
+
