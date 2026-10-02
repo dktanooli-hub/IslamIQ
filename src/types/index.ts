@@ -36,7 +36,13 @@ export type AppTab =
   | 'ramadan-guide'
   | 'zakat-basics'
   | 'zakat-calculator'
-  | 'islamic-calendar';
+  | 'islamic-calendar'
+  | 'seerah-of-prophet-muhammad'
+  | 'ghusl-taharah-guide'
+  | 'tayammum-guide'
+  | 'hajj-umrah-guide'
+  | 'stories-of-the-prophets'
+  | 'rights-in-islam';
 
 export interface QuizQuestion {
   id: string;

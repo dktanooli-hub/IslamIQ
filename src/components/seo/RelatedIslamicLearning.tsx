@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { AppTab } from '../../types';
-import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, Moon, Coins, Calculator, Calendar, ArrowRight, ArrowLeft } from 'lucide-react';
+import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, Moon, Coins, Calculator, Calendar, ArrowRight, ArrowLeft, Scale, ShieldCheck, Award } from 'lucide-react';
 
 interface RelatedLearningItem {
   id: AppTab;
@@ -180,6 +180,54 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
       descEn: 'Full Hijri calendar with Gregorian conversion, moon sighting offset, and Sunnah fasting days.',
       descUrdu: 'مکمل قمری تقویم، عیسوی تاریخ، رویتِ ہلال کی ایڈجسٹمنٹ اور مسنون روزوں کی تفصیلات۔',
       icon: Calendar,
+    },
+    {
+      id: 'seerah-of-prophet-muhammad',
+      titleEn: 'Seerah of Prophet Muhammad ﷺ',
+      titleUrdu: 'سیرت النبی ﷺ گائیڈ',
+      descEn: 'Complete milestones from birth to the Farewell Hajj, noble character, and lessons.',
+      descUrdu: 'ولادتِ باسعادت، ہجرت، غزوات، فتح مکہ، اخلاقِ حسنہ اور حجۃ الوداع کی جامع گائیڈ۔',
+      icon: Heart,
+    },
+    {
+      id: 'ghusl-taharah-guide',
+      titleEn: 'Ghusl & Taharah Guide',
+      titleUrdu: 'غسل اور طہارت کا طریقہ',
+      descEn: 'Obligatory purification, Sunnah method, Faraid, and common misconceptions.',
+      descUrdu: 'غسل کے ۳ فرائض، مسنون طریقہ، واجب ہونے کے اسباب اور عام غلطیوں کا حل۔',
+      icon: Droplets,
+    },
+    {
+      id: 'tayammum-guide',
+      titleEn: 'Tayammum Guide (Dry Ablution)',
+      titleUrdu: 'تیمم کا طریقہ اور احکام',
+      descEn: 'Purification with clean earth when water is unavailable or medically harmful.',
+      descUrdu: 'پانی نہ ہونے یا بیماری کی صورت میں پاک مٹی سے تیمم کا مسنون طریقہ۔',
+      icon: Sparkles,
+    },
+    {
+      id: 'hajj-umrah-guide',
+      titleEn: 'Hajj & Umrah Guide',
+      titleUrdu: 'حج اور عمرہ کی مکمل گائیڈ',
+      descEn: 'Ihram, Tawaf, Sa\'i, Mina, Arafat, Muzdalifah, and authentic pilgrimage duas.',
+      descUrdu: 'احرام، میقات، طواف، سعی، عرفات، مزدلفہ اور رمی جمار کے احکام و مسنون دعائیں۔',
+      icon: Compass,
+    },
+    {
+      id: 'stories-of-the-prophets',
+      titleEn: 'Stories of the Prophets',
+      titleUrdu: 'قصص الانبیاء علیہم السلام',
+      descEn: 'Authentic Quranic accounts of Adam, Nuh, Ibrahim, Yusuf, Musa, and Isa (AS).',
+      descUrdu: 'آدم، نوح، ابراہیم، یوسف، موسیٰ اور عیسیٰ علیہم السلام کے مستند قرآنی واقعات و اسباق۔',
+      icon: Award,
+    },
+    {
+      id: 'rights-in-islam',
+      titleEn: 'Rights in Islam (Huqooq-ul-Ibad)',
+      titleUrdu: 'اسلام میں حقوق العباد',
+      descEn: 'Sacred rights of parents, children, spouses, neighbors, orphans, and workers.',
+      descUrdu: 'والدین، اولاد، شریکِ حیات، پڑوسی، رشتہ داروں اور مزدوروں کے حقوق قرآن و سنت میں۔',
+      icon: Scale,
     },
   ];
 

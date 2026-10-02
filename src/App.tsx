@@ -46,6 +46,12 @@ const RamadanGuide = React.lazy(() => import('./components/seo/RamadanGuide'));
 const ZakatBasicsGuide = React.lazy(() => import('./components/seo/ZakatBasicsGuide'));
 const ZakatCalculator = React.lazy(() => import('./components/tools/ZakatCalculator'));
 const IslamicCalendar = React.lazy(() => import('./components/tools/IslamicCalendar'));
+const SeerahOfProphetMuhammadGuide = React.lazy(() => import('./components/seo/SeerahOfProphetMuhammadGuide'));
+const GhuslTaharahGuide = React.lazy(() => import('./components/seo/GhuslTaharahGuide'));
+const TayammumGuide = React.lazy(() => import('./components/seo/TayammumGuide'));
+const HajjUmrahGuide = React.lazy(() => import('./components/seo/HajjUmrahGuide'));
+const StoriesOfTheProphetsGuide = React.lazy(() => import('./components/seo/StoriesOfTheProphetsGuide'));
+const RightsInIslamGuide = React.lazy(() => import('./components/seo/RightsInIslamGuide'));
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, setUserMode, toastMessage, contentLang } = useApp();
@@ -81,7 +87,9 @@ export const App: React.FC = () => {
           'islamic-general-knowledge', 'how-to-perform-salah', 'how-to-perform-wudu',
           '5-pillars-of-islam', 'six-articles-of-faith', 'salah-for-beginners',
           'islamic-manners-for-kids', 'quran-learning-guide', 'hadith-learning-guide',
-          'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar'
+          'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar',
+          'seerah-of-prophet-muhammad', 'ghusl-taharah-guide', 'tayammum-guide',
+          'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam'
         ];
 
         if (validCleanTabs.includes(path as AppTab)) {
@@ -242,6 +250,36 @@ export const App: React.FC = () => {
         title: 'Islamic Calendar: Hijri Date Today & Monthly Calendar | IslamIQ',
         path: '/islamic-calendar',
         desc: 'Accurate Hijri lunar calendar with Gregorian synchronization, moon sighting adjustments, Sunnah fasting days, and major Islamic milestones.'
+      },
+      'seerah-of-prophet-muhammad': {
+        title: 'Seerah of Prophet Muhammad ﷺ: Complete Life, Milestones & Lessons | IslamIQ',
+        path: '/seerah-of-prophet-muhammad',
+        desc: 'Comprehensive Seerah guide covering the life of Prophet Muhammad ﷺ from birth, Prophethood, Makkan persecution, Hijrah, Madinah, to the Farewell Hajj with authentic sources.'
+      },
+      'ghusl-taharah-guide': {
+        title: 'Complete Ghusl & Taharah Guide: Step-by-Step, Faraid & Sunnah | IslamIQ',
+        path: '/ghusl-taharah-guide',
+        desc: 'Complete step-by-step guide to Islamic Ghusl (ritual bath) and Taharah. Learn the 3 obligatory acts, Sunnah method, reasons for obligation, and common mistakes.'
+      },
+      'tayammum-guide': {
+        title: 'Tayammum Guide: Dry Ablution in Islam, Method & Rules | IslamIQ',
+        path: '/tayammum-guide',
+        desc: 'Learn how to perform Tayammum (dry ablution) step by step with clean earth. Understand when it is permitted, conditions, nullifiers, and Quranic evidence.'
+      },
+      'hajj-umrah-guide': {
+        title: 'Hajj & Umrah Complete Guide: Step-by-Step Rites, Rules & Duas | IslamIQ',
+        path: '/hajj-umrah-guide',
+        desc: 'Comprehensive Hajj and Umrah pilgrimage guide. Master Ihram, Miqat, Tawaf, Sa\'i, Mina, Arafat, Muzdalifah, and authentic duas with reliable references.'
+      },
+      'stories-of-the-prophets': {
+        title: 'Stories of the Prophets: Authentic Quranic Accounts & Lessons | IslamIQ',
+        path: '/stories-of-the-prophets',
+        desc: 'Authentic educational guide to the Stories of the Prophets in the Quran: Adam, Nuh, Ibrahim, Yusuf, Musa, and Isa (AS) with reliable lessons and references.'
+      },
+      'rights-in-islam': {
+        title: 'Rights in Islam (Huqooq-ul-Ibad): Parents, Spouses, Neighbors & Workers | IslamIQ',
+        path: '/rights-in-islam',
+        desc: 'Comprehensive guide to social rights in Islam (Huqooq-ul-Ibad). Discover rights of parents, children, spouses, neighbors, relatives, orphans, and workers with Quran and Hadith evidence.'
       }
     };
 
@@ -464,6 +502,54 @@ export const App: React.FC = () => {
             </div>
           }>
             <IslamicCalendar />
+          </React.Suspense>
+        ) : activeTab === 'seerah-of-prophet-muhammad' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <SeerahOfProphetMuhammadGuide />
+          </React.Suspense>
+        ) : activeTab === 'ghusl-taharah-guide' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <GhuslTaharahGuide />
+          </React.Suspense>
+        ) : activeTab === 'tayammum-guide' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <TayammumGuide />
+          </React.Suspense>
+        ) : activeTab === 'hajj-umrah-guide' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <HajjUmrahGuide />
+          </React.Suspense>
+        ) : activeTab === 'stories-of-the-prophets' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <StoriesOfTheProphetsGuide />
+          </React.Suspense>
+        ) : activeTab === 'rights-in-islam' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <RightsInIslamGuide />
           </React.Suspense>
         ) : (
           isKids ? (

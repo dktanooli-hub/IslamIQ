@@ -29,6 +29,12 @@ export const Footer: React.FC = () => {
     { id: 'zakat-basics', label: 'Zakat Basics', labelUrdu: 'زکوٰۃ کے احکام' },
     { id: 'zakat-calculator', label: 'Zakat Calculator', labelUrdu: 'زکوٰۃ کیلکولیٹر' },
     { id: 'islamic-calendar', label: 'Islamic Calendar', labelUrdu: 'اسلامی کیلنڈر' },
+    { id: 'seerah-of-prophet-muhammad', label: 'Seerah of Prophet ﷺ', labelUrdu: 'سیرت النبی ﷺ' },
+    { id: 'ghusl-taharah-guide', label: 'Ghusl & Taharah', labelUrdu: 'غسل اور طہارت' },
+    { id: 'tayammum-guide', label: 'Tayammum Guide', labelUrdu: 'تیمم کا طریقہ' },
+    { id: 'hajj-umrah-guide', label: 'Hajj & Umrah Guide', labelUrdu: 'حج و عمرہ گائیڈ' },
+    { id: 'stories-of-the-prophets', label: 'Stories of Prophets', labelUrdu: 'قصص الانبیاء' },
+    { id: 'rights-in-islam', label: 'Rights in Islam', labelUrdu: 'حقوق العباد' },
   ];
 
   const navLinks: { id: AppTab; label: string; labelUrdu: string }[] = [

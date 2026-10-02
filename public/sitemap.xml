@@ -154,6 +154,49 @@
     <priority>0.9</priority>
   </url>
 
+  <!-- Educational Guides Phase 2 -->
+  <url>
+    <loc>https://learnislamiq.com/seerah-of-prophet-muhammad</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://learnislamiq.com/ghusl-taharah-guide</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://learnislamiq.com/tayammum-guide</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://learnislamiq.com/hajj-umrah-guide</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://learnislamiq.com/stories-of-the-prophets</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://learnislamiq.com/rights-in-islam</loc>
+    <lastmod>2026-10-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- Informational & Legal Pages -->
   <url>
     <loc>https://learnislamiq.com/about</loc>
