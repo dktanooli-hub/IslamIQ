@@ -21,9 +21,9 @@ export const Navigation: React.FC = () => {
       icon: HelpCircle,
     },
     {
-      id: 'salah' as const,
-      label: 'Salah',
-      labelUrdu: 'نماز',
+      id: isKids ? ('kids-namaz' as const) : ('salah' as const),
+      label: isKids ? 'Namaz' : 'Salah',
+      labelUrdu: isKids ? 'نماز سیکھیں' : 'نماز',
       icon: CheckSquare,
     },
     ...(!isKids ? [{
@@ -33,9 +33,9 @@ export const Navigation: React.FC = () => {
       icon: Compass,
     }] : []),
     {
-      id: 'tasbih' as const,
-      label: 'Tasbih',
-      labelUrdu: 'تسبیح',
+      id: isKids ? ('kids-tasbih' as const) : ('tasbih' as const),
+      label: isKids ? 'Tasbih' : 'Tasbih',
+      labelUrdu: isKids ? 'تسبیح سیکھیں' : 'تسبیح',
       icon: Sparkles,
     },
     {

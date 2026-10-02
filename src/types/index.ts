@@ -7,6 +7,8 @@ export type AppTab =
   | 'quiz' 
   | 'salah' 
   | 'tasbih' 
+  | 'kids-namaz'
+  | 'kids-tasbih'
   | 'search' 
   | 'status' 
   | 'qibla' 

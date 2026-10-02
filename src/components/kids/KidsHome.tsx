@@ -10,7 +10,7 @@ import { Mic, MicOff, Volume2, VolumeX, RotateCcw, Sparkles, HelpCircle, CheckSq
 import confetti from 'canvas-confetti';
 
 interface KidsHomeProps {
-  onSelectActivity: (tab: 'quiz' | 'salah' | 'tasbih' | 'home' | 'search' | 'status') => void;
+  onSelectActivity: (tab: 'quiz' | 'salah' | 'tasbih' | 'home' | 'search' | 'status' | 'kids-namaz' | 'kids-tasbih') => void;
 }
 
 export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
@@ -196,20 +196,38 @@ export const KidsHome: React.FC<KidsHomeProps> = ({ onSelectActivity }) => {
         });
         setTimeout(() => {
           onSelectActivity('quiz');
-        }, 1500);
+        }, 1200);
       } else {
         setTimeout(() => {
           onSelectActivity('quiz');
-        }, 600);
+        }, 400);
       }
     } else if (activity === 'salah') {
-      setTimeout(() => {
-        setKidsSection('namaz');
-      }, 400);
+      if (!isSoundMuted) {
+        SpeechEngine.speakActivityGuidance(activity, isUrdu ? 'urdu' : 'english', () => {
+          setKidsSection('namaz');
+        });
+        setTimeout(() => {
+          setKidsSection('namaz');
+        }, 600);
+      } else {
+        setTimeout(() => {
+          setKidsSection('namaz');
+        }, 150);
+      }
     } else if (activity === 'tasbih') {
-      setTimeout(() => {
-        setKidsSection('tasbih');
-      }, 400);
+      if (!isSoundMuted) {
+        SpeechEngine.speakActivityGuidance(activity, isUrdu ? 'urdu' : 'english', () => {
+          setKidsSection('tasbih');
+        });
+        setTimeout(() => {
+          setKidsSection('tasbih');
+        }, 600);
+      } else {
+        setTimeout(() => {
+          setKidsSection('tasbih');
+        }, 150);
+      }
     }
   };
 

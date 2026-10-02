@@ -185,10 +185,11 @@ export const KidsTasbihLearning: React.FC<KidsTasbihLearningProps> = ({ onBackTo
             SpeechEngine.stop();
             onBackToKidsMenu();
           }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm font-bold transition-all active:scale-95"
+          className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm font-black transition-all active:scale-95 shadow-sm border border-white/30"
+          title={isUrdu ? 'واپس کڈز مینو' : 'Back to Kids Menu'}
         >
           <ArrowLeft className="w-4 h-4" />
-          <span>{isUrdu ? 'ہوم مینو' : 'Back to Menu'}</span>
+          <span>{isUrdu ? '← واپس (Back)' : '← Back'}</span>
         </button>
 
         <div className="text-center">
@@ -425,6 +426,19 @@ export const KidsTasbihLearning: React.FC<KidsTasbihLearningProps> = ({ onBackTo
           </div>
         </div>
       )}
+      {/* Return to Kids Menu Bottom Button */}
+      <div className="flex justify-center pt-2 pb-8">
+        <button
+          onClick={() => {
+            SpeechEngine.stop();
+            onBackToKidsMenu();
+          }}
+          className="flex items-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-purple-50 text-purple-900 font-black text-xs sm:text-sm border-2 border-purple-300 shadow-md transition-all active:scale-95"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>{isUrdu ? '← واپس کڈز مینو (Back to Kids Menu)' : '← Back to Kids Menu'}</span>
+        </button>
+      </div>
     </div>
   );
 };

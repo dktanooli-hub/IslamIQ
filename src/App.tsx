@@ -11,6 +11,8 @@ import { Navigation } from './components/Navigation';
 import { ProfileModal } from './components/ProfileModal';
 import { AdminPanel } from './components/AdminPanel';
 import { KidsHome } from './components/kids/KidsHome';
+import { KidsNamazLearning } from './components/kids/KidsNamazLearning';
+import { KidsTasbihLearning } from './components/kids/KidsTasbihLearning';
 import { QiblaFinder } from './components/QiblaFinder';
 import { AboutPage } from './components/pages/AboutPage';
 import { ContactPage } from './components/pages/ContactPage';
@@ -84,6 +86,10 @@ export const App: React.FC = () => {
 
         if (validCleanTabs.includes(path as AppTab)) {
           setActiveTab(path as AppTab);
+        } else if (path === 'kids-namaz') {
+          setActiveTab('kids-namaz');
+        } else if (path === 'kids-tasbih') {
+          setActiveTab('kids-tasbih');
         } else if (path === 'salah') {
           setActiveTab('salah');
         } else if (path === 'quiz') {
@@ -248,6 +254,10 @@ export const App: React.FC = () => {
       if (metaTag) {
         metaTag.setAttribute('content', cleanRoutesMeta[activeTab].desc);
       }
+    } else if (activeTab === 'kids-namaz') {
+      document.title = 'Kids Namaz Learning • نماز سیکھیں | IslamIQ';
+    } else if (activeTab === 'kids-tasbih') {
+      document.title = 'Kids Tasbih Learning • تسبیح سیکھیں | IslamIQ';
     } else if (activeTab === 'salah') {
       document.title = 'Salah Tracker • Daily Namaz Tracker & Timings | IslamIQ';
       const metaTag = document.querySelector('meta[name="description"]');
@@ -304,6 +314,10 @@ export const App: React.FC = () => {
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 pt-5 pb-16 sm:pb-20">
         {activeTab === 'quiz' ? (
           <QuizSection />
+        ) : activeTab === 'kids-namaz' ? (
+          <KidsNamazLearning onBackToKidsMenu={() => setActiveTab('home')} />
+        ) : activeTab === 'kids-tasbih' ? (
+          <KidsTasbihLearning onBackToKidsMenu={() => setActiveTab('home')} />
         ) : activeTab === 'salah' ? (
           <SalahTracker />
         ) : activeTab === 'qibla' ? (
@@ -453,7 +467,15 @@ export const App: React.FC = () => {
           </React.Suspense>
         ) : (
           isKids ? (
-            <KidsHome onSelectActivity={(tab) => setActiveTab(tab)} />
+            <KidsHome onSelectActivity={(tab) => {
+              if (tab === 'kids-namaz') {
+                setActiveTab('kids-namaz');
+              } else if (tab === 'kids-tasbih') {
+                setActiveTab('kids-tasbih');
+              } else {
+                setActiveTab(tab);
+              }
+            }} />
           ) : (
             <DailyFeed onNavigateToStatusWithText={handleNavigateToStatus} />
           )
