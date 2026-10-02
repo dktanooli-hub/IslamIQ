@@ -94,6 +94,37 @@ export const SalahForBeginnersGuide: React.FC = () => {
         </div>
       </header>
 
+      {/* Guide Distinction & Scope Notice */}
+      <section className="bg-amber-50/80 border-2 border-amber-200/90 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-900 uppercase tracking-wider">
+            <Sparkles className="w-4 h-4 text-amber-700" />
+            <span>{isUrdu ? 'نو مسلم اور نئے نمازیوں کے لیے آسان گائیڈ' : 'Beginner & Revert Friendly Learning Path'}</span>
+          </div>
+          <h2 className="text-sm sm:text-base font-bold text-amber-950">
+            {isUrdu ? 'آسان صوتی تلفظ اور ابتدائی تسلی کے ساتھ مرحلہ وار رہنمائی' : 'Gentle Step-by-Step Prayer Guidance with Phonetic Transliterations'}
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed max-w-2xl">
+            {isUrdu
+              ? 'یہ گائیڈ خاص طور پر نو مسلم بھائیوں، بہنوں اور پہلی بار نماز سیکھنے والوں کے لیے بغیر کسی پیچیدگی کے تیار کی گئی ہے۔ اس میں آسان صوتی تلفظ (Transliteration) اور ابتدائی رہنما اشارے شامل ہیں۔ تفصیلی فقہی احکام اور تمام مسنون دعاؤں کے لیے ہمارا جامع نماز ریفرنس دیکھیں۔'
+              : 'This guide is specifically tailored for new Muslims, reverts, and youth taking their first steps in prayer without intimidating terminology. It features simple phonetic transliterations, gentle tips, and reassurance for common anxieties. For the comprehensive scholarly reference covering all Fiqh rulings, consult our complete manual.'}
+          </p>
+        </div>
+
+        <a
+          href="/how-to-perform-salah"
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTab('how-to-perform-salah');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="shrink-0 px-4 py-2.5 bg-amber-700 hover:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-1.5"
+        >
+          <span>{isUrdu ? 'جامع نماز ریفرنس کھولیں' : 'Full Salah Reference'}</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </section>
+
       {/* Section 1: Pre-Prayer Checklist */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-5">
         <div className="space-y-1">

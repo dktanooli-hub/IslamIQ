@@ -108,9 +108,14 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
           <div className={`grid gap-2.5 mt-5 pt-4 border-t border-white/10 ${
             isKids ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-5'
           }`}>
-            <button
-              onClick={() => setActiveTab('salah')}
-              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10"
+            <a
+              href="/salah"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab('salah');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10 block"
             >
               <div className="text-[11px] text-emerald-200 font-medium">Daily Salah</div>
               <div className="text-base font-bold flex items-center justify-between">
@@ -119,53 +124,73 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
                   {prayedCount === 5 ? 'Completed' : 'Track'}
                 </span>
               </div>
-            </button>
+            </a>
 
             {!isKids && (
-              <button
-                onClick={() => setActiveTab('qibla')}
-                className="bg-gradient-to-br from-amber-500/20 to-emerald-500/20 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-amber-300/30"
+              <a
+                href="/qibla"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveTab('qibla');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="bg-gradient-to-br from-amber-500/20 to-emerald-500/20 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-amber-300/30 block"
               >
                 <div className="text-[11px] text-amber-200 font-medium">{contentLang === 'urdu' ? 'قبلہ رخ' : 'Qibla Finder'}</div>
                 <div className="text-base font-bold flex items-center justify-between">
                   <span>{contentLang === 'urdu' ? 'کمپاس' : 'Compass'}</span>
                   <Compass className="w-4 h-4 text-goldAccent animate-pulse" />
                 </div>
-              </button>
+              </a>
             )}
 
-            <button
-              onClick={() => setActiveTab('quiz')}
-              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10"
+            <a
+              href="/quiz"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab('quiz');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10 block"
             >
               <div className="text-[11px] text-amber-200 font-medium">{isKids ? 'Kids Quiz 🎈' : 'Daily Quiz'}</div>
               <div className="text-base font-bold flex items-center justify-between">
                 <span>Play Now</span>
                 <ChevronRight className="w-4 h-4 text-amber-300" />
               </div>
-            </button>
+            </a>
 
-            <button
-              onClick={() => setActiveTab('tasbih')}
-              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10"
+            <a
+              href="/tasbih"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab('tasbih');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10 block"
             >
               <div className="text-[11px] text-emerald-200 font-medium">Digital Tasbih</div>
               <div className="text-base font-bold flex items-center justify-between">
                 <span>{userStats.tasbihTotalLifetime} Dhikr</span>
                 <Sparkles className="w-3.5 h-3.5 text-goldAccent" />
               </div>
-            </button>
+            </a>
 
-            <button
-              onClick={() => setActiveTab('status')}
-              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10"
+            <a
+              href="/status"
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab('status');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="bg-white/10 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-white/10 block"
             >
               <div className="text-[11px] text-emerald-200 font-medium">Status Creator</div>
               <div className="text-base font-bold flex items-center justify-between">
                 <span>Design Post</span>
                 <Share2 className="w-3.5 h-3.5 text-emerald-300" />
               </div>
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -245,6 +270,33 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
             </button>
           </div>
         </div>
+
+        {/* Crawlable Internal Links: Daily Quran -> Quran Learning Guide */}
+        <div className="pt-3 mt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <a
+            href="/quran-learning-guide"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('quran-learning-guide');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-1.5 font-bold text-emerald-700 hover:text-emerald-900 group"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
+            <span>{contentLang === 'urdu' ? 'قرآن مجید سیکھنے اور تجوید کی گائیڈ پڑھیں ←' : 'Read Full Quran Learning & Tajweed Guide →'}</span>
+          </a>
+          <a
+            href="/daily-quran-verse"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('daily-quran-verse');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="text-[11px] font-semibold text-slate-500 hover:text-emerald-700 underline"
+          >
+            {contentLang === 'urdu' ? 'تمام منتخب قرآنی آیات' : 'View All Daily Verses'}
+          </a>
+        </div>
       </div>
 
       {/* 2. DAILY HADITH */}
@@ -318,6 +370,33 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
             <Share2 className="w-3.5 h-3.5" />
             <span>Share Hadith</span>
           </button>
+        </div>
+
+        {/* Crawlable Internal Links: Daily Hadith -> Hadith Learning Guide */}
+        <div className="pt-3 mt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <a
+            href="/hadith-learning-guide"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('hadith-learning-guide');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-1.5 font-bold text-amber-800 hover:text-amber-950 group"
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-amber-600 group-hover:scale-110 transition-transform" />
+            <span>{contentLang === 'urdu' ? 'علم الحدیث اور صحاح ستہ کی مکمل گائیڈ ←' : 'Explore Hadith Verification & Learning Guide →'}</span>
+          </a>
+          <a
+            href="/daily-hadith"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('daily-hadith');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="text-[11px] font-semibold text-slate-500 hover:text-amber-800 underline"
+          >
+            {contentLang === 'urdu' ? 'تمام صحیح احادیث' : 'View All Daily Hadiths'}
+          </a>
         </div>
       </div>
 
@@ -393,6 +472,33 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
             <Share2 className="w-3.5 h-3.5" />
             <span>Share Dua</span>
           </button>
+        </div>
+
+        {/* Crawlable Internal Links: Daily Dua -> Dua / Worship Guides */}
+        <div className="pt-3 mt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <a
+            href="/daily-dua"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('daily-dua');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-1.5 font-bold text-teal-800 hover:text-teal-950 group"
+          >
+            <Heart className="w-3.5 h-3.5 text-teal-600 group-hover:scale-110 transition-transform" />
+            <span>{contentLang === 'urdu' ? 'تمام مسنون دعاؤں کا ذخیرہ دیکھیں ←' : 'Explore Full Daily Duas Archive →'}</span>
+          </a>
+          <a
+            href="/how-to-perform-salah"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('how-to-perform-salah');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="text-[11px] font-semibold text-slate-500 hover:text-teal-800 underline"
+          >
+            {contentLang === 'urdu' ? 'نماز کے مسنون اذکار' : 'Salah Prayers & Adhkar'}
+          </a>
         </div>
       </div>
 

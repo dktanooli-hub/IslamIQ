@@ -381,10 +381,15 @@ export const IslamicQAGuide: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
           {data.internalLinks.map((link, lIdx) => (
-            <button
+            <a
               key={lIdx}
-              onClick={() => setActiveTab(link.tabId as AppTab)}
-              className="p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-left transition-all group flex flex-col justify-between"
+              href={link.path}
+              onClick={(e) => {
+                e.preventDefault();
+                setActiveTab(link.tabId as AppTab);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="p-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-left transition-all group flex flex-col justify-between block"
             >
               <div className="space-y-1">
                 <h4 className="font-bold text-sm text-teal-300 group-hover:text-teal-200">
@@ -398,7 +403,7 @@ export const IslamicQAGuide: React.FC = () => {
                 <span>{isUrdu ? 'مطالعہ کریں' : 'Open Guide'}</span>
                 {isUrdu ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
               </div>
-            </button>
+            </a>
           ))}
         </div>
       </section>

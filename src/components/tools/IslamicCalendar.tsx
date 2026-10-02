@@ -698,8 +698,10 @@ export const IslamicCalendar: React.FC = () => {
                 : 'Accurately determine Nisab and 2.5% Zakat on cash, gold, silver, and trade assets with our offline tool.'}
             </p>
           </div>
-          <button
-            onClick={() => {
+          <a
+            href="/zakat-calculator"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('zakat-calculator');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
@@ -707,46 +709,54 @@ export const IslamicCalendar: React.FC = () => {
           >
             <span>{isUrdu ? 'زکوٰۃ کیلکولیٹر کھولیں' : 'Open Zakat Calculator'}</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-800">
-          <button
-            onClick={() => {
+          <a
+            href="/ramadan-guide"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('ramadan-guide');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? 'رمضان المبارک گائیڈ' : 'Ramadan & Fasting Guide'}
-          </button>
-          <button
-            onClick={() => {
+          </a>
+          <a
+            href="/how-to-perform-salah"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('how-to-perform-salah');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? 'نماز کا مکمل طریقہ' : 'How to Perform Salah'}
-          </button>
-          <button
-            onClick={() => {
+          </a>
+          <a
+            href="/daily-hadith"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('daily-hadith');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? 'روزانہ کی حدیث' : 'Daily Hadith Hub'}
-          </button>
-          <button
-            onClick={() => {
+          </a>
+          <a
+            href="/zakat-basics"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('zakat-basics');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? 'زکوٰۃ کے بنیادی احکام' : 'Zakat Basics Guide'}
-          </button>
+          </a>
         </div>
       </section>
 

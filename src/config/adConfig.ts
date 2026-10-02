@@ -27,12 +27,11 @@ export const AD_CONFIG = {
   ADSENSE_CLIENT_ID: 'ca-pub-9108925465688012',
 
   // Google AdSense Unit Slots
+  // POLICY COMPLIANCE: Ads are strictly disabled on utility/tool pages (Tasbih Counter, Qibla Finder,
+  // Active Quiz, Salah Tracker) to adhere to Google AdSense guidelines against low-value / tool-only placements.
+  // Ads are only served on educational editorial pages with substantial, original learning content.
   SLOTS: {
     HOME_BANNER: '1234567890',
-    QUIZ_COMPLETION: '2345678901',
-    TASBIH_BANNER: '3456789012',
-    QIBLA_BANNER: '4567890123',
-    SALAH_FOOTER: '5678901234',
   },
 
   // AdMob Ad Units (for Capacitor Android app export)

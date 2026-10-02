@@ -3,8 +3,6 @@ import { useApp } from '../context/AppContext';
 import { DHIKR_LIST } from '../data/verifiedContent';
 import { RotateCcw, Volume2, Sparkles, ChevronDown, Check, Trophy, Heart, History, PlusCircle, Trash2, Calendar, Clock, Edit3, Maximize2, Minimize2 } from 'lucide-react';
 import { DhikrType } from '../types';
-import { AdBanner } from './AdBanner';
-import { AD_CONFIG } from '../config/adConfig';
 
 export const TasbihCounter: React.FC = () => {
   const {
@@ -559,16 +557,6 @@ export const TasbihCounter: React.FC = () => {
             </form>
           </div>
         </div>
-      )}
-
-      {/* Strategic Bottom Ad Placement */}
-      {!isKids && (
-        <AdBanner
-          slotId={AD_CONFIG.SLOTS.TASBIH_BANNER}
-          labelUrdu="اشتہار (Google AdSense)"
-          labelEn="Google Sponsored Ad"
-          className="mt-4"
-        />
       )}
 
       {/* FULLSCREEN PURE DARK TASBIH FOCUS MODE */}

@@ -30,8 +30,6 @@ import {
   X
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
-import { AdBanner } from './AdBanner';
-import { AD_CONFIG } from '../config/adConfig';
 
 interface QiblaFinderProps {
   onBack?: () => void;
@@ -895,14 +893,6 @@ export const QiblaFinder: React.FC<QiblaFinderProps> = ({ onBack }) => {
           </li>
         </ul>
       </div>
-
-      {/* Strategic Qibla Page Google Ad Placement */}
-      <AdBanner
-        slotId={AD_CONFIG.SLOTS.QIBLA_BANNER}
-        labelUrdu="اشتہار (Google AdSense)"
-        labelEn="Google Sponsored Ad"
-        className="my-3"
-      />
 
       {/* MODAL: ALL POPULAR CITIES & CUSTOM COORDINATES */}
       {isCityModalOpen && (

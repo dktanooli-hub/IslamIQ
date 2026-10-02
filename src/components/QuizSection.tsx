@@ -7,8 +7,6 @@ import { sounds, SpeechEngine } from '../utils/audio';
 import confetti from 'canvas-confetti';
 import { AnimatedKidsQuizView } from './kids/AnimatedKidsQuizView';
 import { KidsCharacter } from './kids/KidsCharacter';
-import { AdBanner } from './AdBanner';
-import { AD_CONFIG } from '../config/adConfig';
 
 export const QuizSection: React.FC = () => {
   const {
@@ -453,16 +451,6 @@ export const QuizSection: React.FC = () => {
               <span>Next Quiz • New Questions (اگلا نیا کوئز)</span>
             </button>
           </div>
-
-          {/* High Conversion Google Ad Placement after Quiz Completion */}
-          {!isKids && (
-            <AdBanner
-              slotId={AD_CONFIG.SLOTS.QUIZ_COMPLETION}
-              labelUrdu="اشتہار (Google Ad)"
-              labelEn="Google Sponsored Ad"
-              className="my-4"
-            />
-          )}
 
           {/* Review Answers section */}
           <div className="text-left mt-6 pt-5 border-t border-slate-200">

@@ -91,6 +91,37 @@ export const HowToPerformSalahGuide: React.FC = () => {
         </div>
       </header>
 
+      {/* Guide Distinction & Scope Notice */}
+      <section className="bg-emerald-50/80 border-2 border-emerald-200/90 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-900 uppercase tracking-wider">
+            <BookOpen className="w-4 h-4 text-emerald-700" />
+            <span>{isUrdu ? 'جامع فقہی ریفرنس دستی کتاب (Comprehensive Reference Manual)' : 'Comprehensive Scholarly Reference Manual'}</span>
+          </div>
+          <h2 className="text-sm sm:text-base font-bold text-emerald-950">
+            {isUrdu ? 'نماز کے تمام ارکان، واجبات اور شرعی احکام کا مکمل مرجع' : 'Complete Jurisprudential Manual of Prayer Rules, Arkan & Corrections'}
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-700 leading-relaxed max-w-2xl">
+            {isUrdu
+              ? 'یہ صفحہ نماز کے تفصیلی ارکان، واجبات، سنتوں اور سجدہ سہو کا مستند فقہی ریفرنس ہے۔ اگر آپ بالکل نئے نمازی ہیں یا آسان صوتی تلفظ (Phonetic Transliteration) کے ساتھ سیکھنا چاہتے ہیں، تو ہماری ابتدائی نماز گائیڈ ملاحظہ فرمائیں۔'
+              : 'This guide serves as an authoritative reference manual covering full prayer jurisprudence, obligatory pillars (Arkan), essential duties (Wajibat), detailed Sunan postures, and Sujud Sahw corrections. If you are learning prayer for the very first time, visit our simplified beginner guide.'}
+          </p>
+        </div>
+
+        <a
+          href="/salah-for-beginners"
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTab('salah-for-beginners');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="shrink-0 px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition-all active:scale-95 flex items-center gap-1.5"
+        >
+          <span>{isUrdu ? 'ابتدائی نماز گائیڈ دیکھیں' : 'Beginner Prayer Guide'}</span>
+          <ArrowRight className="w-4 h-4" />
+        </a>
+      </section>
+
       {/* Section 1: Prerequisites of Salah (Shuroot) */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-slate-200/80 space-y-6">
         <div className="space-y-1">

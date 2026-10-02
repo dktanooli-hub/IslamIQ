@@ -331,8 +331,19 @@ export const ZakatCalculator: React.FC = () => {
             {isUrdu ? 'شرعی رہنمائی: ' : 'Scholarly Advice: '}
           </span>
           {isUrdu
-            ? 'نقد رقم اور بچت کے لیے اکثر معاصر فقہاء چاندی کا نصاب (۵۹۵ گرام / ۵۲.۵ تولے) لاگو کرنے کو ترجیح دیتے ہیں کیونکہ اس سے غریبوں کو زیادہ فائدہ پہنچتا ہے۔ اگر صرف سونا موجود ہو تو سونے کا نصاب (۸۵ گرام / ۷.۵ تولے) اختیار کیا جاتا ہے۔'
-            : 'For liquid savings and cash, modern scholars widely recommend the Silver standard (595g / 52.5 tolas) as it maximally benefits the poor. The Gold standard (85g / 7.5 tolas) is standard when possessing exclusively gold.'}
+            ? 'نقد رقم اور بچت کے لیے اکثر معاصر فقہاء چاندی کا نصاب (۵۹۵ گرام / ۵۲.۵ تولے) لاگو کرنے کو ترجیح دیتے ہیں کیونکہ اس سے غریبوں کو زیادہ فائدہ پہنچتا ہے۔ اگر صرف سونا موجود ہو تو سونے کا نصاب (۸۵ گرام / ۷.۵ تولے) اختیار کیا جاتا ہے۔ تفصیل کے لیے '
+            : 'For liquid savings and cash, modern scholars widely recommend the Silver standard (595g / 52.5 tolas) as it maximally benefits the poor. The Gold standard (85g / 7.5 tolas) is standard when possessing exclusively gold. Read our '}
+          <a
+            href="/zakat-basics"
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab('zakat-basics');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="font-bold underline text-emerald-700 hover:text-emerald-900 inline"
+          >
+            {isUrdu ? 'زکوٰۃ کے بنیادی احکام کی گائیڈ ملاحظہ فرمائیں ←' : 'Zakat Basics Guide →'}
+          </a>
         </p>
       </section>
 
@@ -860,8 +871,10 @@ export const ZakatCalculator: React.FC = () => {
                 : 'Explore detailed scholarly explanations of the 8 Quranic recipients and the Hijri lunar calendar.'}
             </p>
           </div>
-          <button
-            onClick={() => {
+          <a
+            href="/zakat-basics"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('zakat-basics');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
@@ -869,46 +882,54 @@ export const ZakatCalculator: React.FC = () => {
           >
             <span>{isUrdu ? 'زکوٰۃ گائیڈ کھولیں' : 'Open Zakat Basics'}</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-800">
-          <button
-            onClick={() => {
+          <a
+            href="/islamic-calendar"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('islamic-calendar');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? 'اسلامی کیلنڈر' : 'Islamic Calendar'}
-          </button>
-          <button
-            onClick={() => {
+          </a>
+          <a
+            href="/5-pillars-of-islam"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('5-pillars-of-islam');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? '۵ ارکانِ اسلام' : '5 Pillars of Islam'}
-          </button>
-          <button
-            onClick={() => {
+          </a>
+          <a
+            href="/ramadan-guide"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('ramadan-guide');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? 'رمضان گائیڈ' : 'Ramadan Guide'}
-          </button>
-          <button
-            onClick={() => {
+          </a>
+          <a
+            href="/how-to-perform-salah"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('how-to-perform-salah');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
-            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+            className="text-left p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
           >
             {isUrdu ? 'نماز کا طریقہ' : 'How to Pray (Salah)'}
-          </button>
+          </a>
         </div>
       </section>
 
