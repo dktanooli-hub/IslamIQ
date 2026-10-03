@@ -557,13 +557,21 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
         <p className={`text-sm text-emerald-100/90 leading-relaxed mb-4 ${contentLang === 'urdu' ? 'urdu-text' : ''}`}>
           {contentLang === 'urdu' ? dailyReminder.bodyUrdu : dailyReminder.bodyEn}
         </p>
-        <div className="bg-white/10 rounded-2xl p-3 border border-white/10">
-          <div className="text-[11px] font-bold text-goldAccent mb-1">
-            {contentLang === 'urdu' ? 'آج کا عملی اقدام (Action Step):' : 'Today\'s Practical Step:'}
+        <div className="bg-white/10 rounded-2xl p-3 border border-white/10 space-y-2">
+          <div>
+            <div className="text-[11px] font-bold text-goldAccent mb-1">
+              {contentLang === 'urdu' ? 'آج کا عملی اقدام (Action Step):' : 'Today\'s Practical Step:'}
+            </div>
+            <p className={`text-xs text-white ${contentLang === 'urdu' ? 'urdu-text' : ''}`}>
+              {contentLang === 'urdu' ? dailyReminder.practicalTipUrdu : dailyReminder.practicalTipEn}
+            </p>
           </div>
-          <p className={`text-xs text-white ${contentLang === 'urdu' ? 'urdu-text' : ''}`}>
-            {contentLang === 'urdu' ? dailyReminder.practicalTipUrdu : dailyReminder.practicalTipEn}
-          </p>
+          {dailyReminder.reference && (
+            <div className="text-[10px] text-emerald-200/80 pt-1 border-t border-white/10 flex items-center gap-1">
+              <ShieldCheck className="w-3 h-3 text-goldAccent" />
+              <span>{dailyReminder.reference}</span>
+            </div>
+          )}
         </div>
       </div>
 

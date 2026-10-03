@@ -137,6 +137,24 @@ export const DailyQuranVerseHub: React.FC = () => {
             </p>
           </div>
 
+          {(todayVerse.explanationUrdu || todayVerse.explanationEn) && (
+            <div className="p-3 rounded-xl bg-white/10 text-xs border border-white/10 space-y-1 text-left">
+              <span className="font-bold text-amber-200 block">{isUrdu ? 'مفہوم و تفسیر:' : 'Explanation:'}</span>
+              <p className="text-emerald-100/90 leading-relaxed">
+                {isUrdu ? (todayVerse.explanationUrdu || todayVerse.explanationEn) : (todayVerse.explanationEn || todayVerse.explanationUrdu)}
+              </p>
+            </div>
+          )}
+
+          {(todayVerse.lessonUrdu || todayVerse.lessonEn) && (
+            <div className="p-3 rounded-xl bg-emerald-500/20 text-xs border border-emerald-400/30 space-y-1 text-left">
+              <span className="font-bold text-emerald-200 block">{isUrdu ? 'عملی سبق:' : 'Practical Lesson:'}</span>
+              <p className="text-white leading-relaxed">
+                {isUrdu ? (todayVerse.lessonUrdu || todayVerse.lessonEn) : (todayVerse.lessonEn || todayVerse.lessonUrdu)}
+              </p>
+            </div>
+          )}
+
           <div className="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
             <span className="text-emerald-300 font-semibold">
               {todayVerse.theme}
@@ -259,6 +277,24 @@ export const DailyQuranVerseHub: React.FC = () => {
                   {verse.translationEn}
                 </p>
               </div>
+
+              {(verse.explanationUrdu || verse.explanationEn) && (
+                <div className="p-3 rounded-xl bg-teal-50/70 border border-teal-100 text-xs space-y-1">
+                  <span className="font-bold text-teal-900 block">{isUrdu ? 'مفہوم و تفسیر:' : 'Explanation:'}</span>
+                  <p className="text-slate-700 leading-relaxed">
+                    {isUrdu ? (verse.explanationUrdu || verse.explanationEn) : (verse.explanationEn || verse.explanationUrdu)}
+                  </p>
+                </div>
+              )}
+
+              {(verse.lessonUrdu || verse.lessonEn) && (
+                <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-100 text-xs space-y-1">
+                  <span className="font-bold text-emerald-900 block">{isUrdu ? 'عملی سبق:' : 'Practical Lesson:'}</span>
+                  <p className="text-emerald-800 leading-relaxed">
+                    {isUrdu ? (verse.lessonUrdu || verse.lessonEn) : (verse.lessonEn || verse.lessonUrdu)}
+                  </p>
+                </div>
+              )}
 
               <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
                 <span className="flex items-center gap-1 text-[11px] text-emerald-700 font-semibold">

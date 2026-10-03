@@ -71,6 +71,11 @@ export interface QuranVerse {
   surahNumber: number;
   ayahNumber: number;
   theme: string;
+  explanationUrdu?: string;
+  explanationEn?: string;
+  lessonUrdu?: string;
+  lessonEn?: string;
+  reference?: string;
 }
 
 export interface HadithItem {
@@ -108,6 +113,7 @@ export interface IslamicReminder {
   category: string;
   practicalTipUrdu: string;
   practicalTipEn: string;
+  reference?: string;
 }
 
 export interface VerifiedQA {
@@ -116,9 +122,14 @@ export interface VerifiedQA {
   questionEn: string;
   answerUrdu: string;
   answerEn: string;
-  category: 'Aqeedah' | 'Salah' | 'Manners' | 'Quran' | 'Fasting' | 'Family';
+  category: 'Aqeedah' | 'Salah' | 'Manners' | 'Quran' | 'Fasting' | 'Family' | 'Wudu' | 'Taharah' | 'Zakat' | 'Hajj' | 'Hadith' | 'Halal' | 'Kids' | string;
   reference: string;
   tags: string[];
+  explanationUrdu?: string;
+  explanationEn?: string;
+  relatedGuidePath?: string;
+  relatedGuideTitleEn?: string;
+  relatedGuideTitleUrdu?: string;
 }
 
 export interface SalahDayRecord {

@@ -14,7 +14,22 @@ export const IslamicQAHub: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [expandedId, setExpandedId] = useState<string | null>(VERIFIED_QA_DATABASE[0]?.id || null);
 
-  const categories = ['all', 'Aqeedah', 'Salah', 'Quran', 'Manners', 'Fasting', 'Family'];
+  const categories = [
+    { id: 'all', en: 'All Topics', urdu: 'تمام موضوعات' },
+    { id: 'Salah', en: 'Salah & Prayer', urdu: 'نماز و اذکار' },
+    { id: 'Wudu', en: 'Wudu (Ablution)', urdu: 'وضو کا طریقہ' },
+    { id: 'Taharah', en: 'Taharah & Purity', urdu: 'طہارت و غسل' },
+    { id: 'Fasting', en: 'Fasting & Ramadan', urdu: 'روزہ و رمضان' },
+    { id: 'Zakat', en: 'Zakat & Charity', urdu: 'زکوٰۃ و صدقات' },
+    { id: 'Hajj', en: 'Hajj & Umrah', urdu: 'حج و عمرہ' },
+    { id: 'Quran', en: 'Quran & Tajweed', urdu: 'قرآن و تجوید' },
+    { id: 'Hadith', en: 'Hadith & Sunnah', urdu: 'حدیث و سنت' },
+    { id: 'Manners', en: 'Islamic Manners', urdu: 'اسلامی آداب' },
+    { id: 'Family', en: 'Family & Marriage', urdu: 'خاندان و حقوق' },
+    { id: 'Halal', en: 'Halal & Haram Basics', urdu: 'حلال و حرام' },
+    { id: 'Kids', en: 'Kids Islamic Learning', urdu: 'بچوں کی اسلامی تربیت' },
+    { id: 'Aqeedah', en: 'Aqeedah (Faith)', urdu: 'ایمان و عقائد' }
+  ];
 
   const filteredQA = VERIFIED_QA_DATABASE.filter((item: VerifiedQA) => {
     const matchesCat = selectedCategory === 'all' || item.category.toLowerCase() === selectedCategory.toLowerCase();
@@ -92,15 +107,15 @@ export const IslamicQAHub: React.FC = () => {
         <div className="flex flex-wrap gap-1.5">
           {categories.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
               className={`px-3 py-1 rounded-xl text-xs font-semibold capitalize transition-all ${
-                selectedCategory === cat
+                selectedCategory === cat.id
                   ? 'bg-emerald-700 text-white shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
-              {cat === 'all' ? (isUrdu ? 'تمام موضوعات' : 'All Categories') : cat}
+              {isUrdu ? cat.urdu : cat.en}
             </button>
           ))}
         </div>
@@ -122,6 +137,7 @@ export const IslamicQAHub: React.FC = () => {
             const isExpanded = expandedId === qa.id;
             const question = isUrdu ? qa.questionUrdu : qa.questionEn;
             const answer = isUrdu ? qa.answerUrdu : qa.answerEn;
+            const explanation = isUrdu ? (qa.explanationUrdu || qa.explanationEn) : (qa.explanationEn || qa.explanationUrdu);
 
             return (
               <div
@@ -155,8 +171,39 @@ export const IslamicQAHub: React.FC = () => {
 
                 {isExpanded && (
                   <div className="px-5 pb-5 pt-1 space-y-3 border-t border-slate-100 bg-slate-50/40">
-                    <div className="p-4 rounded-xl bg-white border border-emerald-200 text-slate-800 text-xs sm:text-sm leading-relaxed space-y-2">
-                      <p className="font-medium">{answer}</p>
+                    <div className="p-4 rounded-xl bg-white border border-emerald-200 text-slate-800 text-xs sm:text-sm leading-relaxed space-y-3">
+                      <p className="font-medium text-slate-800 leading-relaxed">{answer}</p>
+
+                      {explanation && (
+                        <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-100 text-xs space-y-1 text-emerald-950">
+                          <strong className="block text-emerald-900 font-bold">
+                            {isUrdu ? 'وضاحت و حکمت:' : 'Detailed Explanation & Wisdom:'}
+                          </strong>
+                          <p className="leading-relaxed text-emerald-900">{explanation}</p>
+                        </div>
+                      )}
+
+                      {qa.relatedGuidePath && (
+                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                          <a
+                            href={qa.relatedGuidePath}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              const targetTab = qa.relatedGuidePath?.replace('/', '') as any;
+                              setActiveTab(targetTab);
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }}
+                            className="inline-flex items-center gap-1.5 font-bold text-emerald-700 hover:text-emerald-900 hover:underline"
+                          >
+                            <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>
+                              {isUrdu
+                                ? (qa.relatedGuideTitleUrdu || 'متعلقہ گائیڈ کا مطالعہ کریں ←')
+                                : (qa.relatedGuideTitleEn || 'Read Related Full Educational Guide →')}
+                            </span>
+                          </a>
+                        </div>
+                      )}
                       
                       <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                         <span className="flex items-center gap-1 text-emerald-800 font-bold">
