@@ -38,6 +38,10 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
 }) => {
   const fullUrl = `https://learnislamiq.com${canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`}`;
 
+  const breadcrumbsJson = JSON.stringify(breadcrumbs);
+  const faqsJson = JSON.stringify(faqs);
+  const articleJson = JSON.stringify(article);
+
   useEffect(() => {
     // Title
     document.title = title;
@@ -51,12 +55,16 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
     }
     metaDesc.setAttribute('content', description);
 
-    // Canonical
-    let linkCanonical = document.querySelector('link[rel="canonical"]');
+    // Canonical - deduplicate and set href
+    const allCanonicals = document.querySelectorAll('link[rel="canonical"]');
+    let linkCanonical = allCanonicals[0] as HTMLLinkElement | null;
     if (!linkCanonical) {
       linkCanonical = document.createElement('link');
       linkCanonical.setAttribute('rel', 'canonical');
       document.head.appendChild(linkCanonical);
+    }
+    for (let i = 1; i < allCanonicals.length; i++) {
+      allCanonicals[i].remove();
     }
     linkCanonical.setAttribute('href', fullUrl);
 
@@ -190,7 +198,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
     return () => {
       document.querySelectorAll('script[data-dynamic-seo="true"]').forEach((s) => s.remove());
     };
-  }, [title, description, fullUrl, isUrdu, breadcrumbs, faqs, article]);
+  }, [title, description, fullUrl, isUrdu, breadcrumbsJson, faqsJson, articleJson]);
 
   return null;
 };

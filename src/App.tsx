@@ -26,7 +26,6 @@ import { DailyQuranVerseHub } from './components/seo/DailyQuranVerseHub';
 import { DailyHadithHub } from './components/seo/DailyHadithHub';
 import { DailyDuaHub } from './components/seo/DailyDuaHub';
 import { SalahLearningHub } from './components/seo/SalahLearningHub';
-import { IslamicGeneralKnowledgeHub } from './components/seo/IslamicGeneralKnowledgeHub';
 import { Footer } from './components/Footer';
 import { AppTab } from './types';
 import { trackPageView } from './utils/analytics';
@@ -39,7 +38,6 @@ const SixArticlesOfFaithGuide = React.lazy(() => import('./components/seo/SixArt
 const SalahForBeginnersGuide = React.lazy(() => import('./components/seo/SalahForBeginnersGuide'));
 const IslamicMannersForKidsGuide = React.lazy(() => import('./components/seo/IslamicMannersForKidsGuide'));
 const IslamicGeneralKnowledgeGuide = React.lazy(() => import('./components/seo/IslamicGeneralKnowledgeGuide'));
-const IslamicQAGuide = React.lazy(() => import('./components/seo/IslamicQAGuide'));
 const QuranLearningGuide = React.lazy(() => import('./components/seo/QuranLearningGuide'));
 const HadithLearningGuide = React.lazy(() => import('./components/seo/HadithLearningGuide'));
 const RamadanGuide = React.lazy(() => import('./components/seo/RamadanGuide'));
@@ -316,6 +314,22 @@ export const App: React.FC = () => {
       document.title = 'IslamIQ • Learn • Quiz • Grow';
     }
 
+    // Always keep canonical link accurate across all SPA routes and remove duplicates
+    const allCanonicals = document.querySelectorAll('link[rel="canonical"]');
+    let linkCanonical = allCanonicals[0] as HTMLLinkElement | null;
+    if (!linkCanonical) {
+      linkCanonical = document.createElement('link');
+      linkCanonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(linkCanonical);
+    }
+    for (let i = 1; i < allCanonicals.length; i++) {
+      allCanonicals[i].remove();
+    }
+    const currentCanonicalUrl = cleanRoutesMeta[activeTab]
+      ? `https://learnislamiq.com${cleanRoutesMeta[activeTab].path}`
+      : 'https://learnislamiq.com/';
+    linkCanonical.setAttribute('href', currentCanonicalUrl);
+
     // Clean URL pathname if navigating away from a clean route
     if (!cleanRoutesMeta[activeTab] && window.location.pathname !== '/') {
       window.history.pushState({}, '', '/');
@@ -400,13 +414,7 @@ export const App: React.FC = () => {
             <IslamicGeneralKnowledgeGuide />
           </React.Suspense>
         ) : activeTab === 'islamic-questions-answers' ? (
-          <React.Suspense fallback={
-            <div className="flex items-center justify-center p-12">
-              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          }>
-            <IslamicQAGuide />
-          </React.Suspense>
+          <IslamicQAHub />
         ) : activeTab === 'quran-learning-guide' ? (
           <React.Suspense fallback={
             <div className="flex items-center justify-center p-12">

@@ -266,39 +266,27 @@ export const HadithLearningGuide: React.FC = () => {
         </h2>
 
         <div className="space-y-3">
-          {data.faqs.map((faq, idx) => {
-            const isOpen = openFaqIndex === idx;
-            return (
-              <div
-                key={idx}
-                className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs transition-all"
-              >
-                <button
-                  onClick={() => toggleFaq(idx)}
-                  className="w-full text-left p-4 sm:p-5 flex items-center justify-between gap-4 font-semibold text-slate-800 hover:text-emerald-700 transition-colors"
-                  aria-expanded={isOpen}
-                >
-                  <span className="text-sm sm:text-base">
-                    {isUrdu ? faq.questionUrdu : faq.questionEn}
-                  </span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-slate-400 shrink-0 transition-transform ${
-                      isOpen ? 'transform rotate-180 text-emerald-600' : ''
-                    }`}
-                  />
-                </button>
-                {isOpen && (
-                  <div className="px-4 sm:px-5 pb-5 pt-1 border-t border-slate-100 space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
-                    <p>{isUrdu ? faq.answerUrdu : faq.answerEn}</p>
-                    <p className="text-[11px] text-emerald-700 font-mono font-medium pt-1">
-                      {isUrdu ? 'حوالہ: ' : 'Reference: '}
-                      {faq.reference}
-                    </p>
-                  </div>
-                )}
+          {data.faqs.map((faq, idx) => (
+            <details
+              key={idx}
+              open
+              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs transition-all group"
+            >
+              <summary className="w-full text-left p-4 sm:p-5 flex items-center justify-between gap-4 font-semibold text-slate-800 hover:text-emerald-700 transition-colors cursor-pointer list-none select-none">
+                <span className="text-sm sm:text-base font-bold">
+                  {isUrdu ? faq.questionUrdu : faq.questionEn}
+                </span>
+                <ChevronDown className="w-5 h-5 text-slate-400 shrink-0 transition-transform group-open:rotate-180 text-emerald-600" />
+              </summary>
+              <div className="px-4 sm:px-5 pb-5 pt-1 border-t border-slate-100 space-y-2 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p>{isUrdu ? faq.answerUrdu : faq.answerEn}</p>
+                <p className="text-[11px] text-emerald-700 font-mono font-medium pt-1">
+                  {isUrdu ? 'حوالہ: ' : 'Reference: '}
+                  {faq.reference}
+                </p>
               </div>
-            );
-          })}
+            </details>
+          ))}
         </div>
       </section>
 
@@ -315,8 +303,10 @@ export const HadithLearningGuide: React.FC = () => {
                 : 'Explore daily authentic narrations with translations, narrator details, and practical lessons.'}
             </p>
           </div>
-          <button
-            onClick={() => {
+          <a
+            href="/daily-hadith"
+            onClick={(e) => {
+              e.preventDefault();
               setActiveTab('daily-hadith');
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
@@ -324,27 +314,29 @@ export const HadithLearningGuide: React.FC = () => {
           >
             <span>{isUrdu ? 'روزانہ کی حدیث کھولیں' : 'Open Daily Hadith'}</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-800">
           {data.relatedLinks.map((link, idx) => (
-            <button
+            <a
               key={idx}
-              onClick={() => {
+              href={`/${link.tab}`}
+              onClick={(e) => {
+                e.preventDefault();
                 setActiveTab(link.tab as AppTab);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="text-left p-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors"
+              className="text-left p-2.5 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-xs text-slate-200 transition-colors block"
             >
               {isUrdu ? link.titleUrdu : link.titleEn}
-            </button>
+            </a>
           ))}
         </div>
       </section>
 
       {/* Cross-linking to related guides */}
-      <RelatedIslamicLearning currentTab="daily-hadith" />
+      <RelatedIslamicLearning currentTab="hadith-learning-guide" />
     </article>
   );
 };

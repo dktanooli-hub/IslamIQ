@@ -264,7 +264,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           'ramadan-guide',
           'zakat-basics',
           'zakat-calculator',
-          'islamic-calendar'
+          'islamic-calendar',
+          'seerah-of-prophet-muhammad',
+          'ghusl-taharah-guide',
+          'tayammum-guide',
+          'hajj-umrah-guide',
+          'stories-of-the-prophets',
+          'rights-in-islam'
         ];
         if (validCleanTabs.includes(path as AppTab)) {
           return path as AppTab;

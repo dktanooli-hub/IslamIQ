@@ -140,14 +140,12 @@ export const IslamicQAHub: React.FC = () => {
             const explanation = isUrdu ? (qa.explanationUrdu || qa.explanationEn) : (qa.explanationEn || qa.explanationUrdu);
 
             return (
-              <div
+              <details
                 key={qa.id}
-                className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden transition-all"
+                open
+                className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden transition-all group"
               >
-                <button
-                  onClick={() => toggleExpand(qa.id)}
-                  className="w-full p-4 sm:p-5 flex items-start justify-between gap-3 text-left hover:bg-slate-50/70 transition-colors"
-                >
+                <summary className="w-full p-4 sm:p-5 flex items-start justify-between gap-3 text-left hover:bg-slate-50/70 transition-colors cursor-pointer list-none select-none">
                   <div className="space-y-1 text-left">
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">
@@ -164,68 +162,66 @@ export const IslamicQAHub: React.FC = () => {
                     </h3>
                   </div>
 
-                  <div className="p-1 rounded-lg bg-slate-100 text-slate-500 shrink-0 mt-1">
-                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                  <div className="p-1 rounded-lg bg-slate-100 text-slate-500 shrink-0 mt-1 transition-transform group-open:rotate-180">
+                    <ChevronDown className="w-4 h-4" />
                   </div>
-                </button>
+                </summary>
 
-                {isExpanded && (
-                  <div className="px-5 pb-5 pt-1 space-y-3 border-t border-slate-100 bg-slate-50/40">
-                    <div className="p-4 rounded-xl bg-white border border-emerald-200 text-slate-800 text-xs sm:text-sm leading-relaxed space-y-3">
-                      <p className="font-medium text-slate-800 leading-relaxed">{answer}</p>
+                <div className="px-5 pb-5 pt-1 space-y-3 border-t border-slate-100 bg-slate-50/40">
+                  <div className="p-4 rounded-xl bg-white border border-emerald-200 text-slate-800 text-xs sm:text-sm leading-relaxed space-y-3">
+                    <p className="font-medium text-slate-800 leading-relaxed">{answer}</p>
 
-                      {explanation && (
-                        <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-100 text-xs space-y-1 text-emerald-950">
-                          <strong className="block text-emerald-900 font-bold">
-                            {isUrdu ? 'وضاحت و حکمت:' : 'Detailed Explanation & Wisdom:'}
-                          </strong>
-                          <p className="leading-relaxed text-emerald-900">{explanation}</p>
-                        </div>
-                      )}
-
-                      {qa.relatedGuidePath && (
-                        <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                          <a
-                            href={qa.relatedGuidePath}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              const targetTab = qa.relatedGuidePath?.replace('/', '') as any;
-                              setActiveTab(targetTab);
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                            className="inline-flex items-center gap-1.5 font-bold text-emerald-700 hover:text-emerald-900 hover:underline"
-                          >
-                            <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
-                            <span>
-                              {isUrdu
-                                ? (qa.relatedGuideTitleUrdu || 'متعلقہ گائیڈ کا مطالعہ کریں ←')
-                                : (qa.relatedGuideTitleEn || 'Read Related Full Educational Guide →')}
-                            </span>
-                          </a>
-                        </div>
-                      )}
-                      
-                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                        <span className="flex items-center gap-1 text-emerald-800 font-bold">
-                          <ShieldCheck className="w-3.5 h-3.5" />
-                          <span>{isUrdu ? `مستند حوالہ: ${qa.reference}` : `Source: ${qa.reference}`}</span>
-                        </span>
-
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(`${question}\n\n${answer}\n\nحوالہ: ${qa.reference}\nhttps://learnislamiq.com`);
-                            showToast('Copied question & answer! (کاپی ہو گیا)');
-                          }}
-                          className="hover:text-emerald-700 font-semibold flex items-center gap-1"
-                        >
-                          <Share2 className="w-3.5 h-3.5" />
-                          <span>{isUrdu ? 'کاپی' : 'Share'}</span>
-                        </button>
+                    {explanation && (
+                      <div className="p-3 rounded-lg bg-emerald-50/60 border border-emerald-100 text-xs space-y-1 text-emerald-950">
+                        <strong className="block text-emerald-900 font-bold">
+                          {isUrdu ? 'وضاحت و حکمت:' : 'Detailed Explanation & Wisdom:'}
+                        </strong>
+                        <p className="leading-relaxed text-emerald-900">{explanation}</p>
                       </div>
+                    )}
+
+                    {qa.relatedGuidePath && (
+                      <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+                        <a
+                          href={qa.relatedGuidePath}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const targetTab = qa.relatedGuidePath?.replace('/', '') as any;
+                            setActiveTab(targetTab);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }}
+                          className="inline-flex items-center gap-1.5 font-bold text-emerald-700 hover:text-emerald-900 hover:underline"
+                        >
+                          <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>
+                            {isUrdu
+                              ? (qa.relatedGuideTitleUrdu || 'متعلقہ گائیڈ کا مطالعہ کریں ←')
+                              : (qa.relatedGuideTitleEn || 'Read Related Full Educational Guide →')}
+                          </span>
+                        </a>
+                      </div>
+                    )}
+                    
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                      <span className="flex items-center gap-1 text-emerald-800 font-bold">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>{isUrdu ? `مستند حوالہ: ${qa.reference}` : `Source: ${qa.reference}`}</span>
+                      </span>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${question}\n\n${answer}\n\nحوالہ: ${qa.reference}\nhttps://learnislamiq.com`);
+                          showToast('Copied question & answer! (کاپی ہو گیا)');
+                        }}
+                        className="hover:text-emerald-700 font-semibold flex items-center gap-1"
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                        <span>{isUrdu ? 'کاپی' : 'Share'}</span>
+                      </button>
                     </div>
                   </div>
-                )}
-              </div>
+                </div>
+              </details>
             );
           })}
         </div>

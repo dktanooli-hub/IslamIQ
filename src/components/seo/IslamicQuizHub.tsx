@@ -188,26 +188,24 @@ export const IslamicQuizHub: React.FC = () => {
                   })}
                 </div>
 
-                {/* Answer reveal toggle */}
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                  <button
-                    onClick={() => toggleReveal(q.id)}
-                    className="text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors flex items-center gap-1.5"
-                  >
-                    <span>{isRevealed ? (isUrdu ? 'جواب چھپائیں' : 'Hide Answer') : (isUrdu ? 'جواب اور حوالہ دیکھیں' : 'Show Answer & Reference')}</span>
-                  </button>
-                </div>
-
-                {/* Detailed Explanation */}
-                {isRevealed && (
-                  <div className="p-3 bg-emerald-50/70 border border-emerald-200/70 rounded-xl text-xs text-emerald-950 space-y-1 animate-fadeIn">
-                    <p className="font-bold flex items-center gap-1 text-emerald-900">
+                {/* Answer & Explanation - Accessible and indexable by default */}
+                <details open className="pt-2 border-t border-slate-100 group">
+                  <summary className="text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                    <span className="flex items-center gap-1.5">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-700" />
-                      <span>{isUrdu ? 'مستند تشریح اور حوالہ:' : 'Explanation & Reference:'}</span>
+                      <span>{isUrdu ? 'مستند جواب اور حوالہ' : 'Verified Answer & Explanation'}</span>
+                    </span>
+                    <span className="text-[11px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                  </summary>
+
+                  <div className="p-3 mt-2 bg-emerald-50/70 border border-emerald-200/70 rounded-xl text-xs text-emerald-950 space-y-1.5">
+                    <p className="font-bold text-emerald-900 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
+                      <span>{isUrdu ? `درست جواب: ${options[q.correctIndex]}` : `Correct Option: ${options[q.correctIndex]}`}</span>
                     </p>
                     <p className="leading-relaxed text-emerald-900/90">{explanation}</p>
                   </div>
-                )}
+                </details>
               </div>
             );
           })}
