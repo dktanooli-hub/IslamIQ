@@ -27,6 +27,7 @@ import { DailyHadithHub } from './components/seo/DailyHadithHub';
 import { DailyDuaHub } from './components/seo/DailyDuaHub';
 import { SalahLearningHub } from './components/seo/SalahLearningHub';
 import { Footer } from './components/Footer';
+import { MoreMenuModal } from './components/MoreMenuModal';
 import { AppTab } from './types';
 import { trackPageView } from './utils/analytics';
 
@@ -363,7 +364,7 @@ export const App: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 pt-5 pb-16 sm:pb-20">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 pt-5 pb-20 md:pb-10">
         {activeTab === 'quiz' ? (
           <QuizSection />
         ) : activeTab === 'kids-namaz' ? (
@@ -581,6 +582,9 @@ export const App: React.FC = () => {
 
       {/* Bottom Navigation */}
       <Navigation />
+
+      {/* Categorized More Menu Directory Modal */}
+      <MoreMenuModal />
 
       {/* User Profile / Sync Modal */}
       <ProfileModal

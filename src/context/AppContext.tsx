@@ -38,6 +38,8 @@ interface AppContextType {
   setContentLang: (lang: ContentLanguage) => void;
   activeTab: AppTab;
   setActiveTab: (tab: AppTab) => void;
+  isMoreOpen: boolean;
+  setIsMoreOpen: (open: boolean) => void;
   
   // User Profile & Gamification
   userStats: UserStats;
@@ -286,6 +288,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
     return 'home';
   });
+
+  const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
 
   // Dates
   const [todayDateStr] = useState<string>(getTodayStr());
@@ -1313,6 +1317,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setContentLang,
         activeTab,
         setActiveTab,
+        isMoreOpen,
+        setIsMoreOpen,
         userStats,
         addXP,
         recordQuizCompleted,
