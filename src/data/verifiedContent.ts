@@ -1,10 +1,13 @@
 import { DhikrType, QuizQuestion, Badge } from "../types";
+import { NEW_ISLAMIC_QUESTIONS, NEW_ADULT_QUESTIONS } from "./newAdultQuizQuestions";
+import { NEW_KIDS_QUESTIONS } from "./newKidsQuizQuestions";
 
 export { VERIFIED_QURAN_VERSES } from "./quranLibrary";
 export { VERIFIED_HADITHS } from "./hadithLibrary";
 export { VERIFIED_DUAS } from "./duaLibrary";
 export { ISLAMIC_REMINDERS } from "./reminderLibrary";
 export { VERIFIED_QA_DATABASE } from "./qaLibrary";
+export { NEW_ISLAMIC_QUESTIONS, NEW_ADULT_QUESTIONS, NEW_KIDS_QUESTIONS };
 
 export const DHIKR_LIST: DhikrType[] = [
   {
@@ -90,7 +93,7 @@ export const DHIKR_LIST: DhikrType[] = [
   }
 ];
 
-export const VERIFIED_QUESTIONS: QuizQuestion[] = [
+const BASE_QUESTIONS: QuizQuestion[] = [
   // --- KIDS QUESTIONS (forKids = true, 4 clear options, cheerful, simple concepts) ---
   {
     id: 'kids-1',
@@ -1131,6 +1134,13 @@ export const VERIFIED_QUESTIONS: QuizQuestion[] = [
     kidsHintUrdu: 'روزہ شروع کرنے کے لیے صبح سویرے کھایا جانے والا بابرکت کھانا!',
     kidsHintEn: 'The blessed meal eaten in the early morning before dawn!'
   }
+];
+
+export const VERIFIED_QUESTIONS: QuizQuestion[] = [
+  ...BASE_QUESTIONS,
+  ...NEW_ISLAMIC_QUESTIONS,
+  ...NEW_ADULT_QUESTIONS,
+  ...NEW_KIDS_QUESTIONS
 ];
 
 
