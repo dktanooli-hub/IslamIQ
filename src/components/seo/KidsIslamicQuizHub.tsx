@@ -340,23 +340,24 @@ export const KidsIslamicQuizHub: React.FC = () => {
                   })}
                 </div>
 
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                  <button
-                    onClick={() => toggleReveal(q.id)}
-                    className="text-xs font-extrabold text-teal-700 hover:text-teal-900 transition-colors"
-                  >
-                    {isRevealed ? (isUrdu ? 'جواب چھپائیں' : 'Hide Answer') : (isUrdu ? 'درست جواب دیکھیں' : 'See Correct Answer')}
-                  </button>
-                </div>
+                {/* Child Lesson & Answer - Accessible and indexable */}
+                <details open className="pt-2 border-t border-slate-100 group">
+                  <summary className="text-xs font-extrabold text-teal-700 hover:text-teal-900 transition-colors flex items-center justify-between cursor-pointer list-none py-1 select-none">
+                    <span className="flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+                      <span>{isUrdu ? 'درست جواب اور بچوں کے لیے سبق' : 'Correct Answer & Child Lesson'}</span>
+                    </span>
+                    <span className="text-[11px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+                  </summary>
 
-                {isRevealed && (
-                  <div className="p-3 bg-teal-50 border border-teal-200 rounded-2xl text-xs text-teal-950 space-y-1 animate-fadeIn">
-                    <p className="font-extrabold text-teal-900">
-                      {isUrdu ? 'تفصیل و سبق:' : 'Child Lesson:'}
+                  <div className="p-3 mt-2 bg-teal-50 border border-teal-200 rounded-2xl text-xs text-teal-950 space-y-1.5">
+                    <p className="font-extrabold text-teal-900 flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-teal-700 shrink-0" />
+                      <span>{isUrdu ? `درست جواب: ${options[q.correctIndex]}` : `Correct Option: ${options[q.correctIndex]}`}</span>
                     </p>
                     <p className="leading-relaxed">{explanation}</p>
                   </div>
-                )}
+                </details>
               </div>
             );
           })}
@@ -371,35 +372,24 @@ export const KidsIslamicQuizHub: React.FC = () => {
         </div>
 
         <div className="space-y-3">
-          {parentFaqs.map((faq, idx) => {
-            const isExpanded = expandedFaqIndex === idx;
-            return (
-              <div
-                key={idx}
-                className="border border-slate-200 rounded-2xl overflow-hidden transition-colors"
-              >
-                <button
-                  onClick={() => toggleFaq(idx)}
-                  className="w-full text-left p-4 bg-slate-50/80 hover:bg-slate-100 flex items-center justify-between gap-3 text-xs sm:text-sm font-bold text-slate-900 transition-colors"
-                >
-                  <span>{isUrdu ? faq.qUrdu : faq.qEn}</span>
-                  {isExpanded ? (
-                    <ChevronUp className="w-4 h-4 text-teal-700 shrink-0" />
-                  ) : (
-                    <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
-                  )}
-                </button>
-                {isExpanded && (
-                  <div className="p-4 bg-white border-t border-slate-100 space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
-                    <p>{isUrdu ? faq.aUrdu : faq.aEn}</p>
-                    <span className="text-[11px] text-teal-700 font-semibold block pt-1">
-                      {isUrdu ? 'حوالہ: ' : 'Reference: '} {faq.ref}
-                    </span>
-                  </div>
-                )}
+          {parentFaqs.map((faq, idx) => (
+            <details
+              key={idx}
+              open
+              className="border border-slate-200 rounded-2xl overflow-hidden transition-colors bg-white group"
+            >
+              <summary className="w-full text-left p-4 bg-slate-50/80 hover:bg-slate-100 flex items-center justify-between gap-3 text-xs sm:text-sm font-bold text-slate-900 transition-colors cursor-pointer list-none select-none">
+                <span>{isUrdu ? faq.qUrdu : faq.qEn}</span>
+                <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 transition-transform group-open:rotate-180 text-teal-700" />
+              </summary>
+              <div className="p-4 bg-white border-t border-slate-100 space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
+                <p>{isUrdu ? faq.aUrdu : faq.aEn}</p>
+                <span className="text-[11px] text-teal-700 font-semibold block pt-1">
+                  {isUrdu ? 'حوالہ: ' : 'Reference: '} {faq.ref}
+                </span>
               </div>
-            );
-          })}
+            </details>
+          ))}
         </div>
       </section>
 
