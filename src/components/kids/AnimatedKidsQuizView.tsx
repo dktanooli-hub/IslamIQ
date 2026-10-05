@@ -362,9 +362,19 @@ export const AnimatedKidsQuizView: React.FC<AnimatedKidsQuizViewProps> = ({
 
               {/* Short Child-Friendly Explanation */}
               <div className="mt-2 text-xs sm:text-sm text-slate-800 bg-white/70 p-3 rounded-2xl border border-black/5">
-                <div className="font-extrabold text-amber-900 mb-0.5 flex items-center gap-1 text-xs">
-                  <span>📖</span>
-                  <span>{isUrdu ? 'سبق و معلومات (Explanation):' : 'Key Lesson:'}</span>
+                <div className="font-extrabold text-amber-900 mb-0.5 flex items-center justify-between gap-1 text-xs">
+                  <div className="flex items-center gap-1">
+                    <span>📖</span>
+                    <span>{isUrdu ? 'سبق و معلومات (Explanation):' : 'Key Lesson:'}</span>
+                  </div>
+                  <button
+                    onClick={() => SpeechEngine.speakExplanation(currentExplanation, isUrdu ? 'urdu' : 'english')}
+                    className="p-1 px-2.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 flex items-center gap-1.5 text-xs font-bold transition-all active:scale-95 border border-amber-300"
+                    title={isUrdu ? 'وضاحت سنیں' : 'Listen to explanation'}
+                  >
+                    <Volume2 className="w-3.5 h-3.5" />
+                    <span>{isUrdu ? 'سنیں' : 'Listen'}</span>
+                  </button>
                 </div>
                 <p className={isUrdu ? 'urdu-text text-sm' : 'font-medium'}>
                   {currentExplanation}

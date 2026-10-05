@@ -157,151 +157,188 @@ export interface SpeechSegment {
 
 /**
  * Robust Arabic text and Islamic terms detector.
- * Identifies Arabic script, Tashkeel/harakat, Quranic phrases, and Islamic terms,
+ * Identifies Arabic script, Tashkeel/harakat, Quranic phrases, and canonical Islamic terms,
  * and segments mixed text into discrete utterances for proper TTS voice dispatch.
  */
 export class ArabicDetector {
-  // Arabic Tashkeel / Harakat
+  // Arabic Tashkeel / Harakat (diacritics)
   static readonly TASHKEEL_REGEX = /[\u064B-\u065F\u0670\u06D6-\u06ED]/;
 
-  // Urdu-only characters that do not exist in Arabic
+  // Urdu-only characters that do not exist in standard Arabic
   static readonly URDU_ONLY_CHARS_REGEX = /[ٹڈڑںےۓہھچپژگ]/;
 
-  // Arabic alphabet characters
+  // English Latin characters
+  static readonly ENGLISH_CHARS_REGEX = /[a-zA-Z]/;
+
+  // Arabic alphabet script block
   static readonly ARABIC_SCRIPT_REGEX = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
 
-  private static makeTermRegex(pattern: string): RegExp {
-    return new RegExp(`(^|[^\\p{L}\\p{M}])(${pattern})(?=$|[^\\p{L}\\p{M}])`, 'gui');
+  // Canonical Islamic Arabic phrases patterns
+  static readonly ARABIC_PHRASE_PATTERNS: RegExp[] = [
+    // Bismillah
+    /بِسْمِ\s*اللَّهِ\s*الرَّحْمٰنِ\s*الرَّحِيمِ/gui,
+    /بسم\s*[اأ]لله\s*الرحمن\s*الرحيم/gui,
+    /بسم\s*اللہ\s*الرحمن\s*الرحیم/gui,
+    /بِسْمِ\s*اللَّهِ/gui,
+    /بسم\s*[اأ]لله/gui,
+    /بسم\s*اللہ/gui,
+
+    // Alhamdulillah
+    /الْحَمْدُ\s*لِلَّهِ\s*رَبِّ\s*الْعَالَمِينَ/gui,
+    /الْحَمْدُ\s*لِلَّهِ/gui,
+    /الحمد\s*لله\s*رب\s*العالمين/gui,
+    /الحمد\s*للہ\s*رب\s*العالمین/gui,
+    /الحمد\s*لله/gui,
+    /الحمد\s*للہ/gui,
+    /الحمدللہ/gui,
+    /الحمدلله/gui,
+
+    // SubhanAllah
+    /سُبْحَانَ\s*اللَّهِ\s*وَبِحَمْدِهِ/gui,
+    /سبحان\s*[اأ]لله\s*وبحمده/gui,
+    /سبحان\s*اللہ\s*وبحمدہ/gui,
+    /سُبْحَانَ\s*اللَّهِ/gui,
+    /سبحان\s*[اأ]لله/gui,
+    /سبحان\s*اللہ/gui,
+
+    // Allahu Akbar
+    /اللَّهُ\s*أَكْبَرُ/gui,
+    /الله\s*[أا]كبر/gui,
+    /اللہ\s*اکبر/gui,
+
+    // Masha'Allah (must be treated as Arabic)
+    /مَاشَاءَ\s*اللَّهُ/gui,
+    /مَا\s*شَاءَ\s*اللَّهُ/gui,
+    /ماشاء\s*الله/gui,
+    /ما\s*شاء\s*الله/gui,
+    /ماشاءالله/gui,
+    /ماشاء\s*اللہ/gui,
+    /ما\s*شاء\s*اللہ/gui,
+    /ماشاءاللہ/gui,
+
+    // Insha'Allah
+    /إِنْ\s*شَاءَ\s*اللَّهُ/gui,
+    /إن\s*شاء\s*الله/gui,
+    /ان\s*شاء\s*اللہ/gui,
+    /إنشاء\s*الله/gui,
+    /انشاء\s*اللہ/gui,
+    /انشاءاللہ/gui,
+    /انشاءالله/gui,
+
+    // JazakAllah
+    /جَزَاكَ\s*اللَّهُ\s*خَيْرًا/gui,
+    /جزاك\s*الله\s*خيرا/gui,
+    /جزاک\s*اللہ\s*خیرا/gui,
+    /جَزَاكَ\s*اللَّهُ/gui,
+    /جزاك\s*الله/gui,
+    /جزاک\s*اللہ/gui,
+
+    // Astaghfirullah
+    /أَسْتَغْفِرُ\s*اللَّهَ/gui,
+    /أستغفر\s*الله/gui,
+    /استغفر\s*الله/gui,
+    /استغفر\s*اللہ/gui,
+
+    // La ilaha illallah
+    /لَا\s*إِلٰهَ\s*إِلَّا\s*اللَّهُ/gui,
+    /لا\s*إله\s*إلا\s*الله/gui,
+    /لا\s*الہ\s*الا\s*اللہ/gui,
+
+    // Hawqala
+    /لَا\s*حَوْلَ\s*وَلَا\s*قُوَّةَ\s*إِلَّا\s*بِاللَّهِ/gui,
+    /لا\s*حول\s*ولا\s*قوة\s*إلا\s*بالله/gui,
+    /لا\s*حول\s*ولا\s*قوۃ\s*الا\s*باللہ/gui,
+
+    // Istirja
+    /إِنَّا\s*لِلَّهِ\s*وَإِنَّا\s*إِلَيْهِ\s*رَاجِعُونَ/gui,
+    /إنا\s*لله\s*وإنا\s*إليه\s*راجعون/gui,
+    /انا\s*للہ\s*وانا\s*الیہ\s*راجعون/gui,
+
+    // Salam Greetings
+    /السَّلَامُ\s*عَلَيْكُمْ\s*وَرَحْمَةُ\s*اللَّهِ/gui,
+    /السلام\s*عليكم\s*ورحمة\s*الله/gui,
+    /السلام\s*علیکم\s*ورحمۃ\s*اللہ/gui,
+    /السَّلَامُ\s*عَلَيْكُمْ/gui,
+    /السلام\s*عليكم/gui,
+    /السلام\s*علیکم/gui,
+    /وَعَلَيْكُمُ\s*السَّلَامُ/gui,
+    /وعليكم\s*السلام/gui,
+    /وعلیکم\s*السلام/gui,
+
+    // Salawat
+    /صَلَّى\s*اللَّهُ\s*عَلَيْهِ\s*وَسَلَّمَ/gui,
+    /صلى\s*الله\s*عليه\s*وسلم/gui,
+    /صلی\s*اللہ\s*علیہ\s*وسلم/gui,
+    /اللَّهُمَّ\s*صَلِّ\s*عَلَى\s*مُحَمَّدٍ/gui,
+    /اللهم\s*صل\s*على\s*محمد/gui,
+    /اللہم\s*صل\s*علی\s*محمد/gui,
+
+    // Salah & Supplications
+    /سُبْحَانَ\s*رَبِّيَ\s*الْعَظِيمِ/gui,
+    /سبحان\s*ربي\s*العظيم/gui,
+    /سبحان\s*ربی\s*العظیم/gui,
+    /سُبْحَانَ\s*رَبِّيَ\s*الْأَعْلَى/gui,
+    /سبحان\s*ربي\s*الأعلى/gui,
+    /سبحان\s*ربی\s*الاعلی/gui,
+    /سَمِعَ\s*اللَّهُ\s*لِمَنْ\s*حَمِدَهُ/gui,
+    /سمع\s*الله\s*لمن\s*حمده/gui,
+    /سمع\s*اللہ\s*لمن\s*حمدہ/gui,
+    /رَبَّنَا\s*وَلَكَ\s*الْحَمْدُ/gui,
+    /ربنا\s*ولك\s*الحمد/gui,
+    /ربنا\s*ولک\s*الحمد/gui,
+    /التَّحِيَّاتُ\s*لِلَّهِ/gui,
+    /التحيات\s*لله/gui,
+    /التحیات\s*للہ/gui,
+    /رَبِّ\s*زِدْنِي\s*عِلْمًا/gui,
+    /رب\s*زدنی\s*علما/gui,
+    /لَا\s*إِلٰهَ\s*إِلَّا\s*أَنْتَ\s*سُبْحَانَكَ\s*إِنِّي\s*كُنْتُ\s*مِنَ\s*الظَّالِمِينَ/gui,
+    /اللَّهُمَّ\s*بِاسْمِكَ\s*أَمُوتُ\s*وَأَحْيَا/gui,
+    /رَبَّنَا\s*آتِنَا\s*فِي\s*الدُّنْيَا\s*حَسَنَةً/gui
+  ];
+
+  /**
+   * Normalizes keyboard-variant characters in Arabic phrases so Arabic speech synthesizers
+   * pronounce them with standard, natural Arabic phonetics rather than failing or spelling them out.
+   */
+  static normalizeForArabicTTS(text: string): string {
+    return text
+      .replace(/\u06C1/g, '\u0647')  // Urdu Goal Heh -> Arabic Heh
+      .replace(/\u06A9/g, '\u0643')  // Urdu Keheh -> Arabic Kaf
+      .replace(/\u06CC/g, '\u064A'); // Urdu Farsi Yeh -> Arabic Yeh
   }
 
-  // Canonical Islamic Arabic phrases with authentic tajweed vocalization
-  static readonly ISLAMIC_TERMS = [
-    // Bismillah
-    {
-      regex: ArabicDetector.makeTermRegex('bismillah\\s*(?:ir|ar)?-?rahman\\s*(?:ir|ar)?-?rahim|بسم\\s*اللہ\\s*الرحمن\\s*الرحیم|بسم\\s*الله\\s*الرحمن\\s*الرحيم|بِسْمِ\\s*اللَّهِ\\s*الرَّحْمٰنِ\\s*الرَّحِيمِ'),
-      vocalized: 'بِسْمِ اللَّهِ الرَّحْمٰنِ الرَّحِيمِ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('bismillah|بسم\\s*اللہ|بسم\\s*الله|بِسْمِ\\s*اللَّهِ'),
-      vocalized: 'بِسْمِ اللَّهِ'
-    },
-    // Alhamdulillah
-    {
-      regex: ArabicDetector.makeTermRegex('al-?hamdulillahi\\s*rabbil\\s*[\'a-z]*alameen|الحمد\\s*للہ\\s*رب\\s*العالمین|الحمد\\s*لله\\s*رب\\s*العالمين|الْحَمْدُ\\s*لِلَّهِ\\s*رَبِّ\\s*الْعَالَمِينَ'),
-      vocalized: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('al-?hamdulillah|الحمد\\s*للہ|الحمد\\s*لله|الْحَمْدُ\\s*لِلَّهِ'),
-      vocalized: 'الْحَمْدُ لِلَّهِ'
-    },
-    // SubhanAllah
-    {
-      regex: ArabicDetector.makeTermRegex('subhanallahi\\s*wa\\s*bihamdihi|سبحان\\s*اللہ\\s*وبحمدہ|سبحان\\s*الله\\s*وبحمده|سُبْحَانَ\\s*اللَّهِ\\s*وَبِحَمْدِهِ'),
-      vocalized: 'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('subhana\\s*rabbiyal\\s*[\'a-z]*azeem|سبحان\\s*ربی\\s*العظیم|سبحان\\s*ربي\\s*العظيم|سُبْحَانَ\\s*رَبِّيَ\\s*الْعَظِيمِ'),
-      vocalized: 'سُبْحَانَ رَبِّيَ الْعَظِيمِ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('subhana\\s*rabbiyal\\s*[\'a-z]*a[\'a-z]*la|سبحان\\s*ربی\\s*الاعلی|سبحان\\s*ربي\\s*الأعلى|سُبْحَانَ\\s*رَبِّيَ\\s*الْأَعْلَى'),
-      vocalized: 'سُبْحَانَ رَبِّيَ الْأَعْلَى'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('subhanallah|subhan\\s*allah|سبحان\\s*اللہ|سبحان\\s*الله|سُبْحَانَ\\s*اللَّهِ'),
-      vocalized: 'سُبْحَانَ اللَّهِ'
-    },
-    // Allahu Akbar
-    {
-      regex: ArabicDetector.makeTermRegex('allahu\\s*akbar|اللہ\\s*اکبر|الله\\s*أكبر|اللَّهُ\\s*أَكْبَرُ'),
-      vocalized: 'اللَّهُ أَكْبَرُ'
-    },
-    // Tawheed / Dua of Yunus (AS)
-    {
-      regex: ArabicDetector.makeTermRegex('la\\s*ilaha\\s*illa\\s*anta\\s*subhanaka\\s*inni\\s*kuntu\\s*mina\\s*zalimeen|لا\\s*الہ\\s*الا\\s*انت\\s*سبحانک\\s*انی\\s*کنت\\s*من\\s*الظالمین|لا\\s*إله\\s*إلا\\s*أنت\\s*سبحانك\\s*إني\\s*كنت\\s*من\\s*الظالمين|لَا\\s*إِلٰهَ\\s*إِلَّا\\s*أَنْتَ\\s*سُبْحَانَكَ\\s*إِنِّي\\s*كُنْتُ\\s*مِنَ\\s*الظَّالِمِينَ'),
-      vocalized: 'لَا إِلٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('la\\s*ilaha\\s*illallah|لا\\s*الہ\\s*الا\\s*اللہ|لا\\s*إله\\s*إلا\\s*الله|لَا\\s*إِلٰهَ\\s*إِلَّا\\s*اللَّهُ'),
-      vocalized: 'لَا إِلٰهَ إِلَّا اللَّهُ'
-    },
-    // Astaghfirullah
-    {
-      regex: ArabicDetector.makeTermRegex('astaghfirullah|استغفر\\s*اللہ|استغفر\\s*الله|أَسْتَغْفِرُ\\s*اللَّهَ'),
-      vocalized: 'أَسْتَغْفِرُ اللَّهَ'
-    },
-    // Masha'Allah
-    {
-      regex: ArabicDetector.makeTermRegex('masha[\'’]?allah|mashaallah|ماشاء\\s*اللہ|ماشاءاللہ|ما\\s*شاء\\s*الله|مَا\\s*شَاءَ\\s*اللَّهُ'),
-      vocalized: 'مَا شَاءَ اللَّهُ'
-    },
-    // Insha'Allah
-    {
-      regex: ArabicDetector.makeTermRegex('insha[\'’]?allah|inshallah|ان\\s*شاء\\s*اللہ|إن\\s*شاء\\s*الله|إِنْ\\s*شَاءَ\\s*اللَّهُ'),
-      vocalized: 'إِنْ شَاءَ اللَّهُ'
-    },
-    // JazakAllah
-    {
-      regex: ArabicDetector.makeTermRegex('jazakallahu\\s*khair(?:an)?|jazakallah|جزاک\\s*اللہ\\s*خیرا|جزاک\\s*اللہ|جزاك\\s*الله\\s*خيرا|جزاك\\s*الله|جَزَاكَ\\s*اللَّهُ\\s*خَيْرًا'),
-      vocalized: 'جَزَاكَ اللَّهُ خَيْرًا'
-    },
-    // Salam Greetings
-    {
-      regex: ArabicDetector.makeTermRegex('as-?salamu\\s*[\'a-z]*alaykum\\s*wa\\s*rahmatullah|السلام\\s*علیکم\\s*ورحمۃ\\s*اللہ|السلام\\s*عليكم\\s*ورحمة\\s*الله|السَّلَامُ\\s*عَلَيْكُمْ\\s*وَرَحْمَةُ\\s*اللَّهِ'),
-      vocalized: 'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('as-?salamu\\s*[\'a-z]*alaykum|assalamu\\s*alaikum|assalam-?o-?alaikum|السلام\\s*علیکم|السلام\\s*عليكم|السَّلَامُ\\s*عَلَيْكُمْ'),
-      vocalized: 'السَّلَامُ عَلَيْكُمْ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('wa\\s*[\'a-z]*alaykum\\s*as-?salam|walaikum\\s*assalam|وعلیکم\\s*السلام|وعليكم\\s*السلام|وَعَلَيْكُمُ\\s*السَّلَامُ'),
-      vocalized: 'وَعَلَيْكُمُ السَّلَامُ'
-    },
-    // Salawat
-    {
-      regex: ArabicDetector.makeTermRegex('sallallahu\\s*[\'a-z]*alayhi\\s*wa\\s*sallam|صلی\\s*اللہ\\s*علیہ\\s*وسلم|صلى\\s*الله\\s*عليه\\s*وسلم|صَلَّى\\s*اللَّهُ\\s*عَلَيْهِ\\s*وَسَلَّمَ'),
-      vocalized: 'صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('allahumma\\s*salli\\s*[\'a-z]*ala\\s*muhammad|اللہم\\s*صل\\s*علی\\s*محمد|اللهم\\s*صل\\s*على\\s*محمد|اللَّهُمَّ\\s*صَلِّ\\s*عَلَى\\s*مُحَمَّدٍ'),
-      vocalized: 'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ'
-    },
-    // Common Duas
-    {
-      regex: ArabicDetector.makeTermRegex('(?:allahumma\\s*)?bismika\\s*am[o|u]+tu\\s*wa-?\\s*ahya|اللہم\\s*باسمک\\s*اموت\\s*واحیا|اللهم\\s*باسمك\\s*أموت\\s*وأحيا|باسمک\\s*اللہم\\s*اموت\\s*واحیا|اللَّهُمَّ\\s*بِاسْمِكَ\\s*أَمُوتُ\\s*وَأَحْيَا|بِاسْمِكَ\\s*اللَّهُمَّ\\s*أَمُوتُ\\s*وَأَحْيَا'),
-      vocalized: 'اللَّهُمَّ بِاسْمِكَ أَمُوتُ وَأَحْيَا'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('rabbi\\s*zidni\\s*[\'a-z]*ilma|رب\\s*زدنی\\s*علما|رَبِّ\\s*زِدْنِي\\s*عِلْمًا'),
-      vocalized: 'رَبِّ زِدْنِي عِلْمًا'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('rabbana\\s*atina\\s*fid\\s*dunya\\s*hasanatan|ربنا\\s*آتنا\\s*فی\\s*الدنیا\\s*حسنۃ|رَبَّنَا\\s*آتِنَا\\s*فِي\\s*الدُّنْيَا\\s*حَسَنَةً'),
-      vocalized: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً'
-    },
-    // Salah recitation terms
-    {
-      regex: ArabicDetector.makeTermRegex('sami\\s*allahu\\s*liman\\s*hamidah|سمع\\s*اللہ\\s*لمن\\s*حمدہ|سمع\\s*الله\\s*لمن\\s*حمده|سَمِعَ\\s*اللَّهُ\\s*لِمَنْ\\s*حَمِدَهُ'),
-      vocalized: 'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('rabbana\\s*wa\\s*lakal\\s*hamd|ربنا\\s*ولک\\s*الحمد|ربنا\\s*ولك\\s*الحمد|رَبَّنَا\\s*وَلَكَ\\s*الْحَمْدُ'),
-      vocalized: 'رَبَّنَا وَلَكَ الْحَمْدُ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('at-?tahiyyaatu\\s*lillahi|التحیات\\s*للہ|التحيات\\s*لله|التَّحِيَّاتُ\\s*لِلَّهِ'),
-      vocalized: 'التَّحِيَّاتُ لِلَّهِ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('la\\s*hawla\\s*wa\\s*la\\s*quwwata\\s*illa\\s*billah|لا\\s*حول\\s*ولا\\s*قوۃ\\s*الا\\s*باللہ|لا\\s*حول\\s*ولا\\s*قوة\\s*إلا\\s*بالله|لَا\\s*حَوْلَ\\s*وَلَا\\s*قُوَّةَ\\s*إِلَّا\\s*بِاللَّهِ'),
-      vocalized: 'لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ'
-    },
-    {
-      regex: ArabicDetector.makeTermRegex('inna\\s*lillahi\\s*wa\\s*inna\\s*ilayhi\\s*raji[\'a-z]*un|انا\\s*للہ\\s*وانا\\s*الیہ\\s*راجعون|إنا\\s*لله\\s*وإنا\\s*إليه\\s*راجعون|إِنَّا\\s*لِلَّهِ\\s*وَإِنَّا\\s*إِلَيْهِ\\s*رَاجِعُونَ'),
-      vocalized: 'إِنَّا لِلَّهِ وَإِنَّا إِلَيْهِ رَاجِعُونَ'
+  /**
+   * Determine the language of a discrete text segment
+   */
+  static detectSegmentLang(str: string, fallbackLang: 'urdu' | 'english' = 'urdu'): 'arabic' | 'urdu' | 'english' {
+    const s = str.trim();
+    if (!s) return fallbackLang;
+
+    // English characters present
+    if (this.ENGLISH_CHARS_REGEX.test(s)) {
+      return 'english';
     }
-  ];
+
+    // Has Arabic Tashkeel / Harakat without Urdu letters
+    if (this.TASHKEEL_REGEX.test(s) && !this.URDU_ONLY_CHARS_REGEX.test(s)) {
+      return 'arabic';
+    }
+
+    // Has explicit Urdu characters
+    if (this.URDU_ONLY_CHARS_REGEX.test(s)) {
+      return 'urdu';
+    }
+
+    // Check if matches any canonical Islamic phrase
+    for (const pat of this.ARABIC_PHRASE_PATTERNS) {
+      pat.lastIndex = 0;
+      if (pat.test(s)) {
+        return 'arabic';
+      }
+    }
+
+    return fallbackLang === 'english' ? 'english' : 'urdu';
+  }
 
   /**
    * Determine if text is primarily or purely Arabic
@@ -317,9 +354,9 @@ export class ArabicDetector {
     }
 
     // Matches any known Islamic term
-    for (const item of this.ISLAMIC_TERMS) {
-      item.regex.lastIndex = 0;
-      if (item.regex.test(trimmed)) {
+    for (const pat of this.ARABIC_PHRASE_PATTERNS) {
+      pat.lastIndex = 0;
+      if (pat.test(trimmed)) {
         return true;
       }
     }
@@ -328,76 +365,127 @@ export class ArabicDetector {
   }
 
   /**
-   * Segment input text into language chunks (Arabic vs baseLang)
+   * Segment input text into separate language chunks (Arabic vs Urdu vs English).
+   * For mixed-language sentences, splits into exact sequential utterances so each
+   * is spoken with its proper native voice.
    */
-  static segmentText(text: string, baseLang: 'urdu' | 'english'): SpeechSegment[] {
-    if (!text || typeof text !== 'string') return [];
-    const raw = text.trim();
-    if (!raw) return [];
+  static segmentText(rawText: string, baseLang: 'urdu' | 'english' = 'urdu'): SpeechSegment[] {
+    if (!rawText || typeof rawText !== 'string') return [];
+    const text = rawText.trim();
+    if (!text) return [];
 
-    // 1. Pure Arabic with diacritics
-    if (this.TASHKEEL_REGEX.test(raw) && !this.URDU_ONLY_CHARS_REGEX.test(raw)) {
-      return [{ text: raw, lang: 'arabic' }];
+    interface MatchRegion {
+      start: number;
+      end: number;
+      text: string;
+      lang: 'arabic' | 'urdu' | 'english';
     }
 
-    // 2. Exact match of Islamic term
-    for (const item of this.ISLAMIC_TERMS) {
-      item.regex.lastIndex = 0;
-      const m = item.regex.exec(raw);
-      if (m && m[0].trim() === raw) {
-        return [{ text: item.vocalized, lang: 'arabic' }];
+    const matches: MatchRegion[] = [];
+
+    // 1. Find Arabic phrases
+    for (const pat of this.ARABIC_PHRASE_PATTERNS) {
+      pat.lastIndex = 0;
+      let m: RegExpExecArray | null;
+      while ((m = pat.exec(text)) !== null) {
+        let endPos = m.index + m[0].length;
+        // Include immediate trailing punctuation (!?,.،:)
+        const trailingSub = text.substring(endPos);
+        const punc = trailingSub.match(/^[!?,.،؛:]+/);
+        if (punc) {
+          endPos += punc[0].length;
+        }
+        matches.push({
+          start: m.index,
+          end: endPos,
+          text: text.substring(m.index, endPos),
+          lang: 'arabic'
+        });
       }
     }
 
+    // 2. Find bracketed / quoted Tashkeel Arabic e.g. «...» or (...)
+    const quotePat = /["«(]([\u0600-\u06FF\s]+)["»)]/g;
+    let qm: RegExpExecArray | null;
+    while ((qm = quotePat.exec(text)) !== null) {
+      if (this.TASHKEEL_REGEX.test(qm[1]) && !this.URDU_ONLY_CHARS_REGEX.test(qm[1])) {
+        matches.push({
+          start: qm.index,
+          end: qm.index + qm[0].length,
+          text: qm[0].trim(),
+          lang: 'arabic'
+        });
+      }
+    }
+
+    // 3. Find English sequences (words, punctuation)
+    const engPat = /[A-Za-z][A-Za-z0-9\s.,!?:;\x27"-]*/g;
+    let em: RegExpExecArray | null;
+    while ((em = engPat.exec(text)) !== null) {
+      const matchText = em[0];
+      if (this.ENGLISH_CHARS_REGEX.test(matchText)) {
+        matches.push({
+          start: em.index,
+          end: em.index + matchText.length,
+          text: matchText.trim(),
+          lang: 'english'
+        });
+      }
+    }
+
+    // Sort matches by start position, preferring longer match in case of tie
+    matches.sort((a, b) => a.start - b.start || (b.end - b.start) - (a.end - a.start));
+
+    // Remove overlapping matches
+    const filtered: MatchRegion[] = [];
+    let lastEnd = 0;
+    for (const m of matches) {
+      if (m.start >= lastEnd) {
+        filtered.push(m);
+        lastEnd = m.end;
+      }
+    }
+
+    // Build segments including interstitial text
     const segments: SpeechSegment[] = [];
-    let remaining = raw;
+    let cur = 0;
 
-    while (remaining.trim()) {
-      let earliestIndex = Infinity;
-      let matchedVocalized = '';
-      let matchedLength = 0;
-
-      // Check quotes or parens containing Arabic
-      const quoteMatch = /["'«(]([\u0600-\u06FF\s]+)["'»)]/.exec(remaining);
-      if (quoteMatch && (this.TASHKEEL_REGEX.test(quoteMatch[1]) || !this.URDU_ONLY_CHARS_REGEX.test(quoteMatch[1]))) {
-        earliestIndex = quoteMatch.index;
-        matchedVocalized = quoteMatch[1].trim();
-        matchedLength = quoteMatch[0].length;
-      }
-
-      // Check inline Islamic terms
-      for (const item of this.ISLAMIC_TERMS) {
-        item.regex.lastIndex = 0;
-        const m = item.regex.exec(remaining);
-        if (m) {
-          const actualIndex = m.index + m[1].length;
-          const actualMatchedStr = m[2];
-          if (actualIndex < earliestIndex) {
-            earliestIndex = actualIndex;
-            matchedVocalized = item.vocalized;
-            matchedLength = actualMatchedStr.length;
-          }
+    for (const m of filtered) {
+      if (m.start > cur) {
+        const interstitial = text.substring(cur, m.start);
+        const clean = interstitial.replace(/^[\s,،؛:]+/, '').replace(/[\s,،؛:]+$/, '').trim();
+        if (clean) {
+          segments.push({
+            text: clean,
+            lang: this.detectSegmentLang(clean, baseLang)
+          });
         }
       }
 
-      if (earliestIndex < Infinity) {
-        const before = remaining.substring(0, earliestIndex).replace(/^[!?,.،؛:\s]+/, '').replace(/[\s]+$/, '').trim();
-        if (before) {
-          segments.push({ text: before, lang: baseLang });
-        }
-        segments.push({ text: matchedVocalized, lang: 'arabic' });
-        remaining = remaining.substring(earliestIndex + matchedLength).replace(/^[!?,.،؛:\s]+/, '').trim();
-      } else {
-        const trimmed = remaining.replace(/^[!?,.،؛:\s]+/, '').trim();
-        if (trimmed) {
-          const isAr = this.TASHKEEL_REGEX.test(trimmed) || (!this.URDU_ONLY_CHARS_REGEX.test(trimmed) && this.ARABIC_SCRIPT_REGEX.test(trimmed) && baseLang === 'english');
-          segments.push({ text: trimmed, lang: isAr ? 'arabic' : baseLang });
-        }
-        break;
+      let spokenText = m.text.trim();
+      if (m.lang === 'arabic') {
+        spokenText = this.normalizeForArabicTTS(spokenText);
+      }
+
+      segments.push({
+        text: spokenText,
+        lang: m.lang
+      });
+      cur = m.end;
+    }
+
+    if (cur < text.length) {
+      const trailing = text.substring(cur);
+      const clean = trailing.replace(/^[\s,،؛:]+/, '').trim();
+      if (clean) {
+        segments.push({
+          text: clean,
+          lang: this.detectSegmentLang(clean, baseLang)
+        });
       }
     }
 
-    return segments.length > 0 ? segments : [{ text: raw, lang: baseLang }];
+    return segments.length > 0 ? segments : [{ text, lang: this.detectSegmentLang(text, baseLang) }];
   }
 }
 
@@ -407,6 +495,7 @@ export class SpeechEngine {
   private static currentRunId = 0;
   private static pauseTimeout: ReturnType<typeof setTimeout> | null = null;
   private static cachedVoices: SpeechSynthesisVoice[] = [];
+  private static activeUtterance: SpeechSynthesisUtterance | null = null;
 
   static init() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
@@ -433,6 +522,7 @@ export class SpeechEngine {
       clearTimeout(this.pauseTimeout);
       this.pauseTimeout = null;
     }
+    this.activeUtterance = null;
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
@@ -447,14 +537,14 @@ export class SpeechEngine {
 
   /**
    * Find the best Arabic voice available on the device.
-   * Prioritize ar-SA (Saudi Arabia / Standard Arabic),
-   * then any Arabic locale (ar-*), then any voice with 'arabic' in the name.
+   * Strictly prioritizes ar-SA, then any standard Arabic voice.
+   * NEVER returns Urdu or English voices for Arabic.
    */
   public static getBestArabicVoice(): SpeechSynthesisVoice | null {
     const voices = this.getVoices();
     if (!voices || voices.length === 0) return null;
 
-    // 1. High-quality ar-SA (Natural, Google, Premium, Siri, Tarik, Maged, Laila, Salma, etc.)
+    // 1. High-quality ar-SA (Saudi Arabia / Standard Arabic)
     const arSaPremium = voices.find(v => {
       const l = v.lang.toLowerCase().replace('_', '-');
       const n = v.name.toLowerCase();
@@ -473,13 +563,86 @@ export class SpeechEngine {
     // 3. Any standard Arabic voice (ar, ar-EG, ar-AE, ar-QA, ar-KW, etc.)
     const anyAr = voices.find(v => {
       const l = v.lang.toLowerCase().replace('_', '-');
-      return l === 'ar' || l.startsWith('ar-');
+      return l === 'ar' || l.startsWith('ar-') || v.name.toLowerCase().includes('arabic');
     });
     if (anyAr) return anyAr;
 
-    // 4. Any voice with 'arabic' in the name
-    const namedAr = voices.find(v => v.name.toLowerCase().includes('arabic'));
-    if (namedAr) return namedAr;
+    return null;
+  }
+
+  /**
+   * Find the best Urdu voice available on the device.
+   * Strictly prioritizes ur-PK, then any Urdu voice.
+   * NEVER returns an Arabic or English voice for Urdu text.
+   */
+  public static getBestUrduVoice(): SpeechSynthesisVoice | null {
+    const voices = this.getVoices();
+    if (!voices || voices.length === 0) return null;
+
+    // 1. High-quality ur-PK (Pakistan Urdu)
+    const urPkPremium = voices.find(v => {
+      const l = v.lang.toLowerCase().replace('_', '-');
+      const n = v.name.toLowerCase();
+      return (l === 'ur-pk' || l.startsWith('ur-pk')) &&
+        (n.includes('natural') || n.includes('google') || n.includes('premium') || n.includes('siri') || n.includes('asad') || n.includes('uzma'));
+    });
+    if (urPkPremium) return urPkPremium;
+
+    // 2. Any ur-PK voice
+    const urPk = voices.find(v => {
+      const l = v.lang.toLowerCase().replace('_', '-');
+      return l === 'ur-pk' || l.startsWith('ur-pk');
+    });
+    if (urPk) return urPk;
+
+    // 3. Any Urdu voice (ur, ur-IN, or name containing 'urdu')
+    const anyUr = voices.find(v => {
+      const l = v.lang.toLowerCase().replace('_', '-');
+      return l === 'ur' || l.startsWith('ur-') || v.name.toLowerCase().includes('urdu');
+    });
+    if (anyUr) return anyUr;
+
+    return null;
+  }
+
+  /**
+   * Find the best English voice available on the device.
+   * Strictly prioritizes en-US / en-GB.
+   * NEVER returns Arabic or Urdu voice for English.
+   */
+  public static getBestEnglishVoice(): SpeechSynthesisVoice | null {
+    const voices = this.getVoices();
+    if (!voices || voices.length === 0) return null;
+
+    // 1. High-quality en-US or en-GB
+    const enPremium = voices.find(v => {
+      const l = v.lang.toLowerCase().replace('_', '-');
+      const n = v.name.toLowerCase();
+      return (l === 'en-us' || l === 'en-gb') &&
+        (n.includes('natural') || n.includes('google') || n.includes('samantha') || n.includes('premium') || n.includes('jenny') || n.includes('guy'));
+    });
+    if (enPremium) return enPremium;
+
+    // 2. Any en-US
+    const enUs = voices.find(v => {
+      const l = v.lang.toLowerCase().replace('_', '-');
+      return l === 'en-us' || l.startsWith('en-us');
+    });
+    if (enUs) return enUs;
+
+    // 3. Any en-GB
+    const enGb = voices.find(v => {
+      const l = v.lang.toLowerCase().replace('_', '-');
+      return l === 'en-gb' || l.startsWith('en-gb');
+    });
+    if (enGb) return enGb;
+
+    // 4. Any English voice
+    const anyEn = voices.find(v => {
+      const l = v.lang.toLowerCase().replace('_', '-');
+      return l === 'en' || l.startsWith('en-') || v.name.toLowerCase().includes('english');
+    });
+    if (anyEn) return anyEn;
 
     return null;
   }
@@ -488,46 +651,29 @@ export class SpeechEngine {
     utterance: SpeechSynthesisUtterance,
     lang: 'arabic' | 'urdu' | 'english'
   ) {
-    const voices = this.getVoices();
-
     if (lang === 'arabic') {
       const arVoice = this.getBestArabicVoice();
       if (arVoice) {
         utterance.voice = arVoice;
         utterance.lang = arVoice.lang;
       } else {
-        // Safest fallback: request ar-SA locale
         utterance.lang = 'ar-SA';
       }
       utterance.rate = 0.82; // Clear, deliberate speed for accurate tajweed and pronunciation for kids
       utterance.pitch = 1.05; // Friendly, engaging pitch for kids
     } else if (lang === 'urdu') {
-      // Keep existing Urdu voice selection unchanged
-      const urduVoice = voices.find(
-        v => v.lang.toLowerCase().startsWith('ur') ||
-             v.lang.toLowerCase().includes('ur-') ||
-             v.name.toLowerCase().includes('urdu')
-      ) || voices.find(
-        v => v.lang.toLowerCase().startsWith('hi') ||
-             v.name.toLowerCase().includes('hindi')
-      ) || voices.find(
-        v => v.lang.toLowerCase().startsWith('ar')
-      );
-
+      const urduVoice = this.getBestUrduVoice();
       if (urduVoice) {
         utterance.voice = urduVoice;
         utterance.lang = urduVoice.lang;
       } else {
+        // Fallback to ur-PK locale; NEVER assign an Arabic voice to Urdu!
         utterance.lang = 'ur-PK';
       }
-      utterance.rate = 0.86; // Clear, deliberate speed for Quranic/Urdu vocabulary
+      utterance.rate = 0.86; // Clear, deliberate speed for Urdu vocabulary
       utterance.pitch = 1.05;
     } else {
-      // Keep existing English voice selection unchanged
-      const enVoice = voices.find(
-        v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha'))
-      ) || voices.find(v => v.lang.startsWith('en'));
-
+      const enVoice = this.getBestEnglishVoice();
       if (enVoice) {
         utterance.voice = enVoice;
         utterance.lang = enVoice.lang;
@@ -541,9 +687,8 @@ export class SpeechEngine {
 
   /**
    * Sequential segment runner that plays an array of SpeechSegment objects.
-   * Handles per-segment language configuration (Arabic vs Urdu vs English),
-   * provides resilient error fallback (if Arabic voice fails on a platform, falls back safely to baseLang),
-   * and invokes onStepChange, onStart, onEnd appropriately.
+   * Handles per-segment language configuration (Arabic vs Urdu vs English)
+   * sequentially so that the next segment starts strictly after the previous finishes.
    */
   private static playSegmentSequence(
     segments: SpeechSegment[],
@@ -567,6 +712,7 @@ export class SpeechEngine {
 
       if (currentIndex >= segments.length) {
         this.isSpeaking = false;
+        this.activeUtterance = null;
         onEnd?.();
         return;
       }
@@ -584,6 +730,7 @@ export class SpeechEngine {
 
       const utterance = new SpeechSynthesisUtterance(segment.text);
       this.configureUtterance(utterance, segment.lang);
+      this.activeUtterance = utterance;
 
       let hasEnded = false;
       const advance = () => {
@@ -603,6 +750,7 @@ export class SpeechEngine {
           }
         } else {
           this.isSpeaking = false;
+          this.activeUtterance = null;
           onEnd?.();
         }
       };
@@ -610,27 +758,21 @@ export class SpeechEngine {
       utterance.onend = advance;
 
       utterance.onerror = (err) => {
-        // If an Arabic utterance fails (e.g. platform has missing synthesizer),
-        // safely fallback to baseLang to prevent breaking the speaker feature.
-        if (segment.lang === 'arabic') {
-          console.warn('Arabic TTS voice encountered issue, falling back safely to base voice:', err);
-          try {
-            const fallbackUtterance = new SpeechSynthesisUtterance(segment.text);
-            this.configureUtterance(fallbackUtterance, baseLang);
-            fallbackUtterance.onend = advance;
-            fallbackUtterance.onerror = advance;
-            window.speechSynthesis.speak(fallbackUtterance);
-            return;
-          } catch {
-            advance();
-            return;
-          }
-        }
+        if (this.currentRunId !== runId) return;
+        console.warn('SpeechSynthesis segment issue:', err);
+        // Advance to next segment without cross-language voice contamination
         advance();
       };
 
       try {
-        window.speechSynthesis.speak(utterance);
+        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+          if (window.speechSynthesis.paused) {
+            window.speechSynthesis.resume();
+          }
+          window.speechSynthesis.speak(utterance);
+        } else {
+          advance();
+        }
       } catch (err) {
         console.warn('SpeechSynthesis error:', err);
         advance();
@@ -768,7 +910,8 @@ export class SpeechEngine {
 
   /**
    * Spoken friendly feedback immediately after child selects an answer.
-   * Pronounces Islamic phrases (e.g. Masha'Allah) using genuine Arabic voice.
+   * Pronounces Arabic phrases (مَاشَاءَ اللَّهُ) using genuine Arabic voice,
+   * followed sequentially by Urdu or English praise in its proper native voice.
    */
   static speakFeedback(
     isCorrect: boolean,
@@ -777,6 +920,7 @@ export class SpeechEngine {
     onEnd?: () => void
   ) {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+      onEnd?.();
       return;
     }
 
@@ -789,28 +933,45 @@ export class SpeechEngine {
     if (lang === 'urdu') {
       if (isCorrect) {
         segments = [
-          { text: 'مَا شَاءَ اللَّهُ!', lang: 'arabic', pauseAfterMs: 250 },
-          { text: 'بہت خوب!', lang: 'urdu', pauseAfterMs: 100 }
+          { text: 'مَاشَاءَ اللَّهُ!', lang: 'arabic', pauseAfterMs: 300 },
+          { text: 'آپ نے بالکل صحیح جواب دیا۔ بہت خوب!', lang: 'urdu', pauseAfterMs: 150 }
         ];
       } else {
         segments = [
-          { text: 'کوئی بات نہیں، دوبارہ کوشش کرتے ہیں!', lang: 'urdu', pauseAfterMs: 100 }
+          { text: 'کوئی بات نہیں، دوبارہ کوشش کریں!', lang: 'urdu', pauseAfterMs: 150 }
         ];
       }
     } else {
       if (isCorrect) {
         segments = [
-          { text: 'مَا شَاءَ اللَّهُ!', lang: 'arabic', pauseAfterMs: 250 },
-          { text: 'Very well done!', lang: 'english', pauseAfterMs: 100 }
+          { text: 'مَاشَاءَ اللَّهُ!', lang: 'arabic', pauseAfterMs: 300 },
+          { text: 'Correct! You got the right answer. Very well done!', lang: 'english', pauseAfterMs: 150 }
         ];
       } else {
         segments = [
-          { text: "No worries, let's try again!", lang: 'english', pauseAfterMs: 100 }
+          { text: "No worries, keep trying!", lang: 'english', pauseAfterMs: 150 }
         ];
       }
     }
 
     this.playSegmentSequence(segments, lang, runId, onStart, onEnd);
+  }
+
+  /**
+   * Speak question explanation aloud with full language segmentation
+   * (Arabic verses/phrases in Arabic voice, Urdu in Urdu voice, English in English voice).
+   */
+  public static speakExplanation(
+    explanationText: string,
+    lang: 'urdu' | 'english' = 'urdu',
+    onStart?: () => void,
+    onEnd?: () => void
+  ): void {
+    if (!explanationText || !explanationText.trim()) {
+      onEnd?.();
+      return;
+    }
+    this.speakSingle(explanationText, lang, onStart, onEnd);
   }
 
   /**
