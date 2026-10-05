@@ -800,5 +800,21 @@ export const VERIFIED_QURAN_VERSES: QuranVerse[] = [
     lessonUrdu: 'اپنے ہر عمل میں دکھاوے سے بچ کر اخلاص اور خوبصورتی پیدا کرنے کی کوشش کریں۔',
     lessonEn: 'Focus on sincerity and excellence (Ihsan) in every act of worship and daily work.',
     reference: 'Surah Al-Mulk 67:2'
+  },
+  {
+    id: 'verse-51',
+    arabic: 'يَا أَيُّهَا الَّذِينَ آمَنُوا اتَّقُوا اللَّهَ وَلْتَنظُرْ نَفْسٌ مَّا قَدَّمَتْ لِغَدٍ ۖ وَاتَّقُوا اللَّهَ ۚ إِنَّ اللَّهَ خَبِيرٌ بِمَا تَعْمَلُونَ',
+    translationUrdu: 'اے ایمان والو! اللہ سے ڈرو، اور ہر جان کو دیکھنا چاہیے کہ اس نے کل (آخرت) کے لیے آگے کیا بھیجا ہے، اور اللہ کا تقویٰ اختیار کرو، یقیناً اللہ تمہارے تمام اعمال سے خوب باخبر ہے۔',
+    translationEn: 'O you who have believed, fear Allah. And let every soul look to what it has put forth for tomorrow - and fear Allah. Indeed, Allah is Acquainted with what you do.',
+    surahNameArabic: 'الحشر',
+    surahNameEn: 'Al-Hashr',
+    surahNumber: 59,
+    ayahNumber: 18,
+    theme: 'Mindfulness & Accountability (محاسبہ و تقویٰ)',
+    explanationUrdu: 'یہ آیت ہر مسلمان کو روزانہ اپنا محاسبہ کرنے اور آخرت کے مستقل گھر کی تیاری کرنے کی فکر دلاتی ہے۔',
+    explanationEn: 'This verse calls believers to daily self-reflection (Muhasabah), evaluating their deeds in preparation for the Hereafter.',
+    lessonUrdu: 'ہر رات سونے سے پہلے اپنے دن بھر کے اعمال کا جائزہ لیں اور نیکیوں میں اضافے کی نیت کریں۔',
+    lessonEn: 'Engage in self-evaluation every evening, ensuring today brought you closer to Allah than yesterday.',
+    reference: 'Surah Al-Hashr 59:18'
   }
 ];

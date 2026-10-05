@@ -230,6 +230,29 @@ export const NEW_ISLAMIC_QUESTIONS: QuizQuestion[] = [
     category: 'Seerah',
     difficulty: 'intermediate',
     forKids: false
+  },
+  {
+    id: 'islamic-q-12',
+    questionUrdu: 'نبی کریم ﷺ کے حکم پر مسلمانوں کی تاریخِ اسلام میں سب سے پہلی ہجرت کس ملک کی طرف ہوئی تھی؟',
+    questionEn: 'By the instruction of Prophet Muhammad ﷺ, to which land did the very first migration (Hijrah) in Islamic history take place?',
+    optionsUrdu: [
+      'حبشہ (Abyssinia / Ethiopia)',
+      'مدینہ منورہ (یثرب)',
+      'طائف',
+      'شام'
+    ],
+    optionsEn: [
+      'Abyssinia (Habasha / Ethiopia)',
+      'Madinah (Yathrib)',
+      'Ta\'if',
+      'Ash-Sham (Syria)'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'مکہ میں قریش کے مظالم بڑھنے پر 5 نبوی میں صحابہ کرام کے ایک قافلے نے عادل بادشاہ نجاشی (اصحمہ) کے ملک حبشہ کی طرف پہلی ہجرت فرمائی۔ (سیرت ابن ہشام: 1/321)۔',
+    explanationEn: 'In the 5th year of Prophethood, oppressed Muslims migrated to Abyssinia where the just king Negus (Al-Najashi) sheltered them with honor and refused to surrender them to Quraysh (Sirat Ibn Hisham 1/321).',
+    category: 'Seerah',
+    difficulty: 'intermediate',
+    forKids: false
   }
 ];
 
@@ -1381,6 +1404,121 @@ export const NEW_ADULT_QUESTIONS: QuizQuestion[] = [
     explanationUrdu: 'حضرت عمرؓ جب اپنی بہن فاطمہ بنت الخطابؓ کے گھر گئے تو وہاں صحابی خباب بن الارتؓ سورۃ طٰہٰ پڑھا رہے تھے۔ جب حضرت عمر نے "مَا أَنزَلْنَا عَلَيْكَ الْقُرْآنَ لِتَشْقَىٰ" سنا تو ان کا دل موم ہو گیا اور بارگاہِ رسالت میں حاضر ہو کر اسلام لے آئے۔ (سیرت ابن ہشام)۔',
     explanationEn: 'Umar ibn al-Khattab (RA) was profoundly moved to tears upon reading the initial verses of Surah Ta-Ha (20:1-14) at the house of his sister Fatimah and her husband Sa\'id, immediately proceeding to the Prophet ﷺ to declare his Shahadah (Sirat Ibn Hisham).',
     category: 'Seerah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-66',
+    questionUrdu: 'قرآن مجید کی سورۃ یونس (10:98) کے مطابق تاریخِ انسانیت کی وہ واحد قوم کون سی ہے جس پر عذاب کے آثار ظاہر ہو جانے کے بعد ان کے اجتماعی ایمان اور توبہ کو اللہ نے قبول فرما کر عذاب ٹال دیا؟',
+    questionEn: 'According to Surah Yunus (10:98), which was the only nation in human history whose collective repentance and faith was accepted by Allah to avert impending destruction after the signs of punishment appeared?',
+    optionsUrdu: [
+      'قومِ یونس علیہ السلام (اہلِ نینویٰ)',
+      'قومِ نوح علیہ السلام',
+      'قومِ عاد',
+      'قومِ ثمود'
+    ],
+    optionsEn: [
+      'The people of Prophet Yunus AS (Nineveh)',
+      'The people of Prophet Nuh AS',
+      'The people of \'Aad',
+      'The people of Thamud'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید کی سورۃ یونس آیت 98 میں صراحت ہے کہ حضرت یونسؑ کی قوم وہ واحد قوم ہے جو عذاب کی علامات دیکھ کر خلوصِ نیت سے توبہ تائب ہوئی تو اللہ نے ان سے دنیا کی رسوائی کا عذاب ہٹا دیا۔',
+    explanationEn: 'Surah Yunus (10:98) explicitly affirms that when the people of Yunus (AS) in Nineveh realized impending doom, they went out repenting sincerely, and Allah lifted the humiliating punishment from them in this worldly life.',
+    category: 'Quran',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-67',
+    questionUrdu: 'ہجرتِ مدینہ کے بعد جب مہاجرین کو پینے کے میٹھے پانی کی شدید تنگی ہوئی تو رسول اللہ ﷺ کی ترغیب پر کس سخی صحابی نے "بئرِ رومہ" (میٹھے پانی کا کنواں) خرید کر مسلمانوں کے لیے ہمیشہ کے لیے وقف فرما دیا؟',
+    questionEn: 'Upon migration to Madinah when water was scarce, which noble companion bought the well of Rumah (Bi\'r Rumah) from a Jewish merchant and dedicated it as a perpetual endowment (Waqf) for all Muslims?',
+    optionsUrdu: [
+      'حضرت عثمان بن عفان رضی اللہ عنہ',
+      'حضرت عبد الرحمن بن عوف رضی اللہ عنہ',
+      'حضرت طلحہ بن عبید اللہ رضی اللہ عنہ',
+      'حضرت سعد بن ابی وقاص رضی اللہ عنہ'
+    ],
+    optionsEn: [
+      'Uthman ibn Affan (RA)',
+      'Abdur Rahman ibn Awf (RA)',
+      'Talhah ibn Ubaydullah (RA)',
+      'Sa\'d ibn Abi Waqqas (RA)'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'حضرت عثمان غنیؓ نے رسول اللہ ﷺ کی اس بشارت پر کہ "جو بئرِ رومہ خریدے اس کے لیے جنت ہے"، وہ کنواں خریدا اور عام مسلمانوں کے لیے وقف کر دیا۔ (صحیح بخاری: 2778)۔',
+    explanationEn: 'Uthman ibn Affan (RA) purchased the well of Rumah and made it a free public endowment for all, following the Prophet\'s ﷺ promise of Paradise for the one who bought it (Sahih al-Bukhari 2778).',
+    category: 'Seerah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-68',
+    questionUrdu: 'قرآن مجید کی سورۃ النساء (4:11) کے صریح حکم کے مطابق اگر کسی میت کی اولاد میں صرف ایک ہی بیٹی ہو (اور کوئی بیٹا نہ ہو) تو اسے ترکے میں سے کتنا حصہ ملتا ہے؟',
+    questionEn: 'According to the clear Quranic mandate in Surah An-Nisa (4:11), if the deceased leaves behind only a single daughter (and no sons), what fixed share (Fard) does she receive from the estate?',
+    optionsUrdu: [
+      'نصف (آدھا ترکہ - 1/2)',
+      'ایک تہائی (1/3)',
+      'دو تہائی (2/3)',
+      'ایک چوتھائی (1/4)'
+    ],
+    optionsEn: [
+      'One-half (1/2 of the estate)',
+      'One-third (1/3)',
+      'Two-thirds (2/3)',
+      'One-fourth (1/4)'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید میں ارشاد ہے: "وَإِن كَانَتْ وَاحِدَةً فَلَهَا النِّصْفُ" (اور اگر صرف ایک بیٹی ہو تو اس کے لیے آدھا حصہ ہے)۔ اگر دو یا دو سے زائد بیٹیاں ہوں تو ان کا مجموعی حصہ دو تہائی (2/3) ہوتا ہے۔ (سورۃ النساء: 11)۔',
+    explanationEn: 'Surah An-Nisa (4:11) establishes: "And if there is only one [daughter], for her is half." If there are two or more daughters without sons, their collective share is two-thirds (2/3).',
+    category: 'General',
+    difficulty: 'advanced',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-69',
+    questionUrdu: 'رسول اللہ ﷺ نے کس صحابی کے لیے مسجد نبوی میں منبر رکھا تاکہ وہ اشعار کے ذریعے اسلام کا دفاع کریں، اور ان کے لیے دعا فرمائی کہ "اے اللہ! روح القدس (جبریلؑ) کے ذریعے ان کی تائید فرما"؟',
+    questionEn: 'For which distinguished companion did the Prophet ﷺ place a pulpit in the mosque to defend Islam through poetry, supplicating: "O Allah, support him with the Holy Spirit (Jibreel)"?',
+    optionsUrdu: [
+      'حضرت حسان بن ثابت رضی اللہ عنہ',
+      'حضرت کعب بن مالک رضی اللہ عنہ',
+      'حضرت عبد اللہ بن رواحہ رضی اللہ عنہ',
+      'حضرت لبید بن ربیعہ رضی اللہ عنہ'
+    ],
+    optionsEn: [
+      'Hassan ibn Thabit (RA)',
+      'Ka\'b ibn Malik (RA)',
+      'Abdullah ibn Rawahah (RA)',
+      'Labid ibn Rabi\'ah (RA)'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'حضرت حسان بن ثابتؓ کو "شاعرِ رسول" کا شرف حاصل تھا۔ رسول اللہ ﷺ نے فرمایا کہ حسان کے اشعار مشرکین پر تیروں سے زیادہ گہرے وار کرتے ہیں۔ (صحیح بخاری: 3213، صحیح مسلم: 2486)۔',
+    explanationEn: 'Hassan ibn Thabit (RA) was honored as the "Poet of the Prophet". The Prophet ﷺ praised his eloquent verses defending Islam against polytheist mockery, supported by Angel Jibreel (Sahih al-Bukhari 3213, Sahih Muslim 2486).',
+    category: 'Seerah',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-70',
+    questionUrdu: 'قرآن مجید کی سورۃ سبا (34:10) کے مطابق اللہ تعالیٰ نے کس جلیل القدر پیغمبر کے ہاتھ میں معجزانہ طور پر لوہے کو موم کی طرح نرم فرما دیا تھا؟',
+    questionEn: 'According to Surah Saba (34:10), for which esteemed Prophet did Allah miraculously make iron pliable like soft wax in his hands?',
+    optionsUrdu: [
+      'حضرت داؤد علیہ السلام',
+      'حضرت سلیمان علیہ السلام',
+      'حضرت موسیٰ علیہ السلام',
+      'حضرت یوسف علیہ السلام'
+    ],
+    optionsEn: [
+      'Prophet Dawud (David) AS',
+      'Prophet Sulaiman (Solomon) AS',
+      'Prophet Musa (Moses) AS',
+      'Prophet Yusuf (Joseph) AS'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید میں ارشاد ہے: "وَأَلَنَّا لَهُ الْحَدِيدَ" (اور ہم نے ان کے لیے لوہے کو نرم کر دیا)۔ حضرت داؤدؑ آگ یا ہتھوڑے کے بغیر اپنے ہاتھوں سے جنگی زرہیں بناتے اور اپنے ہاتھ کی حلال کمائی سے کھاتے تھے۔ (سورۃ سبا: 10، صحیح بخاری: 2072)۔',
+    explanationEn: 'Surah Saba (34:10) states: "And We made the iron pliable for him." Prophet Dawud (AS) crafted protective chainmail armor with his bare hands and sustained himself purely through his lawful manual craftsmanship (Sahih al-Bukhari 2072).',
+    category: 'Prophets',
     difficulty: 'intermediate',
     forKids: false
   }

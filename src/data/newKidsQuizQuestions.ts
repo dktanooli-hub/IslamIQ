@@ -790,5 +790,130 @@ export const NEW_KIDS_QUESTIONS: QuizQuestion[] = [
     forKids: true,
     kidsHintUrdu: 'ہم سب کا اکیلا پیدا کرنے والا رب!',
     kidsHintEn: 'The Creator of the heavens and earth, Allah!'
+  },
+  {
+    id: 'kids-82',
+    questionUrdu: 'جب ہم کھانا یا ناشتہ ختم کر لیں تو اللہ تعالیٰ کی نعمت کا شکر ادا کرنے کے لیے کیا کہنا چاہیے؟',
+    questionEn: 'When we finish eating our meal or snack, what beautiful words do we say to thank Allah?',
+    optionsUrdu: [
+      'الْحَمْدُ لِلَّهِ (تمام تعریفیں اللہ کے لیے ہیں)',
+      'شکریہ دوست',
+      'کوئی بات نہیں',
+      'خدا حافظ'
+    ],
+    optionsEn: [
+      'Alhamdulillah (All praise is for Allah)',
+      'Thank you friend',
+      'Never mind',
+      'Goodbye'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'کھانا کھانے کے بعد "الحمد للہ" کہنا پیارے نبی ﷺ کی پیاری سنت ہے، جس سے اللہ تعالیٰ بہت خوش ہوتا ہے۔',
+    explanationEn: 'Saying "Alhamdulillah" after eating is a Sunnah of our beloved Prophet ﷺ to express gratitude to Allah for providing food.',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'اللہ کا شکر ادا کرنے کا پیارا کلمہ!',
+    kidsHintEn: 'Praising Allah for our delicious food!'
+  },
+  {
+    id: 'kids-83',
+    questionUrdu: 'پیارے نبی حضرت محمد ﷺ نے ہمیں سچ بولنے کے بارے میں کیا سکھایا ہے؟',
+    questionEn: 'What did our beloved Prophet Muhammad ﷺ teach us about telling the truth?',
+    optionsUrdu: [
+      'ہمیشہ سچ بولیں کیونکہ سچائی نیکی اور جنت کی طرف لے جاتی ہے',
+      'مذاق میں جھوٹ بولنا اچھا ہوتا ہے',
+      'سچ بولنے کا کوئی فائدہ نہیں',
+      'صرف بڑوں کے سامنے سچ بولیں'
+    ],
+    optionsEn: [
+      'Always tell the truth because truthfulness leads to goodness and Jannah',
+      'It is okay to tell lies for fun',
+      'Truthfulness has no reward',
+      'Only tell the truth in front of adults'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے فرمایا: "ہمیشہ سچ بولو، کیونکہ سچائی نیکی کا راستہ دکھاتی ہے اور نیکی جنت لے جاتی ہے۔"',
+    explanationEn: 'Prophet Muhammad ﷺ taught: "Always adhere to truthfulness, for truthfulness leads to righteousness, and righteousness leads to Paradise."',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'سچے بچے ہمیشہ اللہ کو بہت پیارے ہوتے ہیں!',
+    kidsHintEn: 'Truthfulness brings us closer to Allah!'
+  },
+  {
+    id: 'kids-84',
+    questionUrdu: 'اللہ تعالیٰ نے قومِ ثمود کی طرف کس پیارے پیغمبر کو بھیجا جن کی دعا سے پہاڑ سے معجزاتی اونٹنی ظاہر ہوئی تھی؟',
+    questionEn: 'Which beloved Prophet did Allah send to the people of Thamud, for whom a miraculous she-camel appeared?',
+    optionsUrdu: [
+      'حضرت صالح علیہ السلام',
+      'حضرت ہود علیہ السلام',
+      'حضرت لوط علیہ السلام',
+      'حضرت شعیب علیہ السلام'
+    ],
+    optionsEn: [
+      'Prophet Salih AS',
+      'Prophet Hud AS',
+      'Prophet Lut AS',
+      'Prophet Shu\'ayb AS'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'حضرت صالح علیہ السلام نے اپنی قوم کو ایک اللہ کی عبادت کی دعوت دی اور اللہ کے حکم سے معجزاتی اونٹنی پیش فرمائی۔',
+    explanationEn: 'Prophet Salih (AS) was sent to invite the people of Thamud to worship Allah alone, granted the miracle of the she-camel.',
+    category: 'Prophets',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'معجزاتی اونٹنی والے پیارے نبیؑ!',
+    kidsHintEn: 'The Prophet associated with the miraculous she-camel!'
+  },
+  {
+    id: 'kids-85',
+    questionUrdu: 'رمضان المبارک کے مہینے میں عشاء کی نماز کے بعد جو خصوصی سنت نماز باجماعت پڑھی جاتی ہے، اسے کیا کہتے ہیں؟',
+    questionEn: 'What is the special Sunnah prayer called that Muslims perform together every night in Ramadan after Isha?',
+    optionsUrdu: [
+      'نمازِ تراویح (Taraweeh)',
+      'نمازِ جمعہ',
+      'نمازِ عید',
+      'نمازِ اشراق'
+    ],
+    optionsEn: [
+      'Taraweeh Prayer (نمازِ تراویح)',
+      'Jumu\'ah Prayer',
+      'Eid Prayer',
+      'Ishraq Prayer'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'رمضان کی راتوں میں عشاء کے بعد تراویح کی نماز پڑھی جاتی ہے جس میں قرآن مجید سننا اور تلاوت کرنا بہت بابرکت عمل ہے۔',
+    explanationEn: 'Taraweeh is the special nightly congregational prayer prayed in Ramadan wherein Muslims listen to the beautiful recitation of the Quran.',
+    category: 'Pillars',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'رمضان کی راتوں کی خاص پیاری نماز!',
+    kidsHintEn: 'The special night prayer during Ramadan!'
+  },
+  {
+    id: 'kids-86',
+    questionUrdu: 'عید الفطر کی نماز سے پہلے غریب اور ضرورت مند بچوں اور خاندانوں کے لیے جو خاص صدقہ دیا جاتا ہے، اسے کیا کہتے ہیں؟',
+    questionEn: 'What is the special charity called that Muslims give before Eid al-Fitr prayer so that needy families can celebrate Eid happily?',
+    optionsUrdu: [
+      'صدقہ فطر (فطرانہ)',
+      'عیدی',
+      'قربانی',
+      'تحفہ'
+    ],
+    optionsEn: [
+      'Sadaqatul Fitr (Fitrana)',
+      'Eidi (عیدی)',
+      'Qurbani',
+      'Toy Gift'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'صدقہ فطر (فطرانہ) ہر مسلمان عید کی نماز سے پہلے دیتا ہے تاکہ غریب بہن بھائی اور بچے بھی عید کی خوشیوں میں ہنس مسکرا سکیں۔',
+    explanationEn: 'Sadaqatul Fitr (Fitrana) is given before Eid prayer so that underprivileged families and children can enjoy good food and celebrate Eid joyfully.',
+    category: 'Pillars',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'عید کے دن غریبوں کی مدد کرنے والا پیارا صدقہ!',
+    kidsHintEn: 'The blessed charity shared before Eid prayer!'
   }
 ];

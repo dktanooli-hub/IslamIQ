@@ -600,5 +600,17 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     grade: 'Sahih',
     lessonUrdu: 'گھر، دفتر، معاشرے اور ہر جگہ اپنی ذمہ داریاں دیانت داری سے پوری کریں کیونکہ سب سے انفرادی بازپرس ہوگی۔',
     lessonEn: 'Recognize your leadership responsibilities in your household, workplace, and community; all stewardship will be questioned.'
+  },
+  {
+    id: 'hadith-51',
+    arabic: 'نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ: الصِّحَّةُ وَالْفَرَاغُ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "دو نعمتیں ایسی ہیں جن کے بارے میں بہت سے لوگ دھوکے (خسارے) میں ہیں: ایک صحت اور دوسری فراغت (فارغ وقت)۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "There are two blessings which many people lose: health and free time."',
+    narrator: 'Abdullah ibn Abbas (رضي الله عنهما)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '6465',
+    grade: 'Sahih',
+    lessonUrdu: 'صحت مند جسم اور دستیاب فارغ وقت کو غنیمت سمجھیں اور اسے نیکی، علم اور ذکرِ الٰہی میں خرچ کریں۔',
+    lessonEn: 'Seize the blessings of sound health and spare time before illness or busyness overtake you.'
   }
 ];

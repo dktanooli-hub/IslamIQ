@@ -480,5 +480,17 @@ export const VERIFIED_DUAS: DuaItem[] = [
     reference: 'Sahih al-Bukhari 1377, Sahih Muslim 588',
     occasionUrdu: 'فرض نماز کے آخری قعدہ میں درود شریف کے بعد سلام پھیرنے سے پہلے پڑھنا موکد سنت ہے۔',
     occasionEn: 'Recited in the final sitting of every prayer after the Tashahhud before Tasleem.'
+  },
+  {
+    id: 'dua-41',
+    titleEn: 'Dua for Ease in Difficult Matters',
+    titleUrdu: 'مشکل کاموں میں آسانی کی مسنون دعا',
+    arabic: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',
+    transliteration: 'Allahumma la sahla illa ma ja\'altahu sahla, wa Anta taj\'alul-hazna idha shi\'ta sahla',
+    translationUrdu: 'اے اللہ! کوئی چیز آسان نہیں مگر جسے تو آسان بنا دے، اور تو جب چاہتا ہے تو مشکل کو آسان بنا دیتا ہے۔',
+    translationEn: 'O Allah, there is no ease except that which You make easy, and You make difficulty easy whenever You will.',
+    reference: 'Sahih Ibn Hibban 974, Al-Adhkar (Sahih)',
+    occasionUrdu: 'کسی بھی امتحان، مشکل کام، انٹرویو یا پریشانی کے آغاز میں پڑھیں۔',
+    occasionEn: 'Recite before any exam, interview, challenging task, or hardship.'
   }
 ];

@@ -550,5 +550,16 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     practicalTipUrdu: 'ہر جمعہ کے دن سورۃ الکہف کی تلاوت کو اپنا مستقل معمول بنائیں یا کم از کم اس کی ابتدائی و آخری 10 آیات یاد کریں۔',
     practicalTipEn: 'Build a regular habit of reading Surah Al-Kahf every Friday, or memorize its first and last ten verses for divine protection.',
     reference: 'Sunan al-Kubra an-Nasa\'i 10790, Sahih al-Jami 6470'
+  },
+  {
+    id: 'rem-51',
+    titleEn: 'The Beauty of Concealing a Believer\'s Faults',
+    titleUrdu: 'مسلمان بھائی کے عیب چھپانے کی فضیلت',
+    bodyEn: 'The Prophet ﷺ said: "Whoever conceals the faults of a Muslim, Allah will conceal his faults in this world and the Hereafter." (Sahih Muslim 2699). When you notice a shortcoming or slip in someone, overlook it with grace and make sincere silent prayer for their guidance rather than broadcasting it.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "جس نے کسی مسلمان کے عیب کی پردہ پوشی کی، اللہ تعالیٰ دنیا اور آخرت میں اس کے عیوب پر پردہ ڈالے گا۔" (صحیح مسلم: ۲۶۹۹)۔ کسی کی خطا دیکھ کر اسے اچھالنے کے بجائے چھپانا اور اس کی اصلاح کے لیے دعا کرنا اعلیٰ اسلامی اخلاق ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'آج اگر کسی کا کوئی عیب یا لغزش معلوم ہو تو اسے راز رکھیں اور اللہ سے اس کے لیے اور اپنے لیے عافیت طلب کریں۔',
+    practicalTipEn: 'If you observe a flaw or blunder in someone today, keep it confidential and make silent dua for their well-being.',
+    reference: 'Sahih Muslim 2699, Sunan Ibn Majah 2544'
   }
 ];
