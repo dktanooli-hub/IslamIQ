@@ -900,5 +900,20 @@ export const VERIFIED_QA_DATABASE: VerifiedQA[] = [
     relatedGuidePath: '/seerah-of-prophet-muhammad',
     relatedGuideTitleEn: 'Seerah of Prophet Muhammad Guide',
     relatedGuideTitleUrdu: 'سیرت النبی ﷺ'
+  },
+  {
+    id: 'qa-61',
+    questionUrdu: 'قرآن مجید کی وہ کون سی سورت ہے جس میں دو مقامات پر سجدۂ تلاوت آیا ہے؟',
+    questionEn: 'Which Surah of the Holy Quran uniquely contains two Prostrations of Recitation (Sajdah at-Tilawah)?',
+    answerUrdu: 'قرآن مجید کی سورۃ الحج (سورۃ نمبر 22) وہ مبارک سورت ہے جس میں دو مقامات پر سجدۂ تلاوت آیا ہے؛ پہلا سجدہ آیت نمبر 18 میں اور دوسرا سجدہ آیت نمبر 77 میں۔ سنن ابی داؤد اور جامع ترمذی کی صحیح حدیث میں حضرت عقبہ بن عامرؓ روایت کرتے ہیں کہ رسول اللہ ﷺ نے فرمایا: "سورۃ الحج کو دو سجدوں کے ساتھ فضیلت بخشی گئی ہے، پس جو ان دونوں پر سجدہ نہ کرے وہ ان کی تلاوت نہ کرے۔"',
+    answerEn: 'Surah Al-Hajj (Surah 22) is the only Surah in the Holy Quran that contains two Prostrations of Recitation: the first at verse 18 and the second at verse 77. In authentic traditions recorded in Sunan Abi Dawud (1402) and Jami at-Tirmidhi (578), \'Uqbah ibn \'Amir (RA) narrated that the Prophet ﷺ said: "Surah Al-Hajj has been given superiority through two prostrations; so whoever does not prostrate in them should not recite them."',
+    explanationUrdu: 'قرآن مجید میں کل 14 (یا بعض ائمہ کے نزدیک 15) مقامات پر سجدہ تلاوت مسنون یا واجب ہے۔',
+    explanationEn: 'There are 14 (or according to some jurists 15) verses of prostration throughout the Holy Quran.',
+    category: 'Quran',
+    reference: 'Surah Al-Hajj 22:18, 77; Sunan Abi Dawud 1402; Jami at-Tirmidhi 578',
+    tags: ['Surah Al-Hajj', 'Sajdah at-Tilawah', 'Quran', 'سجدہ تلاوت', 'سورۃ الحج', 'قرآن'],
+    relatedGuidePath: '/quran-learning-guide',
+    relatedGuideTitleEn: 'Quran Learning & Tajweed Guide',
+    relatedGuideTitleUrdu: 'قرآن مجید گائیڈ'
   }
 ];

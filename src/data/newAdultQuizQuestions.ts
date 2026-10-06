@@ -253,6 +253,29 @@ export const NEW_ISLAMIC_QUESTIONS: QuizQuestion[] = [
     category: 'Seerah',
     difficulty: 'intermediate',
     forKids: false
+  },
+  {
+    id: 'islamic-q-13',
+    questionUrdu: 'قرآن مجید کی وہ کون سی سورت ہے جس میں دو مقامات پر سجدۂ تلاوت آیا ہے؟',
+    questionEn: 'Which Surah of the Holy Quran uniquely contains two Prostrations of Recitation (Sajdah at-Tilawah)?',
+    optionsUrdu: [
+      'سورۃ الحج',
+      'سورۃ السجدۃ',
+      'سورۃ الاعراف',
+      'سورۃ النجم'
+    ],
+    optionsEn: [
+      'Surah Al-Hajj',
+      'Surah As-Sajdah',
+      'Surah Al-A\'raf',
+      'Surah An-Najm'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'سورۃ الحج قرآن مجید کی وہ مبارک سورت ہے جس میں دو سجدے آتے ہیں (آیت نمبر 18 اور آیت نمبر 77)۔ حضرت عقبہ بن عامرؓ روایت کرتے ہیں کہ نبی کریم ﷺ نے فرمایا: سورۃ الحج کو دو سجدوں کے ساتھ فضیلت دی گئی ہے۔ (سنن ابی داؤد: 1402، جامع ترمذی: 578)۔',
+    explanationEn: 'Surah Al-Hajj uniquely contains two verses of prostration (Ayah 18 and Ayah 77). The Prophet ﷺ confirmed: "Surah Al-Hajj has been given excellence through having two prostrations; whoever does not prostrate in them should not recite them." (Sunan Abi Dawud 1402, Jami at-Tirmidhi 578).',
+    category: 'Quran',
+    difficulty: 'intermediate',
+    forKids: false
   }
 ];
 
@@ -1519,6 +1542,121 @@ export const NEW_ADULT_QUESTIONS: QuizQuestion[] = [
     explanationUrdu: 'قرآن مجید میں ارشاد ہے: "وَأَلَنَّا لَهُ الْحَدِيدَ" (اور ہم نے ان کے لیے لوہے کو نرم کر دیا)۔ حضرت داؤدؑ آگ یا ہتھوڑے کے بغیر اپنے ہاتھوں سے جنگی زرہیں بناتے اور اپنے ہاتھ کی حلال کمائی سے کھاتے تھے۔ (سورۃ سبا: 10، صحیح بخاری: 2072)۔',
     explanationEn: 'Surah Saba (34:10) states: "And We made the iron pliable for him." Prophet Dawud (AS) crafted protective chainmail armor with his bare hands and sustained himself purely through his lawful manual craftsmanship (Sahih al-Bukhari 2072).',
     category: 'Prophets',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-71',
+    questionUrdu: 'قرآن مجید کی سورۃ مریم (19:56-57) میں کس جلیل القدر پیغمبر کی تعریف ان الفاظ میں بیان ہوئی ہے: "وَرَفَعْنَاهُ مَكَانًا عَلِيًّا" (اور ہم نے انہیں بلند مقام پر اٹھا لیا)؟',
+    questionEn: 'Regarding which noble Prophet does the Holy Quran state in Surah Maryam (19:56-57): "And We raised him to a high station"?',
+    optionsUrdu: [
+      'حضرت ادریس علیہ السلام',
+      'حضرت ہود علیہ السلام',
+      'حضرت صالح علیہ السلام',
+      'حضرت شعیب علیہ السلام'
+    ],
+    optionsEn: [
+      'Prophet Idris AS',
+      'Prophet Hud AS',
+      'Prophet Salih AS',
+      'Prophet Shu\'aib AS'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید کی سورۃ مریم (56-57) میں ارشاد ہے: "وَاذْكُرْ فِي الْكِتَابِ إِدْرِيسَ ۚ إِنَّهُ كَانَ صِدِّيقًا نَّبِيًّا * وَرَفَعْنَاهُ مَكَانًا عَلِيًّا"۔ معراج کی رات رسول اللہ ﷺ نے چوتھے آسمان پر حضرت ادریسؑ سے ملاقات فرمائی۔ (صحیح بخاری: 3887)۔',
+    explanationEn: 'Surah Maryam (19:56-57) honors Prophet Idris (AS): "And mention in the Book, Idris. Indeed, he was a man of truth and a prophet. And We raised him to a high station." During the Miraculous Night Journey (Isra and Mi\'raj), Prophet Muhammad ﷺ met Prophet Idris on the fourth heaven (Sahih al-Bukhari 3887).',
+    category: 'Prophets',
+    difficulty: 'intermediate',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-72',
+    questionUrdu: 'رسول اللہ ﷺ کی صحیح حدیث کے مطابق فطرت کی پانچ بنیادی سنن (خصال الفطرۃ) میں مندرجہ ذیل میں سے کون سی سنت شامل ہے؟',
+    questionEn: 'According to the authentic Hadith of Prophet Muhammad ﷺ, which of the following is one of the five primordial characteristics of natural hygiene (Sunan al-Fitrah)?',
+    optionsUrdu: [
+      'مونچھیں پست کرنا اور ناخن تراشنا',
+      'دن میں تین بار نہانا',
+      'ہمیشہ صرف سفید لباس پہننا',
+      'صرف پکے ہوئے پھل کھانا'
+    ],
+    optionsEn: [
+      'Trimming the moustache and clipping nails',
+      'Bathing three times every day',
+      'Wearing exclusively white clothing',
+      'Eating only cooked fruits'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'صحیح بخاری (5889) اور صحیح مسلم (257) میں حضرت ابوہریرہؓ سے مروی ہے کہ رسول اللہ ﷺ نے فرمایا: "فطرت کے پانچ تقاضے ہیں: ختنہ کرنا، زیرِ ناف بال صاف کرنا، ناخن کاٹنا، بغل کے بال اکھاڑنا اور مونچھیں تراشنا۔"',
+    explanationEn: 'In Sahih al-Bukhari (5889) and Sahih Muslim (257), the Prophet ﷺ said: "Five are the acts of natural disposition (Fitrah): circumcision, shaving the pubic hair, clipping the nails, plucking the armpit hair, and trimming the moustache."',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-73',
+    questionUrdu: 'حج اور عمرے کے دوران طوافِ کعبہ کے 7 چکر مکمل کرنے کے بعد کس مبارک مقام کے پیچھے 2 رکعت نماز ادا کرنا مسنون اور قرآنی حکم ہے؟',
+    questionEn: 'After completing the seven circuits of Tawaf around the Kaaba during Hajj or Umrah, behind which sacred monument is it prescribed to pray two units of prayer according to the Quran?',
+    optionsUrdu: [
+      'مقامِ ابراہیم کے پیچھے',
+      'حجرِ اسود کے اوپر',
+      'غارِ حرا کے اندر',
+      'جبلِ رحمت کے اوپر'
+    ],
+    optionsEn: [
+      'Behind Maqam Ibrahim (Station of Abraham)',
+      'On top of the Black Stone (Hajar al-Aswad)',
+      'Inside Cave Hira',
+      'On top of Mount Rahmah'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'قرآن مجید کی سورۃ البقرۃ آیت 125 میں اللہ تعالیٰ نے حکم فرمایا: "وَاتَّخِذُوا مِن مَّقَامِ إِبْرَاهِيمَ مُصَلًّى" (اور مقام ابراہیم کو نماز کی جگہ بناؤ)۔ طواف کے بعد مقام ابراہیم کے پیچھے 2 رکعت طواف پڑھنا سنتِ موکدہ ہے۔ (صحیح مسلم: 1218)۔',
+    explanationEn: 'Surah Al-Baqarah (2:125) commands: "And take, [O believers], from the standing place of Abraham a place of prayer." In Sahih Muslim (1218), upon completing Tawaf, the Prophet ﷺ proceeded behind Maqam Ibrahim, recited this verse, and prayed two units.',
+    category: 'Pillars',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-74',
+    questionUrdu: 'نبی کریم ﷺ کے مدینہ منورہ تشریف لانے کے بعد مہاجرین اور انصار کے درمیان قائم ہونے والے تاریخی بھائی چارے کو کیا کہا جاتا ہے؟',
+    questionEn: 'What is the historic fraternity called, established by Prophet Muhammad ﷺ in Madinah between the Emigrants (Muhajirun) and the Helpers (Ansar)?',
+    optionsUrdu: [
+      'مواخاتِ مدینہ (Muwakhat)',
+      'حلف الفضول',
+      'میثاقِ مدینہ',
+      'بیعتِ عقبہ'
+    ],
+    optionsEn: [
+      'Muwakhat al-Madinah (Fraternity Bond)',
+      'Hilf al-Fudul (Pledge of the Virtuous)',
+      'Mithaq al-Madinah (Constitution)',
+      'Bay\'at al-Aqabah (Pledge of Aqabah)'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے ہجرت کے بعد حضرت انس بن مالکؓ کے گھر میں مہاجرین اور انصار کے درمیان "مواخات" (بھائی چارہ) قائم فرمایا جس میں ہر انصاری نے اپنے مہاجر بھائی کے ساتھ گھر، زمین اور کاروبار آدھا آدھا بانٹ لیا۔ قرآن نے ان کے اس ایثار کی تعریف سورۃ الحشر (59:9) میں فرمائی۔ (صحیح بخاری: 2293)۔',
+    explanationEn: 'Upon arriving in Madinah, Prophet Muhammad ﷺ instituted "Muwakhat" (The Bond of Brotherhood) at the home of Anas ibn Malik (RA). Ansar generously shared their homes, land, and wealth with their displaced Muhajir brethren, praised by Allah in Surah Al-Hashr (59:9) and Sahih al-Bukhari (2293).',
+    category: 'Seerah',
+    difficulty: 'beginner',
+    forKids: false
+  },
+  {
+    id: 'adult-gen-75',
+    questionUrdu: 'رسول اللہ ﷺ کی صحیح حدیث کے مطابق کس دعا میں اللہ تعالیٰ کا "اسمِ اعظم" موجود ہے جس کے وسیلے سے مانگی گئی دعا اللہ رد نہیں فرماتا؟',
+    questionEn: 'According to the authentic Hadith in Sunan Abi Dawud and Jami at-Tirmidhi, in which profound supplication did the Prophet ﷺ state that Allah\'s Greatest Name (Al-Ism Al-A\'zam) is contained?',
+    optionsUrdu: [
+      'اللَّهُمَّ إِنِّي أَسْأَلُكَ بِأَنِّي أَشْهَدُ أَنَّكَ أَنْتَ اللَّهُ لَا إِلَهَ إِلَّا أَنْتَ الأَحَدُ الصَّمَدُ الَّذِي لَمْ يَلِدْ وَلَمْ يُولَدْ وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ',
+      'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الآخِرَةِ حَسَنَةً',
+      'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
+      'سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظِيمِ'
+    ],
+    optionsEn: [
+      'Allahumma inni as\'aluka bi-anni ashhadu annaka Antallahu la ilaha illa Anta, Al-Ahad As-Samad...',
+      'Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanah',
+      'Hasbunallahu wa ni\'mal wakeel',
+      'SubhanAllahi wa bihamdihi, SubhanAllahil-Azeem'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'سنن ابی داؤد (1493) اور جامع ترمذی (3475) میں حضرت بریدہ اسلمیؓ سے روایت ہے کہ نبی کریم ﷺ نے ایک شخص کو یہ دعا مانگتے سنا تو فرمایا: "اس نے اللہ سے اس کے اس اسمِ اعظم کے ذریعے سوال کیا ہے کہ جب بھی اس کے ذریعے مانگا جائے تو وہ عطا فرماتا ہے اور جب پکارا جائے تو قبول فرماتا ہے۔"',
+    explanationEn: 'In Sunan Abi Dawud (1493) and Jami at-Tirmidhi (3475), the Prophet ﷺ heard a companion supplicating: "O Allah, I ask You by virtue of my testifying that You are Allah, there is no deity except You, the One, the Eternal Refuge..." The Prophet ﷺ said: "By Him in Whose Hand is my soul, he has asked Allah by His Greatest Name, which when asked by it, He gives, and when supplicated by it, He answers."',
+    category: 'Aqeedah',
     difficulty: 'intermediate',
     forKids: false
   }

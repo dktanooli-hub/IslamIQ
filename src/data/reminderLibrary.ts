@@ -561,5 +561,16 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     practicalTipUrdu: 'آج اگر کسی کا کوئی عیب یا لغزش معلوم ہو تو اسے راز رکھیں اور اللہ سے اس کے لیے اور اپنے لیے عافیت طلب کریں۔',
     practicalTipEn: 'If you observe a flaw or blunder in someone today, keep it confidential and make silent dua for their well-being.',
     reference: 'Sahih Muslim 2699, Sunan Ibn Majah 2544'
+  },
+  {
+    id: 'rem-52',
+    titleEn: 'The Nobility of Truthfulness (Sidq) and Steadfast Honesty',
+    titleUrdu: 'سچائی کا وقار اور نیکی کا راستہ',
+    bodyEn: 'The Prophet ﷺ taught: "Verily, truthfulness leads to righteousness, and righteousness leads to Paradise. A person continues to tell the truth until he is recorded with Allah as a truthful person (Siddiq). And beware of falsehood, for falsehood leads to wickedness, and wickedness leads to Hellfire." (Sahih al-Bukhari 6094, Sahih Muslim 2607).',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "سچائی نیکی کی راہ دکھاتی ہے اور نیکی جنت کی طرف لے جاتی ہے، اور انسان سچ بولتا رہتا ہے یہاں تک کہ اللہ کے ہاں اسے سچا (صدیق) لکھ دیا جاتا ہے۔ اور جھوٹ سے بچو، کیونکہ جھوٹ برائی کی طرف لے جاتا ہے اور برائی جہنم میں پہنچا دیتی ہے۔" (صحیح بخاری: ۶۰۹۴، صحیح مسلم: ۲۶۰۷)۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'آج بات چیت، لین دین اور وعدوں میں مکمل سچائی کا التزام کریں، یہاں تک کہ مذاق میں بھی جھوٹ سے گریز کریں۔',
+    practicalTipEn: 'Commit to absolute truthfulness in all conversations and commitments today, avoiding even exaggerations or joking deceit.',
+    reference: 'Sahih al-Bukhari 6094, Sahih Muslim 2607'
   }
 ];

@@ -816,5 +816,21 @@ export const VERIFIED_QURAN_VERSES: QuranVerse[] = [
     lessonUrdu: 'ہر رات سونے سے پہلے اپنے دن بھر کے اعمال کا جائزہ لیں اور نیکیوں میں اضافے کی نیت کریں۔',
     lessonEn: 'Engage in self-evaluation every evening, ensuring today brought you closer to Allah than yesterday.',
     reference: 'Surah Al-Hashr 59:18'
+  },
+  {
+    id: 'verse-52',
+    arabic: 'إِنَّ اللَّهَ مَعَ الَّذِينَ اتَّقَوا وَّالَّذِينَ هُم مُّحْسِنُونَ',
+    translationUrdu: 'بیشک اللہ ان لوگوں کے ساتھ ہے جو تقویٰ اختیار کرتے ہیں اور جو احسان (نیکی و خیر خواہی) کرنے والے ہیں۔',
+    translationEn: 'Indeed, Allah is with those who fear Him and those who are doers of good.',
+    surahNameArabic: 'النحل',
+    surahNameEn: 'An-Nahl',
+    surahNumber: 16,
+    ayahNumber: 128,
+    theme: 'Divine Companionship & Goodness (اللہ کی معیت، تقویٰ اور احسان)',
+    explanationUrdu: 'یہ مبارک آیت واضح کرتی ہے کہ اللہ کی خاص مدد، نصرت اور محبت ان بندوں کے لیے ہے جو گناہوں سے بچتے ہیں اور مخلوق کے ساتھ بھلائی و احسان کا معاملہ کرتے ہیں۔',
+    explanationEn: 'This powerful concluding verse of Surah An-Nahl reassures believers that Allah’s divine help, protection, and companionship are granted to those who maintain God-consciousness (Taqwa) and strive for moral excellence (Ihsan).',
+    lessonUrdu: 'ہر حال میں تقویٰ اختیار کریں اور لوگوں کے ساتھ اخلاص اور احسان کے ساتھ پیش آئیں تاکہ اللہ کا ساتھ نصیب ہو۔',
+    lessonEn: 'Live with God-consciousness and strive to perform all actions with beautiful excellence to earn Allah’s divine support.',
+    reference: 'Surah An-Nahl 16:128'
   }
 ];

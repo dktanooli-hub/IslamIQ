@@ -915,5 +915,130 @@ export const NEW_KIDS_QUESTIONS: QuizQuestion[] = [
     forKids: true,
     kidsHintUrdu: 'عید کے دن غریبوں کی مدد کرنے والا پیارا صدقہ!',
     kidsHintEn: 'The blessed charity shared before Eid prayer!'
+  },
+  {
+    id: 'kids-87',
+    questionUrdu: 'جب ہم شیشہ (Mirror) دیکھیں اور اپنا چہرہ سنواریں تو پیارے نبی ﷺ نے کون سی خوبصورت دعا سکھائی ہے؟',
+    questionEn: 'When we look into the mirror and tidy ourselves up, what beautiful prayer did the Prophet ﷺ teach us?',
+    optionsUrdu: [
+      'اللَّهُمَّ كَمَا حَسَّنْتَ خَلْقِي فَحَسِّنْ خُلُقِي',
+      'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنَا وَسَقَانَا',
+      'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ',
+      'بِاسْمِكَ اللَّهُمَّ أَمُوتُ وَأَحْيَا'
+    ],
+    optionsEn: [
+      'Allahumma kama hassanta khalqi fa-hassin khuluqi (Make my manners beautiful)',
+      'Alhamdulillahilladhi at\'amana wa saqana (After eating)',
+      'SubhanakAllahumma wa bihamdika (Starting prayer)',
+      'BismikAllahumma amutu wa ahya (Before sleep)'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ جب آئینہ دیکھتے تو یہ دعا پڑھتے کہ اے اللہ! جیسے تو نے مجھے خوبصورت چہرہ دیا ہے، ویسے ہی مجھے اچھے اخلاق والا بھی بنا دے۔',
+    explanationEn: 'The Prophet ﷺ taught this lovely dua when looking into a mirror: "O Allah, just as You made my appearance good, make my character and manners beautiful too!"',
+    category: 'Duas',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'چہرے کی خوبصورتی کے ساتھ اچھے اخلاق کی پیاری دعا!',
+    kidsHintEn: 'A prayer asking Allah to make our character as lovely as our appearance!'
+  },
+  {
+    id: 'kids-88',
+    questionUrdu: 'اللہ تعالیٰ نے کس جلیل القدر پیغمبر کو پرندوں، جانوروں اور چھوٹی چیونٹیوں کی باتیں سمجھنے کی خاص صلاحیت دی تھی؟',
+    questionEn: 'To which kind Prophet did Allah grant the miraculous gift of understanding the languages of birds, animals, and tiny ants?',
+    optionsUrdu: [
+      'حضرت سلیمان علیہ السلام',
+      'حضرت نوح علیہ السلام',
+      'حضرت صالح علیہ السلام',
+      'حضرت یعقوب علیہ السلام'
+    ],
+    optionsEn: [
+      'Prophet Sulaiman (Solomon) AS',
+      'Prophet Nuh AS',
+      'Prophet Salih AS',
+      'Prophet Yaqub AS'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'سورۃ النمل میں اللہ نے بتایا ہے کہ حضرت سلیمانؑ پرندوں اور چیونٹیوں کی گفتگو سن کر مسکرا پڑے اور اللہ کی دی ہوئی نعمتوں پر شکر ادا کیا۔',
+    explanationEn: 'Surah An-Naml tells us that Prophet Sulaiman (Solomon) AS could understand the languages of birds and ants, and he always thanked Allah for His wonderful blessings.',
+    category: 'Prophets',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'وہ عظیم پیغمبر جن کی بات پرندے اور چیونٹیاں بھی سمجھتی تھیں!',
+    kidsHintEn: 'The blessed Prophet who understood the speech of birds and ants!'
+  },
+  {
+    id: 'kids-89',
+    questionUrdu: 'سنتِ نبوی کے مطابق پانی پینے کے اچھے آداب میں سے کون سا طریقہ سکھایا گیا ہے؟',
+    questionEn: 'According to the beautiful Sunnah of Prophet Muhammad ﷺ, which is the recommended manner of drinking water?',
+    optionsUrdu: [
+      'بیٹھ کر، دائیں ہاتھ سے اور تین گھونٹوں میں پینا',
+      'کھڑے ہو کر جلدی جلدی ایک ہی سانس میں پینا',
+      'الٹے (بائیں) ہاتھ سے پینا',
+      'برتن کے اندر سانس چھوڑتے ہوئے پینا'
+    ],
+    optionsEn: [
+      'Sitting down, using the right hand, and drinking in three gentle sips',
+      'Standing up and gulping down quickly in one breath',
+      'Drinking with the left hand',
+      'Breathing directly into the cup'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ نے بیٹھ کر، بسم اللہ پڑھ کر اور تین سانسوں میں ٹھہر ٹھہر کر پانی پینے کی نصیحت فرمائی ہے اور گلاس میں سانس لینے سے منع فرمایا ہے۔',
+    explanationEn: 'The Prophet ﷺ taught us to sit down, say Bismillah, hold the cup in our right hand, drink in three sips, and pause to breathe outside the cup.',
+    category: 'Manners',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'بیٹھ کر، بسم اللہ پڑھ کر اور آرام سے تین گھونٹ میں پئیں!',
+    kidsHintEn: 'Sit down, say Bismillah, and drink gently in three sips!'
+  },
+  {
+    id: 'kids-90',
+    questionUrdu: 'قرآن مجید میں اپنے امی ابو (والدین) کے لیے اللہ تعالیٰ نے کون سی خوبصورت اور پیاری دعا سکھائی ہے؟',
+    questionEn: 'What beautiful prayer does Allah teach us in the Quran to recite lovingly for our parents (mom and dad)?',
+    optionsUrdu: [
+      'رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا',
+      'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً',
+      'رَبِّ زِدْنِي عِلْمًا',
+      'رَبَّنَا تَقَبَّلْ مِنَّا'
+    ],
+    optionsEn: [
+      'Rabbir-hamhuma kama rabbayani sagheera (Have mercy on my parents)',
+      'Rabbana atina fid-dunya hasanah (Goodness in this world)',
+      'Rabbi zidni \'ilma (Increase me in knowledge)',
+      'Rabbana taqabbal minna (Accept from us)'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'سورۃ الاسراء (17:24) میں اللہ تعالیٰ نے تمام بچوں کو سکھایا ہے کہ وہ اپنے والدین کے لیے ہمیشہ یہ دعا مانگیں کہ اے اللہ! میرے والدین پر اسی طرح رحم فرما جیسے انہوں نے بچپن میں مجھے پیار سے پالا۔',
+    explanationEn: 'In Surah Al-Isra (17:24), Allah instructs us to pray for our parents: "My Lord, have mercy upon them both as they brought me up when I was small."',
+    category: 'Duas',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'امی ابو کے لیے رحمت اور محبت کی قرآنی دعا!',
+    kidsHintEn: 'The Quranic prayer asking Allah to have mercy on our parents!'
+  },
+  {
+    id: 'kids-91',
+    questionUrdu: 'قرآن مجید کی آخری دو سورتیں (سورۃ الفلق اور سورۃ الناس) ہمیں کس چیز سے حفاظت اور پناہ مانگنا سکھاتی ہیں؟',
+    questionEn: 'What do the last two Surahs of the Holy Quran (Surah Al-Falaq and Surah An-Nas) teach us to seek protection from?',
+    optionsUrdu: [
+      'ہر قسم کی برائی، حسد، جادو اور شیطان کے وسوسوں سے',
+      'بھوک اور پیاس سے',
+      'سکول کے ہوم ورک سے',
+      'نیند اور آرام سے'
+    ],
+    optionsEn: [
+      'From all evil, jealousy, harm, and the whispers of Satan',
+      'From hunger and thirst',
+      'From school homework',
+      'From sleeping and rest'
+    ],
+    correctIndex: 0,
+    explanationUrdu: 'رسول اللہ ﷺ رات کو سونے سے پہلے سورۃ الفلق اور سورۃ الناس پڑھ کر اپنے دونوں ہاتھوں پر پھونکتے اور اپنے پورے جسم پر پھیرتے تھے تاکہ ہر برائی اور شیطان سے حفاظت رہے۔',
+    explanationEn: 'Prophet Muhammad ﷺ taught us to recite Surah Al-Falaq and Surah An-Nas every morning, evening, and before sleeping to seek Allah’s complete protection from all evils and whispers.',
+    category: 'Quran',
+    difficulty: 'beginner',
+    forKids: true,
+    kidsHintUrdu: 'ہر بری چیز اور شیطان کے وسوسوں سے اللہ کی پناہ مانگنے والی دو پیاری سورتیں!',
+    kidsHintEn: 'The two blessed protective Surahs at the end of the Quran!'
   }
 ];

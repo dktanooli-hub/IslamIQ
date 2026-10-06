@@ -492,5 +492,17 @@ export const VERIFIED_DUAS: DuaItem[] = [
     reference: 'Sahih Ibn Hibban 974, Al-Adhkar (Sahih)',
     occasionUrdu: 'کسی بھی امتحان، مشکل کام، انٹرویو یا پریشانی کے آغاز میں پڑھیں۔',
     occasionEn: 'Recite before any exam, interview, challenging task, or hardship.'
+  },
+  {
+    id: 'dua-42',
+    titleEn: 'Dua for the Preservation of Blessings, Health, and Protection from Wrath',
+    titleUrdu: 'نعمتوں کے زوال اور ناگہانی آفت سے پناہ کی مسنون دعا',
+    arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ زَوَالِ نِعْمَتِكَ، وَتَحَوُّلِ عَافِيَتِكَ، وَفُجَاءَةِ نِقْمَتِكَ، وَجَمِيعِ سَخَطِكَ',
+    transliteration: 'Allahumma inni a\'udhu bika min zawali ni\'matika, wa tahawwuli \'afiyatika, wa fuja\'ati niqmatika, wa jamee\'i sakhatika',
+    translationUrdu: 'اے اللہ! میں تیری پناہ مانگتا ہوں تیری دی ہوئی نعمت کے چھن جانے سے، تیری عافیت کے بدل جانے سے، تیری اچانک پکڑ (عذاب) سے، اور تیری ہر قسم کی ناراضگی سے۔',
+    translationEn: 'O Allah, I seek refuge in You from the withdrawal of Your blessing, the loss of Your well-being, the sudden onset of Your punishment, and all of Your wrath.',
+    reference: 'Sahih Muslim 2739, Riyad as-Salihin 1478',
+    occasionUrdu: 'صبح و شام اور روزمرہ دعاؤں میں کثرت سے پڑھیں تاکہ ایمان، صحت اور عافیت ہمیشہ برقرار رہے۔',
+    occasionEn: 'Recited regularly in morning, evening, and daily prayers to safeguard faith, health, and peace of mind.'
   }
 ];

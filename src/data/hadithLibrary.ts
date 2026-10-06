@@ -612,5 +612,17 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     grade: 'Sahih',
     lessonUrdu: 'صحت مند جسم اور دستیاب فارغ وقت کو غنیمت سمجھیں اور اسے نیکی، علم اور ذکرِ الٰہی میں خرچ کریں۔',
     lessonEn: 'Seize the blessings of sound health and spare time before illness or busyness overtake you.'
+  },
+  {
+    id: 'hadith-52',
+    arabic: 'مَا مِنْ عَبْدٍ مُسْلِمٍ يَدْعُو لِأَخِيهِ بِظَهْرِ الْغَيْبِ، إِلَّا قَالَ الْمَلَكُ: وَلَكَ بِمِثْلٍ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "کوئی بھی مسلمان بندہ جب اپنے بھائی کے لیے اس کی پیٹھ پیچھے (غیر موجودگی میں) دعا کرتا ہے، تو فرشتہ کہتا ہے: اور تیرے لیے بھی اسی کے مانند ہو۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "There is no Muslim servant who supplicates for his brother in his absence except that the angel says: \'And for you the same.\'"',
+    narrator: 'Abu ad-Darda (رضي الله عنه)',
+    source: 'Sahih Muslim',
+    hadithNumber: '2732',
+    grade: 'Sahih',
+    lessonUrdu: 'اپنے مسلمان بھائیوں، والدین اور دوستوں کے لیے ان کی غیر موجودگی میں خلوصِ دل سے دعائیں مانگیں؛ اس سے فرشتے خود ہمارے حق میں قبولیت کی دعا کرتے ہیں۔',
+    lessonEn: 'Pray sincerely for your fellow believers behind their backs; doing so prompts appointed angels to invoke identical blessings upon you.'
   }
 ];
