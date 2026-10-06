@@ -28,6 +28,7 @@ import {
   ISLAMIC_REMINDERS
 } from '../data/verifiedContent';
 import { sounds } from '../utils/audio';
+import { getLocalDateStr, normalizeSalahHistory } from '../utils/dateUtils';
 import { AdminAuthService, PRIMARY_ADMIN_EMAIL } from '../services/adminAuth';
 import { FirestoreService } from '../services/firestoreService';
 
@@ -146,7 +147,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 const LOCAL_STORAGE_KEY = 'islamiq_state_v2';
 const LOCAL_STORAGE_ADMIN_KEY = 'islamiq_admin_db_v2';
 
-const getTodayStr = () => new Date().toISOString().split('T')[0];
+const getTodayStr = () => getLocalDateStr();
 
 const INITIAL_CATEGORIES = ['Pillars', 'Quran', 'Prophets', 'Manners', 'Seerah', 'Duas', 'Salah', 'Aqeedah'];
 
@@ -291,8 +292,35 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
 
-  // Dates
-  const [todayDateStr] = useState<string>(getTodayStr());
+  // Dates (strictly tracks the user's local calendar date)
+  const [todayDateStr, setTodayDateStr] = useState<string>(getLocalDateStr());
+
+  // Midnight / Date-rollover watcher: continuously updates todayDateStr when local midnight crosses
+  useEffect(() => {
+    const updateTodayIfChanged = () => {
+      const currentLocal = getLocalDateStr();
+      setTodayDateStr(prev => (prev !== currentLocal ? currentLocal : prev));
+    };
+
+    // Check every 10 seconds
+    const intervalId = setInterval(updateTodayIfChanged, 10000);
+
+    // Also check immediately when window / tab regains focus or visibility
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        updateTodayIfChanged();
+      }
+    };
+
+    window.addEventListener('visibilitychange', handleVisibility);
+    window.addEventListener('focus', updateTodayIfChanged);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('visibilitychange', handleVisibility);
+      window.removeEventListener('focus', updateTodayIfChanged);
+    };
+  }, []);
 
   // Account identity
   const [accountInfo, setAccountInfo] = useState<{ isGuest: boolean; userName: string; email?: string }>({
@@ -307,29 +335,42 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Bookmarks (shared)
   const [bookmarkedQAIds, setBookmarkedQAIds] = useState<string[]>(['qa-1']);
 
-  // Separate Salah Tracking History
-  const [adultSalahHistory, setAdultSalahHistory] = useState<Record<string, SalahDayRecord>>({
-    [getTodayStr()]: {
-      date: getTodayStr(),
-      fajr: true,
-      dhuhr: true,
-      asr: false,
-      maghrib: false,
-      isha: false,
-      tahajjud: false
+  // Separate Salah Tracking History: initialized from localStorage with normalized YYYY-MM-DD keys
+  const [adultSalahHistory, setAdultSalahHistory] = useState<Record<string, SalahDayRecord>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedV2 = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedV2) {
+          const parsed = JSON.parse(savedV2);
+          if (parsed.adultSalahHistory) {
+            return normalizeSalahHistory(parsed.adultSalahHistory, getLocalDateStr());
+          }
+        }
+        const savedV1 = localStorage.getItem('islamiq_state_v1');
+        if (savedV1) {
+          const parsedV1 = JSON.parse(savedV1);
+          if (parsedV1.salahHistory) {
+            return normalizeSalahHistory(parsedV1.salahHistory, getLocalDateStr());
+          }
+        }
+      } catch {}
     }
+    return {};
   });
 
-  const [kidsSalahHistory, setKidsSalahHistory] = useState<Record<string, SalahDayRecord>>({
-    [getTodayStr()]: {
-      date: getTodayStr(),
-      fajr: true,
-      dhuhr: false,
-      asr: false,
-      maghrib: false,
-      isha: false,
-      tahajjud: false
+  const [kidsSalahHistory, setKidsSalahHistory] = useState<Record<string, SalahDayRecord>>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const savedV2 = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (savedV2) {
+          const parsed = JSON.parse(savedV2);
+          if (parsed.kidsSalahHistory) {
+            return normalizeSalahHistory(parsed.kidsSalahHistory, getLocalDateStr());
+          }
+        }
+      } catch {}
     }
+    return {};
   });
 
   // Separate Tasbih History for Adult and Kids
@@ -875,8 +916,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (parsed.accountInfo) setAccountInfo(parsed.accountInfo);
         if (parsed.adultProgress) setAdultProgress(parsed.adultProgress);
         if (parsed.kidsProgress) setKidsProgress(parsed.kidsProgress);
-        if (parsed.adultSalahHistory) setAdultSalahHistory(parsed.adultSalahHistory);
-        if (parsed.kidsSalahHistory) setKidsSalahHistory(parsed.kidsSalahHistory);
+        if (parsed.adultSalahHistory) setAdultSalahHistory(normalizeSalahHistory(parsed.adultSalahHistory, getLocalDateStr()));
+        if (parsed.kidsSalahHistory) setKidsSalahHistory(normalizeSalahHistory(parsed.kidsSalahHistory, getLocalDateStr()));
         if (parsed.adultTasbihHistory) setAdultTasbihHistory(parsed.adultTasbihHistory);
         if (parsed.kidsTasbihHistory) setKidsTasbihHistory(parsed.kidsTasbihHistory);
         if (parsed.customDhikrData) setCustomDhikrData(parsed.customDhikrData);
@@ -912,7 +953,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             });
           }
         }
-        if (parsedV1.salahHistory) setAdultSalahHistory(parsedV1.salahHistory);
+        if (parsedV1.salahHistory) {
+          setAdultSalahHistory(prev => ({
+            ...prev,
+            ...normalizeSalahHistory(parsedV1.salahHistory, getLocalDateStr())
+          }));
+        }
       }
     } catch {
       // Storage parse error fallback

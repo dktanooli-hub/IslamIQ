@@ -1,6 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { SalahDayRecord } from '../types';
+import { getLocalDateStr, parseLocalDateStr, getPastNDaysLocal } from '../utils/dateUtils';
 import { CheckCircle2, Circle, Flame, Sun, Sunrise, Sunset, Moon, Sparkles, Compass, ChevronRight } from 'lucide-react';
 
 export const SalahTracker: React.FC = () => {
@@ -8,15 +9,17 @@ export const SalahTracker: React.FC = () => {
 
   const isKids = userMode === 'kids';
 
-  // Selected date state (defaults to today)
-  const [selectedDate, setSelectedDate] = React.useState<string>(todayDateStr || new Date().toISOString().split('T')[0]);
+  // Selected date state (defaults strictly to today's local calendar date)
+  const [selectedDate, setSelectedDate] = React.useState<string>(todayDateStr || getLocalDateStr());
+  const prevTodayRef = React.useRef<string>(todayDateStr);
   const prayersContainerRef = React.useRef<HTMLDivElement>(null);
 
-  // Sync if todayDateStr is provided asynchronously
+  // Automatically advance selectedDate if user was viewing Today when midnight rolls over
   React.useEffect(() => {
-    if (!selectedDate && todayDateStr) {
+    if (selectedDate === prevTodayRef.current) {
       setSelectedDate(todayDateStr);
     }
+    prevTodayRef.current = todayDateStr;
   }, [todayDateStr, selectedDate]);
 
   const isSelectedToday = selectedDate === todayDateStr;
@@ -34,8 +37,7 @@ export const SalahTracker: React.FC = () => {
 
   const formattedSelectedDate = React.useMemo(() => {
     try {
-      const parts = selectedDate.split('-');
-      const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      const d = parseLocalDateStr(selectedDate);
       return d.toLocaleDateString(contentLang === 'urdu' ? 'ur-PK' : 'en-US', {
         weekday: 'short',
         month: 'short',
@@ -110,25 +112,21 @@ export const SalahTracker: React.FC = () => {
   const progressPercent = Math.round((completedCount / 5) * 100);
 
   // 7-day past days array for weekly consistency indicator & date selection
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date();
-  const past7Days = Array.from({ length: 7 }).map((_, i) => {
-    const d = new Date();
-    d.setDate(today.getDate() - (6 - i));
-    const dateStr = d.toISOString().split('T')[0];
-    const record = salahHistory[dateStr];
-    const done = record
-      ? [record.fajr, record.dhuhr, record.asr, record.maghrib, record.isha].filter(Boolean).length
-      : 0;
-    return {
-      dayName: daysOfWeek[d.getDay()],
-      dateNum: d.getDate(),
-      dateStr,
-      completed: done,
-      isToday: dateStr === todayDateStr,
-      isFuture: dateStr > todayDateStr
-    };
-  });
+  // Calculated using strict local calendar date arithmetic (never toISOString / UTC displacement)
+  const past7Days = React.useMemo(() => {
+    const referenceDate = parseLocalDateStr(todayDateStr);
+    const days = getPastNDaysLocal(7, referenceDate);
+    return days.map(item => {
+      const record = salahHistory[item.dateStr];
+      const done = record
+        ? [record.fajr, record.dhuhr, record.asr, record.maghrib, record.isha].filter(Boolean).length
+        : 0;
+      return {
+        ...item,
+        completed: done
+      };
+    });
+  }, [todayDateStr, salahHistory]);
 
   return (
     <div className="space-y-6 max-w-2xl mx-auto pb-12">
