@@ -5,7 +5,6 @@ import { Sparkles, ShieldCheck } from 'lucide-react';
 
 interface AdBannerProps {
   slotId?: string;
-  adUnitId?: string;
   format?: 'auto' | 'fluid' | 'horizontal' | 'rectangle';
   className?: string;
   labelUrdu?: string;
@@ -14,11 +13,10 @@ interface AdBannerProps {
 
 export const AdBanner: React.FC<AdBannerProps> = ({
   slotId = AD_CONFIG.SLOTS.HOME_BANNER,
-  adUnitId = AD_CONFIG.ADMOB.BANNER_HOME,
   format = 'auto',
   className = '',
-  labelUrdu = 'سپانسرڈ اشتہار (Google AdMob)',
-  labelEn = 'Sponsored / Google AdMob'
+  labelUrdu = 'سپانسرڈ اشتہار (Google AdSense)',
+  labelEn = 'Sponsored / Google AdSense'
 }) => {
   const { contentLang, userMode } = useApp();
   const isUrdu = contentLang === 'urdu';
@@ -33,7 +31,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
 
   const placeholder = isPlaceholderSlot(slotId);
 
-  // 2. PRODUCTION AD INITIALIZATION & OBSERVER
+  // 2. PRODUCTION GOOGLE ADSENSE INITIALIZATION & OBSERVER
   useEffect(() => {
     if (!AD_CONFIG.IS_TEST_MODE && !placeholder && typeof window !== 'undefined') {
       try {
@@ -61,7 +59,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
     }
   }, [placeholder, slotId]);
 
-  // If Google AdMob reports unfilled or blocked, collapse gracefully
+  // If Google AdSense reports unfilled or blocked, collapse gracefully
   if (isUnfilled) {
     return null;
   }
@@ -78,7 +76,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({
             {isUrdu ? labelUrdu : labelEn}
           </span>
           <span className="bg-slate-200/80 text-slate-600 px-1.5 py-0.5 rounded text-[9px]">
-            Google AdMob Banner
+            Google AdSense
           </span>
         </div>
 
@@ -86,18 +84,15 @@ export const AdBanner: React.FC<AdBannerProps> = ({
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping shrink-0" />
           <p className="font-semibold text-slate-700">
             {isUrdu
-              ? 'یہاں آپ کا گوگل ایڈموب بینر اشتہار لائیو ہوگا'
-              : 'Google AdMob Live Banner Ad'}
+              ? 'یہاں آپ کا گوگل ایڈسینس اشتہار لائیو ہوگا'
+              : 'Google AdSense Live Advertisement'}
           </p>
-          <span className="text-[10px] text-slate-400 font-mono">
-            ({adUnitId})
-          </span>
         </div>
       </div>
     );
   }
 
-  // 4. DEDICATED RESERVED ADMOB BANNER SPACE
+  // 4. DEDICATED RESERVED ADSENSE BANNER SPACE
   // Proper reserved space with minHeight ensures no layout shift (CLS) or overlap with buttons
   return (
     <div
@@ -108,10 +103,10 @@ export const AdBanner: React.FC<AdBannerProps> = ({
       <div className="flex items-center justify-between px-1.5 mb-1 text-[9px] text-slate-400 uppercase tracking-wider select-none">
         <span className="flex items-center gap-1 font-semibold">
           <ShieldCheck className="w-3 h-3 text-emerald-600" />
-          {isUrdu ? 'سپانسرڈ اشتہار (Google AdMob)' : 'Sponsored / Google AdMob'}
+          {isUrdu ? labelUrdu : labelEn}
         </span>
         <span className="text-[8px] bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded font-mono">
-          AdMob: {adUnitId}
+          AdSense: {slotId}
         </span>
       </div>
       <div className="flex items-center justify-center min-h-[50px] w-full">

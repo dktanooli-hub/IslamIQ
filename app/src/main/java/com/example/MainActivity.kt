@@ -30,7 +30,10 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.ui.platform.testTag
 import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 
 class MainActivity : ComponentActivity() {
 
@@ -40,6 +43,11 @@ class MainActivity : ComponentActivity() {
 
     // Initialize Google Mobile Ads SDK on app start
     try {
+      val requestConfig = MobileAds.getRequestConfiguration().toBuilder()
+        .setMaxAdContentRating(RequestConfiguration.MAX_AD_CONTENT_RATING_G)
+        .build()
+      MobileAds.setRequestConfiguration(requestConfig)
+
       MobileAds.initialize(this) { initializationStatus ->
         Log.d("AdMob", "Google Mobile Ads initialized successfully: $initializationStatus")
       }
@@ -106,13 +114,12 @@ fun AdMobBannerBottomBar(
       .fillMaxWidth()
       .wrapContentHeight()
       .background(MaterialTheme.colorScheme.surface)
-      .padding(vertical = 4.dp),
+      .padding(vertical = 4.dp)
+      .testTag("admob_banner_bottom_bar"),
     contentAlignment = Alignment.Center
   ) {
     AndroidView(
-      modifier = Modifier
-        .fillMaxWidth()
-        .wrapContentHeight(),
+      modifier = Modifier.wrapContentSize(),
       factory = { context ->
         AdView(context).apply {
           setAdSize(AdSize.BANNER)
@@ -130,6 +137,9 @@ fun AdMobBannerBottomBar(
           }
           loadAd(AdRequest.Builder().build())
         }
+      },
+      onRelease = { adView ->
+        adView.destroy()
       }
     )
   }
