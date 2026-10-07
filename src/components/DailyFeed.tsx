@@ -575,12 +575,11 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
         </div>
       </div>
 
-      {/* Dedicated Home Page Google AdSense Banner Ad Area */}
+      {/* Dedicated Home Page Advertisement Section */}
       {!isKids && (
         <AdBanner
           slotId={AD_CONFIG.SLOTS.HOME_BANNER}
-          labelUrdu="سپانسرڈ اشتہار (Google AdSense)"
-          labelEn="Sponsored / Google AdSense"
+          label="Advertisement"
         />
       )}
 
