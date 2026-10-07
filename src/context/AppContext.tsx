@@ -41,6 +41,8 @@ interface AppContextType {
   setActiveTab: (tab: AppTab) => void;
   isMoreOpen: boolean;
   setIsMoreOpen: (open: boolean) => void;
+  isShareOpen: boolean;
+  setIsShareOpen: (open: boolean) => void;
   
   // User Profile & Gamification
   userStats: UserStats;
@@ -291,6 +293,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   });
 
   const [isMoreOpen, setIsMoreOpen] = useState<boolean>(false);
+  const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
 
   // Dates (strictly tracks the user's local calendar date)
   const [todayDateStr, setTodayDateStr] = useState<string>(getLocalDateStr());
@@ -1365,6 +1368,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setActiveTab,
         isMoreOpen,
         setIsMoreOpen,
+        isShareOpen,
+        setIsShareOpen,
         userStats,
         addXP,
         recordQuizCompleted,

@@ -46,7 +46,7 @@ interface MenuCategory {
 }
 
 export const MoreMenuModal: React.FC = () => {
-  const { isMoreOpen, setIsMoreOpen, activeTab, setActiveTab, contentLang, userMode } = useApp();
+  const { isMoreOpen, setIsMoreOpen, isShareOpen, setIsShareOpen, activeTab, setActiveTab, contentLang, userMode } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const isUrdu = contentLang === 'urdu';
   const isKids = userMode === 'kids';
@@ -293,7 +293,18 @@ export const MoreMenuModal: React.FC = () => {
           titleUrdu: 'اسلامی اسٹیٹس میکر',
           descEn: 'Design and share beautiful Islamic cards with references',
           descUrdu: 'آیات و احادیث پر مبنی خوبصورت کارڈز تیار کریں',
-          icon: Share2
+          icon: Sparkles
+        },
+        {
+          id: 'share',
+          path: '/share',
+          titleEn: 'Share IslamIQ',
+          titleUrdu: 'ایپ شیئر کریں (صدقہ جاریہ)',
+          descEn: 'Generate Islamic share card with QR Code & earn continuous reward',
+          descUrdu: 'کیو آر کوڈ کے ساتھ خوبصورت اسلامی کارڈ اور صدقہ جاریہ',
+          icon: Share2,
+          badge: 'Sadaqah',
+          badgeUrdu: 'صدقہ جاریہ'
         }
       ]
     },
@@ -386,6 +397,11 @@ export const MoreMenuModal: React.FC = () => {
   if (!isMoreOpen) return null;
 
   const handleNavigate = (tab: AppTab) => {
+    if (tab === 'share') {
+      setIsMoreOpen(false);
+      setIsShareOpen(true);
+      return;
+    }
     setActiveTab(tab);
     setIsMoreOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -458,7 +474,38 @@ export const MoreMenuModal: React.FC = () => {
         </div>
 
         {/* Menu Content: 4 Columns on desktop, clean categorized list on mobile */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6">
+          {/* Featured Sadaqah Jariyah Share Banner */}
+          <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white rounded-2xl p-3.5 sm:p-4 border border-emerald-700/60 shadow-sm flex items-center justify-between gap-3">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 rounded-xl bg-goldAccent/20 border border-goldAccent/40 text-goldAccent flex items-center justify-center font-bold text-base shrink-0">
+                IQ
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-goldAccent">
+                    ✦ SHARE ISLAMIQ ✦
+                  </span>
+                  <span className="text-[9px] bg-emerald-700 text-emerald-100 px-1.5 py-0.5 rounded-full font-bold">
+                    صدقہ جاریہ
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm font-bold text-white">
+                  {isUrdu ? 'اسلامک کارڈ اور کیو آر کوڈ کے ساتھ شیئر کریں' : 'Share Islamic Card with Friends & Family'}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setIsMoreOpen(false);
+                setIsShareOpen(true);
+              }}
+              className="px-3.5 py-2 rounded-xl bg-goldAccent hover:bg-amber-400 text-emerald-950 font-extrabold text-xs flex items-center gap-1.5 shadow-xs transition-all active:scale-95 shrink-0"
+            >
+              <Share2 className="w-3.5 h-3.5" />
+              <span>{isUrdu ? 'شیئر کریں' : 'Share Now'}</span>
+            </button>
+          </div>
           {filteredCategories.length === 0 ? (
             <div className="text-center py-12 text-slate-500 space-y-2">
               <Search className="w-8 h-8 text-slate-300 mx-auto" />

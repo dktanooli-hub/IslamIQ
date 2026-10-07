@@ -1,5 +1,6 @@
 package com.example
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -14,13 +15,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -76,25 +83,89 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun IslamIQMainScreen(modifier: Modifier = Modifier) {
+  val context = LocalContext.current
+
   Column(
     modifier = modifier
       .fillMaxSize()
-      .padding(horizontal = 24.dp, vertical = 16.dp),
+      .padding(horizontal = 20.dp, vertical = 16.dp),
     horizontalAlignment = Alignment.CenterHorizontally
   ) {
-    Spacer(modifier = Modifier.height(24.dp))
+    Spacer(modifier = Modifier.height(16.dp))
     Text(
       text = "IslamIQ • Learn • Quiz • Grow",
       fontSize = 22.sp,
       fontWeight = FontWeight.Bold,
       color = MaterialTheme.colorScheme.primary
     )
-    Spacer(modifier = Modifier.height(8.dp))
+    Spacer(modifier = Modifier.height(6.dp))
     Text(
       text = "Daily Quran, Authentic Hadith, Salah Tracker & Islamic Quizzes",
-      fontSize = 14.sp,
-      color = MaterialTheme.colorScheme.onSurfaceVariant
+      fontSize = 13.sp,
+      color = MaterialTheme.colorScheme.onSurfaceVariant,
+      textAlign = TextAlign.Center
     )
+    Spacer(modifier = Modifier.height(20.dp))
+
+    // Share IslamIQ Sadaqah Jariyah Card
+    Card(
+      modifier = Modifier.fillMaxWidth(),
+      colors = CardDefaults.cardColors(
+        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+      )
+    ) {
+      Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+      ) {
+        Text(
+          text = "✦ SHARE ISLAMIQ ✦",
+          fontSize = 14.sp,
+          fontWeight = FontWeight.Bold,
+          color = MaterialTheme.colorScheme.primary
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+          text = "صدقہ جاریہ • قیامت تک ثواب",
+          fontSize = 13.sp,
+          fontWeight = FontWeight.Medium,
+          color = MaterialTheme.colorScheme.secondary
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+          text = "اگر آپ اس ایپ کو اپنے 10 جاننے والوں کے ساتھ اور گروپس میں شیئر کریں تو سیکنڑوں پڑھنے والوں کو قرآن، سیکھنے والوں اور لاکھوں نیکیوں کا ثواب آپ کو بھی اور ہمیں بھی ملے گا۔ نیکی کے کام میں دیر کیسی؟ ابھی شیئر کریں اور قیامت تک جاری صدقہ جاریہ میں مفت حصہ ڈالیں۔",
+          fontSize = 13.sp,
+          lineHeight = 20.sp,
+          textAlign = TextAlign.Center,
+          color = MaterialTheme.colorScheme.onSurface
+        )
+        Spacer(modifier = Modifier.height(14.dp))
+        Button(
+          onClick = {
+            val sendIntent: Intent = Intent().apply {
+              action = Intent.ACTION_SEND
+              putExtra(
+                Intent.EXTRA_TEXT,
+                "اگر آپ اس ایپ کو اپنے 10 جاننے والوں کے ساتھ اور گروپس میں شیئر کریں تو سیکنڑوں پڑھنے والوں کو قرآن، سیکھنے والوں اور لاکھوں نیکیوں کا ثواب آپ کو بھی اور ہمیں بھی ملے گا۔ نیکی کے کام میں دیر کیسی؟ ابھی شیئر کریں اور قیامت تک جاری صدقہ جاریہ میں مفت حصہ ڈالیں۔\n\nhttps://learnislamiq.com"
+              )
+              type = "text/plain"
+            }
+            val shareIntent = Intent.createChooser(sendIntent, "Share IslamIQ • صدقہ جاریہ")
+            context.startActivity(shareIntent)
+          },
+          colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary
+          )
+        ) {
+          Text(
+            text = "SHARE NOW • ابھی شیئر کریں",
+            fontWeight = FontWeight.Bold,
+            fontSize = 13.sp
+          )
+        }
+      }
+    }
+
     Spacer(modifier = Modifier.weight(1f))
   }
 }

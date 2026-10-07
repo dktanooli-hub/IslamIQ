@@ -28,6 +28,7 @@ import { DailyDuaHub } from './components/seo/DailyDuaHub';
 import { SalahLearningHub } from './components/seo/SalahLearningHub';
 import { Footer } from './components/Footer';
 import { MoreMenuModal } from './components/MoreMenuModal';
+import { ShareIslamIQModal } from './components/ShareIslamIQModal';
 import { AppTab } from './types';
 import { trackPageView } from './utils/analytics';
 
@@ -53,7 +54,7 @@ const StoriesOfTheProphetsGuide = React.lazy(() => import('./components/seo/Stor
 const RightsInIslamGuide = React.lazy(() => import('./components/seo/RightsInIslamGuide'));
 
 export const App: React.FC = () => {
-  const { activeTab, setActiveTab, userMode, setUserMode, toastMessage, contentLang } = useApp();
+  const { activeTab, setActiveTab, userMode, setUserMode, toastMessage, contentLang, setIsShareOpen } = useApp();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
@@ -109,6 +110,9 @@ export const App: React.FC = () => {
           setActiveTab('search');
         } else if (path === 'status') {
           setActiveTab('status');
+        } else if (path === 'share') {
+          setActiveTab('home');
+          setIsShareOpen(true);
         } else if (path === '' || path === 'home') {
           setActiveTab('home');
         }
@@ -585,6 +589,9 @@ export const App: React.FC = () => {
 
       {/* Categorized More Menu Directory Modal */}
       <MoreMenuModal />
+
+      {/* Share IslamIQ Sadaqah Jariyah Modal */}
+      <ShareIslamIQModal />
 
       {/* User Profile / Sync Modal */}
       <ProfileModal

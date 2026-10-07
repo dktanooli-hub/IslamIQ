@@ -12,6 +12,7 @@ export type AppTab =
   | 'search' 
   | 'status' 
   | 'qibla' 
+  | 'share' 
   | 'about' 
   | 'contact' 
   | 'privacy-policy' 

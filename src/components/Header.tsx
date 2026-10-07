@@ -13,7 +13,8 @@ import {
   Search,
   CheckSquare,
   ChevronDown,
-  LayoutGrid
+  LayoutGrid,
+  Share2
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -32,7 +33,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenProfile, onOpenAdmin }) =>
     activeTab,
     setActiveTab,
     isMoreOpen,
-    setIsMoreOpen
+    setIsMoreOpen,
+    setIsShareOpen
   } = useApp();
 
   const isKids = userMode === 'kids';
@@ -227,6 +229,20 @@ export const Header: React.FC<HeaderProps> = ({ onOpenProfile, onOpenAdmin }) =>
           >
             <Globe className="w-3.5 h-3.5 opacity-80" />
             <span>{contentLang === 'urdu' ? 'اردو' : 'English'}</span>
+          </button>
+
+          {/* Share IslamIQ (صدقہ جاریہ) Button */}
+          <button
+            onClick={() => setIsShareOpen(true)}
+            className={`px-2 sm:px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 border transition-all active:scale-95 ${
+              isKids
+                ? 'bg-amber-200 text-teal-900 border-amber-300 hover:bg-amber-300'
+                : 'bg-gradient-to-r from-emerald-800 to-emerald-900 hover:from-emerald-700 hover:to-emerald-800 text-goldAccent border-goldAccent/40 shadow-xs'
+            }`}
+            title="Share IslamIQ • صدقہ جاریہ"
+          >
+            <Share2 className="w-3.5 h-3.5 text-goldAccent" />
+            <span className="hidden sm:inline">{isUrdu ? 'شیئر کریں' : 'Share'}</span>
           </button>
 
           {/* Admin Panel Quick Access Button - Strictly restricted to authenticated owner in adult mode */}

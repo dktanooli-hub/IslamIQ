@@ -24,7 +24,8 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
     quranVerses,
     hadiths,
     duas,
-    reminders
+    reminders,
+    setIsShareOpen
   } = useApp();
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -194,6 +195,44 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
           </div>
         </div>
       </div>
+
+      {/* Inspire Sharing: Sadaqah Jariyah Banner Card */}
+      {!isKids && (
+        <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-teal-950 text-white rounded-3xl p-4 sm:p-5 shadow-sm border border-emerald-700/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center space-x-3.5 w-full sm:w-auto">
+            <div className="w-12 h-12 rounded-2xl bg-goldAccent/20 border border-goldAccent/40 text-goldAccent flex items-center justify-center shrink-0 shadow-sm font-bold text-xl">
+              IQ
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black uppercase tracking-wider text-goldAccent">
+                  ✦ SHARE ISLAMIQ ✦
+                </span>
+                <span className="text-[10px] bg-emerald-700/80 text-emerald-100 px-2 py-0.5 rounded-full font-semibold">
+                  صدقہ جاریہ
+                </span>
+              </div>
+              <p className="text-sm font-extrabold text-white">
+                {contentLang === 'urdu'
+                  ? 'اپنے جاننے والوں کے ساتھ ایپ شیئر کر کے لاکھوں نیکیوں کا ثواب کمائیں'
+                  : 'Share IslamIQ with friends & earn continuous rewards (Sadaqah Jariyah)'}
+              </p>
+              <p className="text-xs text-emerald-200/90 leading-relaxed max-w-xl">
+                {contentLang === 'urdu'
+                  ? 'خوبصورت اسلامی کارڈ اور اسکین ایبل کیو آر کوڈ کے ساتھ ابھی شیئر کریں۔'
+                  : 'Generate a beautiful Islamic share card with scannable QR Code.'}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => setIsShareOpen(true)}
+            className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-goldAccent hover:bg-amber-400 text-emerald-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 shrink-0"
+          >
+            <Share2 className="w-4 h-4" />
+            <span>{contentLang === 'urdu' ? 'ابھی شیئر کریں' : 'Share Now'}</span>
+          </button>
+        </div>
+      )}
 
       {/* Islamic Content Hub Quick Access */}
       <ContentHubCard />
