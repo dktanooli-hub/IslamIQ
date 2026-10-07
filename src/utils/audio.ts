@@ -133,6 +133,29 @@ class SoundPlayer {
     } catch {}
   }
 
+  // Serene chime tone for prayer time notifications
+  playPrayerNotificationChime() {
+    try {
+      const ctx = this.getContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      // Reverent meditative tones (D4 -> F#4 -> A4 -> D5)
+      const notes = [293.66, 369.99, 440.00, 587.33];
+      notes.forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.18);
+        gain.gain.setValueAtTime(0.24, now + idx * 0.18);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.18 + 0.9);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.18);
+        osc.stop(now + idx * 0.18 + 0.95);
+      });
+    } catch {}
+  }
+
   // Convenient aliases for UI actions
   buttonClick() {
     this.playTasbihBead();

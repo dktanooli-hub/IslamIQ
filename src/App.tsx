@@ -58,22 +58,6 @@ export const App: React.FC = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
-  // Safely clean up any leftover notification settings from LocalStorage
-  useEffect(() => {
-    try {
-      localStorage.removeItem('islamiq_notification_settings');
-      localStorage.removeItem('islamiq_last_daily_notif');
-      const keysToRemove: string[] = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k && (k.startsWith('islamiq_last_salah_notif_') || k.startsWith('islamiq_notif_'))) {
-          keysToRemove.push(k);
-        }
-      }
-      keysToRemove.forEach(k => localStorage.removeItem(k));
-    } catch {}
-  }, []);
-
   // Sync URL clean path for SEO & direct linking on mount/popstate
   useEffect(() => {
     const handlePopState = () => {

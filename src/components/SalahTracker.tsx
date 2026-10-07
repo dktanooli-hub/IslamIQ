@@ -2,12 +2,49 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { SalahDayRecord } from '../types';
 import { getLocalDateStr, parseLocalDateStr, getPastNDaysLocal } from '../utils/dateUtils';
-import { CheckCircle2, Circle, Flame, Sun, Sunrise, Sunset, Moon, Sparkles, Compass, ChevronRight } from 'lucide-react';
+import {
+  CheckCircle2,
+  Circle,
+  Flame,
+  Sun,
+  Sunrise,
+  Sunset,
+  Moon,
+  Sparkles,
+  Compass,
+  ChevronRight,
+  Bell,
+  BellRing,
+  BellOff,
+  Settings2,
+  ChevronDown,
+  ChevronUp
+} from 'lucide-react';
+import { SalahNotificationSettings } from './SalahNotificationSettings';
+import {
+  loadPrayerNotificationSettings,
+  usePrayerNotificationScheduler
+} from '../utils/prayerNotifications';
 
 export const SalahTracker: React.FC = () => {
   const { todayDateStr, todaySalah, toggleSalahPrayer, salahHistory, contentLang, userMode, setActiveTab } = useApp();
 
   const isKids = userMode === 'kids';
+
+  // Prayer notification settings & background scheduler
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState<boolean>(false);
+  const [notifSettings, setNotifSettings] = React.useState(loadPrayerNotificationSettings);
+
+  // Sync notification settings on visibility and focus
+  React.useEffect(() => {
+    const syncSettings = () => setNotifSettings(loadPrayerNotificationSettings());
+    syncSettings();
+    window.addEventListener('focus', syncSettings);
+    return () => window.removeEventListener('focus', syncSettings);
+  }, [isSettingsOpen]);
+
+  // Run prayer notification background scheduler
+  usePrayerNotificationScheduler(todayDateStr, contentLang === 'urdu');
 
   // Selected date state (defaults strictly to today's local calendar date)
   const [selectedDate, setSelectedDate] = React.useState<string>(todayDateStr || getLocalDateStr());
@@ -148,10 +185,39 @@ export const SalahTracker: React.FC = () => {
             </h1>
           </div>
           
-          {/* Progress Circular Badge */}
-          <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex flex-col items-center justify-center font-bold">
-            <span className="text-xl leading-none text-goldAccent font-black">{completedCount}/5</span>
-            <span className="text-[10px] text-emerald-200 mt-0.5">Prayed</span>
+          <div className="flex items-center gap-2">
+            {/* Quick Notification Settings Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setIsSettingsOpen(prev => !prev);
+                setNotifSettings(loadPrayerNotificationSettings());
+              }}
+              aria-label="Prayer Notification Settings"
+              className={`p-2.5 sm:px-3 sm:py-2 rounded-2xl backdrop-blur-sm border transition-all flex items-center gap-1.5 active:scale-95 ${
+                isSettingsOpen
+                  ? 'bg-amber-400/25 border-amber-300 text-amber-200'
+                  : 'bg-white/10 hover:bg-white/15 border-white/20 text-white'
+              }`}
+              title={contentLang === 'urdu' ? 'نماز کے اوقات کے نوٹیفیکیشن' : 'Prayer Notifications Settings'}
+            >
+              {notifSettings.enabled ? (
+                <BellRing className="w-5 h-5 text-amber-300 animate-pulse shrink-0" />
+              ) : (
+                <BellOff className="w-5 h-5 text-slate-300 shrink-0" />
+              )}
+              <span className="hidden sm:inline text-xs font-bold">
+                {notifSettings.enabled
+                  ? (contentLang === 'urdu' ? 'الرٹ آن' : 'Alerts On')
+                  : (contentLang === 'urdu' ? 'الرٹ بند' : 'Muted')}
+              </span>
+            </button>
+
+            {/* Progress Circular Badge */}
+            <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20 flex flex-col items-center justify-center font-bold shrink-0">
+              <span className="text-xl leading-none text-goldAccent font-black">{completedCount}/5</span>
+              <span className="text-[10px] text-emerald-200 mt-0.5">Prayed</span>
+            </div>
           </div>
         </div>
 
@@ -170,6 +236,79 @@ export const SalahTracker: React.FC = () => {
             <span>{completedCount === 5 ? 'All 5 Prayed! Alhamdulillah 🌟' : `${5 - completedCount} Prayers remaining`}</span>
           </div>
         </div>
+      </div>
+
+      {/* Prayer Time Notifications Settings Bar & Expandable Panel */}
+      <div className="bg-white rounded-3xl p-4 border border-emerald-200/90 shadow-2xs transition-all">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 ${
+              notifSettings.enabled
+                ? 'bg-emerald-600 text-white shadow-2xs'
+                : 'bg-slate-100 text-slate-400'
+            }`}>
+              {notifSettings.enabled ? (
+                <BellRing className="w-5 h-5" />
+              ) : (
+                <BellOff className="w-5 h-5" />
+              )}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-xs sm:text-sm font-bold text-slate-900">
+                  {contentLang === 'urdu' ? 'نماز کے اوقات کے نوٹیفیکیشن' : 'Prayer Time Notifications'}
+                </h3>
+                <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                  notifSettings.enabled
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {notifSettings.enabled ? (contentLang === 'urdu' ? 'آن' : 'ACTIVE') : (contentLang === 'urdu' ? 'بند' : 'OFF')}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                {notifSettings.enabled
+                  ? (contentLang === 'urdu' ? 'پانچوں نمازوں کے وقت پر اذان و یاد دہانی الرٹس' : 'Scheduled reminders for obligatory prayer times')
+                  : (contentLang === 'urdu' ? 'نماز کے اوقات کے نوٹیفیکیشن بند ہیں' : 'Prayer time reminders are currently turned off')}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => {
+              setIsSettingsOpen(prev => !prev);
+              setNotifSettings(loadPrayerNotificationSettings());
+            }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all active:scale-95 border shrink-0 ${
+              isSettingsOpen
+                ? 'bg-emerald-700 text-white border-emerald-700 shadow-2xs'
+                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+            }`}
+          >
+            <Settings2 className="w-3.5 h-3.5" />
+            <span>{contentLang === 'urdu' ? 'ترتیبات' : 'Settings'}</span>
+            {isSettingsOpen ? (
+              <ChevronUp className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" />
+            )}
+          </button>
+        </div>
+
+        {/* Expandable Notification Settings Panel */}
+        {isSettingsOpen && (
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <SalahNotificationSettings
+              contentLang={contentLang}
+              isKids={isKids}
+              onClose={() => {
+                setIsSettingsOpen(false);
+                setNotifSettings(loadPrayerNotificationSettings());
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Quick Qibla Finder Banner for Salah */}
