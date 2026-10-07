@@ -579,8 +579,8 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
       {!isKids && (
         <AdBanner
           slotId={AD_CONFIG.SLOTS.HOME_BANNER}
-          labelUrdu="سپانسرڈ اشتہار (Google AdSense)"
-          labelEn="Sponsored Ad (Google AdSense)"
+          labelUrdu="سپانسرڈ اشتہار (Google AdMob)"
+          labelEn="Sponsored Ad (Google AdMob)"
         />
       )}
 

@@ -140,6 +140,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             We take children’s privacy very seriously. In Kids Mode:
           </p>
           <ul className="list-disc pl-5 space-y-1 text-slate-600">
+            <li>We comply with Google Play Families Policy and COPPA (Children’s Online Privacy Protection Act): All advertisements and behavioral tracking are strictly disabled in Kids Mode to guarantee a 100% child-safe experience.</li>
             <li>We do not collect personal identifying information (PII) from children.</li>
             <li>All quiz scores and badges are saved strictly on the local device via local storage.</li>
             <li>No public social profiles or chat rooms exist for children.</li>

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { AD_CONFIG } from '../config/adConfig';
+import React, { useEffect, useRef, useState } from 'react';
+import { AD_CONFIG, shouldServeAds, isPlaceholderSlot } from '../config/adConfig';
 import { useApp } from '../context/AppContext';
 import { Sparkles, Info } from 'lucide-react';
 
@@ -18,29 +18,54 @@ export const AdBanner: React.FC<AdBannerProps> = ({
   labelUrdu = 'اشتہار (Google Ad)',
   labelEn = 'Sponsored / Google Ad'
 }) => {
-  const { contentLang } = useApp();
+  const { contentLang, userMode } = useApp();
   const isUrdu = contentLang === 'urdu';
   const adRef = useRef<HTMLDivElement>(null);
+  const [isUnfilled, setIsUnfilled] = useState(false);
 
-  // If ads are disabled globally
-  if (!AD_CONFIG.ENABLE_ADS) {
+  // 1. STRICT KIDS PROTECTION & GLOBAL TOGGLE
+  // Fully compliant with Google Play Families Policy & COPPA: zero ads in Kids Mode
+  if (!shouldServeAds(userMode) || userMode === 'kids') {
     return null;
   }
 
-  // Effect to push AdSense ad when running in production
-  useEffect(() => {
-    if (!AD_CONFIG.IS_TEST_MODE && typeof window !== 'undefined') {
-      try {
-        const adsbygoogle = (window as any).adsbygoogle || [];
-        adsbygoogle.push({});
-      } catch (err) {
-        // Silently catch adblock or loading issues
-      }
-    }
-  }, []);
+  const placeholder = isPlaceholderSlot(slotId);
 
-  // 1. TEST / PLACEHOLDER MODE (Display clean preview without violating Google policy)
-  if (AD_CONFIG.IS_TEST_MODE || AD_CONFIG.ADSENSE_CLIENT_ID === 'ca-pub-PLACEHOLDER') {
+  // 2. PRODUCTION AD INITIALIZATION & OBSERVER
+  useEffect(() => {
+    if (!AD_CONFIG.IS_TEST_MODE && !placeholder && typeof window !== 'undefined') {
+      try {
+        const adsbygoogle = (window as unknown as { adsbygoogle: unknown[] }).adsbygoogle || [];
+        adsbygoogle.push({});
+      } catch {
+        // Silently handle adblock or network restrictions without crashing
+      }
+
+      // Check for unfilled status to prevent blank space
+      const checkUnfilled = () => {
+        if (adRef.current) {
+          const insElement = adRef.current.querySelector('ins.adsbygoogle');
+          if (insElement) {
+            const status = insElement.getAttribute('data-ad-status');
+            if (status === 'unfilled') {
+              setIsUnfilled(true);
+            }
+          }
+        }
+      };
+
+      const timer = setTimeout(checkUnfilled, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [placeholder, slotId]);
+
+  // If Google AdSense / AdMob reports unfilled or blocked, collapse smoothly without leaving blank space
+  if (isUnfilled) {
+    return null;
+  }
+
+  // 3. SAFE PREVIEW / TEST / PENDING SLOT MODE
+  if (AD_CONFIG.IS_TEST_MODE || placeholder) {
     return (
       <div
         className={`w-full my-3 p-3 rounded-2xl bg-gradient-to-r from-slate-50 via-slate-100 to-slate-50 border border-dashed border-slate-300 text-slate-500 text-center transition-all ${className}`}
@@ -71,23 +96,23 @@ export const AdBanner: React.FC<AdBannerProps> = ({
           <Info className="w-3 h-3" />
           <span>
             {isUrdu
-              ? 'ارننگ شروع کرنے کے لیے src/config/adConfig.ts میں اپنی AdSense Publisher ID درج کریں۔'
-              : 'To start earning, set your Publisher ID in src/config/adConfig.ts'}
+              ? 'ارننگ شروع کرنے کے لیے src/config/adConfig.ts میں اپنی AdSense/AdMob Unit ID درج کریں۔'
+              : 'Live ads will display once your Unit ID is configured in src/config/adConfig.ts'}
           </span>
         </div>
       </div>
     );
   }
 
-  // 2. PRODUCTION GOOGLE ADSENSE CODE
+  // 4. PRODUCTION LIVE GOOGLE ADS
   return (
-    <div ref={adRef} className={`w-full overflow-hidden my-3 text-center ${className}`}>
-      <div className="text-[9px] text-slate-400 uppercase tracking-widest text-center mb-1">
+    <div ref={adRef} className={`w-full overflow-hidden my-3 text-center transition-all ${className}`}>
+      <div className="text-[9px] text-slate-400 uppercase tracking-widest text-center mb-1 select-none">
         {isUrdu ? 'اشتہار' : 'Advertisement'}
       </div>
       <ins
         className="adsbygoogle"
-        style={{ display: 'block' }}
+        style={{ display: 'block', minHeight: '60px' }}
         data-ad-client={AD_CONFIG.ADSENSE_CLIENT_ID}
         data-ad-slot={slotId}
         data-ad-format={format}

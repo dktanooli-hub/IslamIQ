@@ -1585,8 +1585,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
 
                 <div className="bg-white p-4 rounded-2xl border border-slate-200">
                   <span className="text-xs font-semibold text-slate-500">Integrated Ad Placements</span>
-                  <div className="text-2xl font-black text-slate-900 mt-1">4 High-CTR Units</div>
-                  <p className="text-[11px] text-slate-400 mt-0.5">Home, Quiz End, Tasbih, Qibla</p>
+                  <div className="text-2xl font-black text-slate-900 mt-1">Editorial Banner</div>
+                  <p className="text-[11px] text-slate-400 mt-0.5">Compliant placement on Daily Learning Feed</p>
                 </div>
 
                 <div className="bg-white p-4 rounded-2xl border border-slate-200">
