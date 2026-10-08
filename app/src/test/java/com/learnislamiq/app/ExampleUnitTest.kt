@@ -1,4 +1,4 @@
-package com.example
+package com.learnislamiq.app
 
 import org.junit.Assert.*
 import org.junit.Test

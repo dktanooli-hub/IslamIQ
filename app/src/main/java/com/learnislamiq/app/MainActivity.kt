@@ -1,4 +1,4 @@
-package com.example
+package com.learnislamiq.app
 
 import android.content.Intent
 import android.os.Bundle
@@ -31,7 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.ui.theme.MyApplicationTheme
+import com.learnislamiq.app.ui.theme.MyApplicationTheme
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
