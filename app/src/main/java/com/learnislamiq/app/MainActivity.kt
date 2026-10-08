@@ -188,8 +188,18 @@ fun IslamIQMainScreen(modifier: Modifier = Modifier) {
             }
 
             private fun handleUrl(context: Context, url: String): Boolean {
-              // Internal navigation stays inside IslamIQ WebView
-              if (url.startsWith("https://learnislamiq.com") || url.startsWith("http://learnislamiq.com")) {
+              val uri = try {
+                Uri.parse(url)
+              } catch (e: Exception) {
+                null
+              }
+              val host = uri?.host?.lowercase() ?: ""
+              val scheme = uri?.scheme?.lowercase() ?: ""
+
+              // Internal navigation stays inside IslamIQ WebView (learnislamiq.com, www.learnislamiq.com, and subdomains)
+              if ((scheme == "https" || scheme == "http") &&
+                (host == "learnislamiq.com" || host.endsWith(".learnislamiq.com"))
+              ) {
                 return false
               }
 
@@ -215,7 +225,7 @@ fun IslamIQMainScreen(modifier: Modifier = Modifier) {
             }
           }
 
-          loadUrl("https://learnislamiq.com")
+          loadUrl("https://www.learnislamiq.com")
           webViewInstance = this
         }
       },
@@ -266,7 +276,7 @@ fun IslamIQMainScreen(modifier: Modifier = Modifier) {
           onClick = {
             hasError = false
             isLoading = true
-            webViewInstance?.loadUrl("https://learnislamiq.com")
+            webViewInstance?.loadUrl("https://www.learnislamiq.com")
           },
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary
