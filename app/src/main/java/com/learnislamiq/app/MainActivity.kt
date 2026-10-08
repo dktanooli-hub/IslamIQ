@@ -1,12 +1,23 @@
 package com.learnislamiq.app
 
+import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.ViewGroup
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -15,17 +26,23 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -37,8 +54,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.ui.platform.testTag
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 
@@ -81,92 +96,189 @@ class MainActivity : ComponentActivity() {
   }
 }
 
+/**
+ * Main application interface for IslamIQ.
+ * Seamlessly loads the complete, interactive IslamIQ portal (Quran, Hadith, Salah Tracker,
+ * Qibla compass, Tasbih, Quizzes, Kids mode, and Guides) with hardware acceleration,
+ * persistent DOM/local storage, deep linking, native share handling, and gesture navigation.
+ */
 @Composable
 fun IslamIQMainScreen(modifier: Modifier = Modifier) {
-  val context = LocalContext.current
+  var webViewInstance by remember { mutableStateOf<WebView?>(null) }
+  var canGoBack by remember { mutableStateOf(false) }
+  var isLoading by remember { mutableStateOf(true) }
+  var progress by remember { mutableIntStateOf(0) }
+  var hasError by remember { mutableStateOf(false) }
 
-  Column(
+  // Hardware / gesture back navigation inside the web app
+  BackHandler(enabled = canGoBack) {
+    webViewInstance?.let { webView ->
+      if (webView.canGoBack()) {
+        webView.goBack()
+      }
+    }
+  }
+
+  Box(
     modifier = modifier
       .fillMaxSize()
-      .padding(horizontal = 20.dp, vertical = 16.dp),
-    horizontalAlignment = Alignment.CenterHorizontally
+      .background(MaterialTheme.colorScheme.background)
   ) {
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(
-      text = "IslamIQ • Learn • Quiz • Grow",
-      fontSize = 22.sp,
-      fontWeight = FontWeight.Bold,
-      color = MaterialTheme.colorScheme.primary
-    )
-    Spacer(modifier = Modifier.height(6.dp))
-    Text(
-      text = "Daily Quran, Authentic Hadith, Salah Tracker & Islamic Quizzes",
-      fontSize = 13.sp,
-      color = MaterialTheme.colorScheme.onSurfaceVariant,
-      textAlign = TextAlign.Center
-    )
-    Spacer(modifier = Modifier.height(20.dp))
+    AndroidView(
+      modifier = Modifier
+        .fillMaxSize()
+        .testTag("islamiq_web_view"),
+      factory = { ctx ->
+        WebView(ctx).apply {
+          layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+          )
 
-    // Share IslamIQ Sadaqah Jariyah Card
-    Card(
-      modifier = Modifier.fillMaxWidth(),
-      colors = CardDefaults.cardColors(
-        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+          settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            databaseEnabled = true
+            useWideViewPort = true
+            loadWithOverviewMode = true
+            setSupportZoom(false)
+            builtInZoomControls = false
+            displayZoomControls = false
+            cacheMode = WebSettings.LOAD_DEFAULT
+            mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+            userAgentString = "${userAgentString} IslamIQ-Android-App/2.0"
+          }
+
+          webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+              super.onPageStarted(view, url, favicon)
+              isLoading = true
+              hasError = false
+              canGoBack = view?.canGoBack() == true
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+              super.onPageFinished(view, url)
+              isLoading = false
+              canGoBack = view?.canGoBack() == true
+            }
+
+            override fun onReceivedError(
+              view: WebView?,
+              errorCode: Int,
+              description: String?,
+              failingUrl: String?
+            ) {
+              super.onReceivedError(view, errorCode, description, failingUrl)
+              // Only trigger error screen if the primary host failed
+              if (failingUrl?.contains("learnislamiq.com") == true) {
+                hasError = true
+              }
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+              val url = request?.url?.toString() ?: return false
+              return handleUrl(ctx, url)
+            }
+
+            @Deprecated("Deprecated in Java")
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+              if (url == null) return false
+              return handleUrl(ctx, url)
+            }
+
+            private fun handleUrl(context: Context, url: String): Boolean {
+              // Internal navigation stays inside IslamIQ WebView
+              if (url.startsWith("https://learnislamiq.com") || url.startsWith("http://learnislamiq.com")) {
+                return false
+              }
+
+              // Route external protocols (WhatsApp, email, telephone, Play Store, etc.) to native Android intents
+              return try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                context.startActivity(intent)
+                true
+              } catch (e: Exception) {
+                Log.w("IslamIQ", "Unable to route external URL: $url", e)
+                true
+              }
+            }
+          }
+
+          webChromeClient = object : WebChromeClient() {
+            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+              super.onProgressChanged(view, newProgress)
+              progress = newProgress
+              if (newProgress >= 100) {
+                isLoading = false
+              }
+            }
+          }
+
+          loadUrl("https://learnislamiq.com")
+          webViewInstance = this
+        }
+      },
+      update = { webView ->
+        webViewInstance = webView
+        canGoBack = webView.canGoBack()
+      }
+    )
+
+    // Smooth top loading indicator
+    if (isLoading && progress < 100) {
+      LinearProgressIndicator(
+        progress = { progress / 100f },
+        modifier = Modifier
+          .fillMaxWidth()
+          .align(Alignment.TopCenter),
+        color = MaterialTheme.colorScheme.primary,
+        trackColor = MaterialTheme.colorScheme.surfaceVariant
       )
-    ) {
+    }
+
+    // Graceful offline fallback screen with retry
+    if (hasError) {
       Column(
-        modifier = Modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+          .fillMaxSize()
+          .background(MaterialTheme.colorScheme.surface)
+          .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
       ) {
         Text(
-          text = "✦ SHARE ISLAMIQ ✦",
-          fontSize = 14.sp,
+          text = "IslamIQ • انٹرنیٹ کنکشن درکار ہے",
+          fontSize = 18.sp,
           fontWeight = FontWeight.Bold,
-          color = MaterialTheme.colorScheme.primary
+          color = MaterialTheme.colorScheme.primary,
+          textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(4.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
-          text = "صدقہ جاریہ • قیامت تک ثواب",
+          text = "Please check your internet connection and tap retry to load the full IslamIQ app.",
           fontSize = 13.sp,
-          fontWeight = FontWeight.Medium,
-          color = MaterialTheme.colorScheme.secondary
+          color = MaterialTheme.colorScheme.onSurfaceVariant,
+          textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-          text = "اگر آپ اس ایپ کو اپنے 10 جاننے والوں کے ساتھ اور گروپس میں شیئر کریں تو سیکنڑوں پڑھنے والوں کو قرآن، سیکھنے والوں اور لاکھوں نیکیوں کا ثواب آپ کو بھی اور ہمیں بھی ملے گا۔ نیکی کے کام میں دیر کیسی؟ ابھی شیئر کریں اور قیامت تک جاری صدقہ جاریہ میں مفت حصہ ڈالیں۔",
-          fontSize = 13.sp,
-          lineHeight = 20.sp,
-          textAlign = TextAlign.Center,
-          color = MaterialTheme.colorScheme.onSurface
-        )
-        Spacer(modifier = Modifier.height(14.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
           onClick = {
-            val sendIntent: Intent = Intent().apply {
-              action = Intent.ACTION_SEND
-              putExtra(
-                Intent.EXTRA_TEXT,
-                "اگر آپ اس ایپ کو اپنے 10 جاننے والوں کے ساتھ اور گروپس میں شیئر کریں تو سیکنڑوں پڑھنے والوں کو قرآن، سیکھنے والوں اور لاکھوں نیکیوں کا ثواب آپ کو بھی اور ہمیں بھی ملے گا۔ نیکی کے کام میں دیر کیسی؟ ابھی شیئر کریں اور قیامت تک جاری صدقہ جاریہ میں مفت حصہ ڈالیں۔\n\nhttps://learnislamiq.com"
-              )
-              type = "text/plain"
-            }
-            val shareIntent = Intent.createChooser(sendIntent, "Share IslamIQ • صدقہ جاریہ")
-            context.startActivity(shareIntent)
+            hasError = false
+            isLoading = true
+            webViewInstance?.loadUrl("https://learnislamiq.com")
           },
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary
           )
         ) {
           Text(
-            text = "SHARE NOW • ابھی شیئر کریں",
-            fontWeight = FontWeight.Bold,
-            fontSize = 13.sp
+            text = "دوبارہ کوشش کریں • Retry",
+            fontWeight = FontWeight.Bold
           )
         }
       }
     }
-
-    Spacer(modifier = Modifier.weight(1f))
   }
 }
 
