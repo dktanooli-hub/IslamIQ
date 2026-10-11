@@ -1,12 +1,15 @@
 package com.learnislamiq.app
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
@@ -16,15 +19,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Button
@@ -48,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import com.learnislamiq.app.ui.theme.MyApplicationTheme
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -58,6 +65,46 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 
 class MainActivity : ComponentActivity() {
+
+  private var nativeBridge: IslamIQNativeBridge? = null
+  private var pendingWebPermissionRequest: PermissionRequest? = null
+
+  // Runtime RECORD_AUDIO permission launcher requested when child taps microphone
+  private val recordAudioPermissionLauncher = registerForActivityResult(
+    ActivityResultContracts.RequestPermission()
+  ) { isGranted ->
+    if (isGranted) {
+      pendingWebPermissionRequest?.let {
+        it.grant(it.resources)
+        pendingWebPermissionRequest = null
+      }
+      nativeBridge?.onRecordAudioPermissionGranted()
+    } else {
+      pendingWebPermissionRequest?.let {
+        it.deny()
+        pendingWebPermissionRequest = null
+      }
+      nativeBridge?.onRecordAudioPermissionDenied()
+    }
+  }
+
+  fun requestRecordAudioPermission() {
+    recordAudioPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+  }
+
+  fun handleWebAudioPermissionRequest(request: PermissionRequest) {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+      request.grant(request.resources)
+    } else {
+      pendingWebPermissionRequest = request
+      recordAudioPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+    }
+  }
+
+  override fun onDestroy() {
+    nativeBridge?.destroy()
+    super.onDestroy()
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -81,15 +128,15 @@ class MainActivity : ComponentActivity() {
       MyApplicationTheme {
         Scaffold(
           modifier = Modifier.fillMaxSize(),
-          bottomBar = {
-            // Non-intrusive AdMob banner docked at the bottom of main screens
-            // Complies with AdMob accidental click prevention guidelines
-            AdMobBannerBottomBar(
-              adUnitId = "ca-app-pub-9108925465688012/4729630144"
-            )
-          }
+          containerColor = MaterialTheme.colorScheme.background,
+          contentWindowInsets = WindowInsets.safeDrawing
         ) { innerPadding ->
-          IslamIQMainScreen(modifier = Modifier.padding(innerPadding))
+          IslamIQMainScreen(
+            modifier = Modifier.padding(innerPadding),
+            onRequestAudioPermission = { requestRecordAudioPermission() },
+            onHandleWebPermission = { req -> handleWebAudioPermissionRequest(req) },
+            onBridgeCreated = { bridge -> nativeBridge = bridge }
+          )
         }
       }
     }
@@ -103,7 +150,12 @@ class MainActivity : ComponentActivity() {
  * persistent DOM/local storage, deep linking, native share handling, and gesture navigation.
  */
 @Composable
-fun IslamIQMainScreen(modifier: Modifier = Modifier) {
+fun IslamIQMainScreen(
+  modifier: Modifier = Modifier,
+  onRequestAudioPermission: () -> Unit = {},
+  onHandleWebPermission: (PermissionRequest) -> Unit = {},
+  onBridgeCreated: (IslamIQNativeBridge) -> Unit = {}
+) {
   var webViewInstance by remember { mutableStateOf<WebView?>(null) }
   var canGoBack by remember { mutableStateOf(false) }
   var isLoading by remember { mutableStateOf(true) }
@@ -146,8 +198,20 @@ fun IslamIQMainScreen(modifier: Modifier = Modifier) {
             displayZoomControls = false
             cacheMode = WebSettings.LOAD_DEFAULT
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+            mediaPlaybackRequiresUserGesture = false
+            allowFileAccess = false
+            allowContentAccess = true
             userAgentString = "${userAgentString} IslamIQ-Android-App/2.0"
           }
+
+          val activity = ctx as? MainActivity
+          val bridge = IslamIQNativeBridge(
+            activity = activity ?: (ctx as ComponentActivity),
+            webView = this,
+            requestAudioPermission = onRequestAudioPermission
+          )
+          onBridgeCreated(bridge)
+          addJavascriptInterface(bridge, "IslamIQBridge")
 
           webViewClient = object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -222,6 +286,21 @@ fun IslamIQMainScreen(modifier: Modifier = Modifier) {
               if (newProgress >= 100) {
                 isLoading = false
               }
+            }
+
+            override fun onPermissionRequest(request: PermissionRequest?) {
+              if (request == null) return
+              val resources = request.resources
+              val hasAudio = resources.contains(PermissionRequest.RESOURCE_AUDIO_CAPTURE)
+              if (hasAudio) {
+                onHandleWebPermission(request)
+              } else {
+                request.deny()
+              }
+            }
+
+            override fun onPermissionRequestCanceled(request: PermissionRequest?) {
+              super.onPermissionRequestCanceled(request)
             }
           }
 

@@ -9,10 +9,11 @@ export interface SpeechRecognitionResultState {
   confidence: number;
 }
 
-// Check if browser supports Web Speech API
+// Check if browser or native Android shell supports Speech Recognition
 export const isSpeechRecognitionSupported = (): boolean => {
   if (typeof window === 'undefined') return false;
-  return 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
+  const hasNativeBridge = !!((window as any).IslamIQBridge && typeof (window as any).IslamIQBridge.startListening === 'function');
+  return hasNativeBridge || 'webkitSpeechRecognition' in window || 'SpeechRecognition' in window;
 };
 
 // Match spoken words tolerant to Urdu, English and transliterated roman pronunciation
@@ -84,6 +85,54 @@ export class KidsVoiceListener {
     onError: (err: string) => void,
     onStatusChange: (isListening: boolean) => void
   ): () => void {
+    // 1. Check for native Android IslamIQBridge
+    const nativeBridge = typeof window !== 'undefined' ? (window as any).IslamIQBridge : null;
+    if (nativeBridge && typeof nativeBridge.startListening === 'function') {
+      if (this.isListening) {
+        this.stop();
+      }
+
+      this.isListening = true;
+      onStatusChange(true);
+
+      (window as any).onIslamIQSpeechStatus = (status: boolean) => {
+        this.isListening = status;
+        onStatusChange(status);
+      };
+
+      (window as any).onIslamIQSpeechResult = (transcript: string, isFinal: boolean, confidence: number) => {
+        if (!transcript) return;
+        const trimmed = transcript.trim();
+        if (trimmed) {
+          const matched = matchVoiceActivity(trimmed);
+          onResult({
+            transcript: trimmed,
+            matchedActivity: matched,
+            confidence: confidence || 0.95
+          });
+        }
+      };
+
+      (window as any).onIslamIQSpeechError = (err: string) => {
+        this.isListening = false;
+        onStatusChange(false);
+        onError(err);
+      };
+
+      try {
+        nativeBridge.startListening(lang);
+      } catch (e) {
+        this.isListening = false;
+        onStatusChange(false);
+        onError('start_failed');
+      }
+
+      return () => {
+        this.stop();
+      };
+    }
+
+    // 2. Standard Web Speech Recognition fallback for browsers
     if (!this.recognition) {
       onError('unsupported');
       return () => {};
@@ -161,12 +210,18 @@ export class KidsVoiceListener {
   }
 
   public stop(): void {
+    if (typeof window !== 'undefined' && (window as any).IslamIQBridge?.stopListening) {
+      try {
+        (window as any).IslamIQBridge.stopListening();
+      } catch {}
+    }
     if (this.recognition && this.isListening) {
       try {
         this.recognition.stop();
       } catch {}
       this.isListening = false;
     }
+    this.isListening = false;
   }
 }
 

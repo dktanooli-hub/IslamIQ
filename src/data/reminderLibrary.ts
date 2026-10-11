@@ -572,5 +572,115 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     practicalTipUrdu: 'آج بات چیت، لین دین اور وعدوں میں مکمل سچائی کا التزام کریں، یہاں تک کہ مذاق میں بھی جھوٹ سے گریز کریں۔',
     practicalTipEn: 'Commit to absolute truthfulness in all conversations and commitments today, avoiding even exaggerations or joking deceit.',
     reference: 'Sahih al-Bukhari 6094, Sahih Muslim 2607'
+  },
+  {
+    id: 'rem-53',
+    titleEn: 'The Healing Power of Istighfar in Anxious Times',
+    titleUrdu: 'پریشانیوں اور تنگیوں میں کثرتِ استغفار کی برکت',
+    bodyEn: 'The Prophet ﷺ said: "Whoever persists in seeking forgiveness, Allah will appoint for him a way out of every distress, relief from every anxiety, and provide for him from where he does not expect." (Sunan Abi Dawud 1518, Sunan Ibn Majah 3819). Turning to Allah with genuine repentance unties knots that seem impossible.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "جو شخص کثرت سے استغفار کرتا ہے، اللہ تعالیٰ اس کے لیے ہر تنگی سے نکلنے کا راستہ بنا دیتا ہے، ہر غم سے نجات عطا فرماتا ہے، اور اسے ایسی جگہ سے رزق دیتا ہے جہاں سے اس کا گمان بھی نہیں ہوتا۔" دل کے بوجھ کو ہلکا کرنے کے لیے استغفار کو اپنا ساتھی بنائیں۔',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'آج دن بھر میں کم از کم 100 بار دل کی گہرائی سے "أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ" پڑھیں۔',
+    practicalTipEn: 'Recite "Astaghfirullaha wa atoobu ilayh" at least 100 times throughout today with conscious presence.',
+    reference: 'Sunan Abi Dawud 1518, Sunan Ibn Majah 3819'
+  },
+  {
+    id: 'rem-54',
+    titleEn: 'The Radiance of Smiling and Pleasant Words',
+    titleUrdu: 'مسکراہٹ اور میٹھے بول کا صدقہ',
+    bodyEn: 'The Messenger of Allah ﷺ said: "A good, pleasant word is a charity, and your smiling in the face of your brother is a charity." (Sahih al-Bukhari 2989, Jami at-Tirmidhi 1956). Radiating warmth costs nothing yet mends tired hearts and spreads peace everywhere you walk.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "اچھی اور میٹھی بات کہنا صدقہ ہے، اور اپنے بھائی کے سامنے مسکرا کر ملنا بھی صدقہ ہے۔" دوسروں کے چہروں پر خوشی لانا اور نرم لہجے میں بات کرنا بغیر کسی خرچ کے نیکیوں کا عظیم ذخیرہ ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'آج گھر والوں، ساتھیوں اور ملنے والوں کو گرم جوشی، مسکراہٹ اور اچھے بول کے ساتھ سلام کریں۔',
+    practicalTipEn: 'Greet family members, colleagues, and acquaintances with an intentional smile and genuine warmth today.',
+    reference: 'Sahih al-Bukhari 2989, Jami at-Tirmidhi 1956'
+  },
+  {
+    id: 'rem-55',
+    titleEn: 'Consistency in Morning and Evening Adhkar',
+    titleUrdu: 'صبح و شام کے مسنون اذکار کی حصانت',
+    bodyEn: 'The morning and evening supplications are the believer\'s impenetrable armor against depression, evil eye, whisperings, and unforeseen harm. Ibn al-Qayyim wrote: "The morning and evening Adhkar are like a coat of chainmail; the thicker it is, the more it deflects blows."',
+    bodyUrdu: 'صبح اور شام کے مسنون اذکار مومن کے لیے ایک حفاظتی ڈھال کی طرح ہیں جو بے چینی، بری نظر، شیطانی وسوسوں اور اچانک مصیبتوں سے محفوظ رکھتے ہیں۔ امام ابن قیم فرماتے ہیں: "صبح و شام کے اذکار زرہ بکتر کی طرح ہیں، جتنی مضبوط ہوگی اتنی ہی حفاظت رہے گی۔"',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'فجر اور عصر کے بعد 5 سے 10 منٹ نکال کر صبح و شام کی مسنون دعائیں پڑھنے کی عادت ڈالیں۔',
+    practicalTipEn: 'Dedicate five minutes after Fajr and Asr to complete your daily Adhkar without rushing.',
+    reference: 'Sahih al-Bukhari 6306, Sunan Abi Dawud 5088'
+  },
+  {
+    id: 'rem-56',
+    titleEn: 'Honoring the Sanctuary of the Mosque and Prayer Steps',
+    titleUrdu: 'مسجد کی طرف قدم بڑھانے اور باجماعت نماز کا شرف',
+    bodyEn: 'The Prophet ﷺ said: "Shall I not tell you of something by which Allah erases sins and raises status? Performing Wudu properly in difficulties, taking many steps to the mosques, and waiting for the next prayer after prayer." (Sahih Muslim 251). Every step lifts you in honor before the Almighty.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "کیا میں تمہیں وہ عمل نہ بتاؤں جس کے ذریعے اللہ گناہوں کو مٹا دیتا ہے اور درجات بلند فرماتا ہے؟ تنگی اور سردی کے باوجود کامل وضو کرنا، مساجد کی طرف کثرت سے قدم اٹھانا، اور ایک نماز کے بعد دوسری نماز کا انتظار کرنا۔"',
+    category: 'Salah',
+    practicalTipUrdu: 'آج کم از کم ایک نماز مسجد میں باجماعت تکبیرِ اولیٰ کے ساتھ ادا کرنے کی کوشش کریں۔',
+    practicalTipEn: 'Strive to catch at least one prayer today in congregation at the mosque from the opening Takbeer.',
+    reference: 'Sahih Muslim 251'
+  },
+  {
+    id: 'rem-57',
+    titleEn: 'The Sacred Trust of Guarding Secrets and Amanah',
+    titleUrdu: 'راز داری اور امانت داری کا تحفظ',
+    bodyEn: 'The Prophet ﷺ said: "When a person speaks something and then turns around (to see if anyone heard), it is an Amanah (a sacred trust)." (Sunan Abi Dawud 4868, Jami at-Tirmidhi 1959). Trustworthiness is the backbone of Islamic integrity; never betray private confidences shared with you.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "جب کوئی شخص کوئی بات کہہ کر ادھر ادھر دیکھے (کہ کوئی سن تو نہیں رہا) تو وہ بات امانت بن جاتی ہے۔" سچے مسلمان کی علامت یہ ہے کہ وہ امانتوں میں خیانت نہیں کرتا اور دوسروں کے ذاتی رازوں کی حفاظت کرتا ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'اگر کسی نے آپ پر بھروسا کر کے کوئی ذاتی بات بتائی ہو تو اسے ہمیشہ اپنے سینے میں امانت کے طور پر محفوظ رکھیں۔',
+    practicalTipEn: 'Honor confidentiality; never expose or gossip about private conversations shared with you in trust.',
+    reference: 'Sunan Abi Dawud 4868, Jami at-Tirmidhi 1959'
+  },
+  {
+    id: 'rem-58',
+    titleEn: 'Finding Blessings in Simple Halal Earnings',
+    titleUrdu: 'حلال رزق میں برکت اور دعا کی قبولیت',
+    bodyEn: 'The Prophet ﷺ mentioned a disheveled traveler calling out "O Lord, O Lord!" yet his food was haram, his drink was haram, and he was nourished on haram, so how could his prayer be answered? (Sahih Muslim 1015). Even modest halal income brings divine light, peace of mind, and open doors for supplication.',
+    bodyUrdu: 'رسول اللہ ﷺ نے ایک مسافر کا ذکر فرمایا جو آسمان کی طرف ہاتھ اٹھا کر یا رب! یا رب! پکارتا ہے، لیکن اس کا کھانا حرام، پینا حرام اور لباس حرام ہو، تو اس کی دعا کیسے قبول ہو سکتی ہے؟ حلال کے چند لقمے حرام کے خزانوں سے بدرجہا بہتر اور دل کی طہارت کا ذریعہ ہیں۔',
+    category: 'Daily Living',
+    practicalTipUrdu: 'اپنے روزگار اور کمائی کا جائزہ لیں اور اللہ سے ہمیشہ پاکیزہ اور بابرکت حلال رزق مانگیں۔',
+    practicalTipEn: 'Double-check that all your daily business, transactions, and work ethics are strictly halal and honest.',
+    reference: 'Sahih Muslim 1015'
+  },
+  {
+    id: 'rem-59',
+    titleEn: 'The Nobility of Forgiving When You Have Power to Retaliate',
+    titleUrdu: 'قدرت کے باوجود معاف کرنے کا اعلیٰ اخلاق',
+    bodyEn: 'Allah praises: "And who restrain anger and who pardon the people - and Allah loves the doers of good." (Surah Ali \'Imran 3:134). The Prophet ﷺ said: "No one forgives another except that Allah increases him in honor." (Sahih Muslim 2588). Forgiving others unlocks Allah’s forgiveness toward your own shortcomings.',
+    bodyUrdu: 'قرآن مجید میں اللہ نے متقین کی صفت بیان فرمائی کہ: "وہ غصے کو پی جانے والے اور لوگوں کو معاف کر دینے والے ہیں، اور اللہ احسان کرنے والوں سے محبت فرماتا ہے۔" معاف کر دینا کمزوری نہیں بلکہ باوقار عزت کی علامت ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'آج کسی پرانی شکایت یا تلخی کو دل سے معاف کر دیں تاکہ اللہ آپ کے لیے اپنی مغفرت کا دروازہ کھول دے۔',
+    practicalTipEn: 'Let go of a personal resentment today for Allah\'s pleasure, remembering that Allah pardons those who pardon.',
+    reference: 'Surah Ali \'Imran 3:134, Sahih Muslim 2588'
+  },
+  {
+    id: 'rem-60',
+    titleEn: 'The Unseen Guard of Sleeping in Wudu',
+    titleUrdu: 'باوضو سونے اور فرشتوں کی دعا کی برکت',
+    bodyEn: 'The Prophet ﷺ said: "Purify these bodies, may Allah purify you; for no servant goes to sleep in a state of purity except that an angel spends the night in his garments, and not an hour passes that the angel does not say: \'O Allah, forgive Your servant, for he went to sleep in purity.\'" (Al-Mu\'jam al-Kabir at-Tabarani, Sahih al-Jami 3936).',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "اپنے ان جسموں کو پاک رکھو، اللہ تمہیں پاک فرمائے؛ جو بندہ بھی باوضو سوتا ہے، ایک فرشتہ اس کے بستر میں رات گزارتا ہے، اور جب بھی وہ کروٹ بدلتا ہے تو فرشتہ دعا کرتا ہے: اے اللہ! اپنے اس بندے کو بخش دے کیونکہ یہ باوضو سویا تھا۔"',
+    category: 'Sunnah Practices',
+    practicalTipUrdu: 'رات بستر پر جانے سے پہلے تازہ وضو کریں اور مسنون دعائیں پڑھ کر دائیں کروٹ سوئیں۔',
+    practicalTipEn: 'Make fresh Wudu before getting into bed tonight and sleep on your right side following the Sunnah.',
+    reference: 'Sahih al-Jami 3936, Al-Mu\'jam al-Kabir 13620'
+  },
+  {
+    id: 'rem-61',
+    titleEn: 'Kindness to Animals and Environmental Stewardship',
+    titleUrdu: 'جانوروں پر شفقت اور زمین کی حفاظت',
+    bodyEn: 'The Prophet ﷺ told of a man forgiven by Allah for drawing water with his shoe to save a thirsty dog, and said: "In every living being there is a reward for charity." (Sahih al-Bukhari 2466). Compassion in Islam embraces all of Allah\'s living creation without exception.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا کہ ایک پیاسے کتے کو اپنے موزے سے پانی پلانے پر اللہ تعالیٰ نے ایک گناہ گار شخص کی بخشش فرما دی، اور صحابہ کے پوچھنے پر فرمایا: "ہر جاندار کے ساتھ بھلائی کرنے میں ثواب ہے۔" اللہ کی مخلوق پر رحم کرنا اللہ کی رحمت کو متوجہ کرتا ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'چھت یا بالکونی میں پرندوں کے لیے دانہ پانی رکھیں یا کسی بے زبان جانور کو کھانا کھلائیں۔',
+    practicalTipEn: 'Place a dish of fresh water outside for birds or care for an animal with mindful tenderness today.',
+    reference: 'Sahih al-Bukhari 2466, Sahih Muslim 2244'
+  },
+  {
+    id: 'rem-62',
+    titleEn: 'The Blessed Light of Constant Gratitude (Shukr)',
+    titleUrdu: 'شکر گزاری کا نور اور نعمتوں میں زیادتی کا الٰہی وعدہ',
+    bodyEn: 'Allah promises: "If you are grateful, I will surely increase you [in favor]." (Surah Ibrahim 14:7). Gratitude turns what little we have into abundance, protects hearts from jealousy, and transforms everyday moments into constant worship.',
+    bodyUrdu: 'قرآن مجید کا اٹل وعدہ ہے: "اگر تم شکر ادا کرو گے تو میں تمہیں اور زیادہ نعمتیں دوں گا۔" ناشکری نعمتوں کو چھین لیتی ہے جبکہ دل سے "الحمد للہ" کہنا نعمتوں میں برکت اور زیادتی کا ضامن بن جاتا ہے۔',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'آج تین ایسی چھوٹی نعمتوں کو سوچیں جنہیں ہم روزانہ نظر انداز کر دیتے ہیں اور سچے دل سے اللہ کا شکر ادا کریں۔',
+    practicalTipEn: 'Identify three overlooked everyday blessings today and whisper a sincere "Alhamdulillah" for each.',
+    reference: 'Surah Ibrahim 14:7'
   }
 ];

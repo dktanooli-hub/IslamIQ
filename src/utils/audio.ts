@@ -520,6 +520,12 @@ export class SpeechEngine {
   private static cachedVoices: SpeechSynthesisVoice[] = [];
   private static activeUtterance: SpeechSynthesisUtterance | null = null;
 
+  static isSupported(): boolean {
+    if (typeof window === 'undefined') return false;
+    const hasBridge = typeof (window as any).IslamIQBridge?.speak === 'function';
+    return hasBridge || 'speechSynthesis' in window;
+  }
+
   static init() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       this.cachedVoices = window.speechSynthesis.getVoices();
@@ -546,10 +552,17 @@ export class SpeechEngine {
       this.pauseTimeout = null;
     }
     this.activeUtterance = null;
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      try {
-        window.speechSynthesis.cancel();
-      } catch {}
+    if (typeof window !== 'undefined') {
+      if ((window as any).IslamIQBridge?.stopTts) {
+        try {
+          (window as any).IslamIQBridge.stopTts();
+        } catch {}
+      }
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch {}
+      }
     }
     this.isSpeaking = false;
   }
@@ -751,6 +764,72 @@ export class SpeechEngine {
         onStepChange(getStepForSegment(currentIndex));
       }
 
+      // 1. Native Android TextToSpeech Bridge integration
+      if (typeof window !== 'undefined' && (window as any).IslamIQBridge && typeof (window as any).IslamIQBridge.speak === 'function') {
+        const segUtteranceId = `seg_${runId}_${currentIndex}_${Date.now()}`;
+        let hasEnded = false;
+
+        const advance = () => {
+          if (hasEnded) return;
+          hasEnded = true;
+          if (this.currentRunId !== runId) return;
+
+          currentIndex++;
+          if (currentIndex < segments.length) {
+            const pause = segment.pauseAfterMs ?? 100;
+            if (pause > 0) {
+              this.pauseTimeout = setTimeout(() => {
+                playNext();
+              }, pause);
+            } else {
+              playNext();
+            }
+          } else {
+            this.isSpeaking = false;
+            this.activeUtterance = null;
+            onEnd?.();
+          }
+        };
+
+        (window as any).onIslamIQTtsStart = (id: string) => {
+          if (id === segUtteranceId && this.currentRunId === runId) {
+            // Segment playback started
+          }
+        };
+
+        (window as any).onIslamIQTtsDone = (id: string) => {
+          if (id === segUtteranceId && this.currentRunId === runId) {
+            advance();
+          }
+        };
+
+        (window as any).onIslamIQTtsError = (id: string) => {
+          if (id === segUtteranceId && this.currentRunId === runId) {
+            advance();
+          }
+        };
+
+        const estDuration = Math.max(3000, segment.text.length * 150);
+        const fallbackTimer = setTimeout(() => {
+          if (!hasEnded && this.currentRunId === runId) {
+            advance();
+          }
+        }, estDuration);
+
+        try {
+          const started = (window as any).IslamIQBridge.speak(segment.text, segment.lang, segUtteranceId);
+          if (!started) {
+            clearTimeout(fallbackTimer);
+            advance();
+          }
+        } catch (e) {
+          clearTimeout(fallbackTimer);
+          advance();
+        }
+        return;
+      }
+
+      // 2. Browser SpeechSynthesis Utterance
       const utterance = new SpeechSynthesisUtterance(segment.text);
       this.configureUtterance(utterance, segment.lang);
       this.activeUtterance = utterance;
@@ -783,7 +862,6 @@ export class SpeechEngine {
       utterance.onerror = (err) => {
         if (this.currentRunId !== runId) return;
         console.warn('SpeechSynthesis segment issue:', err);
-        // Advance to next segment without cross-language voice contamination
         advance();
       };
 
@@ -823,7 +901,7 @@ export class SpeechEngine {
     onStart?: () => void,
     onEnd?: () => void
   ) {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    if (!SpeechEngine.isSupported()) {
       onEnd?.();
       return;
     }
@@ -832,6 +910,12 @@ export class SpeechEngine {
     const runId = ++this.currentRunId;
     this.isSpeaking = true;
     onStart?.();
+
+    if (typeof window !== 'undefined' && (window as any).IslamIQBridge && typeof (window as any).IslamIQBridge.speak === 'function') {
+      const segs: SpeechSegment[] = [{ text, lang: 'arabic', pauseAfterMs: 100 }];
+      this.playSegmentSequence(segs, 'urdu', runId, onStart, onEnd);
+      return;
+    }
 
     const utterance = new SpeechSynthesisUtterance(text);
     this.configureUtterance(utterance, 'arabic');
@@ -873,7 +957,7 @@ export class SpeechEngine {
     onEnd?: () => void,
     onStepChange?: (stepIndex: number) => void
   ) {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    if (!SpeechEngine.isSupported()) {
       return;
     }
 
@@ -942,7 +1026,7 @@ export class SpeechEngine {
     onStart?: () => void,
     onEnd?: () => void
   ) {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    if (!SpeechEngine.isSupported()) {
       onEnd?.();
       return;
     }
@@ -1007,7 +1091,7 @@ export class SpeechEngine {
     onStart?: () => void,
     onEnd?: () => void
   ): void {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    if (!SpeechEngine.isSupported()) {
       onEnd?.();
       return;
     }
@@ -1053,7 +1137,7 @@ export class SpeechEngine {
     onStepChange?: (step: number) => void,
     onEnd?: () => void
   ): void {
-    if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    if (!SpeechEngine.isSupported()) {
       onEnd?.();
       return;
     }

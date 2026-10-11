@@ -668,15 +668,16 @@ export const ShareIslamIQModal: React.FC = () => {
             {/* Note on Google Play ready configuration */}
             <div className="pt-1 text-center">
               <span className="text-[10px] text-slate-400 flex items-center justify-center gap-1">
-                <span>QR Destination:</span>
+                <span className="shrink-0">QR Destination:</span>
                 <a
                   href={SHARE_CONFIG.QR_DESTINATION_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-emerald-700 hover:underline font-semibold flex items-center gap-0.5"
+                  className="text-emerald-700 hover:underline font-semibold flex items-center gap-0.5 max-w-[220px] sm:max-w-[320px] truncate"
+                  title={SHARE_CONFIG.QR_DESTINATION_URL}
                 >
-                  <span>{SHARE_CONFIG.QR_DESTINATION_URL}</span>
-                  <ExternalLink className="w-2.5 h-2.5" />
+                  <span className="truncate">{SHARE_CONFIG.QR_DESTINATION_URL}</span>
+                  <ExternalLink className="w-2.5 h-2.5 shrink-0" />
                 </a>
               </span>
             </div>

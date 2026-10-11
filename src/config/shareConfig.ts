@@ -9,12 +9,11 @@
  */
 export const SHARE_CONFIG = {
   // Official destination encoded in the scannable QR Code
-  // Future update target: 'https://play.google.com/store/apps/details?id=com.learnislamiq.app'
-  QR_DESTINATION_URL: 'https://learnislamiq.com',
+  QR_DESTINATION_URL: 'https://play.google.com/store/apps/details?id=com.learnislamiq.app',
 
   // App Branding & Identity
   APP_NAME: 'IslamIQ',
-  APP_DOMAIN: 'learnislamiq.com',
+  APP_DOMAIN: 'play.google.com',
   TAGLINE: 'Learn • Quiz • Grow',
   
   // Card Typography & Titles
@@ -39,5 +38,5 @@ export const SHARE_CONFIG = {
 
   // Fallback social share message
   SHARE_TEXT_FULL:
-    'اگر آپ اس ایپ کو اپنے 10 جاننے والوں کے ساتھ اور گروپس میں شیئر کریں تو سیکنڑوں پڑھنے والوں کو قرآن، سیکھنے والوں اور لاکھوں نیکیوں کا ثواب آپ کو بھی اور ہمیں بھی ملے گا۔ نیکی کے کام میں دیر کیسی؟ ابھی شیئر کریں اور قیامت تک جاری صدقہ جاریہ میں مفت حصہ ڈالیں۔\n\n📲 اوپن یا ڈاؤن لوڈ کریں: https://learnislamiq.com'
+    'اگر آپ اس ایپ کو اپنے 10 جاننے والوں کے ساتھ اور گروپس میں شیئر کریں تو سیکنڑوں پڑھنے والوں کو قرآن، سیکھنے والوں اور لاکھوں نیکیوں کا ثواب آپ کو بھی اور ہمیں بھی ملے گا۔ نیکی کے کام میں دیر کیسی؟ ابھی شیئر کریں اور قیامت تک جاری صدقہ جاریہ میں مفت حصہ ڈالیں۔\n\n📲 گوگل پلے اسٹور سے انسٹال کریں:\nhttps://play.google.com/store/apps/details?id=com.learnislamiq.app'
 };
