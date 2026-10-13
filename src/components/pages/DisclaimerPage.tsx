@@ -32,7 +32,7 @@ export const DisclaimerPage: React.FC = () => {
             Official Guidance &amp; Scholar Relationship Statement
           </p>
           <p className="text-emerald-100/90 text-xs sm:text-sm leading-relaxed max-w-xl">
-            https://learnislamiq.com • learnislamiq@gmail.com
+            https://www.learnislamiq.com • learnislamiq@gmail.com
           </p>
         </div>
       </div>
@@ -113,9 +113,9 @@ export const DisclaimerPage: React.FC = () => {
             <Mail className="w-3.5 h-3.5" />
             <span>learnislamiq@gmail.com</span>
           </a>
-          <a href="https://learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-white flex items-center gap-1">
+          <a href="https://www.learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-white flex items-center gap-1">
             <Globe className="w-3.5 h-3.5" />
-            <span>https://learnislamiq.com</span>
+            <span>https://www.learnislamiq.com</span>
           </a>
         </div>
       </div>

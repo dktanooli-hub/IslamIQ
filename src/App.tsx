@@ -315,8 +315,8 @@ export const App: React.FC = () => {
       allCanonicals[i].remove();
     }
     const currentCanonicalUrl = cleanRoutesMeta[activeTab]
-      ? `https://learnislamiq.com${cleanRoutesMeta[activeTab].path}`
-      : 'https://learnislamiq.com/';
+      ? `https://www.learnislamiq.com${cleanRoutesMeta[activeTab].path}`
+      : 'https://www.learnislamiq.com/';
     linkCanonical.setAttribute('href', currentCanonicalUrl);
 
     // Clean URL pathname if navigating away from a clean route

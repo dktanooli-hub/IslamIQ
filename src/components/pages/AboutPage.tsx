@@ -32,7 +32,7 @@ export const AboutPage: React.FC = () => {
             Learn • Quiz • Grow
           </p>
           <p className="text-emerald-100/90 text-xs sm:text-sm leading-relaxed max-w-xl">
-            https://learnislamiq.com • learnislamiq@gmail.com
+            https://www.learnislamiq.com • learnislamiq@gmail.com
           </p>
         </div>
       </div>
@@ -136,9 +136,9 @@ export const AboutPage: React.FC = () => {
           IslamIQ — Learn • Quiz • Grow
         </div>
         <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-slate-300">
-          <a href="https://learnislamiq.com" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-1">
+          <a href="https://www.learnislamiq.com" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-1">
             <Globe className="w-3.5 h-3.5" />
-            <span>https://learnislamiq.com</span>
+            <span>https://www.learnislamiq.com</span>
           </a>
           <a href="mailto:learnislamiq@gmail.com" className="hover:text-white flex items-center gap-1">
             <Mail className="w-3.5 h-3.5" />

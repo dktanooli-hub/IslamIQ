@@ -75,13 +75,13 @@ export const Footer: React.FC = () => {
 
           <div className="flex flex-wrap items-center justify-center gap-3 text-xs">
             <a
-              href="https://learnislamiq.com"
+              href="https://www.learnislamiq.com"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors font-medium"
             >
               <Globe className="w-3.5 h-3.5 text-emerald-600" />
-              <span>https://learnislamiq.com</span>
+              <span>https://www.learnislamiq.com</span>
             </a>
             <a
               href="mailto:learnislamiq@gmail.com"
@@ -154,7 +154,7 @@ export const Footer: React.FC = () => {
             © 2026 IslamIQ — Learn • Quiz • Grow
           </p>
           <p className="text-[11px] text-slate-400">
-            Official Portal: <a href="https://learnislamiq.com" className="hover:underline text-emerald-700">https://learnislamiq.com</a> • Contact: <a href="mailto:learnislamiq@gmail.com" className="hover:underline text-emerald-700">learnislamiq@gmail.com</a>
+            Official Portal: <a href="https://www.learnislamiq.com" className="hover:underline text-emerald-700">https://www.learnislamiq.com</a> • Contact: <a href="mailto:learnislamiq@gmail.com" className="hover:underline text-emerald-700">learnislamiq@gmail.com</a>
           </p>
         </div>
       </div>

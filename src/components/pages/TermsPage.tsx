@@ -29,7 +29,7 @@ export const TermsPage: React.FC = () => {
             {isUrdu ? 'شرائط و ضوابط (Terms & Conditions)' : 'Terms & Conditions'}
           </h1>
           <p className="text-emerald-200 text-xs font-medium">
-            Last Updated: September 2026 • Platform: https://learnislamiq.com
+            Last Updated: September 2026 • Platform: https://www.learnislamiq.com
           </p>
           <p className="text-emerald-100/90 text-xs sm:text-sm leading-relaxed max-w-xl">
             Please read these Terms and Conditions carefully before using the IslamIQ website or mobile application.
@@ -58,7 +58,7 @@ export const TermsPage: React.FC = () => {
             <span>1. Acceptance of Terms</span>
           </h2>
           <p>
-            By accessing or using IslamIQ (available at <a href="https://learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline font-semibold">https://learnislamiq.com</a> or via our mobile apps), you confirm that you have read, understood, and agreed to be bound by these Terms &amp; Conditions and our Privacy Policy. If you do not agree, please discontinue using the service.
+            By accessing or using IslamIQ (available at <a href="https://www.learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline font-semibold">https://www.learnislamiq.com</a> or via our mobile apps), you confirm that you have read, understood, and agreed to be bound by these Terms &amp; Conditions and our Privacy Policy. If you do not agree, please discontinue using the service.
           </p>
         </section>
 
@@ -159,7 +159,7 @@ export const TermsPage: React.FC = () => {
           </p>
           <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-1">
             <p><strong>Brand:</strong> IslamIQ — Learn • Quiz • Grow</p>
-            <p><strong>Website:</strong> <a href="https://learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">https://learnislamiq.com</a></p>
+            <p><strong>Website:</strong> <a href="https://www.learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">https://www.learnislamiq.com</a></p>
             <p><strong>Email:</strong> <a href="mailto:learnislamiq@gmail.com" className="text-emerald-700 underline">learnislamiq@gmail.com</a></p>
           </div>
         </section>

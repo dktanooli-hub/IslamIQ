@@ -168,7 +168,7 @@ export const DailyQuranVerseHub: React.FC = () => {
                 <Volume2 className="w-4 h-4" />
               </button>
               <button
-                onClick={() => handleCopy(todayVerse.id, `${todayVerse.arabic}\n\n${todayVerse.translationUrdu}\n[سورۃ ${todayVerse.surahNameArabic} : ${todayVerse.ayahNumber}]\nhttps://learnislamiq.com`)}
+                onClick={() => handleCopy(todayVerse.id, `${todayVerse.arabic}\n\n${todayVerse.translationUrdu}\n[سورۃ ${todayVerse.surahNameArabic} : ${todayVerse.ayahNumber}]\nhttps://www.learnislamiq.com`)}
                 className="p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white"
                 title="Copy Verse"
               >
@@ -303,7 +303,7 @@ export const DailyQuranVerseHub: React.FC = () => {
                 </span>
 
                 <button
-                  onClick={() => handleCopy(verse.id, `${verse.arabic}\n\n${verse.translationUrdu}\n[Surah ${verse.surahNameEn} : ${verse.ayahNumber}]\nhttps://learnislamiq.com`)}
+                  onClick={() => handleCopy(verse.id, `${verse.arabic}\n\n${verse.translationUrdu}\n[Surah ${verse.surahNameEn} : ${verse.ayahNumber}]\nhttps://www.learnislamiq.com`)}
                   className="text-slate-500 hover:text-emerald-700 font-medium flex items-center gap-1"
                 >
                   <Copy className="w-3.5 h-3.5" />

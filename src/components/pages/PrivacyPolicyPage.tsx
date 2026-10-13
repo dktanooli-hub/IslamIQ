@@ -32,7 +32,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             Last Updated: September 2026 • Effective Date: September 2026
           </p>
           <p className="text-emerald-100/90 text-xs sm:text-sm leading-relaxed max-w-xl">
-            IslamIQ (https://learnislamiq.com) is committed to protecting your privacy and being transparent about our data handling practices.
+            IslamIQ (https://www.learnislamiq.com) is committed to protecting your privacy and being transparent about our data handling practices.
           </p>
         </div>
       </div>
@@ -106,7 +106,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             <span>4. Device &amp; Browser Information</span>
           </h2>
           <p>
-            Like virtually all modern web applications, when you visit https://learnislamiq.com, our web hosting servers may automatically receive basic technical data such as your IP address, browser type, operating system, and timestamp of access to ensure server security, prevent malicious attacks, and maintain uptime.
+            Like virtually all modern web applications, when you visit https://www.learnislamiq.com, our web hosting servers may automatically receive basic technical data such as your IP address, browser type, operating system, and timestamp of access to ensure server security, prevent malicious attacks, and maintain uptime.
           </p>
         </section>
 
@@ -117,7 +117,7 @@ export const PrivacyPolicyPage: React.FC = () => {
             <span>5. Cookies &amp; Advertising (Google AdSense &amp; Google AdMob)</span>
           </h2>
           <p>
-            <strong>Website Advertising (Google AdSense):</strong> When Google AdSense is enabled on https://learnislamiq.com, Google and its advertising partners use cookies (such as the DoubleClick cookie) to serve relevant advertisements to users based on prior visits to this website or other websites on the Internet.
+            <strong>Website Advertising (Google AdSense):</strong> When Google AdSense is enabled on https://www.learnislamiq.com, Google and its advertising partners use cookies (such as the DoubleClick cookie) to serve relevant advertisements to users based on prior visits to this website or other websites on the Internet.
           </p>
           <p>
             <strong>Mobile Application (Google AdMob):</strong> If you use IslamIQ via our mobile app, Google AdMob may use device advertising identifiers (such as Google Advertising ID) to serve non-intrusive advertisements.
@@ -197,7 +197,7 @@ export const PrivacyPolicyPage: React.FC = () => {
           </p>
           <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-1">
             <p><strong>Brand:</strong> IslamIQ — Learn • Quiz • Grow</p>
-            <p><strong>Website:</strong> <a href="https://learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">https://learnislamiq.com</a></p>
+            <p><strong>Website:</strong> <a href="https://www.learnislamiq.com" target="_blank" rel="noopener noreferrer" className="text-emerald-700 underline">https://www.learnislamiq.com</a></p>
             <p><strong>Email:</strong> <a href="mailto:learnislamiq@gmail.com" className="text-emerald-700 underline">learnislamiq@gmail.com</a></p>
           </div>
         </section>

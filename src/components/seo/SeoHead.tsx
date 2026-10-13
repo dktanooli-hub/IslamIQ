@@ -36,7 +36,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
   faqs = [],
   article,
 }) => {
-  const fullUrl = `https://learnislamiq.com${canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`}`;
+  const fullUrl = `https://www.learnislamiq.com${canonicalPath.startsWith('/') ? canonicalPath : `/${canonicalPath}`}`;
 
   const breadcrumbsJson = JSON.stringify(breadcrumbs);
   const faqsJson = JSON.stringify(faqs);
@@ -114,7 +114,7 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
       isPartOf: {
         '@type': 'WebSite',
         name: 'IslamIQ',
-        url: 'https://learnislamiq.com',
+        url: 'https://www.learnislamiq.com',
         description: 'Islamic learning platform for Kids and Adults. Learn • Quiz • Grow',
       },
     });
@@ -129,13 +129,13 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
             '@type': 'ListItem',
             position: 1,
             name: 'Home',
-            item: 'https://learnislamiq.com/',
+            item: 'https://www.learnislamiq.com/',
           },
           ...breadcrumbs.map((b, idx) => ({
             '@type': 'ListItem',
             position: idx + 2,
             name: b.name,
-            item: `https://learnislamiq.com${b.url.startsWith('/') ? b.url : `/${b.url}`}`,
+            item: `https://www.learnislamiq.com${b.url.startsWith('/') ? b.url : `/${b.url}`}`,
           })),
         ],
       });
@@ -169,15 +169,15 @@ export const SeoHead: React.FC<SeoHeadProps> = ({
         author: {
           '@type': 'Organization',
           name: 'IslamIQ Editorial Team',
-          url: 'https://learnislamiq.com/about',
+          url: 'https://www.learnislamiq.com/about',
         },
         publisher: {
           '@type': 'Organization',
           name: 'IslamIQ',
-          url: 'https://learnislamiq.com',
+          url: 'https://www.learnislamiq.com',
           logo: {
             '@type': 'ImageObject',
-            url: 'https://learnislamiq.com/logo.png',
+            url: 'https://www.learnislamiq.com/app-icon.png',
           },
         },
       });
