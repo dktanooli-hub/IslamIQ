@@ -682,5 +682,116 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     practicalTipUrdu: 'آج تین ایسی چھوٹی نعمتوں کو سوچیں جنہیں ہم روزانہ نظر انداز کر دیتے ہیں اور سچے دل سے اللہ کا شکر ادا کریں۔',
     practicalTipEn: 'Identify three overlooked everyday blessings today and whisper a sincere "Alhamdulillah" for each.',
     reference: 'Surah Ibrahim 14:7'
+  },
+  {
+    id: 'rem-63',
+    titleEn: 'The Sacred Weight of Gratitude in Marriage & Family',
+    titleUrdu: 'نکاح میں باہمی محبت، سکون اور قدردانی کی اہمیت',
+    bodyEn: 'Allah describes marital life as a profound sign of His mercy: "And of His signs is that He created for you from yourselves mates that you may find tranquility in them; and He placed between you affection and mercy." (Surah Ar-Rum 30:21). Mutual appreciation and forbearance transform a household into a sanctuary of peace.',
+    bodyUrdu: 'اللہ تعالیٰ نے میاں بیوی کے رشتے کو سکون، محبت اور رحمت کی نشانی قرار دیا ہے۔ ایک دوسرے کی چھوٹی موٹی غلطیوں کو معاف کرنا اور احسان شناسی کا مظاہرہ کرنا گھر کو جنت کا نمونہ بنا دیتا ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'آج اپنے شریکِ حیات یا والدین کی کسی قربانی پر مسکرا کر ان کا دلی شکریہ ادا کریں۔',
+    practicalTipEn: 'Consciously express genuine vocal appreciation to your spouse or family member for their everyday efforts.',
+    reference: 'Surah Ar-Rum 30:21, Sahih al-Bukhari 5066'
+  },
+  {
+    id: 'rem-64',
+    titleEn: 'Guarding Against Jealousy & Ill-Will (Hasad)',
+    titleUrdu: 'حسد، کینہ اور جلن سے دل کو پاک رکھنے کی فضیلت',
+    bodyEn: 'The Prophet ﷺ cautioned: "Beware of envy, for envy consumes good deeds just as fire consumes wood." (Sunan Abi Dawud 4903). When you see someone blessed with success, supplicate "Allahumma Barik Lahu" (May Allah bless him in it) instead of feeling resentment.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "حسد سے بچو، کیونکہ حسد نیکیوں کو اس طرح کھا جاتا ہے جیسے آگ لکڑی کو کھا جاتی ہے۔" جب کسی کے پاس کوئی نعمت دیکھیں تو حسد کے بجائے اس کے لیے برکت کی دعا مانگیں۔',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'کسی کی کامیابی یا خوشخبری سن کر دل سے "ما شاء اللہ لا قوۃ الا باللہ" کہیں اور خوش ہوں۔',
+    practicalTipEn: 'Whenever hearing of another person\'s success today, immediately pray for Allah to bless them further.',
+    reference: 'Sunan Abi Dawud 4903, Sahih Muslim 2564'
+  },
+  {
+    id: 'rem-65',
+    titleEn: 'The Quiet Dignity of Concealed Charity',
+    titleUrdu: 'خفیہ صدقہ اور دکھاوے سے پاک نیکی کا مقام',
+    bodyEn: 'Among the seven honored souls shaded beneath the Throne of Allah on the Day of Resurrection is: "A person who gives charity so secretly that his left hand does not know what his right hand has spent." (Sahih al-Bukhari 1423). True sincerity seeks only the gaze of the Creator.',
+    bodyUrdu: 'قیامت کے دن اللہ کے عرش کا سایہ پانے والوں میں وہ خوش نصیب بھی ہے جو اس طرح چھپا کر صدقہ دے کہ اس کے بائیں ہاتھ کو بھی خبر نہ ہو کہ دائیں ہاتھ نے کیا خرچ کیا۔ نیکی میں اخلاص ہی اس کی روح ہے۔',
+    category: 'Daily Dhikr',
+    practicalTipUrdu: 'آج کوئی ایسی نیکی یا صدقہ کریں جس کا علم آپ کے اور اللہ کے سوا کسی تیسرے کو نہ ہو۔',
+    practicalTipEn: 'Perform one secret act of charity or kindness today that remains strictly known only to Allah.',
+    reference: 'Sahih al-Bukhari 1423, Sahih Muslim 1031'
+  },
+  {
+    id: 'rem-66',
+    titleEn: 'Gentle Speech Diffuses Hostility (Al-Qawl al-Layyin)',
+    titleUrdu: 'نرم گفتگو جھگڑوں کو ختم کرتی ہے اور دلوں کو جوڑتی ہے',
+    bodyEn: 'Allah commands: "And tell My servants to say that which is best. Indeed, Satan induces dissension among them." (Surah Al-Isra 17:53). A soft answer turns away wrath, while a harsh word ignites unnecessary fire.',
+    bodyUrdu: 'قرآن کریم کا حکم ہے کہ لوگوں سے بہترین اور نرم انداز میں بات کی جائے، کیونکہ شیطان سخت لہجے کے ذریعے دلوں میں فاصلے اور فساد ڈالتا ہے۔ نرمی اختیار کرنا مومن کی طاقت ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'کسی بحث یا اختلاف کے موقع پر آواز دھیمی رکھیں اور جواب دینے میں جلد بازی نہ کریں۔',
+    practicalTipEn: 'If confronted with tension or disagreement today, intentionally lower your tone and respond with measured calm.',
+    reference: 'Surah Al-Isra 17:53, Sahih al-Bukhari 6094'
+  },
+  {
+    id: 'rem-67',
+    titleEn: 'Cherishing the Blessing of Health Before Sickness',
+    titleUrdu: 'تندرستی کی نعمت کی قدر اور بیماری سے پہلے شکر',
+    bodyEn: 'The Messenger of Allah ﷺ warned: "There are two blessings in which many people are deceived and incur loss: good health and free time." (Sahih al-Bukhari 6412). Use your physical strength today to worship, assist others, and secure provisions for eternity.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "دو نعمتیں ایسی ہیں جن کے بارے میں اکثر لوگ خسارے میں رہتے ہیں: صحت اور فراغت۔" بیماری اور کمزوری آنے سے پہلے اپنی توانائی کو نماز، خدمت اور نیکی کے کاموں میں لگائیں۔',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'صحت مند جسم کے ہر جوڑ کا صدقہ ادا کرنے کے لیے آج چاشت کے وقت دو رکعت نفل ادا کریں۔',
+    practicalTipEn: 'Offer two Rak\'ahs of Salatul Duha today as gratitude for the vitality and soundness of your limbs.',
+    reference: 'Sahih al-Bukhari 6412, Sahih Muslim 720'
+  },
+  {
+    id: 'rem-68',
+    titleEn: 'Sponsoring and Loving Orphans (Kafalat al-Yateem)',
+    titleUrdu: 'یتیم کی کفالت، دیکھ بھال اور شفقت کا بلند ترین مقام',
+    bodyEn: 'The Prophet ﷺ stated while joining his index and middle fingers together: "I and the person who looks after an orphan and provides for him will be like this in Paradise." (Sahih al-Bukhari 6005). Supporting an orphan softens hard hearts and draws unparalleled closeness to the Messenger ﷺ.',
+    bodyUrdu: 'رسول اللہ ﷺ نے اپنی شہادت کی انگلی اور بیچ کی انگلی ملا کر اشارہ کرتے ہوئے فرمایا: "میں اور یتیم کی کفالت کرنے والا جنت میں اس طرح ساتھ ہوں گے۔" یتیم کے سر پر شفقت کا ہاتھ پھیرنا دل کی سختی کو ختم کرتا ہے۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'اپنی استطاعت کے مطابق کسی یتیم بچے کی تعلیم یا کفالت میں ماہانہ حصہ ڈالنے کی نیت کریں۔',
+    practicalTipEn: 'Support or make a firm commitment to contribute towards an orphan sponsorship or child-care initiative.',
+    reference: 'Sahih al-Bukhari 6005, Sunan Abi Dawud 5141'
+  },
+  {
+    id: 'rem-69',
+    titleEn: 'Sincere Advice Given in Privacy (An-Naseehah)',
+    titleUrdu: 'خلوت میں محبت بھری نصیحت اور خیر خواہی کا اسلوب',
+    bodyEn: 'Imam ash-Shafi\'i noted: "Whoever admonishes his brother in private has counseled him and adorned him, but whoever admonishes him publicly has disgraced him." True Islamic counsel (An-Naseehah) stems from love, desiring goodness and preservation of dignity.',
+    bodyUrdu: 'کسی مسلمان بھائی کی غلطی پر سب کے سامنے ٹوکنا نصیحت نہیں بلکہ رسوائی ہے۔ حقیقی خیر خواہی یہ ہے کہ تنہائی میں خلوص اور نرمی کے ساتھ بات سمجھائی جائے تاکہ اس کی عزت نفس مجروح نہ ہو۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'اگر کسی کو اصلاح کی ضرورت ہو تو علیحدگی میں اچھے انداز سے بات کریں اور پردہ رکھیں۔',
+    practicalTipEn: 'If offering a correction to someone today, do so in total privacy with warm empathy, preserving their honor.',
+    reference: 'Sahih Muslim 55, Al-Adab Al-Mufrad'
+  },
+  {
+    id: 'rem-70',
+    titleEn: 'Making Dua for Those in Need of Guidance',
+    titleUrdu: 'مخالفین اور بھٹکے ہوؤں کے لیے بھی ہدایت کی دعا مانگنا',
+    bodyEn: 'When the Prophet ﷺ was injured at Ta\'if and in battle, he supplicated: "O Allah, guide my people, for indeed they do not know." (Sahih al-Bukhari 3477). Overcoming personal grievance with sincere supplication for others\' rectification is the zenith of prophetic character.',
+    bodyUrdu: 'جب طائف اور احد میں نبی کریم ﷺ کو ستایا گیا تو آپ ﷺ نے بددعا کے بجائے دعا فرمائی: "اے اللہ! میری قوم کو ہدایت دے، کیونکہ وہ جانتے نہیں۔" مومن بدلہ لینے کے بجائے لوگوں کی ہدایت کا طلبگار ہوتا ہے۔',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'آج اس شخص کے لیے بھی دل سے ہدایت اور خیر کی دعا مانگیں جس سے آپ کو کبھی تکلیف پہنچی ہو۔',
+    practicalTipEn: 'Say a sincere, quiet prayer of divine guidance and mercy for someone who has previously caused you grief.',
+    reference: 'Sahih al-Bukhari 3477, Sahih Muslim 1792'
+  },
+  {
+    id: 'rem-71',
+    titleEn: 'Walking with Dignity, Humility and Moderation',
+    titleUrdu: 'عاجزی، وقار اور چال ڈھال میں میانہ روی اختیار کرنا',
+    bodyEn: 'Luqman advised his son in the Quran: "And do not turn your cheek [in contempt] toward people and do not walk through the earth exultantly. Indeed, Allah does not like everyone self-deluded and boastful. And be moderate in your pace." (Surah Luqman 31:18-19). True nobility lies in unpretentious grace.',
+    bodyUrdu: 'حضرت لقمان نے اپنے بیٹے کو نصیحت کی کہ لوگوں سے منہ پھیر کر تکبر نہ کرو اور زمین پر اکڑ کر نہ چلو، اللہ تکبر کرنے والوں کو پسند نہیں فرماتا۔ اپنی رفتار اور انداز میں میانہ روی اور عاجزی رکھو۔',
+    category: 'Manners & Ethics',
+    practicalTipUrdu: 'چلتے پھرتے، بیٹھتے اور بات کرتے وقت عاجزی اور سادگی کو اپنا شعار بنائیں۔',
+    practicalTipEn: 'Carry yourself with humble posture, approachable warmth, and unpretentious dignity throughout the day.',
+    reference: 'Surah Luqman 31:18-19, Surah Al-Furqan 25:63'
+  },
+  {
+    id: 'rem-72',
+    titleEn: 'The Eternal Investment of Ongoing Charity (Sadaqah Jariyah)',
+    titleUrdu: 'صدقہ جاریہ، نفع بخش علم اور نیک اولاد کا دائمی اجر',
+    bodyEn: 'The Prophet ﷺ taught: "When a person dies, his deeds come to an end except for three: ongoing charity (Sadaqah Jariyah), beneficial knowledge, or a righteous child who prays for him." (Sahih Muslim 1631). Plant seeds today whose shade outlives your mortal stay.',
+    bodyUrdu: 'رسول اللہ ﷺ نے فرمایا: "جب انسان مر جاتا ہے تو اس کے اعمال کا سلسلہ منقطع ہو جاتا ہے سوائے تین چیزوں کے: صدقہ جاریہ، ایسا علم جس سے نفع اٹھایا جائے، اور نیک اولاد جو اس کے لیے دعا کرے۔"',
+    category: 'Spiritual Growth',
+    practicalTipUrdu: 'آج کسی کو مفید دینی بات سکھائیں یا کسی مسجد، پانی کے کنویں یا دینی کتاب کے لیے صدقہ کریں۔',
+    practicalTipEn: 'Teach a beneficial Sunnah to someone or contribute to a sustainable charity that yields perpetual reward.',
+    reference: 'Sahih Muslim 1631, Sunan an-Nasa\'i 3651'
   }
 ];
+

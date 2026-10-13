@@ -597,10 +597,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           FirestoreService.getReminders(),
           FirestoreService.getCategories()
         ]);
-        if (verses.length > 0) setQuranVerses(verses);
-        if (hadithsList.length > 0) setHadiths(hadithsList);
-        if (duasList.length > 0) setDuas(duasList);
-        if (remindersList.length > 0) setReminders(remindersList);
+        if (verses.length > 0) {
+          const vMap = new Map<string, QuranVerse>();
+          VERIFIED_QURAN_VERSES.forEach(v => vMap.set(v.id, v));
+          verses.forEach(v => vMap.set(v.id, v));
+          setQuranVerses(Array.from(vMap.values()));
+        }
+        if (hadithsList.length > 0) {
+          const hMap = new Map<string, HadithItem>();
+          VERIFIED_HADITHS.forEach(h => hMap.set(h.id, h));
+          hadithsList.forEach(h => hMap.set(h.id, h));
+          setHadiths(Array.from(hMap.values()));
+        }
+        if (duasList.length > 0) {
+          const dMap = new Map<string, DuaItem>();
+          VERIFIED_DUAS.forEach(d => dMap.set(d.id, d));
+          duasList.forEach(d => dMap.set(d.id, d));
+          setDuas(Array.from(dMap.values()));
+        }
+        if (remindersList.length > 0) {
+          const rMap = new Map<string, IslamicReminder>();
+          ISLAMIC_REMINDERS.forEach(r => rMap.set(r.id, r));
+          remindersList.forEach(r => rMap.set(r.id, r));
+          setReminders(Array.from(rMap.values()));
+        }
         if (remoteCats && remoteCats.length > 0) setCategories(remoteCats);
       } catch (err: any) {
         console.warn('[Firestore] Sync warning:', err);

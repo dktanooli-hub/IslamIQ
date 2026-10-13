@@ -744,5 +744,126 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     grade: 'Sahih',
     lessonUrdu: 'اگر کسی کی حق تلفی یا دل شکنی ہوئی ہو تو اسی دنیا میں معافی مانگ کر معاملہ صاف کر لیں تاکہ آخرت کے مؤاخذے سے بچ سکیں۔',
     lessonEn: 'Hasten to reconcile and seek pardon for any hurt caused to others in this world before account is taken on the Day of Resurrection.'
+  },
+  {
+    id: 'hadith-63',
+    arabic: 'مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ جَارَهُ، وَمَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيُكْرِمْ ضَيْفَهُ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "جو شخص اللہ اور یومِ آخرت پر ایمان رکھتا ہو اسے چاہیے کہ اچھی بات کہے یا خاموش رہے، اور جو اللہ اور یومِ آخرت پر ایمان رکھتا ہو وہ اپنے پڑوسی کی عزت کرے، اور جو اللہ اور یومِ آخرت پر ایمان رکھتا ہو وہ اپنے مہمان کا اکرام کرے۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Whoever believes in Allah and the Last Day should speak good or remain silent; and whoever believes in Allah and the Last Day should honor his neighbor; and whoever believes in Allah and the Last Day should honor his guest."',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '6018',
+    grade: 'Sahih',
+    lessonUrdu: 'اپنی زبان پر قابو رکھیں، پڑوسیوں کا خیال رکھیں اور مہمان کی کھلے دل سے خاطر تواضع کریں۔',
+    lessonEn: 'Guard your speech, treat neighbors with consistent kindness, and welcome guests with generous hospitality.'
+  },
+  {
+    id: 'hadith-64',
+    arabic: 'إِنَّ اللَّهَ لاَ يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "بیشک اللہ تمہاری صورتوں اور تمہارے مالوں کو نہیں دیکھتا، بلکہ وہ تمہارے دلوں اور تمہارے اعمال کو دیکھتا ہے۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Indeed, Allah does not look at your physical appearances or your wealth, but rather He looks into your hearts and your deeds."',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '2564',
+    grade: 'Sahih',
+    lessonUrdu: 'ظاہری نمائش کے بجائے باطن کی صفائی اور خلوصِ نیت پر توجہ دیں، کیونکہ اللہ نیتوں کا جاننے والا ہے۔',
+    lessonEn: 'Focus on purifying your intentions and spiritual integrity rather than external superficiality and worldly status.'
+  },
+  {
+    id: 'hadith-65',
+    arabic: 'مَنْ يَضْمَنْ لِي مَا بَيْنَ لَحْيَيْهِ وَمَا بَيْنَ رِجْلَيْهِ أَضْمَنْ لَهُ الْجَنَّةَ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "جو شخص مجھے اس چیز کی ضمانت دے جو اس کے دو جبڑوں کے درمیان ہے (زبان) اور اس کی جو اس کی دو ٹانگوں کے درمیان ہے (شرمگاہ)، تو میں اس کے لیے جنت کی ضمانت دیتا ہوں۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Whoever can guarantee for me what is between his two jawbones (the tongue) and what is between his two legs (chastity), I will guarantee for him Paradise."',
+    narrator: 'Sahl ibn Sa\'d (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '6474',
+    grade: 'Sahih',
+    lessonUrdu: 'جھوٹ، غیبت اور بدزبانی سے پرہیز کریں اور پاکدامنی و حیا کی حفاظت کریں تاکہ جنت کی بشارت حاصل ہو۔',
+    lessonEn: 'Exercise steadfast self-restraint over speech and maintain moral chastity to secure the promise of eternal Paradise.'
+  },
+  {
+    id: 'hadith-66',
+    arabic: 'مَنْ دَعَا إِلَى هُدًى كَانَ لَهُ مِنَ الأَجْرِ مِثْلُ أُجُورِ مَنْ تَبِعَهُ، لاَ يَنْقُصُ ذَلِكَ مِنْ أُجُورِهِمْ شَيْئًا',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "جس نے کسی کو ہدایت کی طرف بلایا تو اسے ان تمام لوگوں کے اجر جتنا ثواب ملے گا جو اس کی پیروی کریں گے، بغیر اس کے کہ ان کے اجر میں کوئی کمی ہو۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Whoever calls others to guidance will have a reward equal to the rewards of those who follow him, without their rewards being diminished in the least."',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '2674',
+    grade: 'Sahih',
+    lessonUrdu: 'دوسروں کو نیکی، نماز اور سچائی کی ترغیب دیں تاکہ ان کے ہر نیک عمل پر آپ کو بھی صدقہ جاریہ ملتا رہے۔',
+    lessonEn: 'Encourage others towards righteousness and sacred knowledge, benefiting from perpetual rewards as long as they practice it.'
+  },
+  {
+    id: 'hadith-67',
+    arabic: 'يَا مَعْشَرَ الشَّبَابِ، مَنِ اسْتَطَاعَ مِنْكُمُ الْبَاءَةَ فَلْيَتَزَوَّجْ، فَإِنَّهُ أَغَضُّ لِلْبَصَرِ وَأَحْصَنُ لِلْفَرْجِ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "اے نوجوانوں کی جماعت! تم میں سے جو نکاح کی طاقت رکھتا ہو وہ نکاح کرے، کیونکہ یہ نگاہ کو نیچی رکھنے اور شرمگاہ کی حفاظت کا سب سے بہترین ذریعہ ہے۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "O young people! Whoever among you has the means to marry, let him marry, for it is more protective of the gaze and more guarding of chastity."',
+    narrator: 'Abdullah ibn Mas\'ud (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '5066',
+    grade: 'Sahih',
+    lessonUrdu: 'نکاح کو آسان بنائیں اور اپنی نگاہوں اور کردار کو پاکیزہ رکھنے کے لیے سنتِ نبوی پر عمل کریں۔',
+    lessonEn: 'Facilitate honorable marriage to cultivate moral dignity, psychological tranquility, and protection from temptations.'
+  },
+  {
+    id: 'hadith-68',
+    arabic: 'مِنْ حُسْنِ إِسْلاَمِ الْمَرْءِ تَرْكُهُ مَا لاَ يَعْنِيهِ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "انسان کے اسلام کی خوبی اور حسن میں سے یہ ہے کہ وہ فضول اور لایعنی باتوں اور کاموں کو چھوڑ دے۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Part of the perfection of a person\'s Islam is leaving alone that which does not concern him."',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Jami at-Tirmidhi',
+    hadithNumber: '2317',
+    grade: 'Sahih',
+    lessonUrdu: 'اپنے وقت اور توانائی کو دوسروں کے معاملات میں دخل اندازی کے بجائے اپنی آخرت اور مفید کاموں میں لگائیں۔',
+    lessonEn: 'Avoid unproductive gossip, nosy curiosity, and wasteful pursuits, channeling your energy into beneficial endeavors.'
+  },
+  {
+    id: 'hadith-69',
+    arabic: 'مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "جو شخص علم کی تلاش میں کسی راستے پر چلتا ہے، اللہ تعالیٰ اس کے بدلے اس کے لیے جنت کا راستہ آسان فرما دیتا ہے۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Whoever treads a path in search of knowledge, Allah makes easy for him thereby a path to Paradise."',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '2699',
+    grade: 'Sahih',
+    lessonUrdu: 'دینی اور نفع بخش دنیاوی علم حاصل کرنے میں وقت لگائیں، یہ عمل جنت کے راستے کو ہموار کرتا ہے۔',
+    lessonEn: 'Actively pursue authentic religious and beneficial knowledge, for every step in learning bridges the way to Jannah.'
+  },
+  {
+    id: 'hadith-70',
+    arabic: 'انْصُرْ أَخَاكَ ظَالِمًا أَوْ مَظْلُومًا. قَالُوا: يَا رَسُولَ اللَّهِ هَذَا نَنْصُرُهُ مَظْلُومًا، فَكَيْفَ نَنْصُرُهُ ظَالِمًا؟ قَالَ: تَأْخُذُ فَوْقَ يَدَيْهِ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "اپنے بھائی کی مدد کرو خواہ وہ ظالم ہو یا مظلوم۔" صحابہ نے عرض کیا: یا رسول اللہ! مظلوم کی مدد تو ہم کریں، ظالم کی مدد کیسے کریں؟ فرمایا: "اس کا ہاتھ ظلم کرنے سے روک دو (یہی اس کی مدد ہے)۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Help your brother whether he is an oppressor or is oppressed." The companions asked: "O Messenger of Allah, we understand helping him if he is oppressed, but how do we help him if he is an oppressor?" He replied: "By restraining his hands from committing injustice."',
+    narrator: 'Anas ibn Malik (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '2444',
+    grade: 'Sahih',
+    lessonUrdu: 'مظلوم کا ساتھ دیں اور اگر کوئی اپنا شخص بھی ظلم کر رہا ہو تو اسے حکمت کے ساتھ ظلم سے روکیں۔',
+    lessonEn: 'Stand firmly against oppression by aiding the vulnerable and counseling the wrongdoer to halt their transgression.'
+  },
+  {
+    id: 'hadith-71',
+    arabic: 'الْزَمْ رِجْلَهَا فَثَمَّ الْجَنَّةُ',
+    textUrdu: 'ایک صحابی نے جہاد پر جانے کی اجازت چاہی تو رسول اللہ ﷺ نے پوچھا: کیا تمہاری ماں زندہ ہے؟ عرض کیا: جی ہاں۔ فرمایا: "پس اس کی خدمت میں لازم رہو، کیونکہ جنت اس کے قدموں کے پاس ہے۔"',
+    textEn: 'A companion sought permission to go on expedition, so the Prophet ﷺ asked: "Is your mother alive?" He answered: "Yes." The Prophet ﷺ said: "Then stay faithfully at her service, for Paradise lies beneath her feet."',
+    narrator: 'Mu\'awiyah ibn Jahima (RA)',
+    source: 'Sunan an-Nasa\'i',
+    hadithNumber: '3104',
+    grade: 'Sahih',
+    lessonUrdu: 'ماں کی خدمت، اطاعت اور ادب کو اپنی سب سے بڑی سعادت سمجھیں، اس کے قدموں کی خدمت میں جنت پوشیدہ ہے۔',
+    lessonEn: 'Devote yourself to serving, cherishing, and honoring your mother, recognizing her pleasure as the closest gate to Paradise.'
+  },
+  {
+    id: 'hadith-72',
+    arabic: 'كَلِمَتَانِ حَبِيبَتَانِ إِلَى الرَّحْمَنِ، خَفِيفَتَانِ عَلَى اللِّسَانِ، ثَقِيلَتَانِ فِي الْمِيزَانِ: سُبْحَانَ اللَّهِ وَبِحَمْدِهِ، سُبْحَانَ اللَّهِ الْعَظِيمِ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "دو کلمے ایسے ہیں جو زبان پر ہلکے، میزان میں بھاری، اور رحمن کو بہت پیارے ہیں: سُبْحَانَ اللَّهِ وَبِحَمْدِهِ ، سُبْحَانَ اللَّهِ الْعَظِيمِ۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "Two words are beloved to the Most Merciful, light on the tongue, and heavy on the scale: SubhanAllahi wa bihamdihi, SubhanAllahil-Azeem (Glory be to Allah and His praise, Glory be to Allah the Tremendous)."',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '6682',
+    grade: 'Sahih',
+    lessonUrdu: 'چلتے پھرتے اور فارغ اوقات میں ان مبارک کلمات کا ورد رکھیں تاکہ میزان میں نیکیوں کا پلڑا بھاری ہو۔',
+    lessonEn: 'Keep your tongue moist with these two concise invocations to earn immense divine love and heavy scales of good deeds.'
   }
 ];
+

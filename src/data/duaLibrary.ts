@@ -624,5 +624,126 @@ export const VERIFIED_DUAS: DuaItem[] = [
     reference: 'Sahih al-Bukhari 6316, Sahih Muslim 763',
     occasionUrdu: 'مسجد کی طرف جاتے ہوئے، نمازِ تہجد کے بعد اور بصیرت و حکمت طلب کرتے وقت۔',
     occasionEn: 'Recited when walking to the mosque, during Tahajjud, and for spiritual illumination.'
+  },
+  {
+    id: 'dua-53',
+    titleEn: 'Dua When Entering the Marketplace or Bazaar',
+    titleUrdu: 'بازار یا مارکیٹ میں داخل ہوتے وقت کی مسنون دعا',
+    arabic: 'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ وَهُوَ حَيٌّ لَا يَمُوتُ، بِيَدِهِ الْخَيْرُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ',
+    transliteration: 'La ilaha illallahu wahdahu la shareeka lah, lahul-mulku wa lahul-hamdu, yuhyee wa yumeetu wa Huwa hayyun la yamoot, biyadihil-khayru wa Huwa \'ala kulli shay\'in qadeer',
+    translationUrdu: 'اللہ کے سوا کوئی معبود نہیں، وہ اکیلا ہے، اس کا کوئی شریک نہیں، اسی کے لیے بادشاہی ہے اور اسی کے لیے تمام تعریفیں ہیں، وہی جلاتا اور مارتا ہے اور وہ ہمیشہ زندہ رہنے والا ہے جسے موت نہیں، اسی کے ہاتھ میں تمام بھلائی ہے اور وہ ہر چیز پر قادر ہے۔',
+    translationEn: 'There is no deity except Allah alone, with no partner. To Him belongs the dominion and to Him belongs all praise; He gives life and causes death, and He is the Living who does not die; in His Hand is all good, and He is over all things competent.',
+    reference: 'Jami at-Tirmidhi 3428 (Hasan)',
+    occasionUrdu: 'بازار، شاپنگ مال یا مارکیٹ میں داخل ہوتے وقت پڑھیں؛ اس سے دس لاکھ نیکیاں لکھی جاتی ہیں۔',
+    occasionEn: 'Recited upon entering a marketplace or shopping area, earning immense rewards and protection.'
+  },
+  {
+    id: 'dua-54',
+    titleEn: 'Dua for Relief from Debt, Anxiety, and Subjugation',
+    titleUrdu: 'قرض کی ادائیگی، پریشانی اور بے بسی سے نجات کی دعا',
+    arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ',
+    transliteration: 'Allahumma inni a\'udhu bika minal-hammi wal-hazani, wa a\'udhu bika minal-\'ajzi wal-kasali, wa a\'udhu bika minal-jubni wal-bukhli, wa a\'udhu bika min ghalabatid-dayni wa qahrir-rijal',
+    translationUrdu: 'اے اللہ! میں تیری پناہ مانگتا ہوں فکر و غم سے، تیری پناہ مانگتا ہوں بے بسی اور سستی سے، تیری پناہ مانگتا ہوں بزدلی اور کنجوسی سے، اور تیری پناہ مانگتا ہوں قرض کے بوجھ اور لوگوں کے دباؤ و تسلط سے۔',
+    translationEn: 'O Allah, I seek refuge in You from anxiety and grief, I seek refuge in You from inability and laziness, I seek refuge in You from cowardice and stinginess, and I seek refuge in You from the burden of debt and oppression of men.',
+    reference: 'Sunan Abi Dawud 1555 (Sahih)',
+    occasionUrdu: 'صبح اور شام کے وقت پڑھیں؛ حضرت ابو امامہؓ کا قرض اور پریشانی اس دعا کی برکت سے دور ہو گئی۔',
+    occasionEn: 'Supplicated morning and evening for liberation from overwhelming debts, financial stress, and grief.'
+  },
+  {
+    id: 'dua-55',
+    titleEn: 'Dua for Guidance, Piety, Chastity, and Self-Sufficiency',
+    titleUrdu: 'ہدایت، تقویٰ، پاکدامنی اور استغناء (قلبی بے نیازی) کی جامع دعا',
+    arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى',
+    transliteration: 'Allahumma inni as\'alukal-huda, wat-tuqa, wal-\'afafa, wal-ghina',
+    translationUrdu: 'اے اللہ! میں تجھ سے ہدایت، تقویٰ، پاکدامنی اور قلبی بے نیازی (غنا) کا سوال کرتا ہوں۔',
+    translationEn: 'O Allah, I ask You for guidance, piety, chastity, and spiritual and material self-sufficiency.',
+    reference: 'Sahih Muslim 2725',
+    occasionUrdu: 'نبی کریم ﷺ کی پسندیدہ جامع ترین دعاؤں میں سے ہے، ہر نماز کے بعد اور دعا مانگتے وقت پڑھیں۔',
+    occasionEn: 'A concise prophetic supplication gathering the essentials of spiritual virtue and upright living.'
+  },
+  {
+    id: 'dua-56',
+    titleEn: 'Dua for Steadfastness of the Heart in Faith',
+    titleUrdu: 'دل کو دین پر ثابت قدم رکھنے کی مسنون دعا',
+    arabic: 'يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ',
+    transliteration: 'Ya Muqallibal-quloobi thabbit qalbee \'ala deenik',
+    translationUrdu: 'اے دلوں کو پھیرنے والے! میرے دل کو اپنے دین پر ثابت قدم رکھ۔',
+    translationEn: 'O Turner of hearts, make my heart firm upon Your religion.',
+    reference: 'Jami at-Tirmidhi 2140, Sunan Ibn Majah 3834 (Sahih)',
+    occasionUrdu: 'رسول اللہ ﷺ کثرت سے یہ دعا مانگا کرتے تھے؛ فتنے کے دور میں ایمان کی حفاظت کے لیے نہایت مفید ہے۔',
+    occasionEn: 'The Prophet ﷺ recited this frequently to protect steadfastness in faith against fleeting worldly desires.'
+  },
+  {
+    id: 'dua-57',
+    titleEn: 'Dua When Looking in the Mirror (Beauty of Character)',
+    titleUrdu: 'آئینہ دیکھتے وقت حسنِ اخلاق کی مسنون دعا',
+    arabic: 'اللَّهُمَّ كَمَا حَسَّنْتَ خَلْقِي فَحَسِّنْ خُلُقِي',
+    transliteration: 'Allahumma kama hassanta khalqee fahassin khuluqee',
+    translationUrdu: 'اے اللہ! جس طرح تو نے میری صورت کو اچھا بنایا ہے، اسی طرح میرے اخلاق و کردار کو بھی خوبصورت بنا دے۔',
+    translationEn: 'O Allah, just as You have made my physical creation good, make my character and manners beautiful.',
+    reference: 'Sahih Ibn Hibban 959, Al-Albani (Sahih)',
+    occasionUrdu: 'آئینہ دیکھتے وقت یا لباس سنوارتے وقت پڑھنا مسنون ہے۔',
+    occasionEn: 'Recited upon viewing one\'s reflection, seeking inner beauty and noble character to match outward form.'
+  },
+  {
+    id: 'dua-58',
+    titleEn: 'Dua Between the Two Prostrations (Jalsah)',
+    titleUrdu: 'دو سجدوں کے درمیان بیٹھ کر پڑھنے کی مسنون دعا',
+    arabic: 'اللَّهُمَّ اغْفِرْ لِي، وَارْحَمْنِي، وَعَافِنِي، وَاهْدِنِي، وَارْزُقْنِي',
+    transliteration: 'Allahummaghfir lee, warhamnee, wa \'afinee, wahdinee, warzuqnee',
+    translationUrdu: 'اے اللہ! مجھے بخش دے، مجھ پر رحم فرما، مجھے عافیت عطا کر، مجھے سیدھی راہ دکھا، اور مجھے رزق عطا فرما۔',
+    translationEn: 'O Allah, forgive me, have mercy upon me, grant me well-being, guide me, and grant me sustenance.',
+    reference: 'Sunan Abi Dawud 850, Jami at-Tirmidhi 284 (Sahih)',
+    occasionUrdu: 'ہر نماز میں پہلے اور دوسرے سجدے کے درمیانی قعدہ (جلسہ) میں مسنون ہے۔',
+    occasionEn: 'Recited in the sitting posture (Jalsah) between the two Sujuds in every prayer.'
+  },
+  {
+    id: 'dua-59',
+    titleEn: 'Dua for the Sick When Visiting for Healing',
+    titleUrdu: 'بیمار پرسی کے وقت مریض کی شفایابی کے لیے 7 بار پڑھنے کی دعا',
+    arabic: 'أَسْأَلُ اللَّهَ الْعَظِيمَ رَبَّ الْعَرْشِ الْعَظِيمِ أَنْ يَشْفِيَكَ',
+    transliteration: 'As\'alullahal-\'Azeema Rabbal-\'Arshil-\'Azeemi an yashfiyak',
+    translationUrdu: 'میں عظمت والے اللہ، جو عرشِ عظیم کا مالک ہے، سے سوال کرتا ہوں کہ وہ تمہیں شفا عطا فرمائے۔',
+    translationEn: 'I ask Allah the Tremendous, Lord of the Magnificent Throne, that He cure and heal you.',
+    reference: 'Jami at-Tirmidhi 2083, Sunan Abi Dawud 3106 (Sahih)',
+    occasionUrdu: 'مریض کی عیادت کے وقت سات مرتبہ پڑھیں؛ نبی کریم ﷺ نے فرمایا کہ جو یہ دعا پڑھے گا مریض کو شفا نصیب ہو گی۔',
+    occasionEn: 'Recited 7 times when visiting a sick person to invoke Allah\'s comprehensive healing and comfort.'
+  },
+  {
+    id: 'dua-60',
+    titleEn: 'Dua for Making Difficult Tasks Easy',
+    titleUrdu: 'مشکل کام کو آسان بنانے کی بابرکت دعا',
+    arabic: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',
+    transliteration: 'Allahumma la sahla illa ma ja\'altahu sahla, wa Anta taj\'alul-hazna idha shi\'ta sahla',
+    translationUrdu: 'اے اللہ! کوئی کام آسان نہیں مگر وہی جسے تو آسان بنا دے، اور تو جب چاہتا ہے تو مشکل کو آسان فرما دیتا ہے۔',
+    translationEn: 'O Allah, there is nothing made easy except what You make easy, and You make hardship easy when You will.',
+    reference: 'Sahih Ibn Hibban 974, Al-Adhkar (Sahih)',
+    occasionUrdu: 'کسی بھی امتحان، مشکل کام، انٹرویو یا فیصلے کے وقت اللہ کی آسانی اور مدد طلب کرنے کے لیے پڑھیں۔',
+    occasionEn: 'Supplicated before undertaking any challenging endeavor, study, interview, or difficult trial.'
+  },
+  {
+    id: 'dua-61',
+    titleEn: 'Dua for Concluding a Gathering (Expiation of the Meeting)',
+    titleUrdu: 'مجلس یا گفتگو کے اختتام پر کفارہ مجلس کی مسنون دعا',
+    arabic: 'سُبْحَانَكَ اللَّهُمَّ وَبِحَمْدِكَ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَسْتَغْفِرُكَ وَأَتُوبُ إِلَيْكَ',
+    transliteration: 'Subhanakallahumma wa bihamdika, ash-hadu alla ilaha illa Anta, astaghfiruka wa atoobu ilayk',
+    translationUrdu: 'اے اللہ! تو اپنی حمد و ثنا کے ساتھ پاک ہے، میں گواہی دیتا ہوں کہ تیرے سوا کوئی معبود نہیں، میں تجھ سے بخشش چاہتا ہوں اور تیری ہی طرف توبہ کرتا ہوں۔',
+    translationEn: 'Glory be to You, O Allah, and with Your praise; I testify that there is no deity except You; I seek Your forgiveness and repent to You.',
+    reference: 'Jami at-Tirmidhi 3433, Sunan Abi Dawud 4859 (Sahih)',
+    occasionUrdu: 'کسی بھی محفل، میٹنگ، گفتگو یا پڑھائی کے اختتام پر پڑھیں؛ مجلس میں ہونے والی لغزشوں کا کفارہ بن جاتی ہے۔',
+    occasionEn: 'Recited at the conclusion of any meeting or sitting to expiate any unintended shortcomings or idle words.'
+  },
+  {
+    id: 'dua-62',
+    titleEn: 'Dua for the Protection of Children and Family from Evil',
+    titleUrdu: 'بچوں اور گھر والوں کو نظرِ بد اور برائی سے بچانے کے لیے مسنون دم',
+    arabic: 'أُعِيذُكَ بِكَلِمَاتِ اللَّهِ التَّامَّةِ، مِنْ كُلِّ شَيْطَانٍ وَهَامَّةٍ، وَمِنْ كُلِّ عَيْنٍ لَامَّةٍ',
+    transliteration: 'U\'eedhuka bikalimatil-lahit-tammati, min kulli shaytanin wa hammah, wa min kulli \'aynin lammah',
+    translationUrdu: 'میں تجھے اللہ کے مکمل کلمات کی پناہ میں دیتا ہوں، ہر شیطان اور زہریلے جانور سے، اور ہر لگ جانے والی بری نظر سے۔',
+    translationEn: 'I seek refuge for you in the perfect words of Allah, from every devil and poisonous creature, and from every envious, harmful eye.',
+    reference: 'Sahih al-Bukhari 3371',
+    occasionUrdu: 'بچوں پر پھونکنے اور ان کی حفاظت کے لیے صبح و شام اور باہر جاتے وقت پڑھنا سنتِ ابراہیمی و نبوی ہے۔',
+    occasionEn: 'Prophetic supplication recited over children and dependents for divine protection from the evil eye and harm.'
   }
 ];
+
