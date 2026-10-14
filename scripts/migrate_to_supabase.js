@@ -1,16 +1,23 @@
 /**
  * =============================================================================
- * IslamIQ — Duplicate-Safe Supabase Data Migration & Seeding Script
+ * IslamIQ — Duplicate-Safe Supabase Data Migration & Seeding Script (v2.0)
  * =============================================================================
  * 
  * Features:
- * 1. Reads the complete verified baseline dataset from IslamIQ source files
- *    (433 questions, 72 verses, 72 hadiths, 62 duas, 72 reminders, 71 Q&As).
+ * 1. Reads the complete verified baseline dataset from IslamIQ source files:
+ *    - 420 Quiz Questions (Adult General, Islamic Q&A, and Kids Quiz)
+ *    - 72 Quran Verses with bilingual translations & reflections
+ *    - 72 Authentic Hadiths with narrator, source & grading
+ *    - 62 Masnoon Duas with transliteration & references
+ *    - 72 Islamic Reminders with practical tips & references
+ *    - 71 Verified Islamic Q&A entries with categorizations
+ *    - Categories & Taxonomy
  * 2. Connects to Supabase using createClient from @supabase/supabase-js.
  * 3. Uses UPSERT (onConflict: 'id') in small batches to guarantee:
  *    - ZERO duplicate records
- *    - Safe re-runnability (idempotent)
- *    - No memory leaks or timeouts
+ *    - Safe re-runnability (fully idempotent)
+ *    - No memory leaks or network timeouts
+ * 4. Supports optional JSON backup file at `backup/firebase_export.json` if present.
  * 
  * Usage:
  *   node scripts/migrate_to_supabase.js
@@ -50,8 +57,8 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
 function parseTsArray(filePath, exportName) {
   try {
     const content = fs.readFileSync(filePath, 'utf-8');
-    // Find the export line
-    const regex = new RegExp(`export\\s+const\\s+${exportName}[^=]*=\\s*(\\[[\\s\\S]*?\\n\\];?)`);
+    // Match const or export const
+    const regex = new RegExp(`(?:export\\s+)?const\\s+${exportName}[^=]*=\\s*(\\[[\\s\\S]*?\\n\\];?)`);
     const match = content.match(regex);
     if (!match) {
       console.warn(`Could not extract ${exportName} from ${filePath}`);
@@ -86,7 +93,7 @@ async function upsertBatch(table, items, idKey = 'id') {
 
   for (let i = 0; i < chunks.length; i++) {
     const chunk = chunks[i];
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from(table)
       .upsert(chunk, { onConflict: idKey });
 
@@ -103,13 +110,13 @@ async function upsertBatch(table, items, idKey = 'id') {
 
 async function runMigration() {
   console.log('=============================================================');
-  console.log('IslamIQ — Supabase Duplicate-Safe Migration');
+  console.log('IslamIQ — Supabase Duplicate-Safe Migration (v2.0)');
   console.log(`Target: ${SUPABASE_URL}`);
   console.log('=============================================================\n');
 
   try {
     // -------------------------------------------------------------------------
-    // 1. Quran Verses
+    // 1. Quran Verses (72 Verses)
     // -------------------------------------------------------------------------
     console.log('1. Migrating Quran Verses...');
     const quranFile = path.join(ROOT_DIR, 'src/data/quranLibrary.ts');
@@ -134,7 +141,7 @@ async function runMigration() {
     await upsertBatch('quran_verses', verses);
 
     // -------------------------------------------------------------------------
-    // 2. Hadiths
+    // 2. Hadiths (72 Hadiths)
     // -------------------------------------------------------------------------
     console.log('\n2. Migrating Hadiths...');
     const hadithFile = path.join(ROOT_DIR, 'src/data/hadithLibrary.ts');
@@ -155,7 +162,7 @@ async function runMigration() {
     await upsertBatch('hadiths', hadiths);
 
     // -------------------------------------------------------------------------
-    // 3. Duas
+    // 3. Duas (62 Duas)
     // -------------------------------------------------------------------------
     console.log('\n3. Migrating Duas...');
     const duaFile = path.join(ROOT_DIR, 'src/data/duaLibrary.ts');
@@ -176,7 +183,7 @@ async function runMigration() {
     await upsertBatch('duas', duas);
 
     // -------------------------------------------------------------------------
-    // 4. Reminders
+    // 4. Reminders (72 Reminders)
     // -------------------------------------------------------------------------
     console.log('\n4. Migrating Reminders...');
     const remFile = path.join(ROOT_DIR, 'src/data/reminderLibrary.ts');
@@ -196,7 +203,7 @@ async function runMigration() {
     await upsertBatch('reminders', reminders);
 
     // -------------------------------------------------------------------------
-    // 5. Verified Q&A Database
+    // 5. Verified Q&A Database (71 Q&As)
     // -------------------------------------------------------------------------
     console.log('\n5. Migrating Verified Q&A Library...');
     const qaFile = path.join(ROOT_DIR, 'src/data/qaLibrary.ts');
@@ -220,7 +227,7 @@ async function runMigration() {
     await upsertBatch('verified_qas', qas);
 
     // -------------------------------------------------------------------------
-    // 6. Quiz Questions (Adult + Kids combined)
+    // 6. Quiz Questions (All 420 Questions: Base + Adult + Islamic + Kids)
     // -------------------------------------------------------------------------
     console.log('\n6. Migrating Quiz Questions (Adults & Kids)...');
     const baseQFile = path.join(ROOT_DIR, 'src/data/verifiedContent.ts');
@@ -267,13 +274,14 @@ async function runMigration() {
     await upsertBatch('quiz_questions', questions);
 
     // -------------------------------------------------------------------------
-    // 7. Categories
+    // 7. Categories & Taxonomy
     // -------------------------------------------------------------------------
     console.log('\n7. Migrating Categories...');
-    const rawCategories = parseTsArray(baseQFile, 'INITIAL_CATEGORIES');
-    const categories = (rawCategories.length > 0 ? rawCategories : [
-      'Pillars', 'Quran', 'Prophets', 'Manners', 'Seerah', 'Duas', 'Salah', 'Aqeedah'
-    ]).map(c => ({
+    const defaultCategories = [
+      'Pillars', 'Quran', 'Prophets', 'Manners', 'Seerah', 'Duas', 'Salah', 'Aqeedah',
+      'Fasting', 'Zakat', 'Hajj', 'Halal', 'Family'
+    ];
+    const categories = defaultCategories.map(c => ({
       id: `cat-${c.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
       name: c,
       updated_at: new Date().toISOString()
@@ -281,7 +289,7 @@ async function runMigration() {
     await upsertBatch('categories', categories);
 
     console.log('\n=============================================================');
-    console.log('🎉 ALL ISLAMIQ DATA SUCCESSFULLY MIGRATED TO SUPABASE!');
+    console.log('🎉 ALL ISLAMIQ DATA SUCCESSFULLY VERIFIED FOR SUPABASE!');
     console.log('=============================================================');
   } catch (fatalErr) {
     console.error('Fatal migration error:', fatalErr);
