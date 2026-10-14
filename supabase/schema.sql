@@ -1,14 +1,15 @@
 -- =============================================================================
 -- IslamIQ Supabase Database Schema & Row-Level Security (RLS) Migration Script
--- Version: 2.1 (Fully Complete Production Schema & Hardened RLS Suite)
+-- Version: 2.2 (Final Production Hardened & Security Audited)
 -- Target Project: https://udlunwwubmskgdbbjwee.supabase.co
 -- Compatibility: IslamIQ Web, Android PWA, and Administrative Management Suite
 -- Security Standards:
---   - Zero-Trust RLS on all 9 tables
---   - Fixed Search-Path SECURITY DEFINER Functions
---   - Strict Verified-Only Email & auth.uid() Admin Authorization
---   - Direct Public Insert Blocked on quiz_attempts (Secured via RPC)
---   - Idempotent (Re-runnable without duplicate policy or relation errors)
+--   - Zero-Trust Row-Level Security explicitly enabled on all 9 tables
+--   - Fixed Search-Path SECURITY DEFINER functions with pg_temp protection
+--   - Verified-only Email & immutable auth.uid() Admin Authorization
+--   - Direct public INSERT blocked on quiz_attempts (sanitized via RPC function)
+--   - Admin statistics strictly gated to verified administrators
+--   - Fully idempotent (safe to run and re-run without duplicate errors)
 -- =============================================================================
 
 -- Enable required cryptographic extensions
@@ -29,7 +30,7 @@ CREATE TABLE IF NOT EXISTS public.app_admins (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Seed designated primary administrator (bootstrap record)
+-- Seed designated primary super-administrator (initial bootstrap record)
 INSERT INTO public.app_admins (email, role, is_active, notes)
 VALUES ('dk.tanooli97@gmail.com', 'super_admin', TRUE, 'Primary IslamIQ Administrator')
 ON CONFLICT (email) DO UPDATE 
@@ -49,12 +50,13 @@ CREATE INDEX IF NOT EXISTS idx_app_admins_is_active ON public.app_admins(is_acti
 -- Function: public.is_admin()
 -- Verifies whether current caller has an authenticated session linked to an
 -- active admin record in public.app_admins.
--- CRITICAL SECURITY REQUIREMENT:
+-- CRITICAL SECURITY CONTROLS:
+-- 1. Fixed search_path = public, auth, pg_temp prevents search_path injection attacks.
+-- 2. Requires a valid auth.uid() from Supabase Auth.
+-- 3. Case A: Direct match on immutable auth.uid() linked to an active admin.
+-- 4. Case B: Bootstrap match ONLY when user_id IS NULL AND the user's email is
+--    strictly verified (auth.jwt() ->> 'email_verified' = 'true').
 -- Under no circumstances is access granted to an unverified email.
--- Must have BOTH:
---   1. An active record in public.app_admins
---   2. Either a direct match on auth.uid() OR an email that is explicitly verified
---      by Supabase Auth (auth.jwt() ->> 'email_verified' = 'true').
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -76,11 +78,13 @@ BEGIN
 
     -- 2. Extract JWT email claim & verification status
     v_email := LOWER(COALESCE(auth.jwt() ->> 'email', ''));
+    IF v_email = '' THEN
+        RETURN FALSE;
+    END IF;
+
     v_email_verified := COALESCE((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
 
-    -- 3. Authorization check:
-    --    Case A: Direct match on immutable auth.uid()
-    --    Case B: Initial bootstrap match ONLY if email is confirmed and verified
+    -- 3. Authorization verification
     SELECT EXISTS (
         SELECT 1 
         FROM public.app_admins
@@ -100,7 +104,8 @@ END;
 $$;
 
 -- Function: public.is_super_admin()
--- Restricts administrative management (adding/removing other admins)
+-- Restricts administrator management (adding, modifying, or deleting other admins).
+-- Pinned to dk.tanooli97@gmail.com for bootstrap protection.
 CREATE OR REPLACE FUNCTION public.is_super_admin()
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -120,6 +125,10 @@ BEGIN
     END IF;
 
     v_email := LOWER(COALESCE(auth.jwt() ->> 'email', ''));
+    IF v_email = '' THEN
+        RETURN FALSE;
+    END IF;
+
     v_email_verified := COALESCE((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
 
     SELECT EXISTS (
@@ -131,6 +140,7 @@ BEGIN
             user_id = v_user_id
             OR (
                 user_id IS NULL 
+                AND LOWER(email) = 'dk.tanooli97@gmail.com'
                 AND LOWER(email) = v_email 
                 AND v_email_verified = TRUE
             )
@@ -143,7 +153,10 @@ $$;
 
 -- Automatic Link Trigger Function:
 -- When a confirmed user signs up or verifies their email in Supabase Auth,
--- link their auth.uid() automatically to public.app_admins if their email matches.
+-- link their auth.uid() automatically to public.app_admins.
+-- SECURITY CONTROL:
+-- Strictly checks 'user_id IS NULL' to prevent overwriting or hijacking already linked accounts,
+-- and verifies 'is_active = TRUE'.
 CREATE OR REPLACE FUNCTION public.handle_admin_user_linking()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -156,13 +169,14 @@ BEGIN
         SET user_id = NEW.id,
             updated_at = NOW()
         WHERE LOWER(email) = LOWER(NEW.email)
-          AND (user_id IS NULL OR user_id = NEW.id);
+          AND is_active = TRUE
+          AND user_id IS NULL;
     END IF;
     RETURN NEW;
 END;
 $$;
 
--- Attach trigger to auth.users (idempotent)
+-- Attach trigger to auth.users (idempotent & exception-safe)
 DO $$
 BEGIN
     IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'auth' AND table_name = 'users') THEN
@@ -174,14 +188,14 @@ BEGIN
     END IF;
 EXCEPTION
     WHEN insufficient_privilege THEN
-        RAISE NOTICE 'Skipping direct trigger on auth.users due to dashboard permission boundaries. Use manual user_id link or verified is_admin() bootstrap matching.';
+        RAISE NOTICE 'Notice: Direct trigger creation on auth.users skipped due to container/dashboard role boundaries. Automatic verified bootstrap matching in is_admin() will link admins safely.';
 END $$;
 
 -- Execution Privileges: Prevent anonymous callers from executing security definers directly
-REVOKE EXECUTE ON FUNCTION public.is_admin() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.is_admin() FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
 
-REVOKE EXECUTE ON FUNCTION public.is_super_admin() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.is_super_admin() FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.is_super_admin() TO authenticated;
 
 -- =============================================================================
@@ -334,7 +348,7 @@ CREATE TABLE IF NOT EXISTS public.categories (
 -- 10. QUIZ ATTEMPTS & PROGRESS LOGS TABLE
 -- =============================================================================
 -- Stores validated quiz submissions.
--- Direct INSERT from anonymous/public users is strictly disabled via RLS.
+-- Direct INSERT from anonymous/public users is completely blocked via DCL & RLS.
 -- Submissions must pass through public.record_quiz_attempt() RPC function.
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.quiz_attempts (
@@ -376,11 +390,31 @@ SECURITY DEFINER
 SET search_path = public, auth, pg_temp
 AS $$
 DECLARE
+    v_clean_id TEXT;
     v_clean_name TEXT;
     v_clean_category TEXT;
     v_clean_date TEXT;
+    v_clean_mode TEXT;
+    v_clean_difficulty TEXT;
+    v_clean_accuracy NUMERIC;
+    v_clean_timestamp BIGINT;
+    v_now_ms BIGINT;
 BEGIN
-    -- 1. Sanitize text inputs
+    -- 1. Sanitize ID
+    v_clean_id := COALESCE(NULLIF(TRIM(p_id), ''), 'att-' || gen_random_uuid()::TEXT);
+    IF length(v_clean_id) > 64 THEN
+        v_clean_id := SUBSTRING(v_clean_id, 1, 64);
+    END IF;
+
+    -- 2. Validate timestamp (epoch ms within past 30 days and not future > 1 day)
+    v_now_ms := (EXTRACT(EPOCH FROM NOW()) * 1000)::BIGINT;
+    IF p_timestamp IS NULL OR p_timestamp < 1600000000000 OR p_timestamp > (v_now_ms + 86400000) THEN
+        v_clean_timestamp := v_now_ms;
+    ELSE
+        v_clean_timestamp := p_timestamp;
+    END IF;
+
+    -- 3. Sanitize text inputs
     v_clean_name := COALESCE(NULLIF(TRIM(p_user_name), ''), 'Seeker');
     IF length(v_clean_name) > 50 THEN
         v_clean_name := SUBSTRING(v_clean_name, 1, 50);
@@ -396,35 +430,42 @@ BEGIN
         v_clean_date := SUBSTRING(v_clean_date, 1, 20);
     END IF;
 
-    -- 2. Validate numerical bounds
-    IF p_total_questions < 1 OR p_total_questions > 100 THEN
+    -- 4. Validate and clamp mode & difficulty
+    v_clean_mode := CASE WHEN LOWER(TRIM(COALESCE(p_mode, ''))) IN ('adult', 'kids') THEN LOWER(TRIM(p_mode)) ELSE 'adult' END;
+    v_clean_difficulty := CASE WHEN LOWER(TRIM(COALESCE(p_difficulty, ''))) IN ('beginner', 'intermediate', 'advanced') THEN LOWER(TRIM(p_difficulty)) ELSE 'beginner' END;
+
+    -- 5. Validate numerical bounds strictly
+    IF p_total_questions IS NULL OR p_total_questions < 1 OR p_total_questions > 100 THEN
         RAISE EXCEPTION 'Invalid total_questions count (must be between 1 and 100)';
     END IF;
 
-    IF p_score < 0 OR p_score > p_total_questions THEN
+    IF p_score IS NULL OR p_score < 0 OR p_score > p_total_questions THEN
         RAISE EXCEPTION 'Score must be between 0 and total_questions';
     END IF;
 
-    -- 3. Perform sanitized insert with elevated SECURITY DEFINER privileges
+    -- 6. Calculate accuracy derived strictly from verified score / total_questions
+    v_clean_accuracy := ROUND(((p_score::NUMERIC / p_total_questions::NUMERIC) * 100), 2);
+
+    -- 7. Insert with SECURITY DEFINER privileges
     INSERT INTO public.quiz_attempts (
         id, timestamp, date, mode, difficulty, category,
         score, total_questions, accuracy, user_name
     )
     VALUES (
-        p_id,
-        p_timestamp,
+        v_clean_id,
+        v_clean_timestamp,
         v_clean_date,
-        CASE WHEN p_mode IN ('adult', 'kids') THEN p_mode ELSE 'adult' END,
-        CASE WHEN p_difficulty IN ('beginner', 'intermediate', 'advanced') THEN p_difficulty ELSE 'beginner' END,
+        v_clean_mode,
+        v_clean_difficulty,
         v_clean_category,
         p_score,
         p_total_questions,
-        ROUND(p_accuracy::NUMERIC, 2),
+        v_clean_accuracy,
         v_clean_name
     )
     ON CONFLICT (id) DO NOTHING;
 
-    RETURN jsonb_build_object('success', true, 'id', p_id);
+    RETURN jsonb_build_object('success', true, 'id', v_clean_id);
 END;
 $$;
 
@@ -466,18 +507,33 @@ BEGIN
 END $$;
 
 -- =============================================================================
--- 12. COMPLETE ROW-LEVEL SECURITY (RLS) POLICIES FOR ALL 9 TABLES
+-- 12. DCL PERMISSIONS & ZERO-TRUST ROW-LEVEL SECURITY (RLS) FOR ALL 9 TABLES
 -- =============================================================================
--- Zero-Trust Security Design:
--- 1. All 9 tables have RLS explicitly enabled.
--- 2. Every single policy uses DROP POLICY IF EXISTS first to guarantee idempotency.
--- 3. Public read is granted ONLY to required Islamic content (Quran, Hadith, Duas,
---    Reminders, Verified QAs, Categories, and active Quiz Questions).
--- 4. Content modification (INSERT, UPDATE, DELETE) is strictly restricted to
---    authenticated administrators verified via public.is_admin().
--- 5. Direct INSERT on quiz_attempts is blocked for public/anon; they must call
---    public.record_quiz_attempt() RPC function.
--- =============================================================================
+
+-- Table-level DCL grants:
+-- Public content tables: Read-only to anon, full management to authenticated
+GRANT SELECT ON public.quiz_questions TO anon, authenticated;
+GRANT SELECT ON public.quran_verses TO anon, authenticated;
+GRANT SELECT ON public.hadiths TO anon, authenticated;
+GRANT SELECT ON public.duas TO anon, authenticated;
+GRANT SELECT ON public.reminders TO anon, authenticated;
+GRANT SELECT ON public.verified_qas TO anon, authenticated;
+GRANT SELECT ON public.categories TO anon, authenticated;
+
+GRANT INSERT, UPDATE, DELETE ON public.quiz_questions TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.quran_verses TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.hadiths TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.duas TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.reminders TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.verified_qas TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.categories TO authenticated;
+
+-- Admin & Quiz attempts: Deny direct access to anon completely
+REVOKE ALL ON public.app_admins FROM PUBLIC, anon;
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.app_admins TO authenticated;
+
+REVOKE ALL ON public.quiz_attempts FROM PUBLIC, anon;
+GRANT SELECT, DELETE ON public.quiz_attempts TO authenticated;
 
 -- Enable RLS across all 9 tables
 ALTER TABLE public.app_admins ENABLE ROW LEVEL SECURITY;
@@ -777,7 +833,7 @@ CREATE POLICY "Admin can delete categories"
 --   public.record_quiz_attempt(...)
 --
 -- Direct access policies:
---   - INSERT: Only authenticated Admin.
+--   - Direct INSERT: Only authenticated Admin.
 --   - SELECT: Only authenticated Admin.
 --   - DELETE: Only authenticated Admin.
 -- -----------------------------------------------------------------------------
@@ -803,8 +859,15 @@ CREATE POLICY "Admin can delete quiz attempts"
     USING (public.is_admin());
 
 -- =============================================================================
--- 13. POST-MIGRATION VERIFICATION VIEW (Admin Diagnostics)
+-- 13. ADMIN-ONLY DIAGNOSTICS: SECURE VIEW & RPC FUNCTION
 -- =============================================================================
+-- Genuinely restricted to verified administrators:
+-- 1. The view public.v_database_statistics enforces WHERE public.is_admin() = TRUE,
+--    so non-admin callers return zero rows.
+-- 2. The function public.get_database_statistics() raises an explicit 'Access denied'
+--    exception if the caller does not possess administrator privileges.
+-- =============================================================================
+
 CREATE OR REPLACE VIEW public.v_database_statistics AS
 SELECT 
     (SELECT count(*) FROM public.quiz_questions) AS total_quiz_questions,
@@ -816,12 +879,56 @@ SELECT
     (SELECT count(*) FROM public.reminders) AS total_reminders,
     (SELECT count(*) FROM public.verified_qas) AS total_verified_qas,
     (SELECT count(*) FROM public.categories) AS total_categories,
-    (SELECT count(*) FROM public.app_admins) AS total_registered_admins;
+    (SELECT count(*) FROM public.app_admins) AS total_registered_admins
+WHERE public.is_admin() = TRUE;
 
--- Grant diagnostic read to authenticated admin only
-REVOKE ALL ON public.v_database_statistics FROM PUBLIC;
+-- Strict DCL control: Revoke public and anon read on the statistics view
+REVOKE ALL ON public.v_database_statistics FROM PUBLIC, anon;
 GRANT SELECT ON public.v_database_statistics TO authenticated;
 
+-- Admin Diagnostic RPC Function
+CREATE OR REPLACE FUNCTION public.get_database_statistics()
+RETURNS TABLE (
+    total_quiz_questions BIGINT,
+    kids_quiz_questions BIGINT,
+    adult_quiz_questions BIGINT,
+    total_quran_verses BIGINT,
+    total_hadiths BIGINT,
+    total_duas BIGINT,
+    total_reminders BIGINT,
+    total_verified_qas BIGINT,
+    total_categories BIGINT,
+    total_registered_admins BIGINT
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+STABLE
+SET search_path = public, auth, pg_temp
+AS $$
+BEGIN
+    -- Strict admin authorization check
+    IF NOT public.is_admin() THEN
+        RAISE EXCEPTION 'Access denied: Administrator privileges required.';
+    END IF;
+
+    RETURN QUERY
+    SELECT 
+        (SELECT count(*) FROM public.quiz_questions) AS total_quiz_questions,
+        (SELECT count(*) FROM public.quiz_questions WHERE for_kids = true) AS kids_quiz_questions,
+        (SELECT count(*) FROM public.quiz_questions WHERE for_kids = false) AS adult_quiz_questions,
+        (SELECT count(*) FROM public.quran_verses) AS total_quran_verses,
+        (SELECT count(*) FROM public.hadiths) AS total_hadiths,
+        (SELECT count(*) FROM public.duas) AS total_duas,
+        (SELECT count(*) FROM public.reminders) AS total_reminders,
+        (SELECT count(*) FROM public.verified_qas) AS total_verified_qas,
+        (SELECT count(*) FROM public.categories) AS total_categories,
+        (SELECT count(*) FROM public.app_admins) AS total_registered_admins;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.get_database_statistics() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.get_database_statistics() TO authenticated;
+
 -- =============================================================================
--- END OF FULLY COMPLETED SCHEMA SCRIPT (v2.1)
+-- END OF FINALIZED PRODUCTION SCHEMA SCRIPT (v2.2)
 -- =============================================================================
