@@ -1,11 +1,14 @@
 -- =============================================================================
 -- IslamIQ Supabase Database Schema & Row-Level Security (RLS) Migration Script
--- Version: 2.0 (Hardened Production & Security Reviewed)
+-- Version: 2.1 (Fully Complete Production Schema & Hardened RLS Suite)
 -- Target Project: https://udlunwwubmskgdbbjwee.supabase.co
 -- Compatibility: IslamIQ Web, Android PWA, and Administrative Management Suite
--- Security Standard: Zero-Trust RLS, Fixed Search-Path SECURITY DEFINER,
---                    Verified auth.uid() Linking, Input Validation Constraints,
---                    Fully Idempotent Execution (Repeatable without duplicate errors)
+-- Security Standards:
+--   - Zero-Trust RLS on all 9 tables
+--   - Fixed Search-Path SECURITY DEFINER Functions
+--   - Strict Verified-Only Email & auth.uid() Admin Authorization
+--   - Direct Public Insert Blocked on quiz_attempts (Secured via RPC)
+--   - Idempotent (Re-runnable without duplicate policy or relation errors)
 -- =============================================================================
 
 -- Enable required cryptographic extensions
@@ -15,14 +18,6 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- =============================================================================
 -- 1. ADMIN AUTHORIZATION & ROLES TABLE
 -- =============================================================================
--- Stores verified administrators linked directly to Supabase auth.users(id).
--- Authorization requires BOTH:
---   1. An active record in this table.
---   2. A verified Supabase Auth user whose auth.uid() matches user_id
---      and whose email is confirmed by Supabase Auth.
--- Mere text matching of unverified email in JWT is strictly rejected.
--- =============================================================================
-
 CREATE TABLE IF NOT EXISTS public.app_admins (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID UNIQUE REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -34,9 +29,7 @@ CREATE TABLE IF NOT EXISTS public.app_admins (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Seed designated primary super-administrator
--- Initial bootstrap record: user_id is linked automatically upon first confirmed login
--- or can be linked immediately via Supabase Dashboard Auth UUID.
+-- Seed designated primary administrator (bootstrap record)
 INSERT INTO public.app_admins (email, role, is_active, notes)
 VALUES ('dk.tanooli97@gmail.com', 'super_admin', TRUE, 'Primary IslamIQ Administrator')
 ON CONFLICT (email) DO UPDATE 
@@ -50,13 +43,18 @@ CREATE INDEX IF NOT EXISTS idx_app_admins_email_lower ON public.app_admins(LOWER
 CREATE INDEX IF NOT EXISTS idx_app_admins_is_active ON public.app_admins(is_active);
 
 -- =============================================================================
--- 2. SECURE AUTHORIZATION FUNCTIONS (Fixed search_path & Restricted Grants)
+-- 2. SECURE AUTHORIZATION FUNCTIONS (Fixed search_path & Verified Email Only)
 -- =============================================================================
 
 -- Function: public.is_admin()
 -- Verifies whether current caller has an authenticated session linked to an
 -- active admin record in public.app_admins.
--- Fixed search_path prevents search_path injection/hijacking attacks.
+-- CRITICAL SECURITY REQUIREMENT:
+-- Under no circumstances is access granted to an unverified email.
+-- Must have BOTH:
+--   1. An active record in public.app_admins
+--   2. Either a direct match on auth.uid() OR an email that is explicitly verified
+--      by Supabase Auth (auth.jwt() ->> 'email_verified' = 'true').
 CREATE OR REPLACE FUNCTION public.is_admin()
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -80,9 +78,9 @@ BEGIN
     v_email := LOWER(COALESCE(auth.jwt() ->> 'email', ''));
     v_email_verified := COALESCE((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
 
-    -- 3. Check for authorization:
-    --    Case A: Direct match on immutable auth user_id
-    --    Case B: Pending bootstrap record matching confirmed email
+    -- 3. Authorization check:
+    --    Case A: Direct match on immutable auth.uid()
+    --    Case B: Initial bootstrap match ONLY if email is confirmed and verified
     SELECT EXISTS (
         SELECT 1 
         FROM public.app_admins
@@ -92,7 +90,7 @@ BEGIN
             OR (
                 user_id IS NULL 
                 AND LOWER(email) = v_email 
-                AND (v_email_verified = TRUE OR auth.role() = 'authenticated')
+                AND v_email_verified = TRUE
             )
           )
     ) INTO v_is_authorized;
@@ -134,7 +132,7 @@ BEGIN
             OR (
                 user_id IS NULL 
                 AND LOWER(email) = v_email 
-                AND (v_email_verified = TRUE OR auth.role() = 'authenticated')
+                AND v_email_verified = TRUE
             )
           )
     ) INTO v_is_super;
@@ -176,8 +174,7 @@ BEGIN
     END IF;
 EXCEPTION
     WHEN insufficient_privilege THEN
-        -- Notice for environments where direct triggers on auth schema are restricted
-        RAISE NOTICE 'Skipping direct trigger on auth.users due to dashboard permission boundaries. Use manual user_id link or is_admin() bootstrap matching.';
+        RAISE NOTICE 'Skipping direct trigger on auth.users due to dashboard permission boundaries. Use manual user_id link or verified is_admin() bootstrap matching.';
 END $$;
 
 -- Execution Privileges: Prevent anonymous callers from executing security definers directly
@@ -334,13 +331,11 @@ CREATE TABLE IF NOT EXISTS public.categories (
 );
 
 -- =============================================================================
--- 10. QUIZ ATTEMPTS & PROGRESS LOGS TABLE (Hardened Input Validation)
+-- 10. QUIZ ATTEMPTS & PROGRESS LOGS TABLE
 -- =============================================================================
--- Protects against malicious/untrusted public submissions:
---   - Bounded numerical ranges (score, total_questions, accuracy)
---   - Bounded string lengths (user_name, category)
---   - Valid mode & difficulty enumeration
---   - Valid positive timestamp
+-- Stores validated quiz submissions.
+-- Direct INSERT from anonymous/public users is strictly disabled via RLS.
+-- Submissions must pass through public.record_quiz_attempt() RPC function.
 -- =============================================================================
 CREATE TABLE IF NOT EXISTS public.quiz_attempts (
     id TEXT PRIMARY KEY,
@@ -362,7 +357,7 @@ CREATE INDEX IF NOT EXISTS idx_quiz_attempts_mode ON public.quiz_attempts(mode);
 CREATE INDEX IF NOT EXISTS idx_quiz_attempts_date ON public.quiz_attempts(date);
 
 -- Server-Side RPC Function for Sanitized Quiz Attempt Logging:
--- Provides a clean, validated interface for frontend clients
+-- Enforces input sanitization, bounds validation, and server-side safety.
 CREATE OR REPLACE FUNCTION public.record_quiz_attempt(
     p_id TEXT,
     p_timestamp BIGINT,
@@ -383,8 +378,9 @@ AS $$
 DECLARE
     v_clean_name TEXT;
     v_clean_category TEXT;
+    v_clean_date TEXT;
 BEGIN
-    -- Sanitize text inputs
+    -- 1. Sanitize text inputs
     v_clean_name := COALESCE(NULLIF(TRIM(p_user_name), ''), 'Seeker');
     IF length(v_clean_name) > 50 THEN
         v_clean_name := SUBSTRING(v_clean_name, 1, 50);
@@ -395,15 +391,21 @@ BEGIN
         v_clean_category := SUBSTRING(v_clean_category, 1, 50);
     END IF;
 
-    -- Validate bounds
+    v_clean_date := COALESCE(NULLIF(TRIM(p_date), ''), TO_CHAR(NOW(), 'YYYY-MM-DD'));
+    IF length(v_clean_date) > 20 THEN
+        v_clean_date := SUBSTRING(v_clean_date, 1, 20);
+    END IF;
+
+    -- 2. Validate numerical bounds
     IF p_total_questions < 1 OR p_total_questions > 100 THEN
-        RAISE EXCEPTION 'Invalid total_questions count';
+        RAISE EXCEPTION 'Invalid total_questions count (must be between 1 and 100)';
     END IF;
 
     IF p_score < 0 OR p_score > p_total_questions THEN
         RAISE EXCEPTION 'Score must be between 0 and total_questions';
     END IF;
 
+    -- 3. Perform sanitized insert with elevated SECURITY DEFINER privileges
     INSERT INTO public.quiz_attempts (
         id, timestamp, date, mode, difficulty, category,
         score, total_questions, accuracy, user_name
@@ -411,7 +413,7 @@ BEGIN
     VALUES (
         p_id,
         p_timestamp,
-        p_date,
+        v_clean_date,
         CASE WHEN p_mode IN ('adult', 'kids') THEN p_mode ELSE 'adult' END,
         CASE WHEN p_difficulty IN ('beginner', 'intermediate', 'advanced') THEN p_difficulty ELSE 'beginner' END,
         v_clean_category,
@@ -426,13 +428,11 @@ BEGIN
 END;
 $$;
 
--- Allow public and authenticated clients to call the safe logging function
+-- Allow public and authenticated clients to invoke the safe RPC function
 GRANT EXECUTE ON FUNCTION public.record_quiz_attempt(TEXT, BIGINT, TEXT, TEXT, TEXT, TEXT, INTEGER, INTEGER, NUMERIC, TEXT) TO anon, authenticated;
 
 -- =============================================================================
 -- 11. IDEMPOTENT REAL-TIME REPLICATION
--- =============================================================================
--- Adds tables to supabase_realtime publication without failing on repeated runs
 -- =============================================================================
 DO $$
 BEGIN
@@ -466,10 +466,20 @@ BEGIN
 END $$;
 
 -- =============================================================================
--- 12. ROW-LEVEL SECURITY (RLS) POLICIES — IDEMPOTENT & RECURSION-SAFE
+-- 12. COMPLETE ROW-LEVEL SECURITY (RLS) POLICIES FOR ALL 9 TABLES
+-- =============================================================================
+-- Zero-Trust Security Design:
+-- 1. All 9 tables have RLS explicitly enabled.
+-- 2. Every single policy uses DROP POLICY IF EXISTS first to guarantee idempotency.
+-- 3. Public read is granted ONLY to required Islamic content (Quran, Hadith, Duas,
+--    Reminders, Verified QAs, Categories, and active Quiz Questions).
+-- 4. Content modification (INSERT, UPDATE, DELETE) is strictly restricted to
+--    authenticated administrators verified via public.is_admin().
+-- 5. Direct INSERT on quiz_attempts is blocked for public/anon; they must call
+--    public.record_quiz_attempt() RPC function.
 -- =============================================================================
 
--- Enable RLS on every table
+-- Enable RLS across all 9 tables
 ALTER TABLE public.app_admins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quran_verses ENABLE ROW LEVEL SECURITY;
@@ -481,16 +491,15 @@ ALTER TABLE public.categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_attempts ENABLE ROW LEVEL SECURITY;
 
 -- -----------------------------------------------------------------------------
--- Policies for: app_admins
+-- TABLE 1: public.app_admins
+-- -----------------------------------------------------------------------------
 -- Rules:
---   1. General public/anon: CANNOT read, insert, update, or delete.
---   2. Normal authenticated users: CANNOT view or self-register.
---   3. Verified Admins: CAN view administrator directory.
---   4. Super Admins: CAN manage administrator accounts.
---   5. Recursion is prevented via SECURITY DEFINER is_admin()/is_super_admin().
+--   - Public / Anon: Zero access. Cannot view, insert, update, or delete.
+--   - Normal Users: Zero access. Self-registration is strictly impossible.
+--   - Verified Admins: Can view administrator directory.
+--   - Super Admins: Can manage (create, modify, deactivate, delete) admin records.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Admins can view admins list" ON public.app_admins;
-DROP POLICY IF EXISTS "Primary Admin can manage admins" ON public.app_admins;
 DROP POLICY IF EXISTS "Super Admin can insert admins" ON public.app_admins;
 DROP POLICY IF EXISTS "Super Admin can update admins" ON public.app_admins;
 DROP POLICY IF EXISTS "Super Admin can delete admins" ON public.app_admins;
@@ -517,11 +526,12 @@ CREATE POLICY "Super Admin can delete admins"
     USING (public.is_super_admin());
 
 -- -----------------------------------------------------------------------------
--- Policies for: quiz_questions
+-- TABLE 2: public.quiz_questions (Adults & Kids)
+-- -----------------------------------------------------------------------------
 -- Rules:
---   1. Public / anon users can ONLY view active questions (is_active = TRUE).
---   2. Verified Admins can view ALL questions (including drafts / inactive).
---   3. Only verified Admins can INSERT, UPDATE, or DELETE questions.
+--   - Public / Anon: Can ONLY view active questions (is_active = TRUE).
+--   - Verified Admins: Can view ALL questions (including drafts / inactive).
+--   - Content Management: INSERT, UPDATE, DELETE strictly restricted to Admins.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can view quiz questions" ON public.quiz_questions;
 DROP POLICY IF EXISTS "Public can view active quiz questions" ON public.quiz_questions;
@@ -554,9 +564,16 @@ CREATE POLICY "Admin can delete quiz questions"
     USING (public.is_admin());
 
 -- -----------------------------------------------------------------------------
--- Policies for: quran_verses
+-- TABLE 3: public.quran_verses
+-- -----------------------------------------------------------------------------
+-- Rules:
+--   - Public / Anon: Read-only access to all verified verses.
+--   - Content Management: Only verified Admin can INSERT, UPDATE, DELETE.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can view quran verses" ON public.quran_verses;
+DROP POLICY IF EXISTS "Admin can insert quran verses" ON public.quran_verses;
+DROP POLICY IF EXISTS "Admin can update quran verses" ON public.quran_verses;
+DROP POLICY IF EXISTS "Admin can delete quran verses" ON public.quran_verses;
 DROP POLICY IF EXISTS "Admin can manage quran verses" ON public.quran_verses;
 
 CREATE POLICY "Public can view quran verses"
@@ -564,16 +581,33 @@ CREATE POLICY "Public can view quran verses"
     TO anon, authenticated
     USING (true);
 
-CREATE POLICY "Admin can manage quran verses"
-    ON public.quran_verses FOR ALL
+CREATE POLICY "Admin can insert quran verses"
+    ON public.quran_verses FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+CREATE POLICY "Admin can update quran verses"
+    ON public.quran_verses FOR UPDATE
     TO authenticated
     USING (public.is_admin())
     WITH CHECK (public.is_admin());
 
+CREATE POLICY "Admin can delete quran verses"
+    ON public.quran_verses FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
+
 -- -----------------------------------------------------------------------------
--- Policies for: hadiths
+-- TABLE 4: public.hadiths
+-- -----------------------------------------------------------------------------
+-- Rules:
+--   - Public / Anon: Read-only access to all authentic hadiths.
+--   - Content Management: Only verified Admin can INSERT, UPDATE, DELETE.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can view hadiths" ON public.hadiths;
+DROP POLICY IF EXISTS "Admin can insert hadiths" ON public.hadiths;
+DROP POLICY IF EXISTS "Admin can update hadiths" ON public.hadiths;
+DROP POLICY IF EXISTS "Admin can delete hadiths" ON public.hadiths;
 DROP POLICY IF EXISTS "Admin can manage hadiths" ON public.hadiths;
 
 CREATE POLICY "Public can view hadiths"
@@ -581,16 +615,33 @@ CREATE POLICY "Public can view hadiths"
     TO anon, authenticated
     USING (true);
 
-CREATE POLICY "Admin can manage hadiths"
-    ON public.hadiths FOR ALL
+CREATE POLICY "Admin can insert hadiths"
+    ON public.hadiths FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+CREATE POLICY "Admin can update hadiths"
+    ON public.hadiths FOR UPDATE
     TO authenticated
     USING (public.is_admin())
     WITH CHECK (public.is_admin());
 
+CREATE POLICY "Admin can delete hadiths"
+    ON public.hadiths FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
+
 -- -----------------------------------------------------------------------------
--- Policies for: duas
+-- TABLE 5: public.duas
+-- -----------------------------------------------------------------------------
+-- Rules:
+--   - Public / Anon: Read-only access to all masnoon duas.
+--   - Content Management: Only verified Admin can INSERT, UPDATE, DELETE.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can view duas" ON public.duas;
+DROP POLICY IF EXISTS "Admin can insert duas" ON public.duas;
+DROP POLICY IF EXISTS "Admin can update duas" ON public.duas;
+DROP POLICY IF EXISTS "Admin can delete duas" ON public.duas;
 DROP POLICY IF EXISTS "Admin can manage duas" ON public.duas;
 
 CREATE POLICY "Public can view duas"
@@ -598,16 +649,33 @@ CREATE POLICY "Public can view duas"
     TO anon, authenticated
     USING (true);
 
-CREATE POLICY "Admin can manage duas"
-    ON public.duas FOR ALL
+CREATE POLICY "Admin can insert duas"
+    ON public.duas FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+CREATE POLICY "Admin can update duas"
+    ON public.duas FOR UPDATE
     TO authenticated
     USING (public.is_admin())
     WITH CHECK (public.is_admin());
 
+CREATE POLICY "Admin can delete duas"
+    ON public.duas FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
+
 -- -----------------------------------------------------------------------------
--- Policies for: reminders
+-- TABLE 6: public.reminders
+-- -----------------------------------------------------------------------------
+-- Rules:
+--   - Public / Anon: Read-only access to all Islamic reminders.
+--   - Content Management: Only verified Admin can INSERT, UPDATE, DELETE.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can view reminders" ON public.reminders;
+DROP POLICY IF EXISTS "Admin can insert reminders" ON public.reminders;
+DROP POLICY IF EXISTS "Admin can update reminders" ON public.reminders;
+DROP POLICY IF EXISTS "Admin can delete reminders" ON public.reminders;
 DROP POLICY IF EXISTS "Admin can manage reminders" ON public.reminders;
 
 CREATE POLICY "Public can view reminders"
@@ -615,16 +683,33 @@ CREATE POLICY "Public can view reminders"
     TO anon, authenticated
     USING (true);
 
-CREATE POLICY "Admin can manage reminders"
-    ON public.reminders FOR ALL
+CREATE POLICY "Admin can insert reminders"
+    ON public.reminders FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+CREATE POLICY "Admin can update reminders"
+    ON public.reminders FOR UPDATE
     TO authenticated
     USING (public.is_admin())
     WITH CHECK (public.is_admin());
 
+CREATE POLICY "Admin can delete reminders"
+    ON public.reminders FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
+
 -- -----------------------------------------------------------------------------
--- Policies for: verified_qas
+-- TABLE 7: public.verified_qas
+-- -----------------------------------------------------------------------------
+-- Rules:
+--   - Public / Anon: Read-only access to all verified Islamic Q&As.
+--   - Content Management: Only verified Admin can INSERT, UPDATE, DELETE.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can view verified qas" ON public.verified_qas;
+DROP POLICY IF EXISTS "Admin can insert verified qas" ON public.verified_qas;
+DROP POLICY IF EXISTS "Admin can update verified qas" ON public.verified_qas;
+DROP POLICY IF EXISTS "Admin can delete verified qas" ON public.verified_qas;
 DROP POLICY IF EXISTS "Admin can manage verified qas" ON public.verified_qas;
 
 CREATE POLICY "Public can view verified qas"
@@ -632,16 +717,33 @@ CREATE POLICY "Public can view verified qas"
     TO anon, authenticated
     USING (true);
 
-CREATE POLICY "Admin can manage verified qas"
-    ON public.verified_qas FOR ALL
+CREATE POLICY "Admin can insert verified qas"
+    ON public.verified_qas FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+CREATE POLICY "Admin can update verified qas"
+    ON public.verified_qas FOR UPDATE
     TO authenticated
     USING (public.is_admin())
     WITH CHECK (public.is_admin());
 
+CREATE POLICY "Admin can delete verified qas"
+    ON public.verified_qas FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
+
 -- -----------------------------------------------------------------------------
--- Policies for: categories
+-- TABLE 8: public.categories
+-- -----------------------------------------------------------------------------
+-- Rules:
+--   - Public / Anon: Read-only access to taxonomy categories.
+--   - Content Management: Only verified Admin can INSERT, UPDATE, DELETE.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can view categories" ON public.categories;
+DROP POLICY IF EXISTS "Admin can insert categories" ON public.categories;
+DROP POLICY IF EXISTS "Admin can update categories" ON public.categories;
+DROP POLICY IF EXISTS "Admin can delete categories" ON public.categories;
 DROP POLICY IF EXISTS "Admin can manage categories" ON public.categories;
 
 CREATE POLICY "Public can view categories"
@@ -649,37 +751,46 @@ CREATE POLICY "Public can view categories"
     TO anon, authenticated
     USING (true);
 
-CREATE POLICY "Admin can manage categories"
-    ON public.categories FOR ALL
+CREATE POLICY "Admin can insert categories"
+    ON public.categories FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+CREATE POLICY "Admin can update categories"
+    ON public.categories FOR UPDATE
     TO authenticated
     USING (public.is_admin())
     WITH CHECK (public.is_admin());
 
+CREATE POLICY "Admin can delete categories"
+    ON public.categories FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
+
 -- -----------------------------------------------------------------------------
--- Policies for: quiz_attempts
--- Untrusted submissions sanitized via constraints & strict RLS check
+-- TABLE 9: public.quiz_attempts
+-- -----------------------------------------------------------------------------
+-- CRITICAL SECURITY RULE:
+-- Direct public/anon INSERT is COMPLETELY BLOCKED to protect against untrusted/
+-- malicious payloads, spoofing, and database pollution.
+-- Public clients MUST submit progress via the secure RPC function:
+--   public.record_quiz_attempt(...)
+--
+-- Direct access policies:
+--   - INSERT: Only authenticated Admin.
+--   - SELECT: Only authenticated Admin.
+--   - DELETE: Only authenticated Admin.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Public can submit quiz attempts" ON public.quiz_attempts;
 DROP POLICY IF EXISTS "Public can submit valid quiz attempts" ON public.quiz_attempts;
+DROP POLICY IF EXISTS "Admin can insert quiz attempts" ON public.quiz_attempts;
 DROP POLICY IF EXISTS "Admin can view quiz attempts" ON public.quiz_attempts;
 DROP POLICY IF EXISTS "Admin can delete quiz attempts" ON public.quiz_attempts;
 
-CREATE POLICY "Public can submit valid quiz attempts"
+CREATE POLICY "Admin can insert quiz attempts"
     ON public.quiz_attempts FOR INSERT
-    TO anon, authenticated
-    WITH CHECK (
-        score >= 0 
-        AND total_questions >= 1 
-        AND total_questions <= 100 
-        AND score <= total_questions 
-        AND accuracy >= 0 
-        AND accuracy <= 100
-        AND length(user_name) <= 50
-        AND length(category) <= 50
-        AND mode IN ('adult', 'kids')
-        AND difficulty IN ('beginner', 'intermediate', 'advanced')
-        AND timestamp > 1600000000000
-    );
+    TO authenticated
+    WITH CHECK (public.is_admin());
 
 CREATE POLICY "Admin can view quiz attempts"
     ON public.quiz_attempts FOR SELECT
@@ -712,5 +823,5 @@ REVOKE ALL ON public.v_database_statistics FROM PUBLIC;
 GRANT SELECT ON public.v_database_statistics TO authenticated;
 
 -- =============================================================================
--- END OF REVISED MIGRATION SCRIPT (v2.0)
+-- END OF FULLY COMPLETED SCHEMA SCRIPT (v2.1)
 -- =============================================================================

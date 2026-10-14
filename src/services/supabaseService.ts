@@ -446,6 +446,23 @@ export const SupabaseService = {
   async logQuizAttempt(attempt: QuizAttemptRecord): Promise<boolean> {
     if (!isSupabaseConfigured()) return false;
     try {
+      // 1. Invoke secure server-side RPC function with sanitization and validation
+      const { error: rpcError } = await supabase.rpc('record_quiz_attempt', {
+        p_id: attempt.id,
+        p_timestamp: attempt.timestamp,
+        p_date: attempt.date,
+        p_mode: attempt.mode,
+        p_difficulty: attempt.difficulty,
+        p_category: attempt.category,
+        p_score: attempt.score,
+        p_total_questions: attempt.totalQuestions,
+        p_accuracy: attempt.accuracy,
+        p_user_name: attempt.userName || 'Seeker'
+      });
+
+      if (!rpcError) return true;
+
+      // 2. Direct fallback for authenticated Admin sessions
       const row = {
         id: attempt.id,
         timestamp: attempt.timestamp,
