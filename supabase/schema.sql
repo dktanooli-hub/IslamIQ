@@ -451,7 +451,7 @@ BEGIN
     END IF;
 
     -- 3. Validate timestamp: must be within realistic window (2024 to now + 1 day)
-    v_now_ms := (pg_catalog.extract(epoch FROM pg_catalog.now()) * 1000)::BIGINT;
+    v_now_ms := (extract(epoch FROM now()) * 1000)::BIGINT;
     IF p_timestamp IS NULL OR p_timestamp < 1704067200000 OR p_timestamp > (v_now_ms + 86400000) THEN
         v_clean_timestamp := v_now_ms;
     ELSE
@@ -459,14 +459,14 @@ BEGIN
     END IF;
 
     -- 4. Sanitize text inputs & prevent oversized payload
-    v_clean_name := pg_catalog.coalesce(pg_catalog.nullif(pg_catalog.trim(p_user_name), ''), 'Seeker');
-    IF pg_catalog.length(v_clean_name) > 50 THEN
-        v_clean_name := pg_catalog.substring(v_clean_name, 1, 50);
+    v_clean_name := coalesce(nullif(trim(p_user_name), ''), 'Seeker');
+    IF length(v_clean_name) > 50 THEN
+        v_clean_name := substring(v_clean_name, 1, 50);
     END IF;
 
-    v_clean_category := pg_catalog.coalesce(pg_catalog.nullif(pg_catalog.trim(p_category), ''), 'General');
-    IF pg_catalog.length(v_clean_category) > 50 THEN
-        v_clean_category := pg_catalog.substring(v_clean_category, 1, 50);
+    v_clean_category := coalesce(nullif(trim(p_category), ''), 'General');
+    IF length(v_clean_category) > 50 THEN
+        v_clean_category := substring(v_clean_category, 1, 50);
     END IF;
 
     -- 5. Validate date: strictly require YYYY-MM-DD format
