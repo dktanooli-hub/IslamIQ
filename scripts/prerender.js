@@ -387,6 +387,42 @@ const routes = [
     content: `
       <p>Centralized educational portal covering everything a Muslim needs to pray properly: Wudu purification, prayer postures, rakat counts, recitations, and daily habit tracking.</p>
     `
+  },
+  {
+    path: 'ask-a-scholar',
+    title: 'Ask a Scholar • Authentic Islamic Q&A, Masail & Fatwa | IslamIQ',
+    desc: 'Dedicated Ask a Scholar portal for private, authentic Islamic guidance on Salah, Fasting, Zakat, everyday matters, Masail, and formal Fatwa across the four Fiqh schools.',
+    h1: 'Ask a Scholar — Authentic Scholarly Guidance & Fatwa Services',
+    content: `
+      <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+        <p style="margin: 0; font-weight: 700; color: #065f46;">STATUS: Coming Soon • Roadmap Preview</p>
+        <p style="margin: 4px 0 0; font-size: 14px; color: #047857;">IslamIQ is preparing a dedicated, confidential portal connecting Muslims with qualified scholars and accredited Muftis.</p>
+      </div>
+      <h2>Four Key Service Pillars</h2>
+      <ul>
+        <li><strong>Everyday Islamic Matters:</strong> Questions about Salah, fasting (Sawm), Zakat calculations, and daily worship.</li>
+        <li><strong>Private Access to Questions &amp; Answers:</strong> Confidential reference dashboard with zero public tracking.</li>
+        <li><strong>Personal Information Protection:</strong> Privacy-by-design with identity sanitization before review.</li>
+        <li><strong>Qualified Scholarly Guidance:</strong> Direct access to verified scholars and certified Muftis.</li>
+      </ul>
+      <h2>Three Structured Tracks</h2>
+      <h3>1. General Islamic Q&amp;A</h3>
+      <p>Foundational knowledge, Quranic verses, Sahih Hadith, Seerah, and personal character development.</p>
+      <h3>2. Masail (Practical Rulings)</h3>
+      <p>Applied jurisprudence for Taharah, prayer invalidators, medical fasting rules, and trade transactions.</p>
+      <h3>3. Fatwa (Formal Religious Decrees)</h3>
+      <p>Formal legal rulings on complex, family, inheritance, matrimonial, or financial matters requiring certified Ifta' review.</p>
+      <h2>Future Fiqh Choices for Fatwa</h2>
+      <p>Questioners will be able to select their preferred school of jurisprudence (Madhhab):</p>
+      <ul>
+        <li><strong>Hanafi (فقہ حنفی):</strong> Imam Abu Hanifa (d. 150 AH)</li>
+        <li><strong>Shafi'i (فقہ شافعی):</strong> Imam al-Shafi'i (d. 204 AH)</li>
+        <li><strong>Maliki (فقہ مالکی):</strong> Imam Malik ibn Anas (d. 179 AH)</li>
+        <li><strong>Hanbali (فقہ حنبلی):</strong> Imam Ahmad ibn Hanbal (d. 241 AH)</li>
+        <li><strong>“I am unsure / need guidance”:</strong> General scholarly consensus (Jumhur) for seekers not adhering to a specific school.</li>
+      </ul>
+      <p>Notice: All categories are currently informational. Submissions will open upon completion of the scholarly accreditation and privacy protocols.</p>
+    `
   }
 ];
 

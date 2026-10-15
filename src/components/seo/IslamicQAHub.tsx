@@ -7,12 +7,13 @@ import { RelatedIslamicLearning } from './RelatedIslamicLearning';
 import { HelpCircle, Search, ShieldCheck, Tag, ChevronDown, ChevronUp, Share2, BookOpen } from 'lucide-react';
 
 export const IslamicQAHub: React.FC = () => {
-  const { contentLang, setActiveTab, showToast } = useApp();
+  const { contentLang, setActiveTab, showToast, verifiedQAs } = useApp();
   const isUrdu = contentLang === 'urdu';
+  const qaSource = (verifiedQAs && verifiedQAs.length > 0) ? verifiedQAs : VERIFIED_QA_DATABASE;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [expandedId, setExpandedId] = useState<string | null>(VERIFIED_QA_DATABASE[0]?.id || null);
+  const [expandedId, setExpandedId] = useState<string | null>(qaSource[0]?.id || null);
 
   const categories = [
     { id: 'all', en: 'All Topics', urdu: 'تمام موضوعات' },
@@ -31,7 +32,7 @@ export const IslamicQAHub: React.FC = () => {
     { id: 'Aqeedah', en: 'Aqeedah (Faith)', urdu: 'ایمان و عقائد' }
   ];
 
-  const filteredQA = VERIFIED_QA_DATABASE.filter((item: VerifiedQA) => {
+  const filteredQA = qaSource.filter((item: VerifiedQA) => {
     const matchesCat = selectedCategory === 'all' || item.category.toLowerCase() === selectedCategory.toLowerCase();
     const matchesSearch = searchQuery.trim() === '' ||
       item.questionUrdu.toLowerCase().includes(searchQuery.toLowerCase()) ||

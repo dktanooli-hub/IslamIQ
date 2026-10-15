@@ -237,6 +237,102 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
       {/* Islamic Content Hub Quick Access */}
       <ContentHubCard />
 
+      {/* Prominent Ask a Scholar Hero Card with Photographic Background */}
+      {!isKids && (
+        <a
+          href="/ask-a-scholar"
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTab('ask-a-scholar');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="group block relative rounded-3xl overflow-hidden border border-amber-400/30 shadow-lg hover:shadow-2xl transition-all duration-300 active:scale-[0.99] cursor-pointer bg-slate-950 min-h-[300px] sm:min-h-[290px] flex flex-col justify-end"
+        >
+          {/* Fallback CSS Islamic Geometric Ambient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 opacity-90" />
+          
+          {/* High-Quality Authentic Islamic Architecture Photographic Background */}
+          <img
+            src="/assets/images/islamic_scholar_arch.jpg"
+            alt="Islamic Architecture Mosque Archway"
+            className="absolute inset-0 w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700 ease-out"
+            loading="lazy"
+            onError={(e) => {
+              // Graceful fallback to CSS geometric gradient if image fails
+              (e.currentTarget as HTMLElement).style.display = 'none';
+            }}
+          />
+
+          {/* Sophisticated Dark Emerald & Teal Gradient Overlay for Perfect Contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/25 sm:bg-gradient-to-r sm:from-slate-950 sm:via-slate-950/90 sm:to-slate-950/30 transition-opacity duration-300 pointer-events-none" />
+
+          {/* Subtle Golden Ambient Accent Glow */}
+          <div className="absolute -top-12 -right-12 w-64 h-64 bg-amber-500/15 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-400/25 transition-all duration-500" />
+          <div className="absolute -bottom-10 left-1/3 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+
+          {/* Card Content */}
+          <div className="relative z-10 p-5 sm:p-7 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6">
+            <div className="space-y-3 max-w-xl">
+              
+              {/* Badges Row */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] sm:text-xs font-black tracking-wide uppercase shadow-sm backdrop-blur-md">
+                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span>Coming Soon • عنقریب</span>
+                </span>
+                <span className="text-[11px] font-semibold text-emerald-200 bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-0.5 rounded-full backdrop-blur-md">
+                  {contentLang === 'urdu' ? 'مستند شرعی رہنمائی' : 'Scholarly Guidance & Fatwa'}
+                </span>
+              </div>
+
+              {/* Headings */}
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-serif drop-shadow-md">
+                  Ask a Scholar
+                </h2>
+                <p className="text-lg sm:text-xl font-bold text-amber-300 font-urdu mt-1 drop-shadow-sm" dir="rtl">
+                  عالمِ دین سے رہنمائی حاصل کریں
+                </p>
+              </div>
+
+              {/* Description */}
+              <p className="text-xs sm:text-sm text-slate-200/90 leading-relaxed font-medium max-w-lg drop-shadow-xs">
+                {contentLang === 'urdu'
+                  ? 'نماز، روزہ، زکوٰۃ، اور روزمرہ فقہی مسائل پر مستند مفتیان سے نجی اور محفوظ شرعی رہنمائی حاصل کریں۔'
+                  : 'Receive authentic, confidential Islamic guidance from qualified scholars and accredited Muftis on Salah, fasting, Zakat, and daily jurisprudence.'}
+              </p>
+
+              {/* Feature Highlights Pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
+                <span className="px-2.5 py-1 rounded-xl bg-slate-900/70 text-emerald-300 border border-emerald-500/30 font-semibold backdrop-blur-md flex items-center gap-1">
+                  <Check className="w-3 h-3 text-goldAccent" />
+                  <span>Q&A</span>
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-slate-900/70 text-emerald-300 border border-emerald-500/30 font-semibold backdrop-blur-md flex items-center gap-1">
+                  <Check className="w-3 h-3 text-goldAccent" />
+                  <span>Masail</span>
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-slate-900/70 text-amber-200 border border-amber-400/30 font-semibold backdrop-blur-md flex items-center gap-1">
+                  <Check className="w-3 h-3 text-goldAccent" />
+                  <span>Fatwa (4 Madhhabs)</span>
+                </span>
+              </div>
+            </div>
+
+            {/* CTA Button Column */}
+            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10">
+              <span className="text-xs font-bold text-amber-300/90 hidden sm:inline-block">
+                View Service Roadmap →
+              </span>
+              <div className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 group-hover:from-amber-300 group-hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-all group-hover:scale-105 active:scale-95">
+                <span>{contentLang === 'urdu' ? 'مزید جانیں' : 'Explore'}</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </a>
+      )}
+
       {/* 1. DAILY QURAN VERSE */}
       <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 transition-all hover:shadow-md">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">

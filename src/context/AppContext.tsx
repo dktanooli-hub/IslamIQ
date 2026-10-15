@@ -25,12 +25,16 @@ import {
   VERIFIED_QURAN_VERSES,
   VERIFIED_HADITHS,
   VERIFIED_DUAS,
-  ISLAMIC_REMINDERS
+  ISLAMIC_REMINDERS,
+  VERIFIED_QA_DATABASE
 } from '../data/verifiedContent';
 import { sounds } from '../utils/audio';
 import { getLocalDateStr, normalizeSalahHistory } from '../utils/dateUtils';
 import { AdminAuthService, PRIMARY_ADMIN_EMAIL } from '../services/adminAuth';
 import { FirestoreService } from '../services/firestoreService';
+import { SupabaseService, DatabaseStats } from '../services/supabaseService';
+import { isSupabaseConfigured } from '../supabase/config';
+import { VerifiedQA } from '../types';
 
 interface AppContextType {
   userMode: UserMode;
@@ -97,13 +101,17 @@ interface AppContextType {
   showToast: (msg: string) => void;
 
   // Admin Panel & Database Management
+  activeBackend: 'supabase' | 'firebase' | 'local';
   questions: QuizQuestion[];
   quranVerses: QuranVerse[];
   hadiths: HadithItem[];
   duas: DuaItem[];
   reminders: IslamicReminder[];
+  verifiedQAs: VerifiedQA[];
   categories: string[];
   quizAttempts: QuizAttemptRecord[];
+  databaseStats: DatabaseStats | null;
+  fetchDatabaseStats: () => Promise<void>;
 
   // Admin Security
   isAdminAuthenticated: boolean;
@@ -116,6 +124,7 @@ interface AppContextType {
   adminLogout: () => Promise<void>;
   checkAdminStatus: () => Promise<void>;
   syncAdminAuthorization: () => Promise<{ success: boolean; isAuthorized: boolean; error?: string }>;
+  claimAdminBootstrap: () => Promise<{ success: boolean; message?: string; error?: string }>;
 
   // Admin Question CRUD
   addQuestion: (q: Omit<QuizQuestion, 'id'>) => void;
@@ -136,10 +145,14 @@ interface AppContextType {
   addReminder: (r: Omit<IslamicReminder, 'id'>) => void;
   updateReminder: (id: string, r: Partial<IslamicReminder>) => void;
   deleteReminder: (id: string) => void;
+  addVerifiedQA: (qa: Omit<VerifiedQA, 'id'>) => void;
+  updateVerifiedQA: (id: string, qa: Partial<VerifiedQA>) => void;
+  deleteVerifiedQA: (id: string) => void;
   addCategory: (cat: string) => void;
   deleteCategory: (cat: string) => void;
   resetAllContentToDefaults: () => void;
   migrateLocalToFirestore: () => Promise<{ success: boolean; migratedCount: number; error?: string }>;
+  migrateLocalToSupabase: () => Promise<{ success: boolean; migratedCount: number; error?: string }>;
   isCloudSyncing: boolean;
   cloudSyncError: string | null;
 }
@@ -447,8 +460,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [hadiths, setHadiths] = useState<HadithItem[]>(VERIFIED_HADITHS);
   const [duas, setDuas] = useState<DuaItem[]>(VERIFIED_DUAS);
   const [reminders, setReminders] = useState<IslamicReminder[]>(ISLAMIC_REMINDERS);
+  const [verifiedQAs, setVerifiedQAs] = useState<VerifiedQA[]>(VERIFIED_QA_DATABASE);
   const [categories, setCategories] = useState<string[]>(INITIAL_CATEGORIES);
   const [quizAttempts, setQuizAttempts] = useState<QuizAttemptRecord[]>(initialSampleAttempts);
+  const [activeBackend, setActiveBackend] = useState<'supabase' | 'firebase' | 'local'>(
+    isSupabaseConfigured() ? 'supabase' : 'firebase'
+  );
+  const [databaseStats, setDatabaseStats] = useState<DatabaseStats | null>(null);
 
   // Admin Security (Server-backed & Token-based)
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
@@ -487,7 +505,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsAdminAuthenticated(true);
         setIsAdminSetupComplete(true);
         setAdminEmail(user.email || PRIMARY_ADMIN_EMAIL);
-        setAdminUid(user.uid);
+        setAdminUid(user.uid || null);
         // Automatically check & ensure admin authorization in Firestore (no error thrown)
         AdminAuthService.ensureAdminAuthorization(user).catch(() => {});
       } else {
@@ -557,85 +575,163 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }, []);
 
-  // 2. Real-time / Cloud sync with Firestore for questions and shared content
+  // 2. Real-time / Cloud sync with Supabase (Primary) or Firestore (Fallback)
   useEffect(() => {
     setIsCloudSyncing(true);
-    // Realtime subscription to Firestore questions collection
-    const unsubscribeQuestions = FirestoreService.listenQuestions(
-      (remoteQuestions) => {
-        if (remoteQuestions && remoteQuestions.length > 0) {
-          setQuestions(prev => {
-            // If remote questions have full dataset (>= 50), use remote directly
-            if (remoteQuestions.length >= 50) {
-              return remoteQuestions;
-            }
-            // Otherwise, merge remote questions over local/verified questions by ID
-            const map = new Map<string, QuizQuestion>();
-            VERIFIED_QUESTIONS.forEach(q => map.set(q.id, { ...q, isActive: true }));
-            prev.forEach(q => map.set(q.id, q));
-            remoteQuestions.forEach(q => map.set(q.id, q));
-            return Array.from(map.values());
-          });
-        }
-        setIsCloudSyncing(false);
-        setCloudSyncError(null);
-      },
-      (err: any) => {
-        console.warn('[Firestore] Questions sync notice:', err);
-        setIsCloudSyncing(false);
-        setCloudSyncError(err?.message || 'Using local verified cache');
-      }
-    );
+    let unsubscribeQuestions: () => void = () => {};
+    let unsubscribeQAs: () => void = () => {};
 
-    // Fetch initial daily feeds & categories from Firestore
-    const fetchRemoteFeeds = async () => {
-      try {
-        const [verses, hadithsList, duasList, remindersList, remoteCats] = await Promise.all([
-          FirestoreService.getQuranVerses(),
-          FirestoreService.getHadiths(),
-          FirestoreService.getDuas(),
-          FirestoreService.getReminders(),
-          FirestoreService.getCategories()
-        ]);
-        if (verses.length > 0) {
-          const vMap = new Map<string, QuranVerse>();
-          VERIFIED_QURAN_VERSES.forEach(v => vMap.set(v.id, v));
-          verses.forEach(v => vMap.set(v.id, v));
-          setQuranVerses(Array.from(vMap.values()));
-        }
-        if (hadithsList.length > 0) {
-          const hMap = new Map<string, HadithItem>();
-          VERIFIED_HADITHS.forEach(h => hMap.set(h.id, h));
-          hadithsList.forEach(h => hMap.set(h.id, h));
-          setHadiths(Array.from(hMap.values()));
-        }
-        if (duasList.length > 0) {
-          const dMap = new Map<string, DuaItem>();
-          VERIFIED_DUAS.forEach(d => dMap.set(d.id, d));
-          duasList.forEach(d => dMap.set(d.id, d));
-          setDuas(Array.from(dMap.values()));
-        }
-        if (remindersList.length > 0) {
-          const rMap = new Map<string, IslamicReminder>();
-          ISLAMIC_REMINDERS.forEach(r => rMap.set(r.id, r));
-          remindersList.forEach(r => rMap.set(r.id, r));
-          setReminders(Array.from(rMap.values()));
-        }
-        if (remoteCats && remoteCats.length > 0) setCategories(remoteCats);
-      } catch (err: any) {
-        console.warn('[Firestore] Sync warning:', err);
-        setCloudSyncError('Operating in offline/cached mode');
-      }
-    };
+    if (isSupabaseConfigured()) {
+      setActiveBackend('supabase');
 
-    fetchRemoteFeeds();
+      // Realtime subscription to Supabase quiz_questions table
+      unsubscribeQuestions = SupabaseService.listenQuestions(
+        (remoteQuestions) => {
+          if (remoteQuestions && remoteQuestions.length > 0) {
+            setQuestions(prev => {
+              if (remoteQuestions.length >= 50) return remoteQuestions;
+              const map = new Map<string, QuizQuestion>();
+              VERIFIED_QUESTIONS.forEach(q => map.set(q.id, { ...q, isActive: true }));
+              prev.forEach(q => map.set(q.id, q));
+              remoteQuestions.forEach(q => map.set(q.id, q));
+              return Array.from(map.values());
+            });
+          }
+          setIsCloudSyncing(false);
+          setCloudSyncError(null);
+        },
+        (err: any) => {
+          console.warn('[Supabase] Questions sync notice:', err);
+          setIsCloudSyncing(false);
+          setCloudSyncError(err?.message || 'Using local verified cache');
+        }
+      );
+
+      // Realtime subscription to Supabase verified_qas table
+      unsubscribeQAs = SupabaseService.listenVerifiedQAs((remoteQAs) => {
+        if (remoteQAs && remoteQAs.length > 0) {
+          setVerifiedQAs(remoteQAs);
+        }
+      });
+
+      // Initial Fetch from Supabase tables
+      const fetchSupabaseFeeds = async () => {
+        try {
+          const [remoteQuestions, verses, hadithsList, duasList, remindersList, remoteQAs, remoteCats] = await Promise.all([
+            SupabaseService.getQuestions(),
+            SupabaseService.getQuranVerses(),
+            SupabaseService.getHadiths(),
+            SupabaseService.getDuas(),
+            SupabaseService.getReminders(),
+            SupabaseService.getVerifiedQAs(),
+            SupabaseService.getCategories()
+          ]);
+
+          if (remoteQuestions.length > 0) {
+            setQuestions(prev => {
+              if (remoteQuestions.length >= 50) return remoteQuestions;
+              const map = new Map<string, QuizQuestion>();
+              VERIFIED_QUESTIONS.forEach(q => map.set(q.id, { ...q, isActive: true }));
+              prev.forEach(q => map.set(q.id, q));
+              remoteQuestions.forEach(q => map.set(q.id, q));
+              return Array.from(map.values());
+            });
+          }
+          if (verses.length > 0) setQuranVerses(verses);
+          if (hadithsList.length > 0) setHadiths(hadithsList);
+          if (duasList.length > 0) setDuas(duasList);
+          if (remindersList.length > 0) setReminders(remindersList);
+          if (remoteQAs.length > 0) setVerifiedQAs(remoteQAs);
+          if (remoteCats && remoteCats.length > 0) setCategories(remoteCats);
+
+          setIsCloudSyncing(false);
+          setCloudSyncError(null);
+        } catch (err: any) {
+          console.warn('[Supabase] Initial fetch notice:', err);
+          setCloudSyncError('Supabase connected with local fallback');
+          setIsCloudSyncing(false);
+        }
+      };
+
+      fetchSupabaseFeeds();
+    } else {
+      setActiveBackend('firebase');
+
+      // Preserved legacy Firebase Firestore sync
+      unsubscribeQuestions = FirestoreService.listenQuestions(
+        (remoteQuestions) => {
+          if (remoteQuestions && remoteQuestions.length > 0) {
+            setQuestions(prev => {
+              if (remoteQuestions.length >= 50) {
+                return remoteQuestions;
+              }
+              const map = new Map<string, QuizQuestion>();
+              VERIFIED_QUESTIONS.forEach(q => map.set(q.id, { ...q, isActive: true }));
+              prev.forEach(q => map.set(q.id, q));
+              remoteQuestions.forEach(q => map.set(q.id, q));
+              return Array.from(map.values());
+            });
+          }
+          setIsCloudSyncing(false);
+          setCloudSyncError(null);
+        },
+        (err: any) => {
+          console.warn('[Firestore] Questions sync notice:', err);
+          setIsCloudSyncing(false);
+          setCloudSyncError(err?.message || 'Using local verified cache');
+        }
+      );
+
+      const fetchRemoteFeeds = async () => {
+        try {
+          const [verses, hadithsList, duasList, remindersList, remoteCats] = await Promise.all([
+            FirestoreService.getQuranVerses(),
+            FirestoreService.getHadiths(),
+            FirestoreService.getDuas(),
+            FirestoreService.getReminders(),
+            FirestoreService.getCategories()
+          ]);
+          if (verses.length > 0) {
+            const vMap = new Map<string, QuranVerse>();
+            VERIFIED_QURAN_VERSES.forEach(v => vMap.set(v.id, v));
+            verses.forEach(v => vMap.set(v.id, v));
+            setQuranVerses(Array.from(vMap.values()));
+          }
+          if (hadithsList.length > 0) {
+            const hMap = new Map<string, HadithItem>();
+            VERIFIED_HADITHS.forEach(h => hMap.set(h.id, h));
+            hadithsList.forEach(h => hMap.set(h.id, h));
+            setHadiths(Array.from(hMap.values()));
+          }
+          if (duasList.length > 0) {
+            const dMap = new Map<string, DuaItem>();
+            VERIFIED_DUAS.forEach(d => dMap.set(d.id, d));
+            duasList.forEach(d => dMap.set(d.id, d));
+            setDuas(Array.from(dMap.values()));
+          }
+          if (remindersList.length > 0) {
+            const rMap = new Map<string, IslamicReminder>();
+            ISLAMIC_REMINDERS.forEach(r => rMap.set(r.id, r));
+            remindersList.forEach(r => rMap.set(r.id, r));
+            setReminders(Array.from(rMap.values()));
+          }
+          if (remoteCats && remoteCats.length > 0) setCategories(remoteCats);
+        } catch (err: any) {
+          console.warn('[Firestore] Sync warning:', err);
+          setCloudSyncError('Operating in offline/cached mode');
+        }
+      };
+
+      fetchRemoteFeeds();
+    }
 
     return () => {
       unsubscribeQuestions();
+      unsubscribeQAs();
     };
   }, []);
 
-  // Save Admin DB to LocalStorage as offline cache (does not overwrite or replace Firestore)
+  // Save Admin DB to LocalStorage as offline cache (does not overwrite or replace cloud databases)
   useEffect(() => {
     try {
       const adminData = {
@@ -644,6 +740,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         hadiths,
         duas,
         reminders,
+        verifiedQAs,
         categories,
         quizAttempts
       };
@@ -711,7 +808,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const currentUser = AdminAuthService.getCurrentUser();
       if (currentUser) {
         setAdminEmail(currentUser.email || PRIMARY_ADMIN_EMAIL);
-        setAdminUid(currentUser.uid);
+        setAdminUid(currentUser.uid || null);
       }
       showToast('Admin authorization confirmed with Firestore! 🛡️');
     }
@@ -741,7 +838,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return res;
   };
 
-  // Admin Question CRUD with Firestore Cloud Persistence
+  // Safe One-Time Migration: Local Content -> Supabase PostgreSQL
+  const migrateLocalToSupabase = async (): Promise<{ success: boolean; migratedCount: number; error?: string }> => {
+    if (!isAdminAuthenticated) {
+      return { success: false, migratedCount: 0, error: 'Authentication required for migration' };
+    }
+    setIsCloudSyncing(true);
+    const res = await SupabaseService.migrateLocalContentToSupabase({
+      questions,
+      quranVerses,
+      hadiths,
+      duas,
+      reminders,
+      categories,
+      verifiedQAs
+    });
+    setIsCloudSyncing(false);
+    if (res.success) {
+      showToast(`Successfully synced ${res.migratedCount} items to Supabase! ⚡`);
+      fetchDatabaseStats().catch(() => {});
+    } else {
+      showToast(`Supabase migration notice: ${res.error || 'Check admin authorization'}`);
+    }
+    return res;
+  };
+
+  // Admin Question CRUD with Supabase (Primary) and Firestore (Fallback)
   const addQuestion = (q: Omit<QuizQuestion, 'id'>) => {
     const newId = `q-adm-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const newQuestion: QuizQuestion = {
@@ -749,48 +871,60 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       id: newId,
       isActive: true
     };
-    // Optimistic local update
     setQuestions(prev => [newQuestion, ...prev]);
-    showToast('Quiz question created! Syncing to Firestore... ☁️');
 
-    // Async Firestore write
-    FirestoreService.saveQuestion(newQuestion).then(res => {
-      if (res.success) {
-        showToast('Question live across all users! ✅');
-      } else {
-        console.warn('Firestore write warning:', res.error);
-      }
-    });
+    if (isSupabaseConfigured()) {
+      showToast('Creating quiz question in Supabase... ⚡');
+      SupabaseService.saveQuestion(newQuestion).then(res => {
+        if (res.success) {
+          showToast('Question live on Supabase! ✅');
+        } else {
+          showToast(`Supabase write notice: ${res.error || 'Failed'}`);
+        }
+      });
+    } else {
+      showToast('Quiz question created! Syncing to Firestore... ☁️');
+      FirestoreService.saveQuestion(newQuestion).then(res => {
+        if (res.success) {
+          showToast('Question live across all users (Firebase)! ✅');
+        }
+      });
+    }
   };
 
   const updateQuestion = (id: string, updated: Partial<QuizQuestion>) => {
     const existing = questions.find(item => item.id === id);
     if (!existing) return;
     const merged = { ...existing, ...updated };
-
-    // Optimistic local update
     setQuestions(prev => prev.map(item => item.id === id ? merged : item));
-    showToast('Updating question in Firestore... ✏️');
 
-    // Async Firestore update
-    FirestoreService.saveQuestion(merged).then(res => {
-      if (res.success) {
-        showToast('Question updated in Firestore! ✅');
-      }
-    });
+    if (isSupabaseConfigured()) {
+      showToast('Updating question in Supabase... ⚡');
+      SupabaseService.saveQuestion(merged).then(res => {
+        if (res.success) showToast('Question updated in Supabase! ✅');
+      });
+    } else {
+      showToast('Updating question in Firestore... ✏️');
+      FirestoreService.saveQuestion(merged).then(res => {
+        if (res.success) showToast('Question updated in Firestore! ✅');
+      });
+    }
   };
 
   const deleteQuestion = (id: string) => {
-    // Optimistic local update
     setQuestions(prev => prev.filter(item => item.id !== id));
-    showToast('Deleting question from Firestore... 🗑️');
 
-    // Async Firestore delete
-    FirestoreService.deleteQuestion(id).then(res => {
-      if (res.success) {
-        showToast('Question deleted from Firestore.');
-      }
-    });
+    if (isSupabaseConfigured()) {
+      showToast('Deleting question from Supabase... 🗑️');
+      SupabaseService.deleteQuestion(id).then(res => {
+        if (res.success) showToast('Question deleted from Supabase.');
+      });
+    } else {
+      showToast('Deleting question from Firestore... 🗑️');
+      FirestoreService.deleteQuestion(id).then(res => {
+        if (res.success) showToast('Question deleted from Firestore.');
+      });
+    }
   };
 
   const toggleQuestionActive = (id: string) => {
@@ -798,22 +932,29 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!existing) return;
     const nextState = existing.isActive === false;
     const merged = { ...existing, isActive: nextState };
-
-    // Optimistic local update
     setQuestions(prev => prev.map(item => item.id === id ? merged : item));
     showToast(nextState ? 'Question activated ✅' : 'Question deactivated ⏸️');
 
-    // Async Firestore update
-    FirestoreService.saveQuestion(merged);
+    if (isSupabaseConfigured()) {
+      SupabaseService.saveQuestion(merged);
+    } else {
+      FirestoreService.saveQuestion(merged);
+    }
   };
 
-  // Admin Content CRUD with Firestore
+  // Admin Quran Verses CRUD
   const addQuranVerse = (v: Omit<QuranVerse, 'id'>) => {
     const id = `verse-adm-${Date.now()}`;
     const newVerse: QuranVerse = { ...v, id };
     setQuranVerses(prev => [newVerse, ...prev]);
-    showToast('Quran verse added! 📖');
-    FirestoreService.saveQuranVerse(newVerse);
+
+    if (isSupabaseConfigured()) {
+      showToast('Quran verse added to Supabase! 📖');
+      SupabaseService.saveQuranVerse(newVerse);
+    } else {
+      showToast('Quran verse added to Firestore! 📖');
+      FirestoreService.saveQuranVerse(newVerse);
+    }
   };
 
   const updateQuranVerse = (id: string, v: Partial<QuranVerse>) => {
@@ -821,22 +962,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!existing) return;
     const merged = { ...existing, ...v };
     setQuranVerses(prev => prev.map(item => item.id === id ? merged : item));
-    showToast('Quran verse updated!');
-    FirestoreService.saveQuranVerse(merged);
+
+    if (isSupabaseConfigured()) {
+      showToast('Quran verse updated in Supabase!');
+      SupabaseService.saveQuranVerse(merged);
+    } else {
+      showToast('Quran verse updated in Firestore!');
+      FirestoreService.saveQuranVerse(merged);
+    }
   };
 
   const deleteQuranVerse = (id: string) => {
     setQuranVerses(prev => prev.filter(item => item.id !== id));
-    showToast('Quran verse deleted.');
-    FirestoreService.deleteQuranVerse(id);
+
+    if (isSupabaseConfigured()) {
+      showToast('Quran verse deleted from Supabase.');
+      SupabaseService.deleteQuranVerse(id);
+    } else {
+      showToast('Quran verse deleted from Firestore.');
+      FirestoreService.deleteQuranVerse(id);
+    }
   };
 
+  // Admin Hadith CRUD
   const addHadith = (h: Omit<HadithItem, 'id'>) => {
     const id = `hadith-adm-${Date.now()}`;
     const newHadith: HadithItem = { ...h, id };
     setHadiths(prev => [newHadith, ...prev]);
-    showToast('Hadith added! 📜');
-    FirestoreService.saveHadith(newHadith);
+
+    if (isSupabaseConfigured()) {
+      showToast('Hadith added to Supabase! 📜');
+      SupabaseService.saveHadith(newHadith);
+    } else {
+      showToast('Hadith added to Firestore! 📜');
+      FirestoreService.saveHadith(newHadith);
+    }
   };
 
   const updateHadith = (id: string, h: Partial<HadithItem>) => {
@@ -844,22 +1004,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!existing) return;
     const merged = { ...existing, ...h };
     setHadiths(prev => prev.map(item => item.id === id ? merged : item));
-    showToast('Hadith updated!');
-    FirestoreService.saveHadith(merged);
+
+    if (isSupabaseConfigured()) {
+      showToast('Hadith updated in Supabase!');
+      SupabaseService.saveHadith(merged);
+    } else {
+      showToast('Hadith updated in Firestore!');
+      FirestoreService.saveHadith(merged);
+    }
   };
 
   const deleteHadith = (id: string) => {
     setHadiths(prev => prev.filter(item => item.id !== id));
-    showToast('Hadith deleted.');
-    FirestoreService.deleteHadith(id);
+
+    if (isSupabaseConfigured()) {
+      showToast('Hadith deleted from Supabase.');
+      SupabaseService.deleteHadith(id);
+    } else {
+      showToast('Hadith deleted from Firestore.');
+      FirestoreService.deleteHadith(id);
+    }
   };
 
+  // Admin Dua CRUD
   const addDua = (d: Omit<DuaItem, 'id'>) => {
     const id = `dua-adm-${Date.now()}`;
     const newDua: DuaItem = { ...d, id };
     setDuas(prev => [newDua, ...prev]);
-    showToast('Dua added! 🤲');
-    FirestoreService.saveDua(newDua);
+
+    if (isSupabaseConfigured()) {
+      showToast('Dua added to Supabase! 🤲');
+      SupabaseService.saveDua(newDua);
+    } else {
+      showToast('Dua added to Firestore! 🤲');
+      FirestoreService.saveDua(newDua);
+    }
   };
 
   const updateDua = (id: string, d: Partial<DuaItem>) => {
@@ -867,22 +1046,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!existing) return;
     const merged = { ...existing, ...d };
     setDuas(prev => prev.map(item => item.id === id ? merged : item));
-    showToast('Dua updated!');
-    FirestoreService.saveDua(merged);
+
+    if (isSupabaseConfigured()) {
+      showToast('Dua updated in Supabase!');
+      SupabaseService.saveDua(merged);
+    } else {
+      showToast('Dua updated in Firestore!');
+      FirestoreService.saveDua(merged);
+    }
   };
 
   const deleteDua = (id: string) => {
     setDuas(prev => prev.filter(item => item.id !== id));
-    showToast('Dua deleted.');
-    FirestoreService.deleteDua(id);
+
+    if (isSupabaseConfigured()) {
+      showToast('Dua deleted from Supabase.');
+      SupabaseService.deleteDua(id);
+    } else {
+      showToast('Dua deleted from Firestore.');
+      FirestoreService.deleteDua(id);
+    }
   };
 
+  // Admin Reminder CRUD
   const addReminder = (r: Omit<IslamicReminder, 'id'>) => {
     const id = `rem-adm-${Date.now()}`;
     const newReminder: IslamicReminder = { ...r, id };
     setReminders(prev => [newReminder, ...prev]);
-    showToast('Islamic reminder added! 💡');
-    FirestoreService.saveReminder(newReminder);
+
+    if (isSupabaseConfigured()) {
+      showToast('Reminder added to Supabase! 💡');
+      SupabaseService.saveReminder(newReminder);
+    } else {
+      showToast('Reminder added to Firestore! 💡');
+      FirestoreService.saveReminder(newReminder);
+    }
   };
 
   const updateReminder = (id: string, r: Partial<IslamicReminder>) => {
@@ -890,30 +1088,113 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (!existing) return;
     const merged = { ...existing, ...r };
     setReminders(prev => prev.map(item => item.id === id ? merged : item));
-    showToast('Reminder updated!');
-    FirestoreService.saveReminder(merged);
+
+    if (isSupabaseConfigured()) {
+      showToast('Reminder updated in Supabase!');
+      SupabaseService.saveReminder(merged);
+    } else {
+      showToast('Reminder updated in Firestore!');
+      FirestoreService.saveReminder(merged);
+    }
   };
 
   const deleteReminder = (id: string) => {
     setReminders(prev => prev.filter(item => item.id !== id));
-    showToast('Reminder deleted.');
-    FirestoreService.deleteReminder(id);
+
+    if (isSupabaseConfigured()) {
+      showToast('Reminder deleted from Supabase.');
+      SupabaseService.deleteReminder(id);
+    } else {
+      showToast('Reminder deleted from Firestore.');
+      FirestoreService.deleteReminder(id);
+    }
   };
 
+  // Admin Verified Islamic Q&A CRUD (public.verified_qas)
+  const addVerifiedQA = (qa: Omit<VerifiedQA, 'id'>) => {
+    const id = `qa-adm-${Date.now()}`;
+    const newQA: VerifiedQA = { ...qa, id };
+    setVerifiedQAs(prev => [newQA, ...prev]);
+
+    if (isSupabaseConfigured()) {
+      showToast('Verified Q&A created! Syncing to Supabase... ⚡');
+      SupabaseService.saveVerifiedQA(newQA).then(res => {
+        if (res.success) showToast('Q&A live on Supabase! ✅');
+        else showToast(`Supabase write notice: ${res.error || 'Failed'}`);
+      });
+    } else {
+      showToast('Verified Q&A saved locally! ✅');
+    }
+  };
+
+  const updateVerifiedQA = (id: string, qa: Partial<VerifiedQA>) => {
+    const existing = verifiedQAs.find(item => item.id === id);
+    if (!existing) return;
+    const merged = { ...existing, ...qa };
+    setVerifiedQAs(prev => prev.map(item => item.id === id ? merged : item));
+
+    if (isSupabaseConfigured()) {
+      showToast('Updating Q&A in Supabase... ⚡');
+      SupabaseService.saveVerifiedQA(merged).then(res => {
+        if (res.success) showToast('Q&A updated in Supabase! ✅');
+      });
+    } else {
+      showToast('Q&A updated locally! ✅');
+    }
+  };
+
+  const deleteVerifiedQA = (id: string) => {
+    setVerifiedQAs(prev => prev.filter(item => item.id !== id));
+
+    if (isSupabaseConfigured()) {
+      showToast('Deleting Q&A from Supabase... 🗑️');
+      SupabaseService.deleteVerifiedQA(id).then(res => {
+        if (res.success) showToast('Q&A deleted from Supabase.');
+      });
+    } else {
+      showToast('Q&A deleted locally.');
+    }
+  };
+
+  // Admin Categories CRUD
   const addCategory = (cat: string) => {
     const trimmed = cat.trim();
     if (!trimmed || categories.includes(trimmed)) return;
     const nextList = [...categories, trimmed];
     setCategories(nextList);
-    showToast(`Category "${trimmed}" added! 🏷️`);
-    FirestoreService.saveCategories(nextList);
+
+    if (isSupabaseConfigured()) {
+      showToast(`Category "${trimmed}" added to Supabase! 🏷️`);
+      SupabaseService.saveCategories(nextList);
+    } else {
+      showToast(`Category "${trimmed}" added! 🏷️`);
+      FirestoreService.saveCategories(nextList);
+    }
   };
 
   const deleteCategory = (cat: string) => {
     const nextList = categories.filter(c => c !== cat);
     setCategories(nextList);
-    showToast(`Category "${cat}" removed.`);
-    FirestoreService.saveCategories(nextList);
+
+    if (isSupabaseConfigured()) {
+      showToast(`Category "${cat}" removed from Supabase.`);
+      SupabaseService.saveCategories(nextList);
+    } else {
+      showToast(`Category "${cat}" removed.`);
+      FirestoreService.saveCategories(nextList);
+    }
+  };
+
+  // Explicit Supabase Admin Bootstrap & Diagnostics
+  const claimAdminBootstrap = async (): Promise<{ success: boolean; message?: string; error?: string }> => {
+    return AdminAuthService.claimAdminBootstrap();
+  };
+
+  const fetchDatabaseStats = async (): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      const stats = await SupabaseService.getDatabaseStatistics();
+      if (stats) setDatabaseStats(stats);
+    }
   };
 
   const resetAllContentToDefaults = () => {
@@ -1131,6 +1412,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       userName: userStats.userName
     };
     setQuizAttempts(prev => [newAttempt, ...prev].slice(0, 150));
+
+    if (isSupabaseConfigured()) {
+      SupabaseService.logQuizAttempt(newAttempt);
+    }
   };
 
   // Salah Tracker Logic
@@ -1428,13 +1713,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         showToast,
 
         // Admin Panel & Database Management
+        activeBackend,
         questions,
         quranVerses,
         hadiths,
         duas,
         reminders,
+        verifiedQAs,
         categories,
         quizAttempts,
+        databaseStats,
+        fetchDatabaseStats,
 
         // Admin Security
         isAdminAuthenticated,
@@ -1447,6 +1736,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         adminLogout,
         checkAdminStatus,
         syncAdminAuthorization,
+        claimAdminBootstrap,
 
         // Admin Question CRUD
         addQuestion,
@@ -1467,10 +1757,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addReminder,
         updateReminder,
         deleteReminder,
+        addVerifiedQA,
+        updateVerifiedQA,
+        deleteVerifiedQA,
         addCategory,
         deleteCategory,
         resetAllContentToDefaults,
         migrateLocalToFirestore,
+        migrateLocalToSupabase,
         isCloudSyncing,
         cloudSyncError
       }}

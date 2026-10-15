@@ -81,12 +81,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     adultProgress,
     kidsProgress,
     migrateLocalToFirestore,
+    migrateLocalToSupabase,
     isCloudSyncing,
-    cloudSyncError
+    cloudSyncError,
+    activeBackend,
+    claimAdminBootstrap,
+    databaseStats,
+    fetchDatabaseStats
   } = useApp();
 
-  // Migration running state
+  // Migration & Bootstrap running state
   const [isMigrating, setIsMigrating] = useState(false);
+  const [isClaimingBootstrap, setIsClaimingBootstrap] = useState(false);
+  const [isFetchingStats, setIsFetchingStats] = useState(false);
 
   // Login State
   const [emailInput, setEmailInput] = useState(adminEmail || 'dk.tanooli97@gmail.com');
@@ -717,10 +724,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
               {adminUid && <span className="text-[9px] bg-emerald-200/70 px-1.5 py-0.2 rounded-md font-mono text-emerald-900">{adminUid.slice(0, 6)}...</span>}
             </button>
 
-            {/* Cloud Firestore Status Badge */}
+            {/* Cloud Backend Status Badge */}
             <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-100 border border-slate-200 text-[11px] font-medium text-slate-700">
-              <Cloud className={`w-3.5 h-3.5 ${isCloudSyncing ? 'text-amber-500 animate-pulse' : 'text-emerald-600'}`} />
-              <span>{isCloudSyncing ? 'Syncing...' : 'Firestore Connected'}</span>
+              <Cloud className={`w-3.5 h-3.5 ${isCloudSyncing ? 'text-amber-500 animate-pulse' : activeBackend === 'supabase' ? 'text-emerald-600' : 'text-sky-600'}`} />
+              <span>
+                {isCloudSyncing
+                  ? 'Syncing...'
+                  : activeBackend === 'supabase'
+                  ? 'Supabase Active ⚡'
+                  : 'Firestore Connected ☁️'}
+              </span>
             </div>
 
             <button
@@ -1392,6 +1405,117 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                     Save New Passkey 🔐
                   </button>
                 </form>
+              </div>
+
+              {/* Supabase Central Database & RLS Security */}
+              <div className="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 text-emerald-400">
+                    <Database className="w-4 h-4 text-emerald-400" />
+                    <h3 className="text-sm font-bold text-white">Supabase PostgreSQL Database</h3>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-slate-800 text-emerald-400 border border-emerald-500/30">
+                      udlunwwubmskgdbbjwee
+                    </span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${activeBackend === 'supabase' ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' : 'bg-slate-800 text-slate-400'}`}>
+                      {activeBackend === 'supabase' ? 'Primary Active Backend' : 'Available'}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Supabase PostgreSQL provides zero-trust Row Level Security (RLS) across all 9 tables, protected RPCs, and authenticated administrator access.
+                </p>
+
+                {/* Supabase Database Stats Summary (if loaded) */}
+                {databaseStats && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 pb-1">
+                    <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60 text-center">
+                      <div className="text-xs font-bold text-emerald-400">{databaseStats.totalQuizQuestions}</div>
+                      <div className="text-[10px] text-slate-400">Questions ({databaseStats.kidsQuizQuestions} kids)</div>
+                    </div>
+                    <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60 text-center">
+                      <div className="text-xs font-bold text-emerald-400">{databaseStats.totalQuranVerses}</div>
+                      <div className="text-[10px] text-slate-400">Quran Verses</div>
+                    </div>
+                    <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60 text-center">
+                      <div className="text-xs font-bold text-emerald-400">{databaseStats.totalHadiths}</div>
+                      <div className="text-[10px] text-slate-400">Hadiths</div>
+                    </div>
+                    <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60 text-center">
+                      <div className="text-xs font-bold text-emerald-400">{databaseStats.totalVerifiedQAs}</div>
+                      <div className="text-[10px] text-slate-400">Verified Q&As</div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="pt-1 flex flex-wrap items-center gap-2.5">
+                  {/* Claim Admin Bootstrap RPC */}
+                  <button
+                    onClick={async () => {
+                      setIsClaimingBootstrap(true);
+                      try {
+                        const res = await claimAdminBootstrap();
+                        if (res.success) {
+                          showToast(res.message || 'Administrator Bootstrap Claimed! 🛡️');
+                          fetchDatabaseStats().catch(() => {});
+                        } else {
+                          showToast(`Bootstrap notice: ${res.error || 'Failed'}`);
+                        }
+                      } finally {
+                        setIsClaimingBootstrap(false);
+                      }
+                    }}
+                    disabled={isClaimingBootstrap}
+                    className="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                    title="Binds your authenticated email (dk.tanooli97@gmail.com) to public.app_admins via secure RPC"
+                  >
+                    <ShieldCheck className={`w-3.5 h-3.5 ${isClaimingBootstrap ? 'animate-spin' : ''}`} />
+                    <span>{isClaimingBootstrap ? 'Claiming...' : 'Claim Admin Bootstrap 🛡️'}</span>
+                  </button>
+
+                  {/* Sync Verified Content to Supabase */}
+                  <button
+                    onClick={async () => {
+                      setIsMigrating(true);
+                      try {
+                        const res = await migrateLocalToSupabase();
+                        if (res.success) {
+                          showToast(`Successfully synced ${res.migratedCount} items to Supabase! ⚡`);
+                          fetchDatabaseStats().catch(() => {});
+                        }
+                      } finally {
+                        setIsMigrating(false);
+                      }
+                    }}
+                    disabled={isMigrating || isCloudSyncing}
+                    className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm"
+                    title="Safely copies questions, verses, hadiths, duas, reminders, and Q&As to Supabase PostgreSQL"
+                  >
+                    <Sparkles className={`w-3.5 h-3.5 ${isMigrating ? 'animate-spin' : ''}`} />
+                    <span>{isMigrating ? 'Syncing to Supabase...' : 'Sync Content to Supabase ⚡'}</span>
+                  </button>
+
+                  {/* Fetch Live Supabase Stats */}
+                  <button
+                    onClick={async () => {
+                      setIsFetchingStats(true);
+                      try {
+                        await fetchDatabaseStats();
+                        showToast('Live database statistics updated! 📊');
+                      } finally {
+                        setIsFetchingStats(false);
+                      }
+                    }}
+                    disabled={isFetchingStats}
+                    className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 border border-slate-700"
+                    title="Fetches live row counts from public.v_database_statistics via secure RPC"
+                  >
+                    <BarChart3 className={`w-3.5 h-3.5 ${isFetchingStats ? 'animate-spin' : ''}`} />
+                    <span>{isFetchingStats ? 'Loading...' : 'Database Stats'}</span>
+                  </button>
+                </div>
               </div>
 
               {/* Cloud Firestore Integration & Migration */}

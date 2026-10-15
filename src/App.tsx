@@ -19,6 +19,7 @@ import { ContactPage } from './components/pages/ContactPage';
 import { PrivacyPolicyPage } from './components/pages/PrivacyPolicyPage';
 import { TermsPage } from './components/pages/TermsPage';
 import { DisclaimerPage } from './components/pages/DisclaimerPage';
+import { AskScholarPage } from './components/pages/AskScholarPage';
 import { IslamicQuizHub } from './components/seo/IslamicQuizHub';
 import { KidsIslamicQuizHub } from './components/seo/KidsIslamicQuizHub';
 import { IslamicQAHub } from './components/seo/IslamicQAHub';
@@ -73,7 +74,8 @@ export const App: React.FC = () => {
           'islamic-manners-for-kids', 'quran-learning-guide', 'hadith-learning-guide',
           'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar',
           'seerah-of-prophet-muhammad', 'ghusl-taharah-guide', 'tayammum-guide',
-          'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam'
+          'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam',
+          'ask-a-scholar'
         ];
 
         if (validCleanTabs.includes(path as AppTab)) {
@@ -267,6 +269,11 @@ export const App: React.FC = () => {
         title: 'Rights in Islam (Huqooq-ul-Ibad): Parents, Spouses, Neighbors & Workers | IslamIQ',
         path: '/rights-in-islam',
         desc: 'Comprehensive guide to social rights in Islam (Huqooq-ul-Ibad). Discover rights of parents, children, spouses, neighbors, relatives, orphans, and workers with Quran and Hadith evidence.'
+      },
+      'ask-a-scholar': {
+        title: 'Ask a Scholar • Authentic Islamic Q&A, Masail & Fatwa | IslamIQ',
+        path: '/ask-a-scholar',
+        desc: 'Dedicated Ask a Scholar portal for private, authentic Islamic guidance on Salah, Fasting, Zakat, everyday matters, Masail, and formal Fatwa across the four Fiqh schools.'
       }
     };
 
@@ -382,6 +389,8 @@ export const App: React.FC = () => {
           <TermsPage />
         ) : activeTab === 'disclaimer' ? (
           <DisclaimerPage />
+        ) : activeTab === 'ask-a-scholar' ? (
+          <AskScholarPage />
         ) : activeTab === 'islamic-quiz' ? (
           <IslamicQuizHub />
         ) : activeTab === 'kids-islamic-quiz' ? (

@@ -1,26 +1,28 @@
 /**
- * Hybrid Cloud Admin Authentication & Authorization Service
+ * IslamIQ Dual-Backend Admin Authentication Service
  * 
- * Works seamlessly in both environments:
- * 1. Vite Development Server (via server-side PBKDF2 middleware at /api/admin/*)
- * 2. Vercel Production Deployment / Static Hosting (via Firestore system_config/admin_auth + client-side WebCrypto PBKDF2)
+ * Supports:
+ * 1. Supabase Auth (Target PostgreSQL backend via supabase-js + secure claim_admin_bootstrap RPC)
+ * 2. Firebase Auth (Legacy/Fallback backend, preserved for zero-downtime migration)
  * 
  * Security:
  * - Passwords are NEVER stored in plain text.
- * - PBKDF2 with 100,000 iterations and random 16-byte cryptographically secure salt.
- * - Authentication state is kept in memory and secure sessionStorage.
- * - Rate-limited in both server and client sessions to prevent brute force.
+ * - In Supabase mode, sessions use standard JWTs with Supabase RLS policies.
+ * - Admin authorization relies on server-side public.is_admin() and public.app_admins table.
+ * - No automatic bypasses or silent role grants.
  */
 
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  signOut,
+  signOut as firebaseSignOut,
   onAuthStateChanged,
-  User
+  User as FirebaseUser
 } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { auth as firebaseAuth } from '../firebase/config';
 import { FirestoreService } from './firestoreService';
+import { supabase, isSupabaseConfigured } from '../supabase/config';
+import { SupabaseService } from './supabaseService';
 
 const TOKEN_KEY = 'islamiq_admin_session_token';
 const FAILED_ATTEMPTS_KEY = 'islamiq_admin_failed_attempts';
@@ -32,6 +34,7 @@ export interface AdminStatusResponse {
   hasOwner: boolean;
   adminEmail?: string;
   adminUid?: string;
+  authBackend: 'supabase' | 'firebase' | 'local';
 }
 
 // Client-side WebCrypto PBKDF2 helper for static hosts
@@ -69,6 +72,11 @@ function generateRandomSalt(): string {
 }
 
 export const AdminAuthService = {
+  getAuthBackend(): 'supabase' | 'firebase' | 'local' {
+    if (isSupabaseConfigured()) return 'supabase';
+    return 'firebase';
+  },
+
   getToken(): string | null {
     try {
       return sessionStorage.getItem(TOKEN_KEY);
@@ -90,25 +98,56 @@ export const AdminAuthService = {
     } catch {}
   },
 
-  getCurrentUser(): User | null {
-    try {
-      return auth.currentUser;
-    } catch {
-      return null;
+  getCurrentUser(): { email?: string | null; uid?: string | null } | null {
+    if (isSupabaseConfigured()) {
+      // Supabase user from synchronous session cache if available
+      try {
+        const sessionStr = localStorage.getItem(`sb-${new URL(supabase['supabaseUrl'] || 'https://udlunwwubmskgdbbjwee.supabase.co').hostname.split('.')[0]}-auth-token`);
+        if (sessionStr) {
+          const parsed = JSON.parse(sessionStr);
+          if (parsed?.user) {
+            return { email: parsed.user.email, uid: parsed.user.id };
+          }
+        }
+      } catch {}
     }
+
+    try {
+      const fbUser = firebaseAuth.currentUser;
+      if (fbUser) return { email: fbUser.email, uid: fbUser.uid };
+    } catch {}
+
+    return null;
   },
 
   getAdminUid(): string | null {
-    try {
-      return auth.currentUser?.uid || null;
-    } catch {
-      return null;
-    }
+    return this.getCurrentUser()?.uid || null;
   },
 
-  onAuthStateChanged(callback: (user: User | null) => void): () => void {
+  onAuthStateChanged(callback: (user: { email?: string | null; uid?: string | null } | null) => void): () => void {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (session?.user) {
+            callback({ email: session.user.email, uid: session.user.id });
+          } else {
+            callback(null);
+          }
+        });
+        return () => subscription.unsubscribe();
+      } catch {
+        return () => {};
+      }
+    }
+
     try {
-      return onAuthStateChanged(auth, callback);
+      return onAuthStateChanged(firebaseAuth, (user: FirebaseUser | null) => {
+        if (user) {
+          callback({ email: user.email, uid: user.uid });
+        } else {
+          callback(null);
+        }
+      });
     } catch {
       return () => {};
     }
@@ -146,14 +185,21 @@ export const AdminAuthService = {
   },
 
   /**
-   * Automatically initializes and ensures admin authorization in Firestore
-   * for the designated primary admin (dk.tanooli97@gmail.com).
-   * - Validates user email matches PRIMARY_ADMIN_EMAIL.
-   * - Force-refreshes the Firebase Auth token to pick up new claims.
-   * - Upserts admin record in /admins/{uid} and updates system_config/admin_auth.
-   * - Catches all permission / network errors gracefully so no 'Could not write admin auth to Firestore' exception is thrown.
+   * Explicitly claims administrator bootstrap via Supabase RPC.
+   * Requires caller to be authenticated with verified dk.tanooli97@gmail.com.
    */
-  async ensureAdminAuthorization(user?: User | null): Promise<{ success: boolean; isAuthorized: boolean; error?: string }> {
+  async claimAdminBootstrap(): Promise<{ success: boolean; message?: string; error?: string }> {
+    if (isSupabaseConfigured()) {
+      return SupabaseService.claimAdminBootstrap();
+    }
+    return { success: false, error: 'Supabase configuration is not active.' };
+  },
+
+  /**
+   * Automatically initializes and ensures admin authorization in Firestore
+   * for the designated primary admin (dk.tanooli97@gmail.com) when in Firebase fallback mode.
+   */
+  async ensureAdminAuthorization(user?: { email?: string | null; uid?: string | null } | null): Promise<{ success: boolean; isAuthorized: boolean; error?: string }> {
     try {
       const currentUser = user || this.getCurrentUser();
       if (!currentUser || !currentUser.email) {
@@ -167,28 +213,21 @@ export const AdminAuthService = {
         return { success: true, isAuthorized: false };
       }
 
-      // 1. Force refresh token to obtain latest custom claims or auth state
-      try {
-        await currentUser.getIdToken(true);
-      } catch (tokenErr) {
-        console.warn('[AdminAuth] Token refresh warning (non-fatal):', tokenErr);
+      // Supabase verification path
+      if (isSupabaseConfigured()) {
+        const isAdmin = await SupabaseService.checkIsAdmin();
+        return { success: true, isAuthorized: isAdmin };
       }
 
-      // 2. Set token in session storage
-      this.setToken('firebase_' + currentUser.uid);
-
-      // 3. Upsert admin document in /admins/{uid}
-      const regSuccess = await FirestoreService.registerAdminUid(currentUser.uid, currentUser.email);
-
-      // 4. Upsert system_config/admin_auth configuration
-      const configSuccess = await FirestoreService.saveAdminAuthConfig({
-        isSetupComplete: true,
-        adminUid: currentUser.uid,
-        email: currentUser.email
-      });
-
-      if (!regSuccess && !configSuccess) {
-        console.info('[AdminAuth] Admin authorization active via client token.');
+      // Legacy Firebase verification path
+      if (currentUser.uid) {
+        this.setToken('firebase_' + currentUser.uid);
+        await FirestoreService.registerAdminUid(currentUser.uid, currentUser.email);
+        await FirestoreService.saveAdminAuthConfig({
+          isSetupComplete: true,
+          adminUid: currentUser.uid,
+          email: currentUser.email
+        });
       }
 
       return { success: true, isAuthorized: true };
@@ -199,25 +238,48 @@ export const AdminAuthService = {
   },
 
   async getStatus(): Promise<AdminStatusResponse> {
+    const authBackend = this.getAuthBackend();
+
+    // 1. Supabase Auth Status Check
+    if (isSupabaseConfigured()) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          const email = session.user.email || PRIMARY_ADMIN_EMAIL;
+          const isAdmin = await SupabaseService.checkIsAdmin();
+          return {
+            isSetupComplete: true,
+            isAuthenticated: isAdmin,
+            hasOwner: true,
+            adminEmail: email,
+            adminUid: session.user.id,
+            authBackend: 'supabase'
+          };
+        }
+      } catch (sbErr) {
+        console.warn('[AdminAuth] Supabase session check error:', sbErr);
+      }
+    }
+
+    // 2. Legacy Firebase Auth Status Check
     const currentUser = this.getCurrentUser();
-    if (currentUser) {
-      const isPrimary = !currentUser.email || currentUser.email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase();
+    if (currentUser && currentUser.email) {
+      const isPrimary = currentUser.email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase();
       if (isPrimary) {
-        // Auto-run authorization verification in background
-        this.ensureAdminAuthorization(currentUser).catch(() => {});
         return {
           isSetupComplete: true,
           isAuthenticated: true,
           hasOwner: true,
-          adminEmail: currentUser.email || PRIMARY_ADMIN_EMAIL,
-          adminUid: currentUser.uid
+          adminEmail: currentUser.email,
+          adminUid: currentUser.uid || undefined,
+          authBackend
         };
       }
     }
 
     const token = this.getToken();
 
-    // 1. Try local dev endpoint first
+    // 3. Try local dev endpoint fallback
     try {
       const res = await fetch('/api/admin/status', {
         headers: token ? { Authorization: `Bearer ${token}` } : {}
@@ -225,13 +287,11 @@ export const AdminAuthService = {
       const contentType = res.headers.get('content-type') || '';
       if (res.ok && contentType.includes('application/json')) {
         const data = await res.json();
-        return data;
+        return { ...data, authBackend };
       }
-    } catch {
-      // Endpoint unreachable or running on static Vercel host
-    }
+    } catch {}
 
-    // 2. Vercel / Cloud Static Host: Check Firestore System Config
+    // 4. Fallback: Check Firestore System Config if available
     try {
       const config = await FirestoreService.getAdminAuthConfig();
       if (config && config.isSetupComplete) {
@@ -241,17 +301,25 @@ export const AdminAuthService = {
           isAuthenticated,
           hasOwner: true,
           adminEmail: config.email || PRIMARY_ADMIN_EMAIL,
-          adminUid: config.adminUid
+          adminUid: config.adminUid,
+          authBackend
         };
       }
       return {
         isSetupComplete: false,
         isAuthenticated: false,
         hasOwner: false,
-        adminEmail: PRIMARY_ADMIN_EMAIL
+        adminEmail: PRIMARY_ADMIN_EMAIL,
+        authBackend
       };
     } catch {
-      return { isSetupComplete: true, isAuthenticated: false, hasOwner: true, adminEmail: PRIMARY_ADMIN_EMAIL };
+      return {
+        isSetupComplete: true,
+        isAuthenticated: false,
+        hasOwner: true,
+        adminEmail: PRIMARY_ADMIN_EMAIL,
+        authBackend
+      };
     }
   },
 
@@ -260,10 +328,11 @@ export const AdminAuthService = {
   },
 
   /**
-   * Authenticate admin via Firebase Authentication.
-   * Supports both (email, password) and single-argument (password) for backward compatibility.
+   * Authenticate administrator.
+   * If Supabase is configured, signs in with Supabase Auth.
+   * If not configured, gracefully falls back to Firebase Auth.
    */
-  async login(emailOrPassword: string, maybePassword?: string): Promise<{ success: boolean; user?: User; error?: string }> {
+  async login(emailOrPassword: string, maybePassword?: string): Promise<{ success: boolean; user?: any; error?: string }> {
     const rate = this.checkRateLimit();
     if (rate.isLocked) {
       return { success: false, error: `Too many failed attempts. Locked for ${rate.waitSeconds}s.` };
@@ -277,22 +346,48 @@ export const AdminAuthService = {
       password = maybePassword;
     }
 
-    // Attempt Firebase Authentication directly
+    // -------------------------------------------------------------------------
+    // A. SUPABASE AUTH PATH (When Configured)
+    // -------------------------------------------------------------------------
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+        if (error) {
+          // If login fails due to credentials or unconfirmed email
+          this.recordFailedAttempt();
+          return { success: false, error: `Supabase Auth: ${error.message}` };
+        }
+
+        if (data?.user) {
+          this.setToken('supabase_' + data.user.id);
+          this.clearFailedAttempts();
+          return { success: true, user: data.user };
+        }
+      } catch (sbError: any) {
+        console.warn('[AdminAuth] Supabase Auth exception:', sbError);
+        return { success: false, error: sbError?.message || 'Supabase authentication failed.' };
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // B. LEGACY FIREBASE AUTH PATH (Fallback Mode)
+    // -------------------------------------------------------------------------
     try {
       let userCredential;
       try {
-        userCredential = await signInWithEmailAndPassword(auth, email, password);
+        userCredential = await signInWithEmailAndPassword(firebaseAuth, email, password);
       } catch (fbErr: any) {
-        // If user not found in Firebase Auth and this is the designated primary admin,
-        // create their initial Firebase Auth account
         if (
           (fbErr.code === 'auth/user-not-found' || fbErr.code === 'auth/invalid-credential') &&
           email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase()
         ) {
           try {
-            userCredential = await createUserWithEmailAndPassword(auth, email, password);
-          } catch (createErr: any) {
-            // If creation fails (e.g. email already exists and password was wrong), throw original error
+            userCredential = await createUserWithEmailAndPassword(firebaseAuth, email, password);
+          } catch {
             throw fbErr;
           }
         } else {
@@ -301,8 +396,6 @@ export const AdminAuthService = {
       }
 
       const user = userCredential.user;
-
-      // Register the authenticated Admin UID & ensure admin authorization in Firestore
       if (user && user.uid) {
         await this.ensureAdminAuthorization(user);
       }
@@ -313,56 +406,45 @@ export const AdminAuthService = {
     } catch (fbError: any) {
       console.warn('[AdminAuth] Firebase Auth attempt result:', fbError.code || fbError.message);
 
-      // Handle specific Firebase Auth error codes
       if (fbError.code === 'auth/wrong-password' || fbError.code === 'auth/invalid-credential') {
         this.recordFailedAttempt();
         return { success: false, error: 'Invalid admin credentials. Access denied.' };
       }
       if (fbError.code === 'auth/too-many-requests') {
-        return { success: false, error: 'Too many failed login attempts. Please wait a few minutes before trying again.' };
+        return { success: false, error: 'Too many failed login attempts. Please wait a few minutes.' };
       }
 
-      // If Firebase Auth API key is not configured or in local dev environment without Firebase Auth:
-      // Fallback gracefully to local dev server endpoint
+      // Local dev endpoint fallback
       try {
         const res = await fetch('/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ password })
         });
-        const contentType = res.headers.get('content-type') || '';
-        if (res.ok && contentType.includes('application/json')) {
-          const data = await res.json();
-          if (data.success) {
-            if (data.token) this.setToken(data.token);
-            this.clearFailedAttempts();
-            return { success: true };
-          }
-        }
-      } catch {}
-
-      // Fallback to Firestore WebCrypto hash comparison if previously initialized
-      try {
-        const config = await FirestoreService.getAdminAuthConfig();
-        if (config && config.passwordHash && config.salt) {
-          const hash = await hashPasswordWebCrypto(password, config.salt);
-          if (hash === config.passwordHash) {
-            this.setToken('islamiq_verified_session');
-            this.clearFailedAttempts();
-            return { success: true };
-          }
+        const data = await res.json();
+        if (data?.success) {
+          if (data.token) this.setToken(data.token);
+          this.clearFailedAttempts();
+          return { success: true };
         }
       } catch {}
 
       this.recordFailedAttempt();
-      const detailedError = fbError.code === 'auth/api-key-not-valid'
-        ? 'Firebase API key requires configuration in Vercel environment variables (VITE_FIREBASE_API_KEY).'
-        : fbError.message || 'Authentication error. Please verify your credentials.';
-      return { success: false, error: detailedError };
+      return { success: false, error: fbError.message || 'Authentication error. Please verify your credentials.' };
     }
   },
 
   async changePassword(currentPassword: string, newPassword: string, email: string = PRIMARY_ADMIN_EMAIL): Promise<{ success: boolean; error?: string }> {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase.auth.updateUser({ password: newPassword });
+        if (error) return { success: false, error: error.message };
+        return { success: true };
+      } catch (err: any) {
+        return { success: false, error: err?.message || 'Failed to update password.' };
+      }
+    }
+
     const loginRes = await this.login(email, currentPassword);
     if (!loginRes.success) {
       return { success: false, error: 'Current password is incorrect.' };
@@ -386,9 +468,16 @@ export const AdminAuthService = {
   },
 
   async logout(): Promise<void> {
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.auth.signOut();
+      } catch {}
+    }
+
     try {
-      await signOut(auth);
+      await firebaseSignOut(firebaseAuth);
     } catch {}
+
     const token = this.getToken();
     if (token) {
       try {

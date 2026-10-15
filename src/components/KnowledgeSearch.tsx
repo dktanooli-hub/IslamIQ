@@ -4,7 +4,8 @@ import { VERIFIED_QA_DATABASE } from '../data/verifiedContent';
 import { Search, Bookmark, BookmarkCheck, ChevronDown, BookOpen, ShieldCheck, Tag, Sparkles } from 'lucide-react';
 
 export const KnowledgeSearch: React.FC = () => {
-  const { contentLang, userMode, bookmarkedQAs, toggleBookmarkQA } = useApp();
+  const { contentLang, userMode, bookmarkedQAs, toggleBookmarkQA, verifiedQAs } = useApp();
+  const qaSource = (verifiedQAs && verifiedQAs.length > 0) ? verifiedQAs : VERIFIED_QA_DATABASE;
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -13,7 +14,7 @@ export const KnowledgeSearch: React.FC = () => {
 
   const categories = ['All', 'Aqeedah', 'Salah', 'Fasting', 'Family', 'Manners'];
 
-  const filteredQAs = VERIFIED_QA_DATABASE.filter(qa => {
+  const filteredQAs = qaSource.filter(qa => {
     // Filter by bookmarks
     if (onlyBookmarks && !bookmarkedQAs.includes(qa.id)) {
       return false;

@@ -316,6 +316,17 @@ export const MoreMenuModal: React.FC = () => {
       color: 'indigo',
       items: [
         {
+          id: 'ask-a-scholar',
+          path: '/ask-a-scholar',
+          titleEn: 'Ask a Scholar',
+          titleUrdu: 'علمائے کرام سے رہنمائی',
+          descEn: 'Private Q&A, Masail & Fatwa with qualified scholarly guidance',
+          descUrdu: 'نماز، روزے، زکوٰۃ اور روزمرہ مسائل پر مستند شرعی رہنمائی',
+          icon: HelpCircle,
+          badge: 'Coming Soon',
+          badgeUrdu: 'عنقریب'
+        },
+        {
           id: 'islamic-questions-answers',
           path: '/islamic-questions-answers',
           titleEn: 'Islamic Questions & Answers',
