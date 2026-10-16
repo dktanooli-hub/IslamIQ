@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { VERIFIED_QUESTIONS } from '../../data/verifiedContent';
 import { QuizQuestion } from '../../types';
