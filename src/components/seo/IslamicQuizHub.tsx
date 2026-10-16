@@ -44,6 +44,14 @@ useEffect(() => {
 ];
 
 const adultQuestions = mergedQuestions.filter((q: QuizQuestion) => !q.forKids);
+  console.log('[IslamIQ Quiz Debug]', {
+  staticQuestions: VERIFIED_QUESTIONS.length,
+  supabaseQuestions: supabaseQuestions.length,
+  adultQuestions: adultQuestions.length,
+  newQuestionFound: supabaseQuestions.some(
+    (q) => String(q.id) === 'q-adm-1792091725547-di1h'
+  ),
+});
   const categories = ['all', 'Pillars', 'Quran', 'Prophets', 'Salah', 'Seerah', 'Duas'];
 
   const filteredQuestions = selectedCategory === 'all'
