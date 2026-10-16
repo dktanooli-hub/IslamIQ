@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { VERIFIED_QUESTIONS } from '../../data/verifiedContent';
 import { QuizQuestion } from '../../types';
+import { SupabaseService } from '../../services/supabaseService';
 import { SeoHead } from './SeoHead';
 import { RelatedIslamicLearning } from './RelatedIslamicLearning';
 import { HelpCircle, CheckCircle2, XCircle, ArrowRight, ShieldCheck, Award, Sparkles, Filter, RefreshCw } from 'lucide-react';
@@ -12,8 +13,37 @@ export const IslamicQuizHub: React.FC = () => {
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
+  const [supabaseQuestions, setSupabaseQuestions] = useState<QuizQuestion[]>([]);
 
-  const adultQuestions = VERIFIED_QUESTIONS.filter((q: QuizQuestion) => !q.forKids);
+useEffect(() => {
+  let mounted = true;
+
+  SupabaseService.getQuestions()
+    .then((questions) => {
+      if (mounted) {
+        setSupabaseQuestions(questions.filter((q) => q.isActive !== false));
+      }
+    })
+    .catch((error) => {
+      console.error('Failed to load Supabase quiz questions:', error);
+    });
+
+  return () => {
+    mounted = false;
+  };
+}, []);
+
+  const mergedQuestions = [
+  ...VERIFIED_QUESTIONS,
+  ...supabaseQuestions.filter(
+    (newQuestion) =>
+      !VERIFIED_QUESTIONS.some(
+        (oldQuestion) => String(oldQuestion.id) === String(newQuestion.id)
+      )
+  ),
+];
+
+const adultQuestions = mergedQuestions.filter((q: QuizQuestion) => !q.forKids);
   const categories = ['all', 'Pillars', 'Quran', 'Prophets', 'Salah', 'Seerah', 'Duas'];
 
   const filteredQuestions = selectedCategory === 'all'
