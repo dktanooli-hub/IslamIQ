@@ -35,13 +35,12 @@ export const SupabaseService = {
   // ---------------------------------------------------------------------------
   // 1. QUIZ QUESTIONS (Adults & Kids)
   // ---------------------------------------------------------------------------
-  async getQuestions(): Promise<QuizQuestion[]> {
+  
+async getQuestions(): Promise<QuizQuestion[]> {
   if (!isSupabaseConfigured()) {
     console.error('[IslamIQ Debug] Supabase is NOT configured');
     return [];
   }
-
-  console.info('[IslamIQ Debug] Supabase is configured');
 
   try {
     const { data, error } = await supabase
@@ -50,20 +49,9 @@ export const SupabaseService = {
       .order('id', { ascending: true });
 
     if (error) {
-      console.error('[Supabase] getQuestions failed:', {
-        message: error.message,
-        code: error.code,
-        details: error.details,
-        hint: error.hint,
-      });
+      console.error('[Supabase] getQuestions failed:', error.message);
       return [];
     }
-
-    console.info(
-      '[Supabase] getQuestions success:',
-      (data || []).length,
-      'rows'
-    );
 
     return (data || []).map((row: any) => ({
       id: row.id,
@@ -82,57 +70,52 @@ export const SupabaseService = {
       isActive: row.is_active !== false,
     }));
   } catch (err: any) {
-    console.error(
-      '[Supabase] getQuestions exception:',
-      err?.message || err
-    );
+    console.error('[Supabase] getQuestions exception:', err?.message || err);
     return [];
   }
 },
 
+listenQuestions(
+  callback: (questions: QuizQuestion[]) => void,
+  onError?: (error: any) => void
+): () => void {
   if (!isSupabaseConfigured()) {
-  console.error('[IslamIQ Debug] Supabase is NOT configured');
-  return [];
+    onError?.(new Error('Supabase is not configured'));
+    return () => {};
   }
-    if (!isSupabaseConfigured()) {
-  console.error('[IslamIQ Debug] Supabase is NOT configured');
-  return [];
-}
 
-console.info('[IslamIQ Debug] Supabase is configured');
-
-try {
-  const { data, error } = await supabase
-    .from('quiz_questions')
-    .select('*')
-    .order('id', { ascending: true });
-    }
-
-    try {
-      const channel = supabase
-        .channel('quiz_questions_realtime')
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'quiz_questions' },
-          async () => {
+  try {
+    const channel = supabase
+      .channel('quiz_questions_realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'quiz_questions' },
+        async () => {
+          try {
             const updated = await this.getQuestions();
-            if (updated.length > 0) callback(updated);
+            callback(updated);
+          } catch (err) {
+            onError?.(err);
           }
-        )
-        .subscribe((status) => {
-          if (status === 'CHANNEL_ERROR' && onError) {
-            onError(new Error('Supabase Realtime subscription error for quiz_questions'));
-          }
-        });
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'CHANNEL_ERROR') {
+          onError?.(
+            new Error('Supabase Realtime subscription error for quiz_questions')
+          );
+        }
+      });
 
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    } catch (err: any) {
-      if (onError) onError(err);
-      return () => {};
-    }
-  },
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  } catch (err: any) {
+    onError?.(err);
+    return () => {};
+  }
+},
+  
 
   async saveQuestion(question: QuizQuestion): Promise<{ success: boolean; error?: string }> {
     if (!isSupabaseConfigured()) return { success: false, error: 'Supabase not configured' };
