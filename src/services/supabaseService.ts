@@ -86,7 +86,17 @@ console.info(
     onError?: (error: any) => void
   ): () => void {
     if (!isSupabaseConfigured()) {
-      return () => {};
+  console.error('[IslamIQ Debug] Supabase is NOT configured');
+  return [];
+}
+
+console.info('[IslamIQ Debug] Supabase is configured');
+
+try {
+  const { data, error } = await supabase
+    .from('quiz_questions')
+    .select('*')
+    .order('id', { ascending: true });
     }
 
     try {
