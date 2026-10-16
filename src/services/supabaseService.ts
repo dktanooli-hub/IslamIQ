@@ -44,9 +44,20 @@ export const SupabaseService = {
         .order('id', { ascending: true });
 
       if (error) {
-        console.warn('[Supabase] getQuestions notice:', error.message);
-        return [];
-      }
+  console.error('[Supabase] getQuestions failed:', {
+    message: error.message,
+    code: error.code,
+    details: error.details,
+    hint: error.hint,
+  });
+  return [];
+}
+
+console.info(
+  '[Supabase] getQuestions success:',
+  (data || []).length,
+  'rows'
+);
 
       return (data || []).map((row: any) => ({
         id: row.id,
