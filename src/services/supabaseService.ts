@@ -31,49 +31,77 @@ export interface DatabaseStats {
  * Strictly adheres to schema.sql naming (e.g., public.app_admins, public.verified_qas).
  */
 
+let lastQuestionsError: string | null = null;
+let lastQuestionsCount: number = 0;
+
 export const SupabaseService = {
+  // Diagnostic method for safe UI inspection
+  getLastQuestionsDiagnostic(): { isConfigured: boolean; lastError: string | null; lastCount: number } {
+    return {
+      isConfigured: isSupabaseConfigured(),
+      lastError: lastQuestionsError,
+      lastCount: lastQuestionsCount
+    };
+  },
+
   // ---------------------------------------------------------------------------
   // 1. QUIZ QUESTIONS (Adults & Kids)
   // ---------------------------------------------------------------------------
-  
-async getQuestions(): Promise<QuizQuestion[]> {
-  if (!isSupabaseConfigured()) {
-    console.error('[IslamIQ Debug] Supabase is NOT configured');
-    return [];
-  }
-
-  try {
-    const { data, error } = await supabase
-      .from('quiz_questions')
-      .select('*')
-      .order('id', { ascending: true });
-
-    if (error) {
-      console.error('[Supabase] getQuestions failed:', error.message);
+  async getQuestions(): Promise<QuizQuestion[]> {
+    if (!isSupabaseConfigured()) {
+      lastQuestionsError = 'Supabase anon key (VITE_SUPABASE_ANON_KEY) is not active in this build';
+      console.warn('[IslamIQ Debug]', lastQuestionsError);
       return [];
     }
 
-    return (data || []).map((row: any) => ({
-      id: row.id,
-      questionUrdu: row.question_urdu,
-      questionEn: row.question_en,
-      optionsUrdu: row.options_urdu || [],
-      optionsEn: row.options_en || [],
-      correctIndex: row.correct_index,
-      explanationUrdu: row.explanation_urdu || '',
-      explanationEn: row.explanation_en || '',
-      category: row.category,
-      difficulty: row.difficulty,
-      forKids: !!row.for_kids,
-      kidsHintUrdu: row.kids_hint_urdu,
-      kidsHintEn: row.kids_hint_en,
-      isActive: row.is_active !== false,
-    }));
-  } catch (err: any) {
-    console.error('[Supabase] getQuestions exception:', err?.message || err);
-    return [];
-  }
-},
+    try {
+      const { data, error } = await supabase
+        .from('quiz_questions')
+        .select('*')
+        .order('id', { ascending: true });
+
+      if (error) {
+        lastQuestionsError = error.message;
+        console.error('[Supabase] getQuestions query error:', error.message);
+        return [];
+      }
+
+      lastQuestionsError = null;
+      lastQuestionsCount = data ? data.length : 0;
+
+      const parseOptions = (opts: any): string[] => {
+        if (Array.isArray(opts)) return opts;
+        if (typeof opts === 'string') {
+          try {
+            const parsed = JSON.parse(opts);
+            if (Array.isArray(parsed)) return parsed;
+          } catch {}
+        }
+        return [];
+      };
+
+      return (data || []).map((row: any) => ({
+        id: String(row.id),
+        questionUrdu: row.question_urdu || '',
+        questionEn: row.question_en || '',
+        optionsUrdu: parseOptions(row.options_urdu),
+        optionsEn: parseOptions(row.options_en),
+        correctIndex: typeof row.correct_index === 'number' ? row.correct_index : 0,
+        explanationUrdu: row.explanation_urdu || '',
+        explanationEn: row.explanation_en || '',
+        category: row.category || 'General',
+        difficulty: row.difficulty || 'beginner',
+        forKids: Boolean(row.for_kids),
+        kidsHintUrdu: row.kids_hint_urdu || null,
+        kidsHintEn: row.kids_hint_en || null,
+        isActive: row.is_active !== false,
+      }));
+    } catch (err: any) {
+      lastQuestionsError = err?.message || 'Network error fetching questions';
+      console.error('[Supabase] getQuestions exception:', lastQuestionsError);
+      return [];
+    }
+  },
 
 listenQuestions(
   callback: (questions: QuizQuestion[]) => void,

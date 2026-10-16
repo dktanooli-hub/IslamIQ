@@ -8,50 +8,58 @@ import { RelatedIslamicLearning } from './RelatedIslamicLearning';
 import { HelpCircle, CheckCircle2, XCircle, ArrowRight, ShieldCheck, Award, Sparkles, Filter, RefreshCw } from 'lucide-react';
 
 export const IslamicQuizHub: React.FC = () => {
-  const { contentLang, setActiveTab, userMode, setUserMode } = useApp();
+  const { contentLang, setActiveTab, userMode, setUserMode, questions: contextQuestions } = useApp();
   const isUrdu = contentLang === 'urdu';
 
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
   const [supabaseQuestions, setSupabaseQuestions] = useState<QuizQuestion[]>([]);
+  const [diagnostic, setDiagnostic] = useState<{ isConfigured: boolean; lastError: string | null; lastCount: number } | null>(null);
 
-useEffect(() => {
-  let mounted = true;
+  useEffect(() => {
+    let mounted = true;
 
-  SupabaseService.getQuestions()
-    .then((questions) => {
-      if (mounted) {
-        setSupabaseQuestions(questions.filter((q) => q.isActive !== false));
-      }
-    })
-    .catch((error) => {
-      console.error('Failed to load Supabase quiz questions:', error);
-    });
+    SupabaseService.getQuestions()
+      .then((questions) => {
+        if (mounted) {
+          setSupabaseQuestions(questions.filter((q) => q.isActive !== false));
+          setDiagnostic(SupabaseService.getLastQuestionsDiagnostic());
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load Supabase quiz questions:', error);
+        if (mounted) {
+          setDiagnostic(SupabaseService.getLastQuestionsDiagnostic());
+        }
+      });
 
-  return () => {
-    mounted = false;
-  };
-}, []);
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-  const mergedQuestions = [
-  ...VERIFIED_QUESTIONS,
-  ...supabaseQuestions.filter(
-    (newQuestion) =>
-      !VERIFIED_QUESTIONS.some(
-        (oldQuestion) => String(oldQuestion.id) === String(newQuestion.id)
-      )
-  ),
-];
+  // Robust 3-way deduplication merge:
+  // 1. Static base questions (VERIFIED_QUESTIONS)
+  // 2. AppContext questions (includes localStorage on admin phone, Firestore fallback, and AppContext remote sync)
+  // 3. Direct Supabase query results (supabaseQuestions)
+  const mergedQuestions = React.useMemo(() => {
+    const map = new Map<string, QuizQuestion>();
+    VERIFIED_QUESTIONS.forEach((q) => map.set(String(q.id), q));
+    if (Array.isArray(contextQuestions)) {
+      contextQuestions.forEach((q) => map.set(String(q.id), q));
+    }
+    supabaseQuestions.forEach((q) => map.set(String(q.id), q));
+    return Array.from(map.values());
+  }, [contextQuestions, supabaseQuestions]);
 
-const adultQuestions = mergedQuestions.filter((q: QuizQuestion) => !q.forKids);
-  console.log('[IslamIQ Quiz Debug]', {
-  staticQuestions: VERIFIED_QUESTIONS.length,
-  supabaseQuestions: supabaseQuestions.length,
-  adultQuestions: adultQuestions.length,
-  newQuestionFound: supabaseQuestions.some(
+  const adultQuestions = React.useMemo(() => {
+    return mergedQuestions.filter((q: QuizQuestion) => !q.forKids && q.isActive !== false);
+  }, [mergedQuestions]);
+
+  const targetQuestionPresent = adultQuestions.some(
     (q) => String(q.id) === 'q-adm-1792091725547-di1h'
-  ),
-});
+  );
+
   const categories = ['all', 'Pillars', 'Quran', 'Prophets', 'Salah', 'Seerah', 'Duas'];
 
   const filteredQuestions = selectedCategory === 'all'
@@ -79,18 +87,51 @@ const adultQuestions = mergedQuestions.filter((q: QuizQuestion) => !q.forKids);
 
   return (
     <article className="max-w-4xl mx-auto space-y-6 pb-12 animate-fadeIn">
-      <div className="rounded-lg bg-yellow-100 p-4 text-black text-sm">
-  <p>Static questions: {VERIFIED_QUESTIONS.length}</p>
-  <p>Supabase questions: {supabaseQuestions.length}</p>
-  <p>Adult questions: {adultQuestions.length}</p>
-  <p>
-    New question found: {
-      supabaseQuestions.some(
-        (q) => String(q.id) === 'q-adm-1792091725547-di1h'
-      ) ? 'YES' : 'NO'
-    }
-  </p>
-</div>
+      {/* Safe Temporary Diagnostic Card */}
+      <div className="rounded-2xl bg-amber-50/90 border border-amber-200 p-4 text-slate-800 text-xs space-y-2 shadow-xs">
+        <div className="flex items-center justify-between font-bold text-amber-950 pb-1 border-b border-amber-200">
+          <span className="flex items-center gap-1.5">
+            <span>⚡</span>
+            <span>Quiz Data Diagnostics</span>
+          </span>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-900">
+            Target ID: q-adm-1792091725547-di1h
+          </span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+          <div className="bg-white p-2.5 rounded-xl border border-amber-200/60 shadow-2xs">
+            <span className="text-[10px] text-slate-500 block">Static Questions</span>
+            <span className="font-bold text-slate-900 text-sm">{VERIFIED_QUESTIONS.length}</span>
+          </div>
+          <div className="bg-white p-2.5 rounded-xl border border-amber-200/60 shadow-2xs">
+            <span className="text-[10px] text-slate-500 block">Supabase Remote</span>
+            <span className="font-bold text-slate-900 text-sm">{supabaseQuestions.length}</span>
+          </div>
+          <div className="bg-white p-2.5 rounded-xl border border-amber-200/60 shadow-2xs">
+            <span className="text-[10px] text-slate-500 block">Context Total</span>
+            <span className="font-bold text-slate-900 text-sm">{contextQuestions?.length || 0}</span>
+          </div>
+          <div className="bg-white p-2.5 rounded-xl border border-amber-200/60 shadow-2xs">
+            <span className="text-[10px] text-slate-500 block">Merged Adult Pool</span>
+            <span className="font-bold text-emerald-700 text-sm">{adultQuestions.length}</span>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center justify-between pt-1 gap-2 text-[11px]">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-slate-700">New Question Found:</span>
+            <span className={`font-bold px-2 py-0.5 rounded text-xs ${
+              targetQuestionPresent ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+            }`}>
+              {targetQuestionPresent ? 'YES' : 'NO'}
+            </span>
+          </div>
+          {diagnostic?.lastError && (
+            <div className="text-rose-700 font-mono text-[10px]">
+              Notice: {diagnostic.lastError}
+            </div>
+          )}
+        </div>
+      </div>
       <SeoHead
         title={seoTitle}
         description={seoDescription}
