@@ -90,10 +90,10 @@ export const SupabaseService = {
   }
 },
 
-  listenQuestions(
-    callback: (questions: QuizQuestion[]) => void,
-    onError?: (error: any) => void
-  ): () => void {
+  if (!isSupabaseConfigured()) {
+  console.error('[IslamIQ Debug] Supabase is NOT configured');
+  return [];
+  }
     if (!isSupabaseConfigured()) {
   console.error('[IslamIQ Debug] Supabase is NOT configured');
   return [];
