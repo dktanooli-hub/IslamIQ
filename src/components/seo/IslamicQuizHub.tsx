@@ -79,6 +79,18 @@ const adultQuestions = mergedQuestions.filter((q: QuizQuestion) => !q.forKids);
 
   return (
     <article className="max-w-4xl mx-auto space-y-6 pb-12 animate-fadeIn">
+      <div className="rounded-lg bg-yellow-100 p-4 text-black text-sm">
+  <p>Static questions: {VERIFIED_QUESTIONS.length}</p>
+  <p>Supabase questions: {supabaseQuestions.length}</p>
+  <p>Adult questions: {adultQuestions.length}</p>
+  <p>
+    New question found: {
+      supabaseQuestions.some(
+        (q) => String(q.id) === 'q-adm-1792091725547-di1h'
+      ) ? 'YES' : 'NO'
+    }
+  </p>
+</div>
       <SeoHead
         title={seoTitle}
         description={seoDescription}
