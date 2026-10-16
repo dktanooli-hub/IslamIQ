@@ -79,12 +79,12 @@ BEGIN
     END IF;
 
     -- 2. Extract JWT email claim & verification status
-    v_email := pg_catalog.lower(pg_catalog.coalesce(auth.jwt() ->> 'email', ''));
+    v_email := pg_catalog.lower(COALESCE(auth.jwt() ->> 'email', ''));
     IF v_email = '' THEN
         RETURN FALSE;
     END IF;
 
-    v_email_verified := pg_catalog.coalesce((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
+    v_email_verified := COALESCE((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
 
     -- 3. Authorization verification
     SELECT EXISTS (
@@ -129,12 +129,12 @@ BEGIN
         RETURN FALSE;
     END IF;
 
-    v_email := pg_catalog.lower(pg_catalog.coalesce(auth.jwt() ->> 'email', ''));
+    v_email := pg_catalog.lower(COALESCE(auth.jwt() ->> 'email', ''));
     IF v_email = '' THEN
         RETURN FALSE;
     END IF;
 
-    v_email_verified := pg_catalog.coalesce((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
+    v_email_verified := COALESCE((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
 
     SELECT EXISTS (
         SELECT 1 
@@ -181,8 +181,8 @@ BEGIN
         RAISE EXCEPTION 'Authentication required to claim administrator bootstrap.';
     END IF;
 
-    v_email := pg_catalog.lower(pg_catalog.coalesce(auth.jwt() ->> 'email', ''));
-    v_email_verified := pg_catalog.coalesce((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
+    v_email := pg_catalog.lower(COALESCE(auth.jwt() ->> 'email', ''));
+    v_email_verified := COALESCE((auth.jwt() ->> 'email_verified')::BOOLEAN, FALSE);
 
     IF v_email <> 'dk.tanooli97@gmail.com' THEN
         RAISE EXCEPTION 'Unauthorized: Only the designated primary administrator can execute bootstrap claim.';
@@ -436,7 +436,7 @@ DECLARE
     v_inserted_id TEXT;
 BEGIN
     -- 1. Validate & Sanitize ID: reject invalid characters or empty string
-    v_clean_id := pg_catalog.trim(pg_catalog.coalesce(p_id, ''));
+    v_clean_id := pg_catalog.trim(COALESCE(p_id, ''));
     IF v_clean_id = '' OR v_clean_id !~ '^[A-Za-z0-9_-]{1,64}$' THEN
         v_clean_id := 'att-' || gen_random_uuid()::TEXT;
     END IF;
@@ -470,20 +470,20 @@ BEGIN
     END IF;
 
     -- 5. Validate date: strictly require YYYY-MM-DD format
-    v_clean_date := pg_catalog.trim(pg_catalog.coalesce(p_date, ''));
+    v_clean_date := pg_catalog.trim(COALESCE(p_date, ''));
     IF v_clean_date !~ '^\d{4}-\d{2}-\d{2}$' THEN
         v_clean_date := pg_catalog.to_char(pg_catalog.now(), 'YYYY-MM-DD');
     END IF;
 
     -- 6. Validate and clamp mode & difficulty
     v_clean_mode := CASE 
-        WHEN pg_catalog.lower(pg_catalog.trim(pg_catalog.coalesce(p_mode, ''))) IN ('adult', 'kids') 
+        WHEN pg_catalog.lower(pg_catalog.trim(COALESCE(p_mode, ''))) IN ('adult', 'kids') 
         THEN pg_catalog.lower(pg_catalog.trim(p_mode)) 
         ELSE 'adult' 
     END;
 
     v_clean_difficulty := CASE 
-        WHEN pg_catalog.lower(pg_catalog.trim(pg_catalog.coalesce(p_difficulty, ''))) IN ('beginner', 'intermediate', 'advanced') 
+        WHEN pg_catalog.lower(pg_catalog.trim(COALESCE(p_difficulty, ''))) IN ('beginner', 'intermediate', 'advanced') 
         THEN pg_catalog.lower(pg_catalog.trim(p_difficulty)) 
         ELSE 'beginner' 
     END;

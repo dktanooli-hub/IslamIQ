@@ -7,7 +7,7 @@ import { RelatedIslamicLearning } from './RelatedIslamicLearning';
 import { Sparkles, CheckCircle2, Award, Lightbulb, Star, Heart, ArrowRight, BookOpen, Compass, HelpCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 export const KidsIslamicQuizHub: React.FC = () => {
-  const { contentLang, setActiveTab, setUserMode } = useApp();
+  const { contentLang, setActiveTab, setUserMode, questions } = useApp();
   const isUrdu = contentLang === 'urdu';
 
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
@@ -17,7 +17,8 @@ export const KidsIslamicQuizHub: React.FC = () => {
     setExpandedFaqIndex(expandedFaqIndex === index ? null : index);
   };
 
-  const kidsQuestions = VERIFIED_QUESTIONS.filter((q: QuizQuestion) => q.forKids);
+  const questionPool = questions && questions.length > 0 ? questions : VERIFIED_QUESTIONS;
+  const kidsQuestions = questionPool.filter((q: QuizQuestion) => q.forKids && q.isActive !== false);
 
   const toggleReveal = (id: string) => {
     setRevealedAnswers((prev) => ({ ...prev, [id]: !prev[id] }));

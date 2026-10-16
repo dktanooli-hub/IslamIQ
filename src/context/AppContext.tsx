@@ -589,7 +589,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         (remoteQuestions) => {
           if (remoteQuestions && remoteQuestions.length > 0) {
             setQuestions(prev => {
-              if (remoteQuestions.length >= 50) return remoteQuestions;
               const map = new Map<string, QuizQuestion>();
               VERIFIED_QUESTIONS.forEach(q => map.set(q.id, { ...q, isActive: true }));
               prev.forEach(q => map.set(q.id, q));
@@ -614,10 +613,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
       });
 
-      // Initial Fetch from Supabase tables
+      // Initial Fetch from Supabase tables (using Promise.allSettled so individual failures don't block others)
       const fetchSupabaseFeeds = async () => {
         try {
-          const [remoteQuestions, verses, hadithsList, duasList, remindersList, remoteQAs, remoteCats] = await Promise.all([
+          const results = await Promise.allSettled([
             SupabaseService.getQuestions(),
             SupabaseService.getQuranVerses(),
             SupabaseService.getHadiths(),
@@ -627,9 +626,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             SupabaseService.getCategories()
           ]);
 
-          if (remoteQuestions.length > 0) {
+          const remoteQuestions = results[0].status === 'fulfilled' ? results[0].value : [];
+          const verses = results[1].status === 'fulfilled' ? results[1].value : [];
+          const hadithsList = results[2].status === 'fulfilled' ? results[2].value : [];
+          const duasList = results[3].status === 'fulfilled' ? results[3].value : [];
+          const remindersList = results[4].status === 'fulfilled' ? results[4].value : [];
+          const remoteQAs = results[5].status === 'fulfilled' ? results[5].value : [];
+          const remoteCats = results[6].status === 'fulfilled' ? results[6].value : null;
+
+          if (remoteQuestions && remoteQuestions.length > 0) {
             setQuestions(prev => {
-              if (remoteQuestions.length >= 50) return remoteQuestions;
               const map = new Map<string, QuizQuestion>();
               VERIFIED_QUESTIONS.forEach(q => map.set(q.id, { ...q, isActive: true }));
               prev.forEach(q => map.set(q.id, q));
