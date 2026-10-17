@@ -219,3 +219,89 @@ export interface QuizAttemptRecord {
   userName: string;
 }
 
+// =============================================================================
+// Ask a Scholar Types (Offline Scholar Liaison Architecture)
+// =============================================================================
+
+export type ScholarInquiryStatus =
+  | 'pending_review'
+  | 'sent_to_scholar'
+  | 'answer_received'
+  | 'answered'
+  | 'rejected';
+
+export type ScholarInquiryCategory =
+  | 'General'
+  | 'Pillars'
+  | 'Quran'
+  | 'Hadith'
+  | 'Salah'
+  | 'Taharah'
+  | 'Sawm'
+  | 'Zakat'
+  | 'Hajj'
+  | 'Family'
+  | 'Halal'
+  | 'Manners'
+  | 'Aqeedah'
+  | 'Masail';
+
+export type MadhhabPreference =
+  | 'General'
+  | 'Hanafi'
+  | 'Shafi\'i'
+  | 'Maliki'
+  | 'Hanbali';
+
+export interface ScholarInquirySubmission {
+  subject: string;
+  questionText: string;
+  category?: ScholarInquiryCategory | string;
+  madhhabPreference?: MadhhabPreference | string;
+  seekerName?: string;
+  seekerEmail?: string;
+}
+
+export interface ScholarSubmissionResult {
+  inquiryNumber: string;
+  accessToken: string;
+  status: ScholarInquiryStatus;
+  createdAt: string;
+}
+
+/**
+ * Seeker public-safe projection returned by get_scholar_inquiry RPC.
+ * Critical security guarantee: adminNotes, accessTokenHash, and seekerEmail are excluded.
+ */
+export interface PublicScholarInquiry {
+  inquiryNumber: string;
+  category: ScholarInquiryCategory | string;
+  madhhabPreference: MadhhabPreference | string;
+  subject: string;
+  questionText: string;
+  status: ScholarInquiryStatus;
+  scholarName?: string | null;
+  scholarQualification?: string | null;
+  answerText?: string | null;
+  answerArabic?: string | null;
+  reference?: string | null;
+  references?: string | null;
+  rejectionReason?: string | null;
+  createdAt: string;
+  sentToScholarAt?: string | null;
+  answeredAt?: string | null;
+}
+
+/**
+ * Full inquiry model for authenticated Admin Console management
+ */
+export interface ScholarInquiry extends PublicScholarInquiry {
+  id: string;
+  seekerName?: string;
+  seekerEmail?: string | null;
+  userId?: string | null;
+  adminNotes?: string | null;
+  updatedAt: string;
+}
+
+

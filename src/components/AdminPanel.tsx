@@ -33,8 +33,16 @@ import {
   Cloud,
   CloudOff,
   Database,
-  Mail
+  Mail,
+  Scale
 } from 'lucide-react';
+import { supabaseService } from '../services/supabaseService';
+import {
+  ScholarInquiry,
+  ScholarInquiryStatus,
+  ScholarInquiryCategory,
+  MadhhabPreference
+} from '../types';
 
 interface AdminPanelProps {
   onClose: () => void;
@@ -102,7 +110,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const [loginError, setLoginError] = useState('');
 
   // Admin Navigation Tabs
-  const [activeAdminTab, setActiveAdminTab] = useState<'questions' | 'daily' | 'categories' | 'analytics' | 'monetization'>('questions');
+  const [activeAdminTab, setActiveAdminTab] = useState<'questions' | 'daily' | 'categories' | 'analytics' | 'monetization' | 'scholar'>('questions');
   const [dailySubTab, setDailySubTab] = useState<'quran' | 'hadith' | 'dua' | 'reminder'>('quran');
 
   // Question Filters
@@ -214,6 +222,39 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   // Confirmation dialogs
   const [confirmDeleteId, setConfirmDeleteId] = useState<{ type: string; id: string } | null>(null);
   const [isResetConfirmOpen, setIsResetConfirmOpen] = useState(false);
+
+  // Scholar Inquiries Management State
+  const [scholarInquiries, setScholarInquiries] = useState<ScholarInquiry[]>([]);
+  const [scholarStatusFilter, setScholarStatusFilter] = useState<ScholarInquiryStatus | 'all'>('all');
+  const [scholarSearchQuery, setScholarSearchQuery] = useState('');
+  const [isLoadingScholarInquiries, setIsLoadingScholarInquiries] = useState(false);
+  const [scholarLoadError, setScholarLoadError] = useState<string | null>(null);
+
+  // Selected Inquiry for Modal Review & Form
+  const [selectedInquiry, setSelectedInquiry] = useState<ScholarInquiry | null>(null);
+  const [isScholarReviewOpen, setIsScholarReviewOpen] = useState(false);
+  const [isUpdatingInquiry, setIsUpdatingInquiry] = useState(false);
+  const [scholarActionError, setScholarActionError] = useState<string | null>(null);
+
+  const [inquiryForm, setInquiryForm] = useState<{
+    status: ScholarInquiryStatus;
+    scholarName: string;
+    scholarQualification: string;
+    answerText: string;
+    answerArabic: string;
+    reference: string;
+    adminNotes: string;
+    rejectionReason: string;
+  }>({
+    status: 'pending_review',
+    scholarName: '',
+    scholarQualification: '',
+    answerText: '',
+    answerArabic: '',
+    reference: '',
+    adminNotes: '',
+    rejectionReason: ''
+  });
 
   // Filtered Questions
   const filteredQuestions = useMemo(() => {
@@ -485,6 +526,123 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     addCategory(newCategoryInput.trim());
     setNewCategoryInput('');
   };
+
+  // ===========================================================================
+  // ASK A SCHOLAR (OFFLINE LIAISON) HANDLERS
+  // ===========================================================================
+  const fetchScholarInquiries = async (filter: ScholarInquiryStatus | 'all' = scholarStatusFilter) => {
+    setIsLoadingScholarInquiries(true);
+    setScholarLoadError(null);
+    try {
+      const res = await supabaseService.adminGetScholarInquiries(filter);
+      if (res.success && res.data) {
+        setScholarInquiries(res.data);
+      } else {
+        setScholarLoadError(res.error || 'Failed to fetch scholar inquiries');
+      }
+    } catch (err: any) {
+      setScholarLoadError(err?.message || 'Unexpected error fetching inquiries');
+    } finally {
+      setIsLoadingScholarInquiries(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeAdminTab === 'scholar' && isAdminAuthenticated) {
+      fetchScholarInquiries(scholarStatusFilter);
+    }
+  }, [activeAdminTab, scholarStatusFilter, isAdminAuthenticated]);
+
+  const handleOpenInquiryReview = (inquiry: ScholarInquiry) => {
+    setSelectedInquiry(inquiry);
+    setInquiryForm({
+      status: inquiry.status,
+      scholarName: inquiry.scholarName || '',
+      scholarQualification: inquiry.scholarQualification || '',
+      answerText: inquiry.answerText || '',
+      answerArabic: inquiry.answerArabic || '',
+      reference: inquiry.reference || inquiry.references || '',
+      adminNotes: inquiry.adminNotes || '',
+      rejectionReason: inquiry.rejectionReason || ''
+    });
+    setScholarActionError(null);
+    setIsScholarReviewOpen(true);
+  };
+
+  const handleSaveInquiry = async (targetStatus?: ScholarInquiryStatus) => {
+    if (!selectedInquiry) return;
+    setScholarActionError(null);
+
+    const newStatus = targetStatus || inquiryForm.status;
+
+    // Strict validation matching DB constraints (chk_answered_integrity & chk_rejected_integrity)
+    if (newStatus === 'answered') {
+      if (!inquiryForm.scholarName.trim() || inquiryForm.scholarName.trim().length < 2) {
+        setScholarActionError('Scholar name is required (min 2 characters) before publishing as answered.');
+        return;
+      }
+      if (!inquiryForm.answerText.trim() || inquiryForm.answerText.trim().length < 10) {
+        setScholarActionError('Answer text is required (min 10 characters) before publishing as answered.');
+        return;
+      }
+    }
+
+    if (newStatus === 'rejected') {
+      if (!inquiryForm.rejectionReason.trim() || inquiryForm.rejectionReason.trim().length < 3) {
+        setScholarActionError('Rejection reason (min 3 characters) is required when rejecting or closing an inquiry.');
+        return;
+      }
+    }
+
+    setIsUpdatingInquiry(true);
+
+    try {
+      // Exclusively route through adminUpdateScholarInquiry (calls admin_update_scholar_inquiry RPC)
+      // Never fall back to direct table UPDATE
+      const res = await supabaseService.adminUpdateScholarInquiry(selectedInquiry.id, {
+        status: newStatus,
+        scholarName: inquiryForm.scholarName.trim() || null,
+        scholarQualification: inquiryForm.scholarQualification.trim() || null,
+        answerText: inquiryForm.answerText.trim() || null,
+        answerArabic: inquiryForm.answerArabic.trim() || null,
+        reference: inquiryForm.reference.trim() || null,
+        adminNotes: inquiryForm.adminNotes.trim() || null,
+        rejectionReason: inquiryForm.rejectionReason.trim() || null
+      });
+
+      if (!res.success) {
+        setScholarActionError(res.error || 'Failed to update scholar inquiry.');
+        setIsUpdatingInquiry(false);
+        return;
+      }
+
+      showToast(`Inquiry status updated to ${newStatus}`);
+      setIsUpdatingInquiry(false);
+      setIsScholarReviewOpen(false);
+      fetchScholarInquiries(scholarStatusFilter);
+    } catch (err: any) {
+      setScholarActionError(err?.message || 'Error executing update');
+      setIsUpdatingInquiry(false);
+    }
+  };
+
+  // Filtered scholar inquiries
+  const filteredScholarInquiries = useMemo(() => {
+    return scholarInquiries.filter(item => {
+      if (scholarSearchQuery.trim()) {
+        const q = scholarSearchQuery.toLowerCase().trim();
+        const numMatch = item.inquiryNumber.toLowerCase().includes(q);
+        const subjMatch = item.subject.toLowerCase().includes(q);
+        const questMatch = item.questionText.toLowerCase().includes(q);
+        const seekerMatch = (item.seekerName || '').toLowerCase().includes(q);
+        const emailMatch = (item.seekerEmail || '').toLowerCase().includes(q);
+        if (!numMatch && !subjMatch && !questMatch && !seekerMatch && !emailMatch) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [scholarInquiries, scholarSearchQuery]);
 
   /* -------------------------------------------------------------------------- */
   /* SCREEN 1: SECURE FIRST-TIME OWNER SETUP (IF NOT INITIALIZED YET)           */
@@ -850,6 +1008,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
           >
             <DollarSign className="w-4 h-4 text-amber-600" />
             <span>Google Ads & Earning 💰</span>
+          </button>
+
+          <button
+            onClick={() => setActiveAdminTab('scholar')}
+            className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
+              activeAdminTab === 'scholar'
+                ? 'border-emerald-600 text-emerald-800'
+                : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
+          >
+            <Scale className="w-4 h-4 text-emerald-700" />
+            <span>Ask a Scholar ({scholarInquiries.length})</span>
           </button>
         </div>
 
@@ -1799,6 +1969,224 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             </div>
           )}
 
+          {/* ================================================================ */}
+          {/* TAB 6: ASK A SCHOLAR INQUIRIES MANAGEMENT (OFFLINE LIAISON)     */}
+          {/* ================================================================ */}
+          {activeAdminTab === 'scholar' && (
+            <div className="space-y-5">
+              
+              {/* Header Info Card */}
+              <div className="bg-gradient-to-br from-emerald-800 via-teal-900 to-slate-950 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-1 max-w-2xl">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-bold uppercase tracking-wider">
+                      <Scale className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Offline Scholar Liaison & Fatwa Transcription</span>
+                    </div>
+                    <h2 className="text-lg sm:text-xl font-black text-white">
+                      Ask a Scholar Management Console
+                    </h2>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Manage incoming seeker inquiries, sanitize sensitive details, deliver physical slips to verified offline Islamic scholars / Muftis, transcribe authentic rulings, and publish answers privately to questioners.
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => fetchScholarInquiries(scholarStatusFilter)}
+                    disabled={isLoadingScholarInquiries}
+                    className="px-4 py-2 bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs shrink-0 self-start md:self-auto"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isLoadingScholarInquiries ? 'animate-spin' : ''}`} />
+                    <span>{isLoadingScholarInquiries ? 'Refreshing...' : 'Refresh List'}</span>
+                  </button>
+                </div>
+
+                {/* Status Quick Counters */}
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-4 border-t border-white/10 mt-4">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 text-center">
+                    <span className="text-[10px] text-slate-300 block font-semibold">Total</span>
+                    <span className="text-base font-black text-white">{scholarInquiries.length}</span>
+                  </div>
+                  <div className="bg-amber-500/20 backdrop-blur-md rounded-xl p-2 text-center">
+                    <span className="text-[10px] text-amber-200 block font-semibold">Pending Review</span>
+                    <span className="text-base font-black text-amber-300">
+                      {scholarInquiries.filter(i => i.status === 'pending_review').length}
+                    </span>
+                  </div>
+                  <div className="bg-sky-500/20 backdrop-blur-md rounded-xl p-2 text-center">
+                    <span className="text-[10px] text-sky-200 block font-semibold">With Scholar</span>
+                    <span className="text-base font-black text-sky-300">
+                      {scholarInquiries.filter(i => i.status === 'sent_to_scholar').length}
+                    </span>
+                  </div>
+                  <div className="bg-indigo-500/20 backdrop-blur-md rounded-xl p-2 text-center">
+                    <span className="text-[10px] text-indigo-200 block font-semibold">Draft Received</span>
+                    <span className="text-base font-black text-indigo-300">
+                      {scholarInquiries.filter(i => i.status === 'answer_received').length}
+                    </span>
+                  </div>
+                  <div className="bg-emerald-500/20 backdrop-blur-md rounded-xl p-2 text-center">
+                    <span className="text-[10px] text-emerald-200 block font-semibold">Answered</span>
+                    <span className="text-base font-black text-emerald-300">
+                      {scholarInquiries.filter(i => i.status === 'answered').length}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filters & Search Toolbar */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  
+                  {/* Status Pills */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {(
+                      [
+                        { id: 'all', label: 'All Inquiries' },
+                        { id: 'pending_review', label: 'Pending Review' },
+                        { id: 'sent_to_scholar', label: 'Sent to Scholar' },
+                        { id: 'answer_received', label: 'Draft Received' },
+                        { id: 'answered', label: 'Answered' },
+                        { id: 'rejected', label: 'Rejected / Closed' }
+                      ] as const
+                    ).map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setScholarStatusFilter(tab.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          scholarStatusFilter === tab.id
+                            ? 'bg-emerald-700 text-white shadow-xs'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Search Input */}
+                  <div className="relative w-full sm:w-64">
+                    <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      value={scholarSearchQuery}
+                      onChange={e => setScholarSearchQuery(e.target.value)}
+                      placeholder="Search inquiries..."
+                      className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    />
+                  </div>
+
+                </div>
+
+                {scholarLoadError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                    <span>{scholarLoadError}</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Inquiries Table / List */}
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+                {isLoadingScholarInquiries ? (
+                  <div className="p-12 text-center text-slate-500 space-y-2">
+                    <RefreshCw className="w-6 h-6 animate-spin mx-auto text-emerald-600" />
+                    <p className="text-xs font-semibold">Loading inquiries from database...</p>
+                  </div>
+                ) : filteredScholarInquiries.length === 0 ? (
+                  <div className="p-12 text-center text-slate-500 space-y-2">
+                    <Scale className="w-8 h-8 mx-auto text-slate-400" />
+                    <p className="text-xs font-bold text-slate-700">No inquiries found</p>
+                    <p className="text-[11px] text-slate-400">
+                      {scholarSearchQuery
+                        ? 'Try clearing your search query or choosing another status tab.'
+                        : 'No inquiries have been recorded in this category yet.'}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-slate-100">
+                    {filteredScholarInquiries.map(inquiry => {
+                      const statusBadge =
+                        inquiry.status === 'answered'
+                          ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                          : inquiry.status === 'sent_to_scholar'
+                          ? 'bg-sky-100 text-sky-800 border-sky-300'
+                          : inquiry.status === 'answer_received'
+                          ? 'bg-indigo-100 text-indigo-800 border-indigo-300'
+                          : inquiry.status === 'rejected'
+                          ? 'bg-rose-100 text-rose-800 border-rose-300'
+                          : 'bg-amber-100 text-amber-800 border-amber-300';
+
+                      return (
+                        <div
+                          key={inquiry.id}
+                          className="p-4 hover:bg-slate-50/70 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-3"
+                        >
+                          <div className="space-y-1.5 flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="font-mono font-bold text-xs text-slate-900 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+                                #{inquiry.inquiryNumber}
+                              </span>
+                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusBadge}`}>
+                                {inquiry.status.replace(/_/g, ' ').toUpperCase()}
+                              </span>
+                              <span className="text-[11px] font-semibold text-emerald-800">
+                                {inquiry.category}
+                              </span>
+                              <span className="text-[11px] text-slate-400">•</span>
+                              <span className="text-[11px] text-slate-500 font-medium">
+                                {inquiry.madhhabPreference}
+                              </span>
+                            </div>
+
+                            <h3 className="text-sm font-bold text-slate-900 truncate">
+                              {inquiry.subject}
+                            </h3>
+
+                            <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                              {inquiry.questionText}
+                            </p>
+
+                            <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-500 pt-1">
+                              <span>
+                                <strong>Seeker:</strong> {inquiry.seekerName || 'Anonymous Guest'}
+                              </span>
+                              {inquiry.seekerEmail && (
+                                <span className="font-mono text-slate-600">
+                                  ✉️ {inquiry.seekerEmail}
+                                </span>
+                              )}
+                              <span>
+                                <strong>Date:</strong> {new Date(inquiry.createdAt).toLocaleDateString()}
+                              </span>
+                              {inquiry.scholarName && (
+                                <span className="text-emerald-700 font-semibold">
+                                  Scholar: {inquiry.scholarName}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="shrink-0 flex items-center gap-2">
+                            <button
+                              onClick={() => handleOpenInquiryReview(inquiry)}
+                              className="px-3.5 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-95"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                              <span>Review & Workflow</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
         </div>
 
       </div>
@@ -2468,6 +2856,290 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ================================================================ */}
+      {/* MODAL: SCHOLAR INQUIRY REVIEW & OFFLINE LIAISON WORKFLOW         */}
+      {/* ================================================================ */}
+      {isScholarReviewOpen && selectedInquiry && (
+        <div className="fixed inset-0 z-60 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-3 overflow-y-auto">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full p-6 border border-slate-200 my-auto max-h-[92vh] overflow-y-auto space-y-5">
+            
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="space-y-0.5">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-bold text-xs bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded-md border border-emerald-200">
+                    #{selectedInquiry.inquiryNumber}
+                  </span>
+                  <span className="text-xs font-semibold text-slate-500">
+                    {selectedInquiry.category} • {selectedInquiry.madhhabPreference}
+                  </span>
+                </div>
+                <h2 className="text-base font-black text-slate-900">
+                  {selectedInquiry.subject}
+                </h2>
+              </div>
+              <button
+                onClick={() => setIsScholarReviewOpen(false)}
+                className="text-slate-400 hover:text-slate-600 font-bold text-lg p-1"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Error Banner */}
+            {scholarActionError && (
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <span className="font-medium">{scholarActionError}</span>
+              </div>
+            )}
+
+            {/* Seeker Info Box (Staff-Only) */}
+            <div className="bg-slate-50 rounded-2xl p-4 border border-slate-200 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                  Seeker Credentials & Details
+                </span>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+                  🔒 Staff Only • Never Revealed to Public
+                </span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Name:</span>
+                  <span className="font-semibold text-slate-800">
+                    {selectedInquiry.seekerName || 'Anonymous Seeker'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Email:</span>
+                  <span className="font-mono text-slate-800">
+                    {selectedInquiry.seekerEmail || 'Not Provided'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 block text-[10px]">Submitted At:</span>
+                  <span className="text-slate-800">
+                    {new Date(selectedInquiry.createdAt).toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Full Question Text */}
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold text-slate-700 block">
+                Seeker Question (سوال):
+              </span>
+              <div className="p-4 rounded-2xl bg-white border border-slate-200 text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto font-medium">
+                {selectedInquiry.questionText}
+              </div>
+            </div>
+
+            {/* Workflow Status Selector */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-bold text-slate-800">
+                  Workflow Lifecycle Status:
+                </label>
+                <span className="text-[11px] font-mono text-slate-500 font-semibold">
+                  Current: {selectedInquiry.status}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+                {(
+                  [
+                    { id: 'pending_review', label: '1. Pending Review' },
+                    { id: 'sent_to_scholar', label: '2. Sent to Scholar' },
+                    { id: 'answer_received', label: '3. Draft Received' },
+                    { id: 'answered', label: '4. Answered' },
+                    { id: 'rejected', label: 'Rejected / Closed' }
+                  ] as const
+                ).map(st => (
+                  <button
+                    key={st.id}
+                    type="button"
+                    onClick={() => setInquiryForm(prev => ({ ...prev, status: st.id }))}
+                    className={`py-2 px-2 rounded-xl text-center text-xs font-bold transition-all ${
+                      inquiryForm.status === st.id
+                        ? 'bg-emerald-700 text-white shadow-xs'
+                        : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {st.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Scholarly Transcription Form Fields */}
+            <div className="space-y-3 pt-1">
+              <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+                <Scale className="w-4 h-4 text-emerald-600" />
+                <span>Scholar Transcription & Fatwa Record</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Scholar Name (عالمِ دین / مفتی صاحب کا نام) {inquiryForm.status === 'answered' && <span className="text-rose-500">*</span>}
+                  </label>
+                  <input
+                    type="text"
+                    value={inquiryForm.scholarName}
+                    onChange={e => setInquiryForm(prev => ({ ...prev, scholarName: e.target.value }))}
+                    placeholder="e.g. Mufti Muhammad Tariq"
+                    maxLength={120}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Scholar Qualification (دار الافتاء و سند)
+                  </label>
+                  <input
+                    type="text"
+                    value={inquiryForm.scholarQualification}
+                    onChange={e => setInquiryForm(prev => ({ ...prev, scholarQualification: e.target.value }))}
+                    placeholder="e.g. Senior Mufti, Jamia Darul Uloom"
+                    maxLength={200}
+                    className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Answer Text */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-700">
+                    Scholarly Answer / Fatwa Text (تحریری شرعی جواب) {inquiryForm.status === 'answered' && <span className="text-rose-500">*</span>}
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {inquiryForm.answerText.length}/12000
+                  </span>
+                </div>
+                <textarea
+                  value={inquiryForm.answerText}
+                  onChange={e => setInquiryForm(prev => ({ ...prev, answerText: e.target.value }))}
+                  rows={4}
+                  placeholder="Transcribe the offline scholar's verified answer here..."
+                  maxLength={12000}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed font-normal"
+                />
+              </div>
+
+              {/* Arabic Citations / Textual Proofs */}
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Arabic Citations & Textual Proof (عربی عبارات و آیات/احادیث):
+                </label>
+                <textarea
+                  value={inquiryForm.answerArabic}
+                  onChange={e => setInquiryForm(prev => ({ ...prev, answerArabic: e.target.value }))}
+                  rows={2}
+                  dir="rtl"
+                  placeholder="بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ... (عربی متن)"
+                  maxLength={6000}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-serif focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-loose"
+                />
+              </div>
+
+              {/* References */}
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-700 block">
+                  Primary References & Classical Compendiums (حوالہ جات و کتب):
+                </label>
+                <input
+                  type="text"
+                  value={inquiryForm.reference}
+                  onChange={e => setInquiryForm(prev => ({ ...prev, reference: e.target.value }))}
+                  placeholder="e.g. Radd al-Muhtar 2/145, Sahih al-Bukhari #1234"
+                  maxLength={1500}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                />
+              </div>
+
+              {/* Admin Staff Internal Notes */}
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-slate-700 flex items-center justify-between">
+                  <span>Internal Staff Coordination Notes (اندرونی انتظامی نوٹس):</span>
+                  <span className="text-[10px] text-slate-400">Never exposed to seeker</span>
+                </label>
+                <textarea
+                  value={inquiryForm.adminNotes}
+                  onChange={e => setInquiryForm(prev => ({ ...prev, adminNotes: e.target.value }))}
+                  rows={2}
+                  placeholder="e.g. Contacted Maulana via slip #412; awaiting handwritten response..."
+                  maxLength={3000}
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono text-slate-700"
+                />
+              </div>
+
+              {/* Rejection Reason (Shown if status is 'rejected') */}
+              {inquiryForm.status === 'rejected' && (
+                <div className="space-y-1 p-3 rounded-xl bg-rose-50 border border-rose-200">
+                  <label className="text-xs font-bold text-rose-800 block">
+                    Rejection / Closure Reason (وجہ معذرت) <span className="text-rose-600">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={inquiryForm.rejectionReason}
+                    onChange={e => setInquiryForm(prev => ({ ...prev, rejectionReason: e.target.value }))}
+                    placeholder="e.g. Question out of scope; please refer to a local civil arbitration board."
+                    maxLength={1000}
+                    className="w-full px-3 py-2 rounded-xl border border-rose-300 text-xs focus:outline-none focus:ring-2 focus:ring-rose-500 font-medium"
+                    required
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200">
+              <div className="text-[11px] text-slate-500 font-medium">
+                Tip: To decline an inquiry, select status <span className="font-bold text-rose-700">Rejected</span> with a closure reason.
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsScholarReviewOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  disabled={isUpdatingInquiry}
+                  onClick={() => handleSaveInquiry()}
+                  className="px-5 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 disabled:opacity-50 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition-all active:scale-95"
+                >
+                  <Check className="w-3.5 h-3.5" />
+                  <span>{isUpdatingInquiry ? 'Saving...' : 'Save Updates'}</span>
+                </button>
+
+                {inquiryForm.status !== 'answered' && (
+                  <button
+                    type="button"
+                    disabled={isUpdatingInquiry}
+                    onClick={() => handleSaveInquiry('answered')}
+                    className="px-5 py-2.5 rounded-xl bg-emerald-900 hover:bg-emerald-950 disabled:opacity-50 text-amber-300 font-bold text-xs flex items-center gap-1.5 shadow-md transition-all active:scale-95"
+                    title="Publish verified answer privately to seeker"
+                  >
+                    <Award className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Publish as Answered</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
           </div>
         </div>
       )}

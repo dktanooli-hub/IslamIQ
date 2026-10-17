@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   ArrowLeft,
@@ -12,204 +12,327 @@ import {
   CheckCircle2,
   Clock,
   HeartHandshake,
-  Compass,
-  FileText,
   AlertCircle,
-  ExternalLink,
-  Info
+  Info,
+  Send,
+  Search,
+  Key,
+  Copy,
+  Check,
+  Eye,
+  EyeOff,
+  User,
+  Mail,
+  FileText,
+  BookmarkCheck,
+  RotateCcw
 } from 'lucide-react';
+import { supabaseService } from '../../services/supabaseService';
+import {
+  ScholarInquiryCategory,
+  MadhhabPreference,
+  PublicScholarInquiry,
+  ScholarSubmissionResult
+} from '../../types';
 
 export const AskScholarPage: React.FC = () => {
-  const { contentLang, setActiveTab } = useApp();
+  const { contentLang, setActiveTab, showToast } = useApp();
   const isUrdu = contentLang === 'urdu';
 
-  const benefits = [
-    {
-      id: 'benefit-everyday',
-      icon: CheckCircle2,
-      titleEn: 'Everyday Islamic Matters',
-      titleUrdu: 'روزمرہ دینی و شرعی امور',
-      descEn: 'Comprehensive guidance on Salah, fasting (Sawm), Zakat calculations, halal commerce, food ethics, and practical daily Islamic worship.',
-      descUrdu: 'نماز، روزہ، زکوٰۃ، حلال روزگار اور روزمرہ زندگی کے عملی عباداتی مسائل پر مستند اور واضح رہنمائی۔',
-      badge: 'Core Topics',
-      badgeUrdu: 'بنیادی احکام'
-    },
-    {
-      id: 'benefit-private-access',
-      icon: Lock,
-      titleEn: 'Private Access to Q&A',
-      titleUrdu: 'سوال و جواب تک ذاتی رسائی',
-      descEn: 'Confidential consultation where each questioner receives private access to their questions and answers without public visibility.',
-      descUrdu: 'مکمل رازداری کے ساتھ سوالات اور جوابات تک صرف سائل کی ذاتی رسائی، عوامی نمائش کے بغیر۔',
-      badge: 'Confidential',
-      badgeUrdu: 'خفیہ و ذاتی'
-    },
-    {
-      id: 'benefit-privacy-protection',
-      icon: ShieldCheck,
-      titleEn: 'Personal Information Protection',
-      titleUrdu: 'ذاتی معلومات کا مکمل تحفظ',
-      descEn: 'Strict privacy-by-design architecture. Questions are sanitized of identifying personal details before scholarly review to guarantee safety.',
-      descUrdu: 'شناخت اور ذاتی تفصیلات کا مکمل تحفظ۔ سوالات کا جائزہ لیتے وقت سائل کی شناخت مکمل طور پر پوشیدہ رکھی جاتی ہے۔',
-      badge: 'Zero Tracking',
-      badgeUrdu: 'رازداری کی ضمانت'
-    },
-    {
-      id: 'benefit-scholarly-guidance',
-      icon: Award,
-      titleEn: 'Qualified Scholarly Guidance',
-      titleUrdu: 'مستند علمائے کرام کی رہنمائی',
-      descEn: 'Direct guidance from recognized, traditionally accredited scholars and certified Muftis for sensitive and nuanced religious matters.',
-      descUrdu: 'حساس اور پیچیدہ شرعی مسائل پر مستند دار الافتاء اور ثقہ علمائے کرام و مفتیانِ عظام کے ذریعے براہ راست رہنمائی۔',
-      badge: 'Verified Scholars',
-      badgeUrdu: 'اہلِ علم و مفتیان'
-    }
+  // Active view: 'submit' (Submit Question) | 'status' (Check Inquiry Status)
+  const [activeView, setActiveView] = useState<'submit' | 'status'>('submit');
+
+  // ---------------------------------------------------------------------------
+  // SUBMISSION FORM STATE
+  // ---------------------------------------------------------------------------
+  const [subject, setSubject] = useState('');
+  const [questionText, setQuestionText] = useState('');
+  const [category, setCategory] = useState<ScholarInquiryCategory>('General');
+  const [madhhabPreference, setMadhhabPreference] = useState<MadhhabPreference>('General');
+  const [seekerName, setSeekerName] = useState('');
+  const [seekerEmail, setSeekerEmail] = useState('');
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submissionResult, setSubmissionResult] = useState<ScholarSubmissionResult | null>(null);
+  const [copiedField, setCopiedField] = useState<'number' | 'token' | 'both' | null>(null);
+
+  // ---------------------------------------------------------------------------
+  // STATUS CHECK FORM STATE
+  // ---------------------------------------------------------------------------
+  const [statusInquiryNumber, setStatusInquiryNumber] = useState('');
+  const [statusAccessToken, setStatusAccessToken] = useState('');
+  const [showStatusToken, setShowStatusToken] = useState(false);
+  const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+  const [statusError, setStatusError] = useState<string | null>(null);
+  const [inquiryDetails, setInquiryDetails] = useState<PublicScholarInquiry | null>(null);
+
+  // Categories list with Urdu & English labels
+  const categoriesList: { value: ScholarInquiryCategory; en: string; urdu: string }[] = [
+    { value: 'General', en: 'General Islamic Guidance', urdu: 'عام دینی رہنمائی' },
+    { value: 'Pillars', en: 'Pillars of Islam (Arkan)', urdu: 'ارکانِ اسلام' },
+    { value: 'Quran', en: 'Quran & Tafsir', urdu: 'قرآن و تفسیر' },
+    { value: 'Hadith', en: 'Hadith & Sunnah', urdu: 'حدیث و سنت' },
+    { value: 'Salah', en: 'Salah & Prayer Times', urdu: 'نماز و اوقات' },
+    { value: 'Taharah', en: 'Taharah & Purification', urdu: 'طہارت، وضو و غسل' },
+    { value: 'Sawm', en: 'Sawm & Fasting (Ramadan)', urdu: 'روزہ، اعتکاف و رمضان' },
+    { value: 'Zakat', en: 'Zakat & Sadaqah', urdu: 'زکوٰۃ و صدقات' },
+    { value: 'Hajj', en: 'Hajj & Umrah', urdu: 'حج و عمرہ' },
+    { value: 'Family', en: 'Family, Marriage & Social', urdu: 'عائلی و خاندانی مسائل' },
+    { value: 'Halal', en: 'Halal Trade & Finance', urdu: 'حلال روزگار، تجارت و مال' },
+    { value: 'Manners', en: 'Manners & Character (Akhlaq)', urdu: 'اخلاق و آدابِ زندگی' },
+    { value: 'Aqeedah', en: 'Aqeedah & Faith Articles', urdu: 'عقائد و ایمانیات' },
+    { value: 'Masail', en: 'Contemporary Fiqh Issues', urdu: 'جدید فقہی مسائل' }
   ];
 
-  const categories = [
-    {
-      id: 'cat-qa',
-      titleEn: '1. Islamic Q&A',
-      titleUrdu: '۱۔ عام اسلامی سوال و جواب',
-      badgeEn: 'Coming Soon • Informational',
-      badgeUrdu: 'عنقریب • تعلیمی',
-      tagColor: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-      icon: HelpCircle,
-      accentColor: 'border-emerald-500/40 hover:border-emerald-500',
-      headerBg: 'bg-emerald-50/80',
-      scopeEn: 'General religious inquiries, understanding Quranic verses, Sahih Hadith explanations, Seerah (prophetic life), Islamic history, and personal character development (Akhlaq).',
-      scopeUrdu: 'عام دینی معلومات، قرآنی آیات کا فہم، صحیح احادیث کی تشریح، سیرت النبی ﷺ، اسلامی تاریخ اور اخلاق و آداب سے متعلق سوالات۔',
-      examplesEn: [
-        'Meaning and context of a specific Quranic verse',
-        'Authenticity and lessons from a particular Hadith',
-        'Sunnah etiquettes of sleep, eating, and travel',
-        'Islamic perspective on gratitude and patience'
-      ],
-      examplesUrdu: [
-        'کسی مخصوص قرآنی آیت کا مفہوم اور سیاق و سباق',
-        'کسی حدیث کی صحت اور اس سے حاصل ہونے والے اسباق',
-        'سونے، کھانے پینے اور سفر کے مسنون آداب',
-        'صبر، شکر اور استقامت کے فضائل و احکام'
-      ]
-    },
-    {
-      id: 'cat-masail',
-      titleEn: '2. Masail (Practical Rulings)',
-      titleUrdu: '۲۔ فقہی مسائل و احکام',
-      badgeEn: 'Coming Soon • Jurisprudence',
-      badgeUrdu: 'عنقریب • فقہی احکام',
-      tagColor: 'bg-teal-100 text-teal-800 border-teal-200',
-      icon: BookOpen,
-      accentColor: 'border-teal-500/40 hover:border-teal-500',
-      headerBg: 'bg-teal-50/80',
-      scopeEn: 'Applied day-to-day jurisprudential rulings for Taharah (purification, wudu, ghusl, tayammum), Salah invalidators, fasting exemptions (illness, travel, pregnancy), Zakat Nisab, and permissible trade transactions.',
-      scopeUrdu: 'روزمرہ عملی فقہی مسائل جیسے طہارت (وضو، غسل، تیمم)، نماز کے مفسدات، روزے کی شرعی رخصتیں (بیماری، سفر)، زکوٰۃ کا نصاب اور حلال تجارت۔',
-      examplesEn: [
-        'Rulings on missed prayers (Qada) and Sajdah Sahw',
-        'Medical injections or inhalers while fasting',
-        'Zakat calculation on mixed gold, silver, and business inventory',
-        'Purification rules when clean water is difficult to access'
-      ],
-      examplesUrdu: [
-        'قضا نمازوں اور سجدہ سہو کے احکام و شرائط',
-        'روزے کی حالت میں انہیلر، ڈراپس یا انجیکشن کا شرعی حکم',
-        'مخلوط سونے چاندی اور تجارتی مال پر زکوٰۃ کا حساب',
-        'پانی کی عدم دستیابی یا عذر کی صورت میں طہارت کے مسائل'
-      ]
-    },
-    {
-      id: 'cat-fatwa',
-      titleEn: '3. Fatwa (Formal Religious Decrees)',
-      titleUrdu: '۳۔ شرعی فتاویٰ و استفسارات',
-      badgeEn: 'Coming Soon • Formal Ifta\'',
-      badgeUrdu: 'عنقریب • دار الافتاء',
-      tagColor: 'bg-amber-100 text-amber-800 border-amber-200',
-      icon: Scale,
-      accentColor: 'border-amber-500/40 hover:border-amber-500',
-      headerBg: 'bg-amber-50/80',
-      scopeEn: 'Formal legal verdicts for complex, sensitive, interpersonal, matrimonial (Nikah, Talaq, Khula), inheritance distribution, contractual agreements, and contemporary financial jurisprudence requiring certified Ifta\' review.',
-      scopeUrdu: 'پیچیدہ، حساس، عائلی و ازدواجی تنازعات (نکاح، طلاق، خلع)، ترکہ و وراثت کی تقسیم، مالیاتی معاہدات اور عصرِ حاضر کے جدید معاملات پر باضابطہ دار الافتاء کی تحریری رائے۔',
-      examplesEn: [
-        'Islamic inheritance calculations according to specific heirs',
-        'Matrimonial disputes and conditions within marriage contracts',
-        'Commercial partnerships (Mudarabah/Musharakah) and ethical contracts',
-        'Contemporary bioethical and medical jurisprudence questions'
-      ],
-      examplesUrdu: [
-        'وارثین کے شرعی حصص کے مطابق ترکہ کی تقسیم',
-        'ازدواجی تنازعات اور نکاح نامے کی شقوں کی شرعی حیثیت',
-        'مضاربت اور شراکت داری کے تجارتی معاہدات کی توثیق',
-        'جدید طبی اور سائنسی معاملات پر شرعی رہنمائی'
-      ]
-    }
+  // Madhhab preference list
+  const madhhabList: { value: MadhhabPreference; en: string; urdu: string }[] = [
+    { value: 'General', en: 'General (All Classical Schools)', urdu: 'عمومی (تمام معتبر ائمہ)' },
+    { value: 'Hanafi', en: 'Hanafi (فقہ حنفی)', urdu: 'فقہ حنفی (امام ابو حنیفہؒ)' },
+    { value: 'Shafi\'i', en: 'Shafi\'i (فقہ شافعی)', urdu: 'فقہ شافعی (امام شافعیؒ)' },
+    { value: 'Maliki', en: 'Maliki (فقہ مالکی)', urdu: 'فقہ مالکی (امام مالکؒ)' },
+    { value: 'Hanbali', en: 'Hanbali (فقہ حنبلی)', urdu: 'فقہ حنبلی (امام احمد بن حنبلؒ)' }
   ];
 
-  const fiqhOptions = [
-    {
-      id: 'fiqh-hanafi',
-      nameEn: 'Hanafi (فقہ حنفی)',
-      eponym: 'Imam Abu Hanifa (d. 150 AH)',
-      descEn: 'Emphasizes juristic consistency, analogical deduction (Qiyas), and public welfare (Istihsan). Predominant across South Asia, Turkey, Central Asia, and the Levant.',
-      descUrdu: 'امام اعظم ابو حنیفہ رحمہ اللہ کا فقہی مکتبہ فکر، جو قیاس، استحسان اور قواعدِ فقہ پر مبنی ہے۔ برصغیر، ترکی اور وسطی ایشیا میں رائج۔'
-    },
-    {
-      id: 'fiqh-shafii',
-      nameEn: 'Shafi\'i (فقہ شافعی)',
-      eponym: 'Imam Muhammad ibn Idris al-Shafi\'i (d. 204 AH)',
-      descEn: 'Emphasizes systematic methodology (Usul al-Fiqh) and direct Sunnah textual harmonization. Predominant across Southeast Asia, East Africa, Yemen, and Egypt.',
-      descUrdu: 'امام محمد بن ادریس الشافعی رحمہ اللہ کا مکتبہ فکر، جس نے اصولِ فقہ کی تدوین کی۔ جنوب مشرقی ایشیا، مشرقی افریقہ اور یمن میں رائج۔'
-    },
-    {
-      id: 'fiqh-maliki',
-      nameEn: 'Maliki (فقہ مالکی)',
-      eponym: 'Imam Malik ibn Anas (d. 179 AH)',
-      descEn: 'Emphasizes the established practice of the people of Madinah (\'Amal Ahl al-Madinah) and public interest (Maslahah Mursalah). Predominant in North and West Africa.',
-      descUrdu: 'امام دار الہجرۃ مالک بن انس رحمہ اللہ کا مکتبہ فکر، جو عملِ اہلِ مدینہ اور مصالحِ مرسلہ پر قائم ہے۔ شمالی و مغربی افریقہ میں رائج۔'
-    },
-    {
-      id: 'fiqh-hanbali',
-      nameEn: 'Hanbali (فقہ حنبلی)',
-      eponym: 'Imam Ahmad ibn Hanbal (d. 241 AH)',
-      descEn: 'Emphasizes primary adherence to explicit Quranic texts, Sahih Hadith, and Companions\' narrations (Athar). Predominant in the Arabian Peninsula.',
-      descUrdu: 'امام احمد بن حنبل رحمہ اللہ کا مکتبہ فکر، جو نصوصِ کتاب و سنت اور آثارِ صحابہ کے سخت اتباع پر زور دیتا ہے۔ جزیرہ نما عرب میں رائج۔'
-    },
-    {
-      id: 'fiqh-unsure',
-      nameEn: '“I am unsure / need guidance” (مجھے رہنمائی درکار ہے)',
-      eponym: 'General Scholarly Consensus (Jumhur)',
-      descEn: 'Designed for seekers who do not strictly follow a single school or who require the scholar to provide the consensus opinion (Jumhur) most suitable for their circumstance.',
-      descUrdu: 'ان سائلین کے لیے جو کسی خاص فقہ کے پابند نہیں یا جنہیں جمہور علمائے امت کی متفقہ رائے اور عام فہم شرعی رہنمائی درکار ہے۔'
+  // Copy helper
+  const copyToClipboard = async (text: string, type: 'number' | 'token' | 'both') => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(type);
+      showToast(isUrdu ? 'کامیابی سے کاپی ہو گیا' : 'Copied to clipboard!');
+      setTimeout(() => setCopiedField(null), 2500);
+    } catch {
+      showToast(isUrdu ? 'کاپی کرنے میں دشواری پیش آئی' : 'Failed to copy to clipboard');
     }
-  ];
+  };
+
+  // ---------------------------------------------------------------------------
+  // SUBMIT INQUIRY HANDLER
+  // ---------------------------------------------------------------------------
+  const handleSubmitInquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitError(null);
+
+    // Validation
+    const cleanSubject = subject.trim();
+    const cleanQuestion = questionText.trim();
+
+    if (cleanSubject.length < 3) {
+      setSubmitError(
+        isUrdu
+          ? 'موضوع کم از کم ۳ حروف پر مشتمل ہونا چاہیے۔'
+          : 'Subject must be at least 3 characters long.'
+      );
+      return;
+    }
+    if (cleanSubject.length > 150) {
+      setSubmitError(
+        isUrdu
+          ? 'موضوع زیادہ سے زیادہ ۱۵۰ حروف پر مشتمل ہو سکتا ہے۔'
+          : 'Subject cannot exceed 150 characters.'
+      );
+      return;
+    }
+    if (cleanQuestion.length < 10) {
+      setSubmitError(
+        isUrdu
+          ? 'سوال کی تفصیل کم از کم ۱۰ حروف پر مشتمل ہونی چاہیے۔'
+          : 'Question details must be at least 10 characters long.'
+      );
+      return;
+    }
+    if (cleanQuestion.length > 4000) {
+      setSubmitError(
+        isUrdu
+          ? 'سوال کی تفصیل ۴۰۰۰ حروف سے زیادہ نہیں ہو سکتی۔'
+          : 'Question cannot exceed 4000 characters.'
+      );
+      return;
+    }
+    if (seekerEmail.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(seekerEmail.trim())) {
+      setSubmitError(
+        isUrdu
+          ? 'براہ کرم درست ای میل پتہ درج کریں۔'
+          : 'Please provide a valid email address.'
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Secure submission through verified RPC only
+      const res = await supabaseService.submitScholarInquiry({
+        subject: cleanSubject,
+        questionText: cleanQuestion,
+        category,
+        madhhabPreference,
+        seekerName: seekerName.trim() || undefined,
+        seekerEmail: seekerEmail.trim() || undefined
+      });
+
+      if (!res.success || !res.data) {
+        setSubmitError(res.error || (isUrdu ? 'سوال جمع کرنے میں دشواری پیش آئی۔' : 'Failed to submit inquiry.'));
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Record result (Do NOT console.log raw secret token!)
+      setSubmissionResult(res.data);
+      setIsSubmitting(false);
+      showToast(isUrdu ? 'آپ کا استفسار بحفاظت موصول ہو گیا' : 'Inquiry submitted successfully!');
+    } catch (err: any) {
+      setSubmitError(err?.message || (isUrdu ? 'نیٹ ورک یا سرور میں مسئلہ پیش آیا۔' : 'An unexpected error occurred.'));
+      setIsSubmitting(false);
+    }
+  };
+
+  // Reset submit form
+  const handleResetForm = () => {
+    setSubject('');
+    setQuestionText('');
+    setCategory('General');
+    setMadhhabPreference('General');
+    setSeekerName('');
+    setSeekerEmail('');
+    setSubmitError(null);
+    setSubmissionResult(null);
+  };
+
+  // Switch to status view with prefilled credentials
+  const handleViewStatusWithCredentials = (inquiryNum: string, token: string) => {
+    setStatusInquiryNumber(inquiryNum);
+    setStatusAccessToken(token);
+    setActiveView('status');
+    setInquiryDetails(null);
+    setStatusError(null);
+  };
+
+  // ---------------------------------------------------------------------------
+  // STATUS CHECK HANDLER
+  // ---------------------------------------------------------------------------
+  const handleCheckStatus = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatusError(null);
+    setInquiryDetails(null);
+
+    const cleanNumber = statusInquiryNumber.trim().toUpperCase();
+    const cleanToken = statusAccessToken.trim();
+
+    if (!cleanNumber) {
+      setStatusError(
+        isUrdu ? 'براہ کرم انکوائری نمبر درج کریں۔' : 'Please provide your Inquiry Number.'
+      );
+      return;
+    }
+    if (!cleanToken) {
+      setStatusError(
+        isUrdu ? 'براہ کرم خفیہ رسائی ٹوکن درج کریں۔' : 'Please provide your Secret Access Token.'
+      );
+      return;
+    }
+
+    setIsCheckingStatus(true);
+
+    try {
+      const res = await supabaseService.getScholarInquiry(cleanNumber, cleanToken);
+
+      if (!res.success) {
+        setStatusError(res.error || (isUrdu ? 'معلومات حاصل کرنے میں دشواری پیش آئی۔' : 'Error retrieving inquiry.'));
+        setIsCheckingStatus(false);
+        return;
+      }
+
+      if (!res.data) {
+        setStatusError(
+          isUrdu
+            ? 'کوئی استفسار نہیں ملا۔ براہ کرم اپنا انکوائری نمبر اور خفیہ ٹوکن درست درج کریں۔'
+            : 'No inquiry found matching this Inquiry Number and Secret Token. Please check for typos and verify your credentials.'
+        );
+        setIsCheckingStatus(false);
+        return;
+      }
+
+      setInquiryDetails(res.data);
+      setIsCheckingStatus(false);
+    } catch (err: any) {
+      setStatusError(err?.message || (isUrdu ? 'سرور سے رابطہ ممکن نہ ہو سکا۔' : 'Failed to connect to server.'));
+      setIsCheckingStatus(false);
+    }
+  };
+
+  // Status visual badge formatting
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'pending_review':
+        return {
+          labelEn: 'Pending Review',
+          labelUrdu: 'زیرِ جائزہ (منتظر)',
+          bg: 'bg-amber-100 text-amber-900 border-amber-300',
+          dot: 'bg-amber-500'
+        };
+      case 'sent_to_scholar':
+        return {
+          labelEn: 'Sent to Scholar',
+          labelUrdu: 'عالمِ دین کو ارسال شدہ',
+          bg: 'bg-sky-100 text-sky-900 border-sky-300',
+          dot: 'bg-sky-500'
+        };
+      case 'answer_received':
+        return {
+          labelEn: 'Under Final Audit',
+          labelUrdu: 'جواب موصول (زیرِ تصدیق)',
+          bg: 'bg-indigo-100 text-indigo-900 border-indigo-300',
+          dot: 'bg-indigo-500'
+        };
+      case 'answered':
+        return {
+          labelEn: 'Answered & Verified',
+          labelUrdu: 'مستند شرعی جواب تیار ہے',
+          bg: 'bg-emerald-100 text-emerald-900 border-emerald-300',
+          dot: 'bg-emerald-500'
+        };
+      case 'rejected':
+        return {
+          labelEn: 'Inquiry Closed',
+          labelUrdu: 'معذرت کے ساتھ بند شدہ',
+          bg: 'bg-rose-100 text-rose-900 border-rose-300',
+          dot: 'bg-rose-500'
+        };
+      default:
+        return {
+          labelEn: status,
+          labelUrdu: status,
+          bg: 'bg-slate-100 text-slate-800 border-slate-300',
+          dot: 'bg-slate-400'
+        };
+    }
+  };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-fadeIn pb-16 px-4 sm:px-6">
+    <div className="max-w-4xl mx-auto px-4 py-6 space-y-8" dir={isUrdu ? 'rtl' : 'ltr'}>
       
-      {/* Top Breadcrumb & Return to Home */}
-      <div className="flex items-center justify-between pt-2">
+      {/* Top Navigation Bar */}
+      <div className="flex items-center justify-between">
         <button
           onClick={() => {
             setActiveTab('home');
             window.scrollTo({ top: 0, behavior: 'smooth' });
           }}
-          className="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/80 px-3.5 py-2 rounded-xl transition-all shadow-2xs active:scale-95"
-          title="Return to IslamIQ Homepage"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-600 hover:text-emerald-800 transition-colors p-2 rounded-xl hover:bg-slate-100"
         >
-          <ArrowLeft className="w-4 h-4 text-emerald-700" />
-          <span>{isUrdu ? '← ہوم پیج پر واپس جائیں' : '← Back to Homepage'}</span>
+          <ArrowLeft className={`w-4 h-4 ${isUrdu ? 'rotate-180' : ''}`} />
+          <span>{isUrdu ? 'مرکزی صفحہ پر واپس جائیں' : 'Back to Home'}</span>
         </button>
 
         <span className="text-[11px] font-semibold text-slate-500 hidden sm:inline-block">
-          IslamIQ • {isUrdu ? 'شرعی رہنمائی کا تعارف' : 'Ask a Scholar Hub'}
+          IslamIQ • {isUrdu ? 'مستند شرعی استفسار' : 'Ask a Scholar Portal'}
         </span>
       </div>
 
-      {/* Hero Header Section with Photographic Islamic Architecture Background */}
-      <div className="relative overflow-hidden rounded-3xl bg-slate-950 text-white p-6 sm:p-10 shadow-xl border border-amber-400/30 min-h-[320px] flex flex-col justify-end">
-        {/* Fallback CSS Islamic Geometric Ambient Background */}
+      {/* Hero Header Section */}
+      <div className="relative overflow-hidden rounded-3xl bg-slate-950 text-white p-6 sm:p-10 shadow-xl border border-amber-400/30">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 opacity-90" />
-        
-        {/* High-Quality Islamic Architecture Photographic Background */}
         <img
           src="/assets/images/islamic_scholar_arch.jpg"
           alt="Islamic Architecture Mosque Archway"
@@ -219,23 +342,18 @@ export const AskScholarPage: React.FC = () => {
             (e.currentTarget as HTMLElement).style.display = 'none';
           }}
         />
-
-        {/* Sophisticated Dark Emerald & Teal Gradient Overlay for Readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/30 sm:bg-gradient-to-r sm:from-slate-950 sm:via-slate-950/90 sm:to-slate-950/40 pointer-events-none" />
-
-        {/* Subtle Golden Ambient Accent Glow */}
         <div className="absolute -top-12 -right-12 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 left-1/3 w-64 h-64 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
-        
+
         <div className="relative z-10 space-y-4 max-w-2xl">
           <div className="flex flex-wrap items-center gap-2.5">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-black tracking-wider uppercase shadow-xs backdrop-blur-md">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-              <span>Coming Soon • عنقریب دستیاب ہوگا</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-xs font-black tracking-wider uppercase backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>{isUrdu ? 'مستند دار الافتاء و علماء' : 'Traditional Scholar Review'}</span>
             </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/70 text-emerald-200 border border-emerald-500/40 text-[11px] font-semibold backdrop-blur-md">
-              <Sparkles className="w-3.5 h-3.5 text-goldAccent" />
-              <span>Authentic Scholarly Consultation</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/80 text-amber-300 border border-amber-400/30 text-[11px] font-semibold backdrop-blur-md">
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <span>{isUrdu ? 'غیر خودکار • انسانی تحقیق' : 'Zero AI Fatwas • Human Research'}</span>
             </span>
           </div>
 
@@ -244,319 +362,710 @@ export const AskScholarPage: React.FC = () => {
               Ask a Scholar
             </h1>
             <p className="text-amber-300 text-lg sm:text-2xl font-bold font-urdu mt-1 drop-shadow-sm" dir="rtl">
-              عالمِ دین سے رہنمائی حاصل کریں
+              عالمِ دین سے مستند شرعی رہنمائی
             </p>
           </div>
 
-          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium drop-shadow-xs">
+          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-medium">
             {isUrdu
-              ? 'اسلام آئی کیو کا آئندہ آنے والا پلیٹ فارم، جس کے ذریعے آپ اپنے دینی، فقہی، عائلی اور روزمرہ مسائل پر مستند علمائے کرام اور دار الافتاء سے مکمل رازداری کے ساتھ مستند شرعی رہنمائی حاصل کر سکیں گے۔'
-              : 'IslamIQ’s upcoming dedicated portal connecting seekers with qualified Islamic scholars and accredited Muftis for authentic, confidential guidance on everyday worship, jurisprudence, and personal religious matters.'}
+              ? 'اپنے دینی، عباداتی، عائلی اور فقہی مسائل پر مستند ثقہ علمائے کرام اور دار الافتاء سے مکمل رازداری کے ساتھ رہنمائی حاصل کریں۔ تمام جوابات قرآن و سنت اور معتمد فقہی کتب سے تحقیق کے بعد دیے جاتے ہیں۔'
+              : 'Submit your personal religious, jurisprudential, and worship inquiries for confidential review by traditionally accredited Islamic scholars and certified Muftis.'}
           </p>
 
-          <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-white/15 text-xs text-emerald-200 flex items-start gap-2.5">
-            <Info className="w-4 h-4 text-amber-300 shrink-0 mt-0.5" />
+          <div className="p-3.5 rounded-2xl bg-slate-900/80 backdrop-blur-md border border-white/15 text-xs text-amber-200 flex items-start gap-2.5">
+            <Info className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               <strong className="text-white font-semibold">
-                {isUrdu ? 'اہم وضاحتی نوٹ:' : 'Informational Overview:'}
+                {isUrdu ? 'شرعی ضابطہ و احتیاط:' : 'Theological Integrity & Verification:'}
               </strong>{' '}
               {isUrdu
-                ? 'یہ صفحہ سروس کے مقاصد اور تعلیمی خدوخال کی وضاحت کے لیے ہے۔ فی الحال سائلین کی رازداری اور علمائے کرام کے پینل کی توثیق کا عمل جاری ہے، اس لیے فارم یا سوال جمع کرنے کا آپشن عنقریب باضابطہ آغاز پر فعال کیا جائے گا۔'
-                : 'This page is informational and outlines the planned scholarly consultation architecture. Question submissions are not active yet while scholar accreditation, end-to-end question encryption, and peer-review protocols are being finalized.'}
+                ? 'اسلام آئی کیو پر کوئی بھی فتویٰ یا شرعی جواب خودکار کمپیوٹر یا مصنوعی ذہانت (AI) کے ذریعے تیار نہیں کیا جاتا۔ علمائے کرام باقاعدہ تحقیق کے بعد تحریری جواب دیتے ہیں، اس لیے جواب کی تیاری میں مناسب وقت درکار ہوتا ہے۔'
+                : 'All answers are diligently researched and formulated offline by qualified Islamic scholars and accredited Muftis with authentic classical citations. IslamIQ does not generate automated or AI fatwas.'}
             </p>
           </div>
         </div>
       </div>
 
-      {/* The Four Key Benefits Section */}
-      <div className="space-y-4">
-        <div className="text-center sm:text-left space-y-1">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider">
-            <HeartHandshake className="w-4 h-4 text-emerald-600" />
-            <span>Four Pillars of Service • اہم خصوصیات و فوائد</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Why Ask a Scholar on IslamIQ?
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">
-            Built upon four core promises to ensure authentic guidance without compromising seeker dignity, safety, or theological rigor.
-          </p>
-        </div>
+      {/* Main Dual Tab Switcher */}
+      <div className="bg-slate-100 p-1.5 rounded-2xl flex items-center gap-1.5 border border-slate-200">
+        <button
+          onClick={() => {
+            setActiveView('submit');
+            setSubmitError(null);
+          }}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
+            activeView === 'submit'
+              ? 'bg-emerald-700 text-white shadow-md'
+              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60'
+          }`}
+        >
+          <Send className="w-4 h-4" />
+          <span>{isUrdu ? 'نیا سوال جمع کروائیں' : 'Submit an Inquiry'}</span>
+        </button>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {benefits.map((benefit) => {
-            const Icon = benefit.icon;
-            return (
-              <div
-                key={benefit.id}
-                className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200/90 shadow-2xs hover:shadow-md transition-all space-y-3 relative overflow-hidden flex flex-col justify-between"
+        <button
+          onClick={() => {
+            setActiveView('status');
+            setStatusError(null);
+          }}
+          className={`flex-1 py-3 px-4 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
+            activeView === 'status'
+              ? 'bg-emerald-700 text-white shadow-md'
+              : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/60'
+          }`}
+        >
+          <Search className="w-4 h-4" />
+          <span>{isUrdu ? 'اسٹیٹس اور جواب دیکھیں' : 'Check Status & Read Answer'}</span>
+        </button>
+      </div>
+
+      {/* ===================================================================== */}
+      {/* VIEW 1: SUBMIT INQUIRY                                                */}
+      {/* ===================================================================== */}
+      {activeView === 'submit' && (
+        <div className="space-y-6">
+          {/* If inquiry was just submitted, show credential confirmation card */}
+          {submissionResult ? (
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-xl space-y-6 animate-fade-in">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-7 h-7 text-emerald-700" />
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-black text-slate-900">
+                    {isUrdu ? 'استفسار کامیابی سے موصول ہو گیا' : 'Inquiry Submitted Successfully'}
+                  </h3>
+                  <p className="text-xs text-slate-600">
+                    {isUrdu
+                      ? 'آپ کا سوال بحفاظت ہمارے اسکالر پینل تک پہنچا دیا گیا ہے۔'
+                      : 'Your question has been securely queued for scholarly review.'}
+                  </p>
+                </div>
+              </div>
+
+              {/* CRITICAL WARNING NOTICE */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-amber-50 border-2 border-amber-300 text-amber-950 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-amber-900">
+                  <AlertCircle className="w-5 h-5 text-amber-700 shrink-0" />
+                  <span>
+                    {isUrdu
+                      ? 'انتہائی اہم: اپنے خفیہ رسائی کوڈ اور نمبر کو فوراً محفوظ کر لیں!'
+                      : 'CRITICAL: Save Your Secret Access Token Immediately!'}
+                  </span>
+                </div>
+                <p className="text-xs text-amber-900/90 leading-relaxed">
+                  {isUrdu
+                    ? 'آپ کی مکمل رازداری کے پیشِ نظر یہ خفیہ ٹوکن ڈیٹابیس میں صرف خفیہ ہیش کی شکل میں محفوظ ہے اور سادہ متن میں کہیں محفوظ نہیں ہوتا۔ اگر آپ یہ کوڈ کھو دیں گے تو دوبارہ حاصل نہیں کیا جا سکے گا۔ اپنے عالمِ دین کا جواب دیکھنے کے لیے آپ کو ان دونوں چیزوں کی ضرورت ہوگی۔'
+                    : 'For zero-knowledge seeker privacy, this high-entropy secret token is displayed ONLY ONCE and is never stored in plain text. It cannot be recovered or reset. You must retain both credentials to look up your answer.'}
+                </p>
+              </div>
+
+              {/* Credentials Box */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Inquiry Number */}
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                    {isUrdu ? 'انکوائری نمبر (Inquiry Number)' : 'Inquiry Number'}
+                  </span>
+                  <div className="flex items-center justify-between gap-2 bg-white px-3 py-2 rounded-xl border border-slate-300">
+                    <span className="font-mono font-bold text-sm sm:text-base text-slate-900 select-all">
+                      {submissionResult.inquiryNumber}
+                    </span>
+                    <button
+                      onClick={() => copyToClipboard(submissionResult.inquiryNumber, 'number')}
+                      className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs flex items-center gap-1 transition-all"
+                      title="Copy Inquiry Number"
+                    >
+                      {copiedField === 'number' ? (
+                        <Check className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Secret Access Token */}
+                <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+                  <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider flex items-center gap-1">
+                    <Key className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>{isUrdu ? 'خفیہ رسائی ٹوکن (Secret Access Token)' : 'Secret Access Token'}</span>
+                  </span>
+                  <div className="flex items-center justify-between gap-2 bg-white px-3 py-2 rounded-xl border border-emerald-300">
+                    <span className="font-mono font-bold text-xs sm:text-sm text-emerald-950 break-all select-all">
+                      {submissionResult.accessToken}
+                    </span>
+                    <button
+                      onClick={() => copyToClipboard(submissionResult.accessToken, 'token')}
+                      className="p-1.5 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-800 text-xs flex items-center gap-1 shrink-0 transition-all"
+                      title="Copy Secret Token"
+                    >
+                      {copiedField === 'token' ? (
+                        <Check className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                <button
+                  onClick={() =>
+                    copyToClipboard(
+                      `IslamIQ Scholar Inquiry\nInquiry Number: ${submissionResult.inquiryNumber}\nSecret Token: ${submissionResult.accessToken}`,
+                      'both'
+                    )
+                  }
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+                >
+                  {copiedField === 'both' ? (
+                    <Check className="w-4 h-4 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                  <span>{isUrdu ? 'دونوں کوڈز کاپی کریں' : 'Copy All Credentials'}</span>
+                </button>
+
+                <button
+                  onClick={() =>
+                    handleViewStatusWithCredentials(
+                      submissionResult.inquiryNumber,
+                      submissionResult.accessToken
+                    )
+                  }
+                  className="w-full sm:w-auto px-5 py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-xs"
+                >
+                  <Search className="w-4 h-4" />
+                  <span>{isUrdu ? 'اسٹیٹس چیک کے صفحے پر جائیں' : 'Check Status Now'}</span>
+                </button>
+
+                <button
+                  onClick={handleResetForm}
+                  className="w-full sm:w-auto px-4 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-all"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>{isUrdu ? 'نیا سوال پوچھیں' : 'Ask Another Question'}</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Submissions Active Form */
+            <form onSubmit={handleSubmitInquiry} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+              
+              <div className="border-b border-slate-100 pb-4 space-y-1">
+                <h2 className="text-xl font-black text-slate-900 tracking-tight">
+                  {isUrdu ? 'استفسار برائے علمائے کرام' : 'Submit Religious Inquiry'}
+                </h2>
+                <p className="text-xs text-slate-500">
+                  {isUrdu
+                    ? 'کوئی اکاؤنٹ یا لاگ ان لازمی نہیں۔ سوال جمع کروانے پر آپ کو نجی رسائی کوڈ فراہم کیا جائے گا۔'
+                    : 'Guest submissions welcome. No account required. You will receive a private access token upon submission.'}
+                </p>
+              </div>
+
+              {submitError && (
+                <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-start gap-2.5">
+                  <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                  <p className="leading-relaxed font-semibold">{submitError}</p>
+                </div>
+              )}
+
+              {/* Row 1: Category & Madhhab Preference */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Category Selection */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-800 block">
+                    {isUrdu ? 'شعبہ / موضوعِ استفسار *' : 'Inquiry Category *'}
+                  </label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value as ScholarInquiryCategory)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                    required
+                  >
+                    {categoriesList.map((cat) => (
+                      <option key={cat.value} value={cat.value}>
+                        {isUrdu ? `${cat.urdu} (${cat.en})` : `${cat.en} • ${cat.urdu}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Madhhab Preference */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-800 block">
+                    {isUrdu ? 'فقہی ترجیح (اختیاری)' : 'Jurisprudential School (Madhhab) Preference'}
+                  </label>
+                  <select
+                    value={madhhabPreference}
+                    onChange={(e) => setMadhhabPreference(e.target.value as MadhhabPreference)}
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium"
+                  >
+                    {madhhabList.map((m) => (
+                      <option key={m.value} value={m.value}>
+                        {isUrdu ? `${m.urdu} (${m.en})` : `${m.en}`}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+              </div>
+
+              {/* Row 2: Subject */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-800">
+                    {isUrdu ? 'سوال کا خلاصہ / عنوان *' : 'Subject / Question Summary *'}
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {subject.length}/150
+                  </span>
+                </div>
+                <input
+                  type="text"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  placeholder={
+                    isUrdu
+                      ? 'مثلاً: دورانِ سفر نمازِ قصر کے احکام اور مدت کی شرعی وضاحت'
+                      : 'e.g., Short prayer (Qasr) rulings during a temporary business stay'
+                  }
+                  maxLength={150}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  required
+                />
+              </div>
+
+              {/* Row 3: Question Details */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-slate-800">
+                    {isUrdu ? 'تفصیلی سوال و صورتِ حال *' : 'Detailed Question & Circumstances *'}
+                  </label>
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {questionText.length}/4000
+                  </span>
+                </div>
+                <textarea
+                  value={questionText}
+                  onChange={(e) => setQuestionText(e.target.value)}
+                  rows={5}
+                  placeholder={
+                    isUrdu
+                      ? 'اپنے سوال کی تمام متعلقہ شرعی تفصیلات یہاں تحریر کریں۔ اگر کوئی خاص صورتِ حال یا مجبوری ہو تو واضح فرمائیں۔ (اردو، انگریزی، عربی سب قبول ہیں)'
+                      : 'Provide full details, context, and specific situation. (Urdu, English, and Arabic text are all preserved and supported).'
+                  }
+                  maxLength={4000}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"
+                  required
+                />
+              </div>
+
+              {/* Row 4: Seeker Optional Contact Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                    <User className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{isUrdu ? 'آپ کا نام یا کنیت (اختیاری)' : 'Your Name / Kunya (Optional)'}</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={seekerName}
+                    onChange={(e) => setSeekerName(e.target.value)}
+                    placeholder={isUrdu ? 'مثلاً: عبداللہ یا گمنام سائل' : 'e.g., Abdullah or Anonymous'}
+                    maxLength={60}
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-700 flex items-center gap-1">
+                    <Mail className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{isUrdu ? 'ای میل پتہ (اختیاری - برائے ضرورت)' : 'Email Address (Optional)'}</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={seekerEmail}
+                    onChange={(e) => setSeekerEmail(e.target.value)}
+                    placeholder="email@example.com"
+                    maxLength={100}
+                    className="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                {isUrdu
+                  ? '🔒 رازداری کی ضمانت: ای میل کبھی بھی عوامی طور پر ظاہر نہیں کی جاتی اور نہ ہی غیر متعلقہ افراد کو دی جاتی ہے۔'
+                  : '🔒 Confidentiality: Your email is strictly confidential, never exposed publicly, and used only by administration if clarification is required.'}
+              </p>
+
+              {/* Submit Button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-400 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>{isUrdu ? 'ارسال ہو رہا ہے...' : 'Submitting to Scholars...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>{isUrdu ? 'استفسار بحفاظت جمع کروائیں' : 'Submit Inquiry Privately'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+            </form>
+          )}
+        </div>
+      )}
+
+      {/* ===================================================================== */}
+      {/* VIEW 2: CHECK INQUIRY STATUS & READ ANSWER                            */}
+      {/* ===================================================================== */}
+      {activeView === 'status' && (
+        <div className="space-y-6">
+          
+          {/* Lookup Form */}
+          <form onSubmit={handleCheckStatus} className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
+            <div className="border-b border-slate-100 pb-3 space-y-1">
+              <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+                {isUrdu ? 'استفسار کا اسٹیٹس اور جواب تلاش کریں' : 'Look Up Your Inquiry & Scholarly Answer'}
+              </h2>
+              <p className="text-xs text-slate-500">
+                {isUrdu
+                  ? 'اپنا دیا گیا انکوائری نمبر اور خفیہ رسائی ٹوکن درج کریں تاکہ آپ کا نجی ریکارڈ تلاش کیا جا سکے۔'
+                  : 'Enter your assigned Inquiry Number and Secret Access Token to view status or verified response.'}
+              </p>
+            </div>
+
+            {statusError && (
+              <div className="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <p className="leading-relaxed font-semibold">{statusError}</p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              
+              {/* Inquiry Number Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 block">
+                  {isUrdu ? 'انکوائری نمبر *' : 'Inquiry Number *'}
+                </label>
+                <input
+                  type="text"
+                  value={statusInquiryNumber}
+                  onChange={(e) => setStatusInquiryNumber(e.target.value.toUpperCase())}
+                  placeholder="e.g. IQ-20261017-ABC12345"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono font-bold uppercase focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  required
+                />
+              </div>
+
+              {/* Secret Access Token Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                  <span>{isUrdu ? 'خفیہ رسائی ٹوکن *' : 'Secret Access Token *'}</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowStatusToken(!showStatusToken)}
+                    className="text-[11px] text-slate-500 hover:text-slate-800 inline-flex items-center gap-1"
+                  >
+                    {showStatusToken ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                    <span>{showStatusToken ? 'Hide' : 'Show'}</span>
+                  </button>
+                </label>
+                <div className="relative">
+                  <input
+                    type={showStatusToken ? 'text' : 'password'}
+                    value={statusAccessToken}
+                    onChange={(e) => setStatusAccessToken(e.target.value)}
+                    placeholder="e.g. 48-character secret token"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    required
+                  />
+                </div>
+              </div>
+
+            </div>
+
+            <div className="pt-1">
+              <button
+                type="submit"
+                disabled={isCheckingStatus}
+                className="w-full sm:w-auto px-7 py-3 rounded-2xl bg-emerald-700 hover:bg-emerald-800 disabled:bg-slate-400 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md transition-all active:scale-95"
               >
-                <div className="space-y-2.5">
-                  <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold border border-emerald-100">
-                      <Icon className="w-5 h-5 text-emerald-700" />
+                {isCheckingStatus ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>{isUrdu ? 'تلاش جاری ہے...' : 'Checking Inquiry Status...'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Search className="w-4 h-4" />
+                    <span>{isUrdu ? 'اسٹیٹس و تفصیلات دیکھیں' : 'Retrieve Inquiry'}</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+
+          {/* Inquiry Details Display Card */}
+          {inquiryDetails && (
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-md space-y-6 animate-fade-in">
+              
+              {/* Header with Status Badge */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold text-slate-500">
+                      #{inquiryDetails.inquiryNumber}
+                    </span>
+                    <span className="text-xs text-slate-400">•</span>
+                    <span className="text-xs font-semibold text-emerald-800">
+                      {inquiryDetails.category}
+                    </span>
+                    <span className="text-xs text-slate-400">•</span>
+                    <span className="text-xs text-slate-500">
+                      {inquiryDetails.madhhabPreference}
+                    </span>
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-slate-900">
+                    {inquiryDetails.subject}
+                  </h3>
+                </div>
+
+                <div>
+                  {(() => {
+                    const badge = getStatusBadge(inquiryDetails.status);
+                    return (
+                      <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold border ${badge.bg}`}>
+                        <span className={`w-2 h-2 rounded-full ${badge.dot}`} />
+                        <span>{isUrdu ? badge.labelUrdu : badge.labelEn}</span>
+                      </span>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* Seeker Question Details */}
+              <div className="p-4 sm:p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                  {isUrdu ? 'آپ کا سوال (Question Submitted)' : 'Question Submitted'}
+                </span>
+                <p className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap leading-relaxed font-medium">
+                  {inquiryDetails.questionText}
+                </p>
+                <div className="pt-2 text-[10px] text-slate-400">
+                  {isUrdu ? 'تاریخِ اندراج:' : 'Submitted on:'}{' '}
+                  {new Date(inquiryDetails.createdAt).toLocaleDateString()}
+                </div>
+              </div>
+
+              {/* Status Specific Explanations & Content */}
+              {inquiryDetails.status === 'answered' ? (
+                /* Verified Scholarly Answer Section */
+                <div className="rounded-3xl bg-gradient-to-br from-emerald-50/90 via-teal-50/70 to-white p-6 sm:p-7 border-2 border-emerald-400/80 shadow-md space-y-5">
+                  
+                  {/* Verified Scholar Badge */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-emerald-200/80 pb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-700 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <Award className="w-6 h-6 text-amber-300" />
+                      </div>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-base font-black text-emerald-950">
+                            {inquiryDetails.scholarName || 'Verified Scholar'}
+                          </h4>
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-200 text-emerald-900">
+                            {isUrdu ? 'مستند مفتی' : 'Accredited Mufti'}
+                          </span>
+                        </div>
+                        {inquiryDetails.scholarQualification && (
+                          <p className="text-xs font-semibold text-emerald-800">
+                            {inquiryDetails.scholarQualification}
+                          </p>
+                        )}
+                      </div>
                     </div>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-                      {isUrdu ? benefit.badgeUrdu : benefit.badge}
+
+                    {inquiryDetails.answeredAt && (
+                      <span className="text-xs text-emerald-800 font-medium">
+                        {isUrdu ? 'تاریخِ توثیق:' : 'Answered on:'}{' '}
+                        {new Date(inquiryDetails.answeredAt).toLocaleDateString()}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Scholarly Answer Text */}
+                  <div className="space-y-2">
+                    <span className="text-xs font-bold text-emerald-900 uppercase tracking-wider block">
+                      {isUrdu ? 'شرعی فتویٰ و تفصیلی جواب:' : 'Scholarly Rulings & Answer:'}
+                    </span>
+                    <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap leading-relaxed font-normal bg-white/90 p-4 rounded-2xl border border-emerald-200/70 shadow-xs">
+                      {inquiryDetails.answerText}
+                    </div>
+                  </div>
+
+                  {/* Arabic Text & Textual Evidence */}
+                  {inquiryDetails.answerArabic && (
+                    <div className="space-y-1.5 p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80" dir="rtl">
+                      <span className="text-xs font-bold text-amber-900 block font-urdu">
+                        الادلة الشرعية والنصوص (عربی عبارات و حوالہ جات):
+                      </span>
+                      <p className="text-sm sm:text-base font-serif text-slate-900 leading-loose text-right">
+                        {inquiryDetails.answerArabic}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Textual Citations and References */}
+                  {(inquiryDetails.reference || inquiryDetails.references) && (
+                    <div className="p-3.5 rounded-2xl bg-emerald-100/60 border border-emerald-200 text-xs text-emerald-950 flex items-start gap-2">
+                      <BookOpen className="w-4 h-4 text-emerald-800 shrink-0 mt-0.5" />
+                      <div>
+                        <strong>{isUrdu ? 'فقہی حوالہ جات و مراجع:' : 'References & Primary Sources:'}</strong>{' '}
+                        <span>{inquiryDetails.reference || inquiryDetails.references}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Theological Authenticity Stamp */}
+                  <div className="p-3 rounded-xl bg-white border border-emerald-300/80 flex items-center justify-between text-[11px] text-emerald-900">
+                    <span className="flex items-center gap-1.5 font-bold">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      <span>{isUrdu ? 'ثقہ عالمِ دین کے قلم سے تصدیق شدہ' : 'Verified by Traditional Islamic Scholar'}</span>
+                    </span>
+                    <span className="text-slate-500 font-semibold">
+                      {isUrdu ? 'غیر خودکار شرعی تحقیق' : 'Human Verified • Zero AI Generation'}
                     </span>
                   </div>
 
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900">
-                      {benefit.titleEn}
-                    </h3>
-                    <p className="text-xs font-bold text-emerald-800 font-urdu mt-0.5" dir="rtl">
-                      {benefit.titleUrdu}
-                    </p>
+                </div>
+              ) : inquiryDetails.status === 'rejected' ? (
+                /* Rejected / Closed Inquiry Notice */
+                <div className="p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-950 space-y-2">
+                  <div className="flex items-center gap-2 font-bold text-sm text-rose-800">
+                    <AlertCircle className="w-5 h-5 text-rose-600" />
+                    <span>{isUrdu ? 'استفسار بند کر دیا گیا ہے' : 'Inquiry Closed / Out of Scope'}</span>
+                  </div>
+                  <p className="text-xs text-rose-900 leading-relaxed">
+                    {inquiryDetails.rejectionReason ||
+                      (isUrdu
+                        ? 'یہ سوال ہمارے دائرہ کار سے باہر یا پہلے سے طے شدہ ضوابط کے خلاف ہونے کی بنا پر بند کر دیا گیا ہے۔'
+                        : 'This inquiry was closed due to scope limitations or guidelines.')}
+                  </p>
+                </div>
+              ) : (
+                /* In-Progress Scholarly Workflow Indicator */
+                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-4">
+                  <div className="flex items-center gap-2.5">
+                    <Clock className="w-5 h-5 text-amber-600 animate-pulse" />
+                    <h4 className="text-sm font-bold text-slate-900">
+                      {isUrdu ? 'استفسار پر شرعی کام جاری ہے' : 'Scholarly Work in Progress'}
+                    </h4>
                   </div>
 
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    {isUrdu ? benefit.descUrdu : benefit.descEn}
+                    {inquiryDetails.status === 'pending_review'
+                      ? isUrdu
+                        ? 'آپ کا سوال موصول ہو چکا ہے اور انتظامی جائزے کے بعد موزوں عالمِ دین یا مفتی صاحب کو ارسال کیا جا رہا ہے۔'
+                        : 'Your inquiry has been logged securely and is awaiting admin triage before assignment to an offline Islamic scholar.'
+                      : inquiryDetails.status === 'sent_to_scholar'
+                      ? isUrdu
+                        ? 'آپ کا سوال عالمِ دین کو ارسال کر دیا گیا ہے۔ وہ فقہی مراجع اور نصوص کی روشنی میں جواب تیار فرما رہے ہیں۔'
+                        : 'Your inquiry is currently in the hands of an offline scholar for textual research and formal drafting.'
+                      : isUrdu
+                      ? 'عالمِ دین کا جواب موصول ہو چکا ہے اور اشاعت سے قبل آخری تصدیقی مرحلے میں ہے۔ جلد یہاں دستیاب ہو جائے گا۔'
+                      : 'The preliminary scholarly response has been transcribed and is undergoing final editorial verification.'}
                   </p>
-                </div>
 
-                <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Guaranteed in Upcoming Service</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* The Three Clearly Separated Categories */}
-      <div className="space-y-4">
-        <div className="text-center sm:text-left space-y-1">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider">
-            <Scale className="w-4 h-4 text-emerald-600" />
-            <span>Three Structured Tracks • تین واضح شعبہ جات</span>
-          </div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Consultation Categories: Q&A, Masail & Fatwa
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 max-w-2xl">
-            To ensure each inquiry receives the exact level of theological scrutiny it requires, inquiries will be categorized into three distinct tracks.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            return (
-              <div
-                key={cat.id}
-                className={`bg-white rounded-3xl border-2 ${cat.accentColor} shadow-sm transition-all overflow-hidden flex flex-col justify-between`}
-              >
-                <div>
-                  {/* Category Header */}
-                  <div className={`${cat.headerBg} p-5 border-b border-slate-100 space-y-2`}>
-                    <div className="flex items-center justify-between">
-                      <div className="w-10 h-10 rounded-2xl bg-white shadow-2xs flex items-center justify-center text-slate-800">
-                        <Icon className="w-5 h-5 text-emerald-800" />
-                      </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${cat.tagColor}`}>
-                        {isUrdu ? cat.badgeUrdu : cat.badgeEn}
-                      </span>
+                  {/* Workflow steps visualization */}
+                  <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+                    <div className={`p-2.5 rounded-xl border text-[11px] font-bold ${
+                      inquiryDetails.status === 'pending_review'
+                        ? 'bg-amber-100 text-amber-900 border-amber-300'
+                        : 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                    }`}>
+                      1. {isUrdu ? 'موصول' : 'Received'}
                     </div>
-
-                    <div>
-                      <h3 className="text-base font-black text-slate-900">
-                        {cat.titleEn}
-                      </h3>
-                      <p className="text-xs font-bold text-emerald-900 font-urdu mt-0.5" dir="rtl">
-                        {cat.titleUrdu}
-                      </p>
+                    <div className={`p-2.5 rounded-xl border text-[11px] font-bold ${
+                      inquiryDetails.status === 'sent_to_scholar'
+                        ? 'bg-sky-100 text-sky-900 border-sky-300'
+                        : inquiryDetails.status === 'answer_received'
+                        ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                        : 'bg-slate-100 text-slate-400 border-slate-200'
+                    }`}>
+                      2. {isUrdu ? 'عالمِ دین کے پاس' : 'With Scholar'}
                     </div>
-                  </div>
-
-                  {/* Category Scope & Description */}
-                  <div className="p-5 space-y-3.5">
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {isUrdu ? cat.scopeUrdu : cat.scopeEn}
-                    </p>
-
-                    <div className="space-y-1.5">
-                      <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider block">
-                        {isUrdu ? 'مثالی سوالات:' : 'Example Topics Handled:'}
-                      </span>
-                      <ul className="space-y-1 text-xs text-slate-600">
-                        {(isUrdu ? cat.examplesUrdu : cat.examplesEn).map((ex, idx) => (
-                          <li key={idx} className="flex items-start gap-1.5 leading-snug">
-                            <span className="text-emerald-600 font-bold">•</span>
-                            <span>{ex}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className={`p-2.5 rounded-xl border text-[11px] font-bold ${
+                      inquiryDetails.status === 'answer_received'
+                        ? 'bg-indigo-100 text-indigo-900 border-indigo-300'
+                        : 'bg-slate-100 text-slate-400 border-slate-200'
+                    }`}>
+                      3. {isUrdu ? 'حتمی تصدیق' : 'Final Audit'}
                     </div>
                   </div>
                 </div>
+              )}
 
-                {/* Coming Soon Notice Footer */}
-                <div className="p-4 bg-slate-50 border-t border-slate-100 text-center">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                    {isUrdu ? 'عنقریب فعال ہوگا • رجسٹریشن زیرِ تکمیل' : 'Status: Roadmap Preview (No Forms Yet)'}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+            </div>
+          )}
+
         </div>
-      </div>
+      )}
 
-      {/* Future Fiqh Choices for Fatwa */}
+      {/* Information & Theological Guidelines Section */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 uppercase tracking-wider">
-            <BookOpen className="w-4 h-4 text-amber-600" />
-            <span>Jurisprudential Schools • فقہی مکاتبِ فکر</span>
+          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+            <HeartHandshake className="w-4 h-4 text-emerald-600" />
+            <span>{isUrdu ? 'خدمت کے بنیادی اصول' : 'Four Core Service Pillars'}</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-            Future Fiqh Choices for Fatwa Requests
-          </h2>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
-            When submitting a formal Fatwa or complex Mas’alah in the future, questioners will be able to select their preferred school of jurisprudence (Madhhab) so answers directly reflect their traditional community practice:
-          </p>
+          <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+            {isUrdu ? 'اسلام آئی کیو شرعی رہنمائی کی خصوصیات' : 'Why Consult Qualified Scholars on IslamIQ?'}
+          </h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
-          {fiqhOptions.map((fiqh, index) => (
-            <div
-              key={fiqh.id}
-              className={`p-4 sm:p-5 rounded-2xl border transition-all ${
-                index === 4
-                  ? 'sm:col-span-2 bg-gradient-to-r from-emerald-50 via-teal-50 to-slate-50 border-emerald-200'
-                  : 'bg-slate-50/70 hover:bg-slate-50 border-slate-200/80'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-1.5">
-                <h4 className="text-sm font-bold text-slate-900">
-                  {fiqh.nameEn}
-                </h4>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-white text-slate-700 border border-slate-200">
-                  Option {index + 1}
-                </span>
-              </div>
-              <p className="text-[11px] font-semibold text-emerald-800 mb-1">
-                {fiqh.eponym}
-              </p>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                {isUrdu ? fiqh.descUrdu : fiqh.descEn}
-              </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+            <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs">
+              <Lock className="w-4 h-4 text-emerald-600" />
+              <span>{isUrdu ? 'مکمل رازداری اور ذاتی رسائی' : 'Private & Confidential Access'}</span>
             </div>
-          ))}
-        </div>
-
-        <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs text-amber-900 flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">
-            <strong>{isUrdu ? 'فتاویٰ اور فقہی اعتدال:' : 'Scholarly Integrity & Mutual Respect:'}</strong>{' '}
-            {isUrdu
-              ? 'تمام چاروں ائمہ کرام (احناف، شوافع، مالکیہ، حنابلہ) اہلِ سنت والجماعت کے برحق اور معتبر مکاتبِ فکر ہیں۔ ہر فقہ کے مسائل معتمد اور اصل متون سے تحقیق کے بعد ہی بیان کیے جائیں گے۔'
-              : 'All four classical Sunni schools of jurisprudence are recognized and respected within orthodox Islamic tradition. Inquiries directed under a specific school will be examined through the authoritative legal compendiums of that respective tradition.'}
-          </p>
-        </div>
-      </div>
-
-      {/* How the Process Will Work (Informational Roadmap) */}
-      <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-5">
-        <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-            <Clock className="w-4 h-4 text-emerald-400" />
-            <span>Consultation Workflow • طریقہ کار کا خاکہ</span>
-          </div>
-          <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-            How Consultations Will Work (Launch Roadmap)
-          </h2>
-          <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
-            A preview of the secure, three-step journey from inquiry to verified scholarly response once launched.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-          <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 space-y-2">
-            <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
-              01
-            </div>
-            <h4 className="text-sm font-bold text-white">
-              {isUrdu ? '۱۔ سوال کا اندراج' : '1. Submit Privately'}
-            </h4>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               {isUrdu
-                ? 'اپنا سوال یا مسئلہ منتخب کریں اور مطلوبہ فقہ کا انتخاب کریں۔ سوال کو رازداری کے کوڈ سے محفوظ کیا جائے گا۔'
-                : 'Select your track (Q&A, Masail, or Fatwa) and preferred Fiqh. Receive a private reference key with zero public tracking.'}
+                ? 'ہر سائل کو منفرد خفیہ ٹوکن ملتا ہے۔ سوال اور جواب عوامی فورم پر ظاہر نہیں کیے جاتے۔'
+                : 'Each questioner receives a private access key. Responses remain confidential without public exposure.'}
             </p>
           </div>
 
-          <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 space-y-2">
-            <div className="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center font-bold text-xs">
-              02
+          <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+            <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs">
+              <Award className="w-4 h-4 text-emerald-600" />
+              <span>{isUrdu ? 'مستند اہل علم اور دار الافتاء' : 'Verified Traditional Scholars'}</span>
             </div>
-            <h4 className="text-sm font-bold text-white">
-              {isUrdu ? '۲۔ علمائے کرام کا جائزہ' : '2. Scholarly Review'}
-            </h4>
-            <p className="text-xs text-slate-300 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               {isUrdu
-                ? 'مستند مفتیان اور اہلِ علم قرآن و سنت اور فقہی نصوص کی روشنی میں مدلل جواب تیار کریں گے۔'
-                : 'Inquiries are assigned to verified scholars and accredited Muftis for authentic investigation with classical textual citations.'}
-            </p>
-          </div>
-
-          <div className="bg-slate-800/80 p-4 rounded-2xl border border-slate-700/80 space-y-2">
-            <div className="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-xs">
-              03
-            </div>
-            <h4 className="text-sm font-bold text-white">
-              {isUrdu ? '۳۔ محفوظ تحریری جواب' : '3. Secure Delivery'}
-            </h4>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              {isUrdu
-                ? 'سائل اپنے نجی کوڈ کے ذریعے مکمل اور مستند تحریری جواب حاصل کر سکے گا۔'
-                : 'Access your signed, certified scholarly response directly within your private consultation dashboard.'}
+                ? 'تمام جوابات معتبر مدارس و دار الافتاء کے فارغ التحصیل مفتیانِ عظام اور علماء تحریر کرتے ہیں۔'
+                : 'Inquiries are examined by traditionally accredited scholars and certified Muftis.'}
             </p>
           </div>
         </div>
-      </div>
-
-      {/* Existing Verified Islamic Knowledge Hub Banner */}
-      <div className="bg-emerald-50 rounded-3xl p-6 sm:p-7 border border-emerald-200/90 shadow-2xs space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="space-y-1">
-            <h3 className="text-base font-bold text-emerald-950">
-              {isUrdu ? 'فوری رہنمائی کے لیے ہمارے موجودہ مستند وسائل ملاحظہ کریں' : 'Need Immediate Guidance on Everyday Questions?'}
-            </h3>
-            <p className="text-xs text-emerald-800 leading-relaxed max-w-xl">
-              {isUrdu
-                ? 'جبکہ اسکالر سروس عنقریب لانچ ہو رہی ہے، آپ اسلام آئی کیو کے تصدیق شدہ سوال و جواب کے ذخیرے اور عملی گائیڈز سے ابھی مستفید ہو سکتے ہیں۔'
-                : 'While Ask a Scholar is being prepared, you can browse over 50+ verified Islamic questions & answers with complete Quran and Hadith citations right now on IslamIQ.'}
-            </p>
-          </div>
-
-          <button
-            onClick={() => {
-              setActiveTab('islamic-questions-answers');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            className="px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center gap-1.5 shrink-0 active:scale-95"
-          >
-            <BookOpen className="w-4 h-4" />
-            <span>{isUrdu ? 'مستند سوال و جواب دیکھیں' : 'Browse Verified Q&A Hub'}</span>
-          </button>
-        </div>
-      </div>
-
-      {/* Return to Homepage Button */}
-      <div className="pt-2 text-center">
-        <button
-          onClick={() => {
-            setActiveTab('home');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-          }}
-          className="px-6 py-3 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm inline-flex items-center gap-2 shadow-md transition-all active:scale-95"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>{isUrdu ? 'ہوم اسکرین پر واپس جائیں' : 'Back to IslamIQ Homepage'}</span>
-        </button>
       </div>
 
     </div>

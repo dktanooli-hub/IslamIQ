@@ -6,7 +6,12 @@ import {
   DuaItem,
   IslamicReminder,
   QuizAttemptRecord,
-  VerifiedQA
+  VerifiedQA,
+  ScholarInquirySubmission,
+  ScholarSubmissionResult,
+  PublicScholarInquiry,
+  ScholarInquiry,
+  ScholarInquiryStatus
 } from '../types';
 
 export interface DatabaseStats {
@@ -1006,5 +1011,230 @@ listenQuestions(
     } catch {
       return null;
     }
+  },
+
+  // ---------------------------------------------------------------------------
+  // 10. ASK A SCHOLAR (Offline Scholar Consultation Architecture)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Submit an Islamic inquiry securely without requiring account registration.
+   * Invokes public.submit_scholar_inquiry RPC.
+   * Returns generated inquiryNumber and the one-time high-entropy accessToken.
+   */
+  async submitScholarInquiry(
+    submission: ScholarInquirySubmission
+  ): Promise<{ success: boolean; data?: ScholarSubmissionResult; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: false, error: 'Database service is currently unconfigured' };
+    }
+
+    try {
+      const { data, error } = await supabase.rpc('submit_scholar_inquiry', {
+        p_subject: submission.subject,
+        p_question_text: submission.questionText,
+        p_category: submission.category || 'General',
+        p_madhhab_preference: submission.madhhabPreference || 'General',
+        p_seeker_name: submission.seekerName || null,
+        p_seeker_email: submission.seekerEmail || null
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      if (!data || data.length === 0) {
+        return { success: false, error: 'Failed to record inquiry. Please retry.' };
+      }
+
+      const row = data[0];
+      return {
+        success: true,
+        data: {
+          inquiryNumber: row.inquiry_number,
+          accessToken: row.access_token,
+          status: row.status as ScholarInquiryStatus,
+          createdAt: row.created_at
+        }
+      };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to submit inquiry' };
+    }
+  },
+
+  /**
+   * Look up an inquiry privately using the inquiryNumber and the raw accessToken.
+   * Invokes public.get_scholar_inquiry RPC.
+   * Returns ONLY public-safe projected fields.
+   */
+  async getScholarInquiry(
+    inquiryNumber: string,
+    accessToken: string
+  ): Promise<{ success: boolean; data?: PublicScholarInquiry | null; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: false, error: 'Database service is currently unconfigured' };
+    }
+
+    try {
+      const { data, error } = await supabase.rpc('get_scholar_inquiry', {
+        p_inquiry_number: inquiryNumber.trim().toUpperCase(),
+        p_access_token: accessToken.trim()
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      if (!data || data.length === 0) {
+        return { success: true, data: null }; // Not found or invalid credentials
+      }
+
+      const row = data[0];
+      const inquiry: PublicScholarInquiry = {
+        inquiryNumber: row.inquiry_number,
+        category: row.category,
+        madhhabPreference: row.madhhab_preference,
+        subject: row.subject,
+        questionText: row.question_text,
+        status: row.status as ScholarInquiryStatus,
+        scholarName: row.scholar_name,
+        scholarQualification: row.scholar_qualification,
+        answerText: row.answer_text,
+        answerArabic: row.answer_arabic,
+        reference: row.reference || row.references || null,
+        references: row.reference || row.references || null,
+        rejectionReason: row.rejection_reason,
+        createdAt: row.created_at,
+        sentToScholarAt: row.sent_to_scholar_at,
+        answeredAt: row.answered_at
+      };
+
+      return { success: true, data: inquiry };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to retrieve inquiry' };
+    }
+  },
+
+  /**
+   * Admin-only: Fetch all scholar inquiries with optional status filtering.
+   * Enforced via Row Level Security (public.is_admin()).
+   */
+  async adminGetScholarInquiries(
+    statusFilter?: ScholarInquiryStatus | 'all'
+  ): Promise<{ success: boolean; data?: ScholarInquiry[]; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: false, error: 'Database service is currently unconfigured' };
+    }
+
+    try {
+      let query = supabase
+        .from('scholar_inquiries')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (statusFilter && statusFilter !== 'all') {
+        query = query.eq('status', statusFilter);
+      }
+
+      const { data, error } = await query;
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      const inquiries: ScholarInquiry[] = (data || []).map((row: any) => ({
+        id: row.id,
+        inquiryNumber: row.inquiry_number,
+        category: row.category,
+        madhhabPreference: row.madhhab_preference,
+        subject: row.subject,
+        questionText: row.question_text,
+        seekerName: row.seeker_name,
+        seekerEmail: row.seeker_email,
+        userId: row.user_id,
+        status: row.status as ScholarInquiryStatus,
+        scholarName: row.scholar_name,
+        scholarQualification: row.scholar_qualification,
+        answerText: row.answer_text,
+        answerArabic: row.answer_arabic,
+        reference: row.reference || row.references || null,
+        references: row.reference || row.references || null,
+        adminNotes: row.admin_notes,
+        rejectionReason: row.rejection_reason,
+        createdAt: row.created_at,
+        sentToScholarAt: row.sent_to_scholar_at,
+        answeredAt: row.answered_at,
+        updatedAt: row.updated_at
+      }));
+
+      return { success: true, data: inquiries };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to fetch scholar inquiries' };
+    }
+  },
+
+  /**
+   * Admin-only: Update inquiry status, transcription of offline scholar fatwa, or admin notes.
+   * Enforces server-side transition checks and workflow timestamps.
+   */
+  async adminUpdateScholarInquiry(
+    id: string,
+    updates: Partial<{
+      status: ScholarInquiryStatus;
+      scholarName: string | null;
+      scholarQualification: string | null;
+      answerText: string | null;
+      answerArabic: string | null;
+      reference: string | null;
+      references: string | null;
+      adminNotes: string | null;
+      rejectionReason: string | null;
+      sentToScholarAt: string | null;
+      answeredAt: string | null;
+    }>
+  ): Promise<{ success: boolean; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: false, error: 'Database service is currently unconfigured' };
+    }
+
+    try {
+      // Exclusively invoke secure admin RPC function:
+      // Validates admin role via public.is_admin(), prevents workflow skips,
+      // handles transition timestamps automatically, and prevents premature publishing.
+      const { error } = await supabase.rpc('admin_update_scholar_inquiry', {
+        p_id: id,
+        p_status: updates.status ?? null,
+        p_scholar_name: updates.scholarName ?? null,
+        p_scholar_qualification: updates.scholarQualification ?? null,
+        p_answer_text: updates.answerText ?? null,
+        p_answer_arabic: updates.answerArabic ?? null,
+        p_reference: updates.reference ?? updates.references ?? null,
+        p_admin_notes: updates.adminNotes ?? null,
+        p_rejection_reason: updates.rejectionReason ?? null
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to update scholar inquiry' };
+    }
+  },
+
+  /**
+   * Admin-only: Deletion of scholar inquiries is unsupported via database RPC.
+   * Direct table deletion is disabled to preserve audit integrity. Inquiries that cannot
+   * be answered should be closed using adminUpdateScholarInquiry with status='rejected'.
+   */
+  async adminDeleteScholarInquiry(_id: string): Promise<{ success: boolean; error?: string }> {
+    return {
+      success: false,
+      error: 'Direct deletion of scholar inquiries is disabled to maintain audit integrity. Please reject the inquiry using adminUpdateScholarInquiry with a rejection reason.'
+    };
   }
 };
+
+export const supabaseService = SupabaseService;
+
