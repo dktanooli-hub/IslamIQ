@@ -665,6 +665,100 @@ test('10b. [RUNTIME PG] Status Transition Matrix Enforcement', async () => {
   assert.strictEqual(reopenProg.rows[0].status, 'sent_to_scholar');
 });
 
+test('10c. [RUNTIME PG] Optional Field Clearing, Preserving Omitted Fields & Timestamp Resets', async () => {
+  await setAdminContext();
+
+  // Create an inquiry with full optional details
+  const sub = await db.query(`
+    SELECT * FROM public.submit_scholar_inquiry(
+      'فیلڈ کلیئرنگ ٹیسٹ',
+      'یہ اختیاری فیلڈز کو خالی کرنے اور محفوظ رکھنے کی جانچ ہے۔',
+      'General',
+      'Hanafi'
+    );
+  `);
+  const inqNum = sub.rows[0].inquiry_number;
+  const inqId = (await db.query('SELECT id FROM public.scholar_inquiries WHERE inquiry_number = $1;', [inqNum])).rows[0].id;
+
+  // 1. Move to sent_to_scholar
+  await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry($1::uuid, 'sent_to_scholar');
+  `, [inqId]);
+
+  // 2. Draft an answer in answer_received with all optional fields filled
+  const draftRes = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      p_id => $1::uuid,
+      p_status => 'answer_received'::text,
+      p_scholar_name => 'مفتی خالد مسعود'::text,
+      p_scholar_qualification => 'دار العلوم کراچی، تخصص فی الفقہ'::text,
+      p_answer_text => 'یہ مفصل اور مدلل تفصیلی فتویٰ کا متن ہے۔'::text,
+      p_answer_arabic => 'الحمد لله والصلاة والسلام على رسول الله.'::text,
+      p_reference => 'رد المحتار علی الدر المختار، جلد ۱، صفحہ ۱۰۰'::text,
+      p_admin_notes => 'نوٹ: خصوصی نظر ثانی کے بعد اندراج کیا گیا'::text
+    );
+  `, [inqId]);
+  const draftRow = draftRes.rows[0];
+  assert.strictEqual(draftRow.scholar_qualification, 'دار العلوم کراچی، تخصص فی الفقہ');
+  assert.strictEqual(draftRow.answer_arabic, 'الحمد لله والصلاة والسلام على رسول الله.');
+  assert.strictEqual(draftRow.reference, 'رد المحتار علی الدر المختار، جلد ۱، صفحہ ۱۰۰');
+  assert.strictEqual(draftRow.admin_notes, 'نوٹ: خصوصی نظر ثانی کے بعد اندراج کیا گیا');
+
+  // 3. Intentionally clear optional fields (scholar_qualification and answer_arabic) by passing empty string ''
+  // while omitting p_reference and p_admin_notes (passing NULL) - they must be preserved!
+  const clearRes = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      p_id => $1::uuid,
+      p_scholar_qualification => ''::text,
+      p_answer_arabic => '   '::text
+    );
+  `, [inqId]);
+  const clearRow = clearRes.rows[0];
+  assert.strictEqual(clearRow.scholar_qualification, null, 'scholar_qualification must be cleared to NULL when empty string passed');
+  assert.strictEqual(clearRow.answer_arabic, null, 'answer_arabic must be cleared to NULL when whitespace passed');
+  assert.strictEqual(clearRow.reference, 'رد المحتار علی الدر المختار، جلد ۱، صفحہ ۱۰۰', 'Omitted reference must be preserved');
+  assert.strictEqual(clearRow.admin_notes, 'نوٹ: خصوصی نظر ثانی کے بعد اندراج کیا گیا', 'Omitted admin_notes must be preserved');
+  assert.strictEqual(clearRow.scholar_name, 'مفتی خالد مسعود', 'Omitted scholar_name must be preserved');
+
+  // 4. Publish inquiry as answered - answered_at must be populated
+  const pubRes = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(p_id => $1::uuid, p_status => 'answered'::text);
+  `, [inqId]);
+  const pubRow = pubRes.rows[0];
+  assert.strictEqual(pubRow.status, 'answered');
+  assert.ok(pubRow.answered_at, 'answered_at must be populated upon publishing');
+
+  // 5. Unpublish back to answer_received for revision - answered_at must be reset to NULL
+  const unpubRes = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(p_id => $1::uuid, p_status => 'answer_received'::text);
+  `, [inqId]);
+  const unpubRow = unpubRes.rows[0];
+  assert.strictEqual(unpubRow.status, 'answer_received');
+  assert.strictEqual(unpubRow.answered_at, null, 'answered_at must be reset to NULL upon unpublishing to answer_received');
+
+  // 6. Test rejection reason reset on reopening:
+  // Reject inquiry with a reason
+  const rejInq = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      p_id => $1::uuid,
+      p_status => 'rejected'::text,
+      p_rejection_reason => 'مکرر سوال کی وجہ سے مسترد کیا گیا۔'::text
+    );
+  `, [inqId]);
+  assert.strictEqual(rejInq.rows[0].status, 'rejected');
+  assert.strictEqual(rejInq.rows[0].rejection_reason, 'مکرر سوال کی وجہ سے مسترد کیا گیا۔');
+
+  // Reopen to pending_review without providing a new rejection reason (rejection_reason must reset to NULL)
+  const reopenInq = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      p_id => $1::uuid,
+      p_status => 'pending_review'::text
+    );
+  `, [inqId]);
+  assert.strictEqual(reopenInq.rows[0].status, 'pending_review');
+  assert.strictEqual(reopenInq.rows[0].rejection_reason, null, 'rejection_reason must be cleared to NULL when reopened to pending_review');
+});
+
 test('11. [RUNTIME PG] Rate Limiting — Anonymous Burst Threshold Enforcement', async () => {
   await setAnonymousContext();
 

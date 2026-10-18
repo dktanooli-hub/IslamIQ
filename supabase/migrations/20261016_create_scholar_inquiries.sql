@@ -595,21 +595,40 @@ BEGIN
         END IF;
     END IF;
 
-    -- 5. Compute target fields for validation
-    v_target_answer_text := btrim(COALESCE(p_answer_text, v_row.answer_text, ''));
-    v_target_scholar_name := btrim(COALESCE(p_scholar_name, v_row.scholar_name, ''));
-    v_target_rejection_reason := btrim(COALESCE(p_rejection_reason, v_row.rejection_reason, ''));
+    -- 5. Compute target fields for validation & optional field resolution:
+    -- Rules:
+    -- - Parameter IS NULL: Retain existing database column value (parameter omitted).
+    -- - Parameter IS NOT NULL and btrim is empty string: Intentionally clear optional field to NULL.
+    -- - Parameter IS NOT NULL and non-empty: Update to trimmed value.
+    v_target_scholar_name := CASE
+        WHEN p_scholar_name IS NULL THEN v_row.scholar_name
+        WHEN btrim(p_scholar_name) = '' THEN NULL
+        ELSE btrim(p_scholar_name)
+    END;
+
+    v_target_answer_text := CASE
+        WHEN p_answer_text IS NULL THEN v_row.answer_text
+        WHEN btrim(p_answer_text) = '' THEN NULL
+        ELSE btrim(p_answer_text)
+    END;
+
+    v_target_rejection_reason := CASE
+        WHEN p_rejection_reason IS NOT NULL AND btrim(p_rejection_reason) = '' THEN NULL
+        WHEN p_rejection_reason IS NOT NULL THEN btrim(p_rejection_reason)
+        WHEN v_clean_status = 'pending_review' AND v_row.status = 'rejected' THEN NULL
+        ELSE v_row.rejection_reason
+    END;
 
     -- 6. Strict validation of required fields on transition
     IF v_clean_status = 'answered' THEN
-        IF length(v_target_answer_text) < 10 THEN
+        IF v_target_answer_text IS NULL OR length(v_target_answer_text) < 10 THEN
             RAISE EXCEPTION 'A verified answer text of at least 10 characters is required to mark an inquiry as answered.';
         END IF;
-        IF length(v_target_scholar_name) < 2 THEN
+        IF v_target_scholar_name IS NULL OR length(v_target_scholar_name) < 2 THEN
             RAISE EXCEPTION 'Scholar name of at least 2 characters is required to mark an inquiry as answered.';
         END IF;
     ELSIF v_clean_status = 'rejected' THEN
-        IF length(v_target_rejection_reason) < 3 THEN
+        IF v_target_rejection_reason IS NULL OR length(v_target_rejection_reason) < 3 THEN
             RAISE EXCEPTION 'A rejection reason of at least 3 characters is required to reject or close an inquiry.';
         END IF;
     END IF;
@@ -620,23 +639,38 @@ BEGIN
         v_sent_at := pg_catalog.now();
     END IF;
 
-    v_answered_at := v_row.answered_at;
     IF v_clean_status = 'answered' THEN
-        v_answered_at := COALESCE(v_answered_at, pg_catalog.now());
-    ELSIF v_clean_status IN ('pending_review', 'sent_to_scholar', 'rejected') THEN
+        v_answered_at := COALESCE(v_row.answered_at, pg_catalog.now());
+    ELSE
         v_answered_at := NULL;
     END IF;
 
-    -- 8. Perform validated update (preserves existing field values if NULL passed)
+    -- 8. Perform validated update (preserves existing field values if NULL passed, clears optional fields if '' passed)
     UPDATE public.scholar_inquiries
     SET status = v_clean_status,
-        scholar_name = COALESCE(p_scholar_name, v_row.scholar_name),
-        scholar_qualification = COALESCE(p_scholar_qualification, v_row.scholar_qualification),
-        answer_text = COALESCE(p_answer_text, v_row.answer_text),
-        answer_arabic = COALESCE(p_answer_arabic, v_row.answer_arabic),
-        reference = COALESCE(p_reference, v_row.reference),
-        admin_notes = COALESCE(p_admin_notes, v_row.admin_notes),
-        rejection_reason = COALESCE(p_rejection_reason, v_row.rejection_reason),
+        scholar_name = v_target_scholar_name,
+        scholar_qualification = CASE
+            WHEN p_scholar_qualification IS NULL THEN v_row.scholar_qualification
+            WHEN btrim(p_scholar_qualification) = '' THEN NULL
+            ELSE btrim(p_scholar_qualification)
+        END,
+        answer_text = v_target_answer_text,
+        answer_arabic = CASE
+            WHEN p_answer_arabic IS NULL THEN v_row.answer_arabic
+            WHEN btrim(p_answer_arabic) = '' THEN NULL
+            ELSE btrim(p_answer_arabic)
+        END,
+        reference = CASE
+            WHEN p_reference IS NULL THEN v_row.reference
+            WHEN btrim(p_reference) = '' THEN NULL
+            ELSE btrim(p_reference)
+        END,
+        admin_notes = CASE
+            WHEN p_admin_notes IS NULL THEN v_row.admin_notes
+            WHEN btrim(p_admin_notes) = '' THEN NULL
+            ELSE btrim(p_admin_notes)
+        END,
+        rejection_reason = v_target_rejection_reason,
         sent_to_scholar_at = v_sent_at,
         answered_at = v_answered_at,
         updated_at = pg_catalog.now()
