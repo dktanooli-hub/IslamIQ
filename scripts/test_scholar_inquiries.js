@@ -48,6 +48,9 @@ test('[STATIC] Migration and Schema Master File Consistency', () => {
   // Verify both files define chk_rejected_integrity
   assert.match(migrationSql, /chk_rejected_integrity/i, 'Migration must define chk_rejected_integrity');
   assert.match(schemaSql, /chk_rejected_integrity/i, 'Schema must define chk_rejected_integrity');
+
+  // Verify rate limits audit table definition
+  assert.match(migrationSql, /CREATE TABLE IF NOT EXISTS public\.scholar_inquiry_rate_limits/i, 'Migration must define rate limits table');
 });
 
 // -----------------------------------------------------------------------------
@@ -83,25 +86,47 @@ test('[STATIC] Zero-Trust DCL Grants & RLS Policies', () => {
   assert.match(migrationSql, /REVOKE ALL ON public\.scholar_inquiries FROM PUBLIC, anon;/i);
   assert.match(schemaSql, /REVOKE ALL ON public\.scholar_inquiries FROM PUBLIC, anon;/i);
 
-  // 2. Direct INSERT and UPDATE are blocked from all client roles (must use RPC functions)
-  assert.match(migrationSql, /REVOKE INSERT, UPDATE ON public\.scholar_inquiries FROM authenticated;/i);
-  assert.match(schemaSql, /REVOKE INSERT, UPDATE ON public\.scholar_inquiries FROM authenticated;/i);
+  // 2. Direct INSERT, UPDATE, and DELETE are strictly blocked from all client roles
+  assert.match(migrationSql, /REVOKE INSERT, UPDATE, DELETE ON public\.scholar_inquiries FROM authenticated;/i);
+  assert.match(schemaSql, /REVOKE INSERT, UPDATE, DELETE ON public\.scholar_inquiries FROM authenticated;/i);
 
-  // 3. Direct SELECT and DELETE granted only to authenticated role (evaluated by RLS)
-  assert.match(migrationSql, /GRANT SELECT, DELETE ON public\.scholar_inquiries TO authenticated;/i);
-  assert.match(schemaSql, /GRANT SELECT, DELETE ON public\.scholar_inquiries TO authenticated;/i);
+  // 3. Direct SELECT ONLY is granted to authenticated role (evaluated by RLS)
+  assert.match(migrationSql, /GRANT SELECT ON public\.scholar_inquiries TO authenticated;/i);
+  assert.match(schemaSql, /GRANT SELECT ON public\.scholar_inquiries TO authenticated;/i);
 
-  // 4. RLS is explicitly enabled
+  // 4. Must NOT grant DELETE privileges on scholar_inquiries to any client role
+  assert.doesNotMatch(
+    migrationSql,
+    /GRANT[^\n;]*DELETE[^\n;]*ON public\.scholar_inquiries/i,
+    'Migration must NOT grant direct DELETE on scholar_inquiries'
+  );
+  assert.doesNotMatch(
+    schemaSql,
+    /GRANT[^\n;]*DELETE[^\n;]*ON public\.scholar_inquiries/i,
+    'Schema must NOT grant direct DELETE on scholar_inquiries'
+  );
+
+  // 5. Must NOT define a DELETE policy on scholar_inquiries
+  assert.doesNotMatch(
+    migrationSql,
+    /CREATE POLICY "Admin can delete scholar inquiries"/i,
+    'Migration must NOT define a DELETE policy on scholar_inquiries'
+  );
+  assert.doesNotMatch(
+    schemaSql,
+    /CREATE POLICY "Admin can delete scholar inquiries"/i,
+    'Schema must NOT define a DELETE policy on scholar_inquiries'
+  );
+
+  // 6. RLS is explicitly enabled
   assert.match(migrationSql, /ALTER TABLE public\.scholar_inquiries ENABLE ROW LEVEL SECURITY;/i);
   assert.match(schemaSql, /ALTER TABLE public\.scholar_inquiries ENABLE ROW LEVEL SECURITY;/i);
 
-  // 5. Admin policies strictly require public.is_admin()
+  // 7. Admin view policy strictly requires public.is_admin()
   assert.match(migrationSql, /CREATE POLICY "Admin can view scholar inquiries"[\s\S]*USING \(public\.is_admin\(\)\)/);
-  assert.match(migrationSql, /CREATE POLICY "Admin can delete scholar inquiries"[\s\S]*USING \(public\.is_admin\(\)\)/);
   assert.match(schemaSql, /CREATE POLICY "Admin can view scholar inquiries"[\s\S]*USING \(public\.is_admin\(\)\)/);
-  assert.match(schemaSql, /CREATE POLICY "Admin can delete scholar inquiries"[\s\S]*USING \(public\.is_admin\(\)\)/);
 
-  // 6. RPC execute permissions: submit and get granted to anon/auth; admin update ONLY to auth
+  // 8. RPC execute permissions: submit and get granted to anon/auth; admin update ONLY to auth
   assert.match(migrationSql, /GRANT EXECUTE ON FUNCTION public\.submit_scholar_inquiry\(.*?\) TO anon, authenticated;/);
   assert.match(migrationSql, /GRANT EXECUTE ON FUNCTION public\.get_scholar_inquiry\(.*?\) TO anon, authenticated;/);
   assert.match(migrationSql, /REVOKE ALL ON FUNCTION public\.admin_update_scholar_inquiry\(.*?\) FROM PUBLIC, anon;/);

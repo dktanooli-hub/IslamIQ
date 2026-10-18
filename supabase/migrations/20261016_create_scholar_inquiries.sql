@@ -1,20 +1,23 @@
 -- =============================================================================
 -- Migration: 20261016_create_scholar_inquiries.sql
--- Description: Create public.scholar_inquiries table & zero-trust RPC functions
---              for IslamIQ Ask a Scholar feature (Offline Scholar Liaison Architecture)
+-- Description: Create public.scholar_inquiries, public.scholar_inquiry_rate_limits,
+--              and zero-trust RPC functions for IslamIQ Ask a Scholar feature
+--              (Offline Scholar Liaison Architecture)
 -- Compatibility: Supabase PostgreSQL (Postgres 15+)
 -- Security Controls:
---   1. Zero-trust direct table access: Direct public and anon SELECT/INSERT is blocked.
---   2. Direct client UPDATE is blocked. All workflow transitions and answer entry
+--   1. Zero-trust direct table access: Direct public and anon SELECT/INSERT/UPDATE/DELETE is blocked.
+--   2. Direct client UPDATE and DELETE are blocked. All workflow transitions and answer entry
 --      MUST pass through public.admin_update_scholar_inquiry() RPC.
---   3. Submissions strictly funneled through public.submit_scholar_inquiry() RPC.
---   4. High-entropy access tokens stored only as SHA-256 cryptographic hashes.
---   5. Anonymous seeker lookup strictly filtered through public.get_scholar_inquiry() RPC.
---   6. Administrative access (review, edit, dispatch, publish) strictly gated via public.is_admin().
---   7. Answers hidden from seekers until marked as 'answered'.
---   8. Internal admin notes NEVER exposed to public or seekers under any condition.
---   9. Concurrency-safe server-enforced rate limiting using PostgreSQL transaction advisory locks.
---  10. Database-level CHECK constraints prevent publishing empty answers or reasons.
+--   3. Direct client DELETE is completely revoked to maintain audit trails and status tracking.
+--   4. Submissions strictly funneled through public.submit_scholar_inquiry() RPC.
+--   5. High-entropy access tokens stored only as SHA-256 cryptographic hashes.
+--   6. Anonymous seeker lookup strictly filtered through public.get_scholar_inquiry() RPC.
+--   7. Administrative access (review, edit, dispatch, publish) strictly gated via public.is_admin().
+--   8. Answers hidden from seekers until explicitly marked as 'answered'.
+--   9. Internal admin notes NEVER exposed to public or seekers under any condition.
+--  10. Concurrency-safe server-enforced rate limiting using PostgreSQL transaction advisory locks.
+--  11. Database-level CHECK constraints prevent publishing empty answers or reasons.
+--  12. Explicit state transition matrix prevents invalid lifecycle jumps.
 -- =============================================================================
 
 -- Ensure cryptographic extensions are enabled
@@ -120,7 +123,17 @@ CREATE TABLE IF NOT EXISTS public.scholar_inquiries (
 );
 
 -- =============================================================================
--- 2. INDEXES
+-- 2. SCHOLAR INQUIRY RATE LIMITS AUDIT TABLE
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS public.scholar_inquiry_rate_limits (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ip_or_fingerprint TEXT NOT NULL,
+    action TEXT NOT NULL DEFAULT 'submit_inquiry',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT pg_catalog.now()
+);
+
+-- =============================================================================
+-- 3. INDEXES
 -- =============================================================================
 CREATE INDEX IF NOT EXISTS idx_scholar_inquiries_inquiry_num ON public.scholar_inquiries(inquiry_number);
 CREATE INDEX IF NOT EXISTS idx_scholar_inquiries_token_hash ON public.scholar_inquiries(access_token_hash);
@@ -128,37 +141,48 @@ CREATE INDEX IF NOT EXISTS idx_scholar_inquiries_status ON public.scholar_inquir
 CREATE INDEX IF NOT EXISTS idx_scholar_inquiries_created_at ON public.scholar_inquiries(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_scholar_inquiries_user_id ON public.scholar_inquiries(user_id);
 
+CREATE INDEX IF NOT EXISTS idx_scholar_rate_limits_lookup 
+    ON public.scholar_inquiry_rate_limits(ip_or_fingerprint, action, created_at DESC);
+
 -- =============================================================================
--- 3. PERMISSIONS & ROW LEVEL SECURITY (RLS)
+-- 4. PERMISSIONS & ROW LEVEL SECURITY (RLS)
 -- =============================================================================
 ALTER TABLE public.scholar_inquiries ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.scholar_inquiry_rate_limits ENABLE ROW LEVEL SECURITY;
 
 -- Deny all direct table operations to PUBLIC and anon
 REVOKE ALL ON public.scholar_inquiries FROM PUBLIC, anon;
+REVOKE ALL ON public.scholar_inquiry_rate_limits FROM PUBLIC, anon;
 
--- Direct INSERT and UPDATE are completely blocked for all client roles
+-- Direct INSERT, UPDATE, and DELETE are completely blocked for all client roles
 -- Submissions MUST pass through the validated submit_scholar_inquiry() RPC
 -- Admin status transitions and edits MUST pass through admin_update_scholar_inquiry() RPC
-REVOKE INSERT, UPDATE ON public.scholar_inquiries FROM authenticated;
+-- Direct client-side DELETE is strictly revoked to preserve audit trails and status tracking
+REVOKE INSERT, UPDATE, DELETE ON public.scholar_inquiries FROM authenticated;
+REVOKE INSERT, UPDATE, DELETE ON public.scholar_inquiry_rate_limits FROM authenticated;
 
--- Direct SELECT and DELETE permissions granted only to authenticated users (evaluated by RLS below)
-GRANT SELECT, DELETE ON public.scholar_inquiries TO authenticated;
+-- Direct SELECT permission granted only to authenticated users (evaluated by RLS below)
+GRANT SELECT ON public.scholar_inquiries TO authenticated;
+GRANT SELECT ON public.scholar_inquiry_rate_limits TO authenticated;
 
--- Policies: Gated exclusively by public.is_admin()
+-- Drop legacy/unwanted delete policy if it exists
+DROP POLICY IF EXISTS "Admin can delete scholar inquiries" ON public.scholar_inquiries;
 DROP POLICY IF EXISTS "Admin can view scholar inquiries" ON public.scholar_inquiries;
+
+-- Single Admin SELECT policy: Gated exclusively by public.is_admin()
 CREATE POLICY "Admin can view scholar inquiries"
     ON public.scholar_inquiries FOR SELECT
     TO authenticated
     USING (public.is_admin());
 
-DROP POLICY IF EXISTS "Admin can delete scholar inquiries" ON public.scholar_inquiries;
-CREATE POLICY "Admin can delete scholar inquiries"
-    ON public.scholar_inquiries FOR DELETE
+DROP POLICY IF EXISTS "Admin view rate limits" ON public.scholar_inquiry_rate_limits;
+CREATE POLICY "Admin view rate limits"
+    ON public.scholar_inquiry_rate_limits FOR SELECT
     TO authenticated
     USING (public.is_admin());
 
 -- =============================================================================
--- 4. SECURE SUBMISSION RPC: public.submit_scholar_inquiry(...)
+-- 5. SECURE SUBMISSION RPC: public.submit_scholar_inquiry(...)
 -- =============================================================================
 CREATE OR REPLACE FUNCTION public.submit_scholar_inquiry(
     p_subject TEXT,
@@ -273,6 +297,7 @@ BEGIN
     END IF;
 
     -- 3. Concurrency-Safe Server-Side Rate Limiting & Anti-Flood Controls
+    -- Primary enforcement: in-engine advisory locks & indexed window queries on public.scholar_inquiries.
     v_user_id := auth.uid();
     IF v_user_id IS NOT NULL THEN
         -- Concurrency-Safe Per-User Lock: Serialize submissions per authenticated user ID
@@ -371,7 +396,18 @@ BEGIN
         v_created_at
     );
 
-    -- 7. Return safe credentials (raw token is displayed ONLY once here)
+    -- 7. Audit log in rate limits table
+    INSERT INTO public.scholar_inquiry_rate_limits (
+        ip_or_fingerprint,
+        action,
+        created_at
+    ) VALUES (
+        COALESCE(v_user_id::TEXT, 'anonymous_guest'),
+        'submit_inquiry',
+        v_created_at
+    );
+
+    -- 8. Return safe credentials (raw token is displayed ONLY once here)
     inquiry_number := v_inquiry_number;
     access_token := v_raw_token;
     status := 'pending_review'::TEXT;
@@ -384,7 +420,7 @@ REVOKE ALL ON FUNCTION public.submit_scholar_inquiry(TEXT, TEXT, TEXT, TEXT, TEX
 GRANT EXECUTE ON FUNCTION public.submit_scholar_inquiry(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO anon, authenticated;
 
 -- =============================================================================
--- 5. SECURE LOOKUP RPC: public.get_scholar_inquiry(...)
+-- 6. SECURE LOOKUP RPC: public.get_scholar_inquiry(...)
 -- =============================================================================
 CREATE OR REPLACE FUNCTION public.get_scholar_inquiry(
     p_inquiry_number TEXT,
@@ -486,7 +522,7 @@ REVOKE ALL ON FUNCTION public.get_scholar_inquiry(TEXT, TEXT) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.get_scholar_inquiry(TEXT, TEXT) TO anon, authenticated;
 
 -- =============================================================================
--- 6. SECURE ADMIN TRANSITION RPC: public.admin_update_scholar_inquiry(...)
+-- 7. SECURE ADMIN TRANSITION RPC: public.admin_update_scholar_inquiry(...)
 -- =============================================================================
 CREATE OR REPLACE FUNCTION public.admin_update_scholar_inquiry(
     p_id UUID,
@@ -507,12 +543,15 @@ AS $$
 DECLARE
     v_row public.scholar_inquiries%ROWTYPE;
     v_clean_status TEXT;
+    v_target_answer_text TEXT;
+    v_target_scholar_name TEXT;
+    v_target_rejection_reason TEXT;
     v_sent_at TIMESTAMPTZ;
     v_answered_at TIMESTAMPTZ;
 BEGIN
     -- 1. Strict admin authorization check
     IF NOT public.is_admin() THEN
-        RAISE EXCEPTION 'Access denied: Administrator privileges required.';
+        RAISE EXCEPTION 'Access denied: Administrator privileges required.' USING ERRCODE = '42501';
     END IF;
 
     -- 2. Fetch existing inquiry
@@ -530,7 +569,52 @@ BEGIN
         RAISE EXCEPTION 'Invalid inquiry status: %', v_clean_status;
     END IF;
 
-    -- 4. Automatically handle workflow timestamps
+    -- 4. Enforce explicit status transition matrix
+    -- Prevents invalid jumps while preserving valid offline liaison workflow steps.
+    IF v_clean_status != v_row.status THEN
+        IF v_row.status = 'pending_review' THEN
+            IF v_clean_status NOT IN ('sent_to_scholar', 'rejected') THEN
+                RAISE EXCEPTION 'Invalid status transition: Inquiry in pending_review can only transition to sent_to_scholar or rejected (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'sent_to_scholar' THEN
+            IF v_clean_status NOT IN ('answer_received', 'pending_review', 'rejected') THEN
+                RAISE EXCEPTION 'Invalid status transition: Inquiry sent_to_scholar can only transition to answer_received, pending_review, or rejected (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'answer_received' THEN
+            IF v_clean_status NOT IN ('answered', 'sent_to_scholar', 'rejected') THEN
+                RAISE EXCEPTION 'Invalid status transition: Inquiry in answer_received can only transition to answered, sent_to_scholar, or rejected (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'answered' THEN
+            IF v_clean_status NOT IN ('answer_received') THEN
+                RAISE EXCEPTION 'Invalid status transition: Published inquiry can only be unpublished to answer_received for revisions (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'rejected' THEN
+            IF v_clean_status NOT IN ('pending_review') THEN
+                RAISE EXCEPTION 'Invalid status transition: Rejected inquiry can only be reopened to pending_review (attempted: %)', v_clean_status;
+            END IF;
+        END IF;
+    END IF;
+
+    -- 5. Compute target fields for validation
+    v_target_answer_text := btrim(COALESCE(p_answer_text, v_row.answer_text, ''));
+    v_target_scholar_name := btrim(COALESCE(p_scholar_name, v_row.scholar_name, ''));
+    v_target_rejection_reason := btrim(COALESCE(p_rejection_reason, v_row.rejection_reason, ''));
+
+    -- 6. Strict validation of required fields on transition
+    IF v_clean_status = 'answered' THEN
+        IF length(v_target_answer_text) < 10 THEN
+            RAISE EXCEPTION 'A verified answer text of at least 10 characters is required to mark an inquiry as answered.';
+        END IF;
+        IF length(v_target_scholar_name) < 2 THEN
+            RAISE EXCEPTION 'Scholar name of at least 2 characters is required to mark an inquiry as answered.';
+        END IF;
+    ELSIF v_clean_status = 'rejected' THEN
+        IF length(v_target_rejection_reason) < 3 THEN
+            RAISE EXCEPTION 'A rejection reason of at least 3 characters is required to reject or close an inquiry.';
+        END IF;
+    END IF;
+
+    -- 7. Automatically handle workflow timestamps
     v_sent_at := v_row.sent_to_scholar_at;
     IF v_clean_status = 'sent_to_scholar' AND v_sent_at IS NULL THEN
         v_sent_at := pg_catalog.now();
@@ -543,7 +627,7 @@ BEGIN
         v_answered_at := NULL;
     END IF;
 
-    -- 5. Perform validated update (preserves existing field values if NULL passed)
+    -- 8. Perform validated update (preserves existing field values if NULL passed)
     UPDATE public.scholar_inquiries
     SET status = v_clean_status,
         scholar_name = COALESCE(p_scholar_name, v_row.scholar_name),

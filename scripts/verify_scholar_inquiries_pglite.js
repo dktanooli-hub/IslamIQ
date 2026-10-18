@@ -192,6 +192,47 @@ test('3. [RUNTIME PG] Anonymous Submission with Urdu Nastaliq & Arabic Character
   assert.strictEqual(dbRow.access_token_hash.length, 64, 'Stored token hash must be 64-char SHA-256 hex digest');
 });
 
+test('3b. [RUNTIME PG] Authenticated User Submission & Per-User Isolation', async () => {
+  await setRegularUserContext();
+
+  const authSubject = 'روزے کی حالت میں انہیلر کا استعمال';
+  const authQuestion = 'کیا دمہ کے مریض کے لیے روزے کی حالت میں انہیلر کا استعمال جائز ہے؟ برائے کرم شرعی حکم بیان فرمائیں۔';
+
+  const res = await db.query(`
+    SELECT * FROM public.submit_scholar_inquiry(
+      $1, $2, $3, $4, $5, $6
+    );
+  `, [
+    authSubject,
+    authQuestion,
+    'Sawm',
+    'Hanafi',
+    'زید احمد',
+    'zaid.auth@example.com'
+  ]);
+
+  assert.strictEqual(res.rows.length, 1, 'Authenticated submission must return 1 row');
+  const row = res.rows[0];
+  assert.match(row.inquiry_number, /^IQ-\d{4}-[A-Z0-9]{6}$/);
+  assert.match(row.access_token, /^iq_sec_[0-9a-f]{48}$/);
+
+  // Check that user_id was stored properly as regularUserId
+  const recordRes = await db.query(`
+    SELECT user_id, seeker_name, seeker_email FROM public.scholar_inquiries WHERE inquiry_number = $1;
+  `, [row.inquiry_number]);
+  assert.strictEqual(recordRes.rows[0].user_id, regularUserId, 'user_id must match authenticated user UID');
+  assert.strictEqual(recordRes.rows[0].seeker_email, 'zaid.auth@example.com');
+
+  // Verify that seeker can lookup the inquiry using token
+  await setAnonymousContext();
+  const lookupRes = await db.query(`
+    SELECT * FROM public.get_scholar_inquiry($1, $2);
+  `, [row.inquiry_number, row.access_token]);
+  assert.strictEqual(lookupRes.rows.length, 1);
+  assert.strictEqual(lookupRes.rows[0].subject, authSubject);
+  assert.strictEqual(lookupRes.rows[0].status, 'pending_review');
+});
+
 test('4. [RUNTIME PG] Seeker Lookup Masking on Pending Inquiry (Draft/Answer Secrecy)', async () => {
   await setAnonymousContext();
 
@@ -305,7 +346,7 @@ test('7. [RUNTIME PG] Database CHECK Constraint Validation (chk_answered_integri
   }
 
   assert.strictEqual(threwError, true, 'Marking answered without answer text must be blocked');
-  assert.match(errorMsg, /chk_answered_integrity|violates check constraint/i, 'Must trigger chk_answered_integrity constraint violation');
+  assert.match(errorMsg, /chk_answered_integrity|violates check constraint|at least 10 characters|Invalid status transition/i, 'Must block invalid transition or missing answer text');
 });
 
 test('8. [RUNTIME PG] Admin Transition Workflow (sent_to_scholar -> answer_received -> answered)', async () => {
@@ -488,25 +529,168 @@ test('10. [RUNTIME PG] Rejection Integrity & Seeker Rejection Reason', async () 
   assert.strictEqual(seekerRow.scholar_name, null);
 });
 
+test('10b. [RUNTIME PG] Status Transition Matrix Enforcement', async () => {
+  await setAdminContext();
+
+  // Create fresh inquiry in 'pending_review'
+  const sub = await db.query(`
+    SELECT * FROM public.submit_scholar_inquiry(
+      'ٹرانزیشن جانچ',
+      'یہ ٹرانزیشن میٹرکس کی تفصیلی جانچ کے لیے نیا سوال ہے۔',
+      'General',
+      'General'
+    );
+  `);
+  const inqNum = sub.rows[0].inquiry_number;
+  const inqIdRes = await db.query('SELECT id FROM public.scholar_inquiries WHERE inquiry_number = $1;', [inqNum]);
+  const inqId = inqIdRes.rows[0].id;
+
+  // 1. Invalid jump: pending_review -> answered must be rejected
+  let threwInvalid1 = false;
+  let err1 = '';
+  try {
+    await db.query(`
+      SELECT * FROM public.admin_update_scholar_inquiry(
+        $1::uuid, 'answered'::text, 'Mufti'::text, null, 'Answer text with at least 10 chars'::text, null, null, null, null
+      );
+    `, [inqId]);
+  } catch (e) {
+    threwInvalid1 = true;
+    err1 = e.message;
+  }
+  assert.strictEqual(threwInvalid1, true, 'Direct jump from pending_review to answered must be rejected');
+  assert.match(err1, /Invalid status transition/i);
+
+  // 2. Valid transition: pending_review -> sent_to_scholar
+  const stepA = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'sent_to_scholar'::text, null, null, null, null, null, null, null
+    );
+  `, [inqId]);
+  assert.strictEqual(stepA.rows[0].status, 'sent_to_scholar');
+
+  // 3. Invalid jump: sent_to_scholar -> answered must be rejected
+  let threwInvalid2 = false;
+  let err2 = '';
+  try {
+    await db.query(`
+      SELECT * FROM public.admin_update_scholar_inquiry(
+        $1::uuid, 'answered'::text, 'Mufti'::text, null, 'Answer text with at least 10 chars'::text, null, null, null, null
+      );
+    `, [inqId]);
+  } catch (e) {
+    threwInvalid2 = true;
+    err2 = e.message;
+  }
+  assert.strictEqual(threwInvalid2, true, 'Direct jump from sent_to_scholar to answered must be rejected');
+  assert.match(err2, /Invalid status transition/i);
+
+  // 4. Valid transition: sent_to_scholar -> answer_received
+  const stepB = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'answer_received'::text, 'Mufti Tariq'::text, null, 'Preliminary draft of answer text'::text, null, null, null, null
+    );
+  `, [inqId]);
+  assert.strictEqual(stepB.rows[0].status, 'answer_received');
+
+  // 5. Valid transition: answer_received -> answered
+  const stepC = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'answered'::text, null, null, null, null, null, null, null
+    );
+  `, [inqId]);
+  assert.strictEqual(stepC.rows[0].status, 'answered');
+
+  // 6. Valid transition: answered -> answer_received (unpublishing for revisions)
+  const stepD = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'answer_received'::text, null, null, 'Revised answer text with additional details'::text, null, null, 'Unpublished for corrections'::text, null
+    );
+  `, [inqId]);
+  assert.strictEqual(stepD.rows[0].status, 'answer_received');
+  assert.match(stepD.rows[0].answer_text, /Revised answer text/);
+
+  // 7. Valid transition: re-publishing revised answer (answer_received -> answered)
+  const stepE = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'answered'::text, null, null, null, null, null, 'Re-published'::text, null
+    );
+  `, [inqId]);
+  assert.strictEqual(stepE.rows[0].status, 'answered');
+
+  // 8. Test rejection transition & invalid jump from rejected to answered
+  // Create another inquiry to test rejected -> reopen
+  const rejSub = await db.query(`
+    SELECT * FROM public.submit_scholar_inquiry('سوال برائے مسترد', 'یہ سوال بعد میں مسترد کیا جائے گا برائے جانچ۔', 'General', 'General');
+  `);
+  const rejNum = rejSub.rows[0].inquiry_number;
+  const rejRow = (await db.query('SELECT id FROM public.scholar_inquiries WHERE inquiry_number = $1;', [rejNum])).rows[0];
+
+  // Transition pending_review -> rejected
+  const rejStep = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'rejected'::text, null, null, null, null, null, null, 'Out of scope reason here'::text
+    );
+  `, [rejRow.id]);
+  assert.strictEqual(rejStep.rows[0].status, 'rejected');
+
+  // Invalid jump: rejected -> answered must fail
+  let rejToAnsweredThrew = false;
+  try {
+    await db.query(`
+      SELECT * FROM public.admin_update_scholar_inquiry(
+        $1::uuid, 'answered'::text, 'Mufti'::text, null, 'Valid answer text with 10 chars'::text, null, null, null, null
+      );
+    `, [rejRow.id]);
+  } catch (e) {
+    rejToAnsweredThrew = true;
+    assert.match(e.message, /Invalid status transition/i);
+  }
+  assert.strictEqual(rejToAnsweredThrew, true, 'Direct jump from rejected to answered must fail');
+
+  // 9. Valid transition: rejected -> pending_review (reopen inquiry)
+  const reopenStep = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'pending_review'::text, null, null, null, null, null, 'Reopened upon reconsideration'::text, null
+    );
+  `, [rejRow.id]);
+  assert.strictEqual(reopenStep.rows[0].status, 'pending_review');
+
+  // 10. Progress reopened inquiry: pending_review -> sent_to_scholar
+  const reopenProg = await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      $1::uuid, 'sent_to_scholar'::text, null, null, null, null, null, null, null
+    );
+  `, [rejRow.id]);
+  assert.strictEqual(reopenProg.rows[0].status, 'sent_to_scholar');
+});
+
 test('11. [RUNTIME PG] Rate Limiting — Anonymous Burst Threshold Enforcement', async () => {
   await setAnonymousContext();
 
-  // We already submitted 2 anonymous inquiries in previous tests.
-  // Submit 3 more to reach the burst limit of 5 within 1 minute.
-  for (let i = 1; i <= 3; i++) {
+  // Check how many anonymous inquiries have been submitted in the last minute
+  const curCountRes = await db.query(`
+    SELECT count(*) FROM public.scholar_inquiries
+    WHERE user_id IS NULL AND created_at > (pg_catalog.now() - INTERVAL '1 minute');
+  `);
+  let currentCount = parseInt(curCountRes.rows[0].count, 10);
+
+  // Submit until we have exactly 5 in the 1-minute window
+  while (currentCount < 5) {
+    currentCount++;
     await db.query(`
       SELECT * FROM public.submit_scholar_inquiry(
         $1, $2, $3, $4
       );
     `, [
-      `مسئلہ نمبر ${i} برائے جانچ`,
-      `یہ ایک آزمائشی سوال ہے تاکہ ریٹ لمٹ کی جانچ کی جا سکے۔ سوال کی تفصیل کم از کم دس حروف پر مشتمل ہونی چاہیے۔ نمبر ${i}`,
+      `مسئلہ نمبر برائے جانچ ${currentCount}`,
+      `یہ ایک آزمائشی سوال ہے تاکہ ریٹ لمٹ کی جانچ کی جا سکے۔ سوال کی تفصیل کم از کم دس حروف پر مشتمل ہونی چاہیے۔ نمبر ${currentCount}`,
       'General',
       'General'
     ]);
   }
 
-  // The 6th submission within the 1-minute window must be blocked by rate limit
+  // The next submission within the 1-minute window must be blocked by burst rate limit
   let threwBurstError = false;
   let burstErrorMsg = '';
   try {
@@ -515,8 +699,8 @@ test('11. [RUNTIME PG] Rate Limiting — Anonymous Burst Threshold Enforcement',
         $1, $2, $3, $4
       );
     `, [
-      'مسئلہ نمبر 6 برائے حد سے تجاوز',
-      'یہ چھٹا سوال ہے جو فی منٹ کی حد سے تجاوز کرے گا اور اسے سرور کی طرف سے مسترد ہونا چاہیے۔',
+      'مسئلہ برائے حد سے تجاوز',
+      'یہ سوال فی منٹ کی حد سے تجاوز کرے گا اور اسے سرور کی طرف سے مسترد ہونا چاہیے۔',
       'General',
       'General'
     ]);
@@ -525,7 +709,7 @@ test('11. [RUNTIME PG] Rate Limiting — Anonymous Burst Threshold Enforcement',
     burstErrorMsg = err.message;
   }
 
-  assert.strictEqual(threwBurstError, true, '6th anonymous submission in 1 minute must trigger burst rate limit');
+  assert.strictEqual(threwBurstError, true, 'Submission exceeding anonymous 5/min burst threshold must trigger rate limit');
   assert.match(burstErrorMsg, /Anonymous inquiry burst limit reached|System busy/i, 'Error message must reflect burst rate limit');
 });
 
@@ -564,4 +748,21 @@ test('13. [RUNTIME PG] Direct DCL Table Privilege Enforcement', async () => {
   assert.ok(constraintNames.includes('chk_scholar_inquiry_status'), 'chk_scholar_inquiry_status constraint must exist');
   assert.ok(constraintNames.includes('chk_answered_integrity'), 'chk_answered_integrity constraint must exist');
   assert.ok(constraintNames.includes('chk_rejected_integrity'), 'chk_rejected_integrity constraint must exist');
+
+  // Verify scholar_inquiry_rate_limits table exists and has RLS enabled
+  const rateLimitClass = await db.query(`
+    SELECT relrowsecurity 
+    FROM pg_class 
+    WHERE relname = 'scholar_inquiry_rate_limits';
+  `);
+  assert.strictEqual(rateLimitClass.rows.length, 1, 'scholar_inquiry_rate_limits table must exist');
+  assert.strictEqual(rateLimitClass.rows[0].relrowsecurity, true, 'RLS must be enabled on scholar_inquiry_rate_limits');
+
+  // Verify that NO DELETE policy exists on scholar_inquiries
+  const delPolicyRes = await db.query(`
+    SELECT polname FROM pg_policy 
+    WHERE polrelid = 'public.scholar_inquiries'::regclass
+      AND polcmd = 'd';
+  `);
+  assert.strictEqual(delPolicyRes.rows.length, 0, 'No DELETE policy must exist on scholar_inquiries table');
 });

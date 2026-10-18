@@ -990,11 +990,14 @@ AS $$
 DECLARE
     v_row public.scholar_inquiries%ROWTYPE;
     v_clean_status TEXT;
+    v_target_answer_text TEXT;
+    v_target_scholar_name TEXT;
+    v_target_rejection_reason TEXT;
     v_sent_at TIMESTAMPTZ;
     v_answered_at TIMESTAMPTZ;
 BEGIN
     IF NOT public.is_admin() THEN
-        RAISE EXCEPTION 'Access denied: Administrator privileges required.';
+        RAISE EXCEPTION 'Access denied: Administrator privileges required.' USING ERRCODE = '42501';
     END IF;
 
     SELECT * INTO v_row
@@ -1008,6 +1011,50 @@ BEGIN
     v_clean_status := btrim(COALESCE(p_status, v_row.status));
     IF v_clean_status NOT IN ('pending_review', 'sent_to_scholar', 'answer_received', 'answered', 'rejected') THEN
         RAISE EXCEPTION 'Invalid inquiry status: %', v_clean_status;
+    END IF;
+
+    -- Enforce explicit status transition matrix
+    IF v_clean_status != v_row.status THEN
+        IF v_row.status = 'pending_review' THEN
+            IF v_clean_status NOT IN ('sent_to_scholar', 'rejected') THEN
+                RAISE EXCEPTION 'Invalid status transition: Inquiry in pending_review can only transition to sent_to_scholar or rejected (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'sent_to_scholar' THEN
+            IF v_clean_status NOT IN ('answer_received', 'pending_review', 'rejected') THEN
+                RAISE EXCEPTION 'Invalid status transition: Inquiry sent_to_scholar can only transition to answer_received, pending_review, or rejected (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'answer_received' THEN
+            IF v_clean_status NOT IN ('answered', 'sent_to_scholar', 'rejected') THEN
+                RAISE EXCEPTION 'Invalid status transition: Inquiry in answer_received can only transition to answered, sent_to_scholar, or rejected (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'answered' THEN
+            IF v_clean_status NOT IN ('answer_received') THEN
+                RAISE EXCEPTION 'Invalid status transition: Published inquiry can only be unpublished to answer_received for revisions (attempted: %)', v_clean_status;
+            END IF;
+        ELSIF v_row.status = 'rejected' THEN
+            IF v_clean_status NOT IN ('pending_review') THEN
+                RAISE EXCEPTION 'Invalid status transition: Rejected inquiry can only be reopened to pending_review (attempted: %)', v_clean_status;
+            END IF;
+        END IF;
+    END IF;
+
+    -- Compute target fields for validation
+    v_target_answer_text := btrim(COALESCE(p_answer_text, v_row.answer_text, ''));
+    v_target_scholar_name := btrim(COALESCE(p_scholar_name, v_row.scholar_name, ''));
+    v_target_rejection_reason := btrim(COALESCE(p_rejection_reason, v_row.rejection_reason, ''));
+
+    -- Strict validation on transition
+    IF v_clean_status = 'answered' THEN
+        IF length(v_target_answer_text) < 10 THEN
+            RAISE EXCEPTION 'A verified answer text of at least 10 characters is required to mark an inquiry as answered.';
+        END IF;
+        IF length(v_target_scholar_name) < 2 THEN
+            RAISE EXCEPTION 'Scholar name of at least 2 characters is required to mark an inquiry as answered.';
+        END IF;
+    ELSIF v_clean_status = 'rejected' THEN
+        IF length(v_target_rejection_reason) < 3 THEN
+            RAISE EXCEPTION 'A rejection reason of at least 3 characters is required to reject or close an inquiry.';
+        END IF;
     END IF;
 
     v_sent_at := v_row.sent_to_scholar_at;
@@ -1024,13 +1071,13 @@ BEGIN
 
     UPDATE public.scholar_inquiries
     SET status = v_clean_status,
-        scholar_name = p_scholar_name,
-        scholar_qualification = p_scholar_qualification,
-        answer_text = p_answer_text,
-        answer_arabic = p_answer_arabic,
-        reference = p_reference,
-        admin_notes = p_admin_notes,
-        rejection_reason = p_rejection_reason,
+        scholar_name = COALESCE(p_scholar_name, v_row.scholar_name),
+        scholar_qualification = COALESCE(p_scholar_qualification, v_row.scholar_qualification),
+        answer_text = COALESCE(p_answer_text, v_row.answer_text),
+        answer_arabic = COALESCE(p_answer_arabic, v_row.answer_arabic),
+        reference = COALESCE(p_reference, v_row.reference),
+        admin_notes = COALESCE(p_admin_notes, v_row.admin_notes),
+        rejection_reason = COALESCE(p_rejection_reason, v_row.rejection_reason),
         sent_to_scholar_at = v_sent_at,
         answered_at = v_answered_at,
         updated_at = pg_catalog.now()
@@ -1109,12 +1156,12 @@ REVOKE ALL ON public.quiz_attempts FROM PUBLIC, anon;
 REVOKE INSERT, UPDATE ON public.quiz_attempts FROM authenticated;
 GRANT SELECT, DELETE ON public.quiz_attempts TO authenticated;
 
--- Scholar inquiries: Direct public and anon access completely blocked; direct INSERT and UPDATE blocked
+-- Scholar inquiries: Direct public and anon access completely blocked; direct INSERT, UPDATE, and DELETE blocked
 -- Submissions MUST pass through the validated submit_scholar_inquiry() RPC
 -- Admin status transitions and edits MUST pass through admin_update_scholar_inquiry() RPC
 REVOKE ALL ON public.scholar_inquiries FROM PUBLIC, anon;
-REVOKE INSERT, UPDATE ON public.scholar_inquiries FROM authenticated;
-GRANT SELECT, DELETE ON public.scholar_inquiries TO authenticated;
+REVOKE INSERT, UPDATE, DELETE ON public.scholar_inquiries FROM authenticated;
+GRANT SELECT ON public.scholar_inquiries TO authenticated;
 
 -- Enable RLS across all 10 tables
 ALTER TABLE public.app_admins ENABLE ROW LEVEL SECURITY;
@@ -1415,7 +1462,7 @@ CREATE POLICY "Admin can delete quiz attempts"
 --   - Direct INSERT: Blocked (Managed exclusively via submit_scholar_inquiry RPC).
 --   - Direct SELECT: Only authenticated verified Admin.
 --   - Direct UPDATE: Only authenticated verified Admin.
---   - Direct DELETE: Only authenticated verified Admin.
+--   - Direct DELETE: Blocked.
 -- -----------------------------------------------------------------------------
 DROP POLICY IF EXISTS "Admin can view scholar inquiries" ON public.scholar_inquiries;
 DROP POLICY IF EXISTS "Admin can update scholar inquiries" ON public.scholar_inquiries;
@@ -1423,11 +1470,6 @@ DROP POLICY IF EXISTS "Admin can delete scholar inquiries" ON public.scholar_inq
 
 CREATE POLICY "Admin can view scholar inquiries"
     ON public.scholar_inquiries FOR SELECT
-    TO authenticated
-    USING (public.is_admin());
-
-CREATE POLICY "Admin can delete scholar inquiries"
-    ON public.scholar_inquiries FOR DELETE
     TO authenticated
     USING (public.is_admin());
 
