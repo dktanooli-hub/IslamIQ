@@ -294,6 +294,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     ? Math.round(quizAttempts.reduce((acc, a) => acc + (a.accuracy || 0), 0) / totalAttempts)
     : 85;
 
+  const pendingScholarCount = useMemo(() => {
+    return scholarInquiries.filter(i => i.status === 'pending_review').length;
+  }, [scholarInquiries]);
+
   // On mounting the admin panel in authenticated state, ensure Firestore admin doc & claims are synced
   useEffect(() => {
     if (isAdminAuthenticated) {
@@ -548,7 +552,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   };
 
   useEffect(() => {
-    if (activeAdminTab === 'scholar' && isAdminAuthenticated) {
+    if (isAdminAuthenticated) {
       fetchScholarInquiries(scholarStatusFilter);
     }
   }, [activeAdminTab, scholarStatusFilter, isAdminAuthenticated]);
@@ -865,7 +869,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                 </span>
               </div>
               <p className="text-[11px] text-slate-500">
-                Manage questions, Kids & Adult modes, categories, daily Islamic feeds, and user analytics
+                Manage questions, Kids & Adult modes, categories, daily Islamic feeds, Ask a Scholar inquiries, and user analytics
               </p>
             </div>
           </div>
@@ -914,7 +918,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
         </div>
 
         {/* Quick KPI Stat Cards */}
-        <div className="bg-slate-100/70 border-b border-slate-200/80 px-5 py-3 grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs shrink-0">
+        <div className="bg-slate-100/70 border-b border-slate-200/80 px-5 py-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 text-xs shrink-0">
           <div className="bg-white p-2.5 rounded-2xl border border-slate-200 shadow-2xs flex items-center justify-between">
             <div>
               <span className="text-slate-500 font-medium">Questions</span>
@@ -946,19 +950,71 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             </div>
             <div className="w-8 h-8 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold">📊</div>
           </div>
+
+          {/* Scholar Inquiries Quick Access KPI Card */}
+          <button
+            type="button"
+            onClick={() => setActiveAdminTab('scholar')}
+            className={`p-2.5 rounded-2xl border text-left transition-all shadow-2xs flex items-center justify-between cursor-pointer col-span-2 sm:col-span-1 ${
+              activeAdminTab === 'scholar'
+                ? 'bg-emerald-50 border-emerald-400 ring-2 ring-emerald-500/20'
+                : 'bg-white hover:bg-emerald-50/40 border-slate-200'
+            }`}
+            title="Open Ask a Scholar Inquiries Console"
+          >
+            <div>
+              <span className="text-slate-500 font-medium flex items-center gap-1">
+                <span>Scholar Inquiries</span>
+                {pendingScholarCount > 0 && (
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                )}
+              </span>
+              <div className="text-base font-black text-slate-900">
+                {scholarInquiries.length}{' '}
+                <span className={`text-[11px] font-bold ${pendingScholarCount > 0 ? 'text-amber-600' : 'text-slate-400'}`}>
+                  ({pendingScholarCount} pending)
+                </span>
+              </div>
+            </div>
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-bold text-xs ${
+              pendingScholarCount > 0 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-50 text-emerald-700'
+            }`}>
+              ⚖️
+            </div>
+          </button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="bg-white border-b border-slate-200 px-5 flex items-center gap-2 overflow-x-auto shrink-0">
+        {/* Mobile Section Selector (screens < sm) */}
+        <div className="sm:hidden bg-slate-100/90 border-b border-slate-200 px-4 py-2 flex items-center justify-between gap-2 shrink-0">
+          <label className="text-xs font-bold text-slate-600 flex items-center gap-1.5 shrink-0">
+            <Layers className="w-3.5 h-3.5 text-slate-500" />
+            <span>Console Section:</span>
+          </label>
+          <select
+            value={activeAdminTab}
+            onChange={(e) => setActiveAdminTab(e.target.value as any)}
+            className="flex-1 max-w-[260px] px-2.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+          >
+            <option value="questions">Quiz Questions ({questions.length})</option>
+            <option value="daily">Daily Content (Quran/Hadith/Dua)</option>
+            <option value="categories">Categories & Security</option>
+            <option value="analytics">Quiz Attempts & Stats</option>
+            <option value="monetization">Google Ads & Earning</option>
+            <option value="scholar">⚖️ Ask a Scholar ({scholarInquiries.length}{pendingScholarCount > 0 ? ` - ${pendingScholarCount} pending` : ''})</option>
+          </select>
+        </div>
+
+        {/* Tab Navigation (Full Bar with responsive scrolling & visual cues) */}
+        <div className="bg-white border-b border-slate-200 px-4 sm:px-5 flex items-center gap-1.5 sm:gap-2 overflow-x-auto shrink-0">
           <button
             onClick={() => setActiveAdminTab('questions')}
             className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
               activeAdminTab === 'questions'
-                ? 'border-emerald-600 text-emerald-800'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-emerald-600 text-emerald-800 bg-emerald-50/30'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/50'
             }`}
           >
-            <BookOpen className="w-4 h-4" />
+            <BookOpen className="w-4 h-4 text-emerald-600" />
             <span>Quiz Questions ({questions.length})</span>
           </button>
 
@@ -966,11 +1022,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             onClick={() => setActiveAdminTab('daily')}
             className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
               activeAdminTab === 'daily'
-                ? 'border-emerald-600 text-emerald-800'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-emerald-600 text-emerald-800 bg-emerald-50/30'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/50'
             }`}
           >
-            <Sparkles className="w-4 h-4" />
+            <Sparkles className="w-4 h-4 text-emerald-600" />
             <span>Daily Content (Quran/Hadith/Dua)</span>
           </button>
 
@@ -978,11 +1034,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             onClick={() => setActiveAdminTab('categories')}
             className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
               activeAdminTab === 'categories'
-                ? 'border-emerald-600 text-emerald-800'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-emerald-600 text-emerald-800 bg-emerald-50/30'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/50'
             }`}
           >
-            <Layers className="w-4 h-4" />
+            <Layers className="w-4 h-4 text-slate-500" />
             <span>Categories & Security</span>
           </button>
 
@@ -990,11 +1046,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             onClick={() => setActiveAdminTab('analytics')}
             className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
               activeAdminTab === 'analytics'
-                ? 'border-emerald-600 text-emerald-800'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-emerald-600 text-emerald-800 bg-emerald-50/30'
+                : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50/50'
             }`}
           >
-            <BarChart3 className="w-4 h-4" />
+            <BarChart3 className="w-4 h-4 text-slate-500" />
             <span>Quiz Attempts & Stats</span>
           </button>
 
@@ -1002,8 +1058,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             onClick={() => setActiveAdminTab('monetization')}
             className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
               activeAdminTab === 'monetization'
-                ? 'border-amber-600 text-amber-800 font-black'
-                : 'border-transparent text-amber-700 hover:text-amber-900'
+                ? 'border-amber-600 text-amber-800 font-black bg-amber-50/40'
+                : 'border-transparent text-amber-700 hover:text-amber-900 hover:bg-amber-50/20'
             }`}
           >
             <DollarSign className="w-4 h-4 text-amber-600" />
@@ -1014,12 +1070,26 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             onClick={() => setActiveAdminTab('scholar')}
             className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
               activeAdminTab === 'scholar'
-                ? 'border-emerald-600 text-emerald-800'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
+                ? 'border-emerald-600 text-emerald-800 font-black bg-emerald-50/50'
+                : 'border-transparent text-emerald-700 hover:text-emerald-900 hover:bg-emerald-50/20'
             }`}
+            title="Ask a Scholar Inquiries Management Console"
           >
             <Scale className="w-4 h-4 text-emerald-700" />
-            <span>Ask a Scholar ({scholarInquiries.length})</span>
+            <span>Ask a Scholar</span>
+            <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
+              pendingScholarCount > 0
+                ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                : 'bg-slate-100 text-slate-600'
+            }`}>
+              {scholarInquiries.length}
+            </span>
+            {pendingScholarCount > 0 && (
+              <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.2 rounded-md bg-amber-500 text-white text-[9px] font-black uppercase tracking-wide">
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                {pendingScholarCount} new
+              </span>
+            )}
           </button>
         </div>
 
@@ -2080,9 +2150,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                 </div>
 
                 {scholarLoadError && (
-                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
-                    <span>{scholarLoadError}</span>
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                      <span>{scholarLoadError}</span>
+                    </div>
+                    <button
+                      onClick={() => fetchScholarInquiries(scholarStatusFilter)}
+                      className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shrink-0 transition-colors"
+                    >
+                      Retry
+                    </button>
                   </div>
                 )}
               </div>
