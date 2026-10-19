@@ -350,7 +350,7 @@ BEGIN
     -- 4. Generate unique human-readable tracking ID (e.g. IQ-2026-X8K9M2)
     LOOP
         v_attempts := v_attempts + 1;
-        v_inquiry_number := 'IQ-' || to_char(pg_catalog.now(), 'YYYY') || '-' || upper(substring(encode(gen_random_bytes(4), 'hex') from 1 for 6));
+        v_inquiry_number := 'IQ-' || to_char(pg_catalog.now(), 'YYYY') || '-' || upper(substring(encode(extensions.gen_random_bytes(4), 'hex') from 1 for 6));
         
         EXIT WHEN NOT EXISTS (
             SELECT 1 FROM public.scholar_inquiries WHERE public.scholar_inquiries.inquiry_number = v_inquiry_number
@@ -362,9 +362,9 @@ BEGIN
     END LOOP;
 
     -- 5. Generate high-entropy access token (48 hex chars = 192 bits of cryptographic entropy)
-    v_raw_token := 'iq_sec_' || encode(gen_random_bytes(24), 'hex');
+    v_raw_token := 'iq_sec_' || encode(extensions.gen_random_bytes(24), 'hex');
     -- Compute SHA-256 hash
-    v_token_hash := encode(digest(v_raw_token, 'sha256'), 'hex');
+    v_token_hash := encode(extensions.digest(v_raw_token, 'sha256'), 'hex');
     v_created_at := pg_catalog.now();
 
     -- 6. Insert record into public.scholar_inquiries
@@ -463,7 +463,7 @@ BEGIN
     END IF;
 
     -- 2. Compute SHA-256 hash of provided access token
-    v_token_hash := encode(digest(v_clean_token, 'sha256'), 'hex');
+    v_token_hash := encode(extensions.digest(v_clean_token, 'sha256'), 'hex');
 
     -- 3. Exact matching lookup (Column qualified to eliminate output parameter ambiguity)
     SELECT * INTO v_row

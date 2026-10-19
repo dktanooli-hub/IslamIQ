@@ -42,8 +42,12 @@ test('1. [RUNTIME PG] Initialize PGlite & Provision Isolated Supabase Stubs', as
     extensions: { pgcrypto, uuid_ossp }
   });
 
-  // Enable extensions
-  await db.exec('CREATE EXTENSION IF NOT EXISTS pgcrypto; CREATE EXTENSION IF NOT EXISTS "uuid-ossp";');
+  // Enable extensions in extensions schema (matching Supabase production)
+  await db.exec(`
+    CREATE SCHEMA IF NOT EXISTS extensions;
+    CREATE EXTENSION IF NOT EXISTS pgcrypto SCHEMA extensions;
+    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+  `);
 
   // Provision Supabase roles if not present
   await db.exec(`
