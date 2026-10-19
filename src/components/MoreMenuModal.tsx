@@ -323,8 +323,8 @@ export const MoreMenuModal: React.FC = () => {
           descEn: 'Private Q&A, Masail & Fatwa with qualified scholarly guidance',
           descUrdu: 'نماز، روزے، زکوٰۃ اور روزمرہ مسائل پر مستند شرعی رہنمائی',
           icon: HelpCircle,
-          badge: 'Coming Soon',
-          badgeUrdu: 'عنقریب'
+          badge: 'Available',
+          badgeUrdu: 'دستیاب'
         },
         {
           id: 'islamic-questions-answers',

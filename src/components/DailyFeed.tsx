@@ -276,9 +276,9 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
               
               {/* Badges Row */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] sm:text-xs font-black tracking-wide uppercase shadow-sm backdrop-blur-md">
-                  <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                  <span>Coming Soon • عنقریب</span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 text-[11px] sm:text-xs font-black tracking-wide uppercase shadow-sm backdrop-blur-md">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>{contentLang === 'urdu' ? 'براہِ راست سروس • لائیو' : 'Live Portal • Ask Now'}</span>
                 </span>
                 <span className="text-[11px] font-semibold text-emerald-200 bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-0.5 rounded-full backdrop-blur-md">
                   {contentLang === 'urdu' ? 'مستند شرعی رہنمائی' : 'Scholarly Guidance & Fatwa'}
@@ -322,10 +322,10 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
             {/* CTA Button Column */}
             <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10">
               <span className="text-xs font-bold text-amber-300/90 hidden sm:inline-block">
-                View Service Roadmap →
+                {contentLang === 'urdu' ? 'ابھی سوال ارسال کریں ←' : 'Submit Private Inquiry →'}
               </span>
               <div className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 group-hover:from-amber-300 group-hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition-all group-hover:scale-105 active:scale-95">
-                <span>{contentLang === 'urdu' ? 'مزید جانیں' : 'Explore'}</span>
+                <span>{contentLang === 'urdu' ? 'سوال پوچھیں' : 'Ask Question'}</span>
                 <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </div>
             </div>

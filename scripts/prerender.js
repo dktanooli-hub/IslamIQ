@@ -395,8 +395,8 @@ const routes = [
     h1: 'Ask a Scholar — Authentic Scholarly Guidance & Fatwa Services',
     content: `
       <div style="background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
-        <p style="margin: 0; font-weight: 700; color: #065f46;">STATUS: Coming Soon • Roadmap Preview</p>
-        <p style="margin: 4px 0 0; font-size: 14px; color: #047857;">IslamIQ is preparing a dedicated, confidential portal connecting Muslims with qualified scholars and accredited Muftis.</p>
+        <p style="margin: 0; font-weight: 700; color: #065f46;">STATUS: Active Service • Confidential Scholar Q&amp;A</p>
+        <p style="margin: 4px 0 0; font-size: 14px; color: #047857;">IslamIQ provides a dedicated, confidential portal connecting Muslims with qualified scholars and accredited Muftis.</p>
       </div>
       <h2>Four Key Service Pillars</h2>
       <ul>
@@ -412,8 +412,8 @@ const routes = [
       <p>Applied jurisprudence for Taharah, prayer invalidators, medical fasting rules, and trade transactions.</p>
       <h3>3. Fatwa (Formal Religious Decrees)</h3>
       <p>Formal legal rulings on complex, family, inheritance, matrimonial, or financial matters requiring certified Ifta' review.</p>
-      <h2>Future Fiqh Choices for Fatwa</h2>
-      <p>Questioners will be able to select their preferred school of jurisprudence (Madhhab):</p>
+      <h2>Fiqh Choices for Fatwa</h2>
+      <p>Questioners can select their preferred school of jurisprudence (Madhhab):</p>
       <ul>
         <li><strong>Hanafi (فقہ حنفی):</strong> Imam Abu Hanifa (d. 150 AH)</li>
         <li><strong>Shafi'i (فقہ شافعی):</strong> Imam al-Shafi'i (d. 204 AH)</li>
