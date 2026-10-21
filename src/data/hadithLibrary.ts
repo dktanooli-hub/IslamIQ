@@ -864,6 +864,126 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     grade: 'Sahih',
     lessonUrdu: 'چلتے پھرتے اور فارغ اوقات میں ان مبارک کلمات کا ورد رکھیں تاکہ میزان میں نیکیوں کا پلڑا بھاری ہو۔',
     lessonEn: 'Keep your tongue moist with these two concise invocations to earn immense divine love and heavy scales of good deeds.'
+  },
+  {
+    id: 'hadith-73',
+    arabic: 'الدِّينُ النَّصِيحَةُ، قُلْنَا: لِمَنْ؟ قَالَ: لِلَّهِ وَلِكِتَابِهِ وَلِرَسُولِهِ وَلِأَئِمَّةِ الْمُسْلِمِينَ وَعَامَّتِهِمْ',
+    textUrdu: 'رسول اللہ ﷺ نے فرمایا: "دین سراسر خیر خواہی کا نام ہے۔" ہم نے عرض کیا: کس کے لیے؟ آپ ﷺ نے فرمایا: "اللہ کے لیے، اس کی کتاب کے لیے، اس کے رسول کے لیے، اور مسلمانوں کے حکمرانوں اور عام مسلمانوں کے لیے۔"',
+    textEn: 'The Messenger of Allah ﷺ said: "The religion is sincere counsel (an-Naseehah)." We asked: "To whom?" He said: "To Allah, His Book, His Messenger, and to the leaders of the Muslims and their common folk."',
+    narrator: 'Tamim ad-Dari (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '55',
+    grade: 'Sahih',
+    lessonUrdu: 'ہر مسلمان کے ساتھ دلی ہمدردی اور خیر خواہی کا جذبہ رکھیں، اور دوسروں کو نیکی کا مشورہ اخلاص و شفقت سے دیں۔',
+    lessonEn: 'Act with genuine goodwill toward all believers, offering sincere counsel gently and wishing the best for others.'
+  },
+  {
+    id: 'hadith-74',
+    arabic: 'الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ، وَالْمُهَاجِرُ مَنْ هَجَرَ مَا نَهَى اللَّهُ عَنْهُ',
+    textUrdu: 'کامل مسلمان وہ ہے جس کی زبان اور ہاتھ کی تکلیف سے دوسرے مسلمان محفوظ رہیں، اور حقیقی مہاجر وہ ہے جو ان باتوں کو چھوڑ دے جن سے اللہ نے منع فرمایا ہے۔',
+    textEn: 'The true Muslim is the one from whose tongue and hand the Muslims are safe, and the true emigrant (Muhajir) is the one who abandons what Allah has forbidden.',
+    narrator: 'Abdullah ibn Amr (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '10',
+    grade: 'Sahih',
+    lessonUrdu: 'اپنی زبان کو طعنے، غیبت اور جھوٹ سے اور اپنے ہاتھ کو ظلم و زیادتی سے سختی کے ساتھ روک کر رکھیں۔',
+    lessonEn: 'Exercise vigilant self-restraint so that neither your speech nor actions cause emotional or physical distress to others.'
+  },
+  {
+    id: 'hadith-75',
+    arabic: 'مَنْ نَفَّسَ عَنْ مُؤْمِنٍ كُرْبَةً مِنْ كُرَبِ الدُّنْيَا، نَفَّسَ اللَّهُ عَنْهُ كُرْبَةً مِنْ كُرَبِ يَوْمِ الْقِيَامَةِ، وَمَنْ يَسَّرَ عَلَى مُعْسِرٍ، يَسَّرَ اللَّهُ عَلَيْهِ فِي الدُّنْيَا وَالآخِرَةِ',
+    textUrdu: 'جو شخص کسی مومن کی دنیا کی تکلیفوں میں سے کوئی تکلیف دور کرے گا، اللہ قیامت کے دن اس کی تکلیفوں میں سے تکلیف دور فرمائے گا؛ اور جو کسی تنگ دست پر آسانی کرے گا، اللہ دنیا اور آخرت میں اس پر آسانی فرمائے گا۔',
+    textEn: 'Whoever relieves a believer of a distress from the distresses of this world, Allah will relieve him of a distress from the distresses of the Day of Resurrection; and whoever makes things easy for one in financial difficulty, Allah will ease his affairs in this world and the Hereafter.',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '2699',
+    grade: 'Sahih',
+    lessonUrdu: 'پریشان حال بھائیوں اور بہنوں کی مدد میں پیش پیش رہیں، اللہ آپ کی مشکلات آسان فرما دے گا۔',
+    lessonEn: 'Step forward actively to lighten the burdens of struggling families, trusting that divine relief awaits your own hardships.'
+  },
+  {
+    id: 'hadith-76',
+    arabic: 'احْفَظِ اللَّهَ يَحْفَظْكَ، احْفَظِ اللَّهَ تَجِدْهُ تُجَاهَكَ، إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ، وَإِذَا اسْتَعَنْتَ فَاسْتَعِنْ بِاللَّهِ',
+    textUrdu: 'تم اللہ کے احکامات کی حفاظت کرو، اللہ تمہاری حفاظت فرمائے گا۔ تم اللہ کے حقوق کا دھیان رکھو، تم اسے اپنے سامنے پاؤ گے۔ جب مانگنا ہو تو صرف اللہ سے مانگو، اور جب مدد طلب کرنی ہو تو صرف اللہ سے مدد چاہو۔',
+    textEn: 'Be mindful of Allah and He will protect you. Be mindful of Allah and you will find Him before you. If you ask, ask of Allah; and if you seek help, seek help from Allah.',
+    narrator: 'Abdullah ibn Abbas (RA)',
+    source: 'Jami at-Tirmidhi',
+    hadithNumber: '2516',
+    grade: 'Sahih',
+    lessonUrdu: 'تنہائی اور مجمع دونوں میں اللہ کی حدود کا پاس رکھیں اور ہر حاجت میں اسی کے دربار میں ہاتھ پھیلائیں۔',
+    lessonEn: 'Observe divine commandments faithfully in private and public, directing all your supplication and reliance toward Allah.'
+  },
+  {
+    id: 'hadith-77',
+    arabic: 'مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ',
+    textUrdu: 'جس شخص نے کسی بھلائی یا نیکی کی طرف رہنمائی کی، تو اس کے لیے بھی اس نیکی کو کرنے والے کے برابر ثواب ہے۔',
+    textEn: 'Whoever guides someone to a good deed will have a reward similar to the one who executes it.',
+    narrator: 'Abu Mas\'ud al-Ansari (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '1893',
+    grade: 'Sahih',
+    lessonUrdu: 'لوگوں کو نماز، صدقہ اور اچھے کاموں کی ترغیب دیں؛ ان کے عمل کرنے سے آپ کے اعمال نامے میں بھی مستقل ثواب درج ہوتا رہے گا۔',
+    lessonEn: 'Share beneficial Islamic learning, Quran recitations, and virtuous habits; you earn perpetual shares of their righteous deeds.'
+  },
+  {
+    id: 'hadith-78',
+    arabic: 'الْمَرْءُ عَلَى دِينِ خَلِيلِهِ، فَلْيَنْظُرْ أَحَدُكُمْ مَنْ يُخَالِلْ',
+    textUrdu: 'انسان اپنے گہرے دوست کے دین اور طریقے پر ہوتا ہے، اس لیے تم میں سے ہر شخص کو دیکھنا چاہیے کہ وہ کس سے دوستی کر رہا ہے۔',
+    textEn: 'A person follows the religion and way of their intimate friend; so let each of you look carefully to whom they take as a close friend.',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sunan Abi Dawud',
+    hadithNumber: '4833',
+    grade: 'Sahih',
+    lessonUrdu: 'نیک، سچے اور باعمل لوگوں کی صحبت اختیار کریں تاکہ آپ کے اخلاق اور دین پر اچھا اثر پڑے۔',
+    lessonEn: 'Surround yourself with pious, truthful, and inspiring friends who strengthen your faith and moral resolve.'
+  },
+  {
+    id: 'hadith-79',
+    arabic: 'بَدَأَ الإِسْلَامُ غَرِيبًا، وَسَيَعُودُ كَمَا بَدَأَ غَرِيبًا، فَطُوبَى لِلْغُرَبَاءِ',
+    textUrdu: 'اسلام کا آغاز اجنبیت کی حالت میں ہوا اور عنقریب وہ پھر ویسا ہی اجنبی ہو جائے گا جیسا کہ شروع میں تھا؛ پس خوشخبری اور مبارکباد ہے ان اجنبیوں کے لیے جو اس پر ثابت قدم رہیں گے۔',
+    textEn: 'Islam began as something strange and it will return to being strange just as it began; so blessed are the strangers (who hold fast to truth).',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '145',
+    grade: 'Sahih',
+    lessonUrdu: 'حق بات اور سنتِ نبوی پر استقامت اختیار کرتے ہوئے معاشرتی طعنوں یا مخالفت سے کبھی نہ گھبرائیں۔',
+    lessonEn: 'Stand firmly on prophetic truth and righteousness, even when moral trends waver and principled living feels unconventional.'
+  },
+  {
+    id: 'hadith-80',
+    arabic: 'طَلَبُ الْعِلْمِ فَرِيضَةٌ عَلَى كُلِّ مُسْلِمٍ',
+    textUrdu: 'دین کے بنیادی احکام اور ضروری علم کا حاصل کرنا ہر مسلمان پر فرض ہے۔',
+    textEn: 'The seeking of knowledge is an obligation upon every Muslim.',
+    narrator: 'Anas ibn Malik (RA)',
+    source: 'Sunan Ibn Majah',
+    hadithNumber: '224',
+    grade: 'Sahih',
+    lessonUrdu: 'روزانہ حلال و حرام، نماز، عقیدہ اور اخلاق سے متعلق مستند دینی علم سیکھنے کے لیے وقت نکالیں۔',
+    lessonEn: 'Dedicate time every day to learn the essentials of faith, worship, and halal living to worship Allah with insight.'
+  },
+  {
+    id: 'hadith-81',
+    arabic: 'نِعْمَتَانِ مَغْبُونٌ فِيهِمَا كَثِيرٌ مِنَ النَّاسِ: الصِّحَّةُ وَالْفَرَاغُ',
+    textUrdu: 'دو نعمتیں ایسی ہیں جن کی قدر شناسی میں بہت سے لوگ دھوکے اور نقصان میں رہتے ہیں: تندرستی اور فراغت (فارغ وقت)۔',
+    textEn: 'There are two blessings in which many people are deceived and incur loss: health and free time.',
+    narrator: 'Abdullah ibn Abbas (RA)',
+    source: 'Sahih al-Bukhari',
+    hadithNumber: '6412',
+    grade: 'Sahih',
+    lessonUrdu: 'اپنی صحت اور فرصت کے قیمتی لمحات کو ضائع ہونے سے بچائیں اور انہیں نیک اعمال اور ذکر میں لگائیں۔',
+    lessonEn: 'Seize the gifts of physical vitality and unoccupied hours by investing them in righteous deeds and family harmony.'
+  },
+  {
+    id: 'hadith-82',
+    arabic: 'إِنَّ اللَّهَ لَا يَنْظُرُ إِلَى صُوَرِكُمْ وَأَمْوَالِكُمْ، وَلَكِنْ يَنْظُرُ إِلَى قُلُوبِكُمْ وَأَعْمَالِكُمْ',
+    textUrdu: 'بے شک اللہ تعالیٰ تمہاری شکلوں اور تمہارے مالوں کو نہیں دیکھتا، بلکہ وہ تمہارے دلوں اور تمہارے اعمال کو دیکھتا ہے۔',
+    textEn: 'Indeed, Allah does not look at your outward appearances or your wealth, but rather He looks at your hearts and your deeds.',
+    narrator: 'Abu Hurairah (RA)',
+    source: 'Sahih Muslim',
+    hadithNumber: '2564',
+    grade: 'Sahih',
+    lessonUrdu: 'ظاہری سجاوٹ سے زیادہ اپنے دل کی صفائی، اخلاص اور نیک اعمال سنوارنے کی فکر کریں۔',
+    lessonEn: 'Prioritize inner spiritual purity and righteous conduct above outward status, superficial appearances, and worldly pride.'
   }
 ];
 
