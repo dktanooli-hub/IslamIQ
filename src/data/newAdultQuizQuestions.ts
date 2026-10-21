@@ -736,6 +736,236 @@ export const NEW_ISLAMIC_QUESTIONS: QuizQuestion[] = [
     category: 'Quran',
     difficulty: 'intermediate',
     forKids: false
+  },
+  {
+    "id": "islamic-q-34",
+    "questionUrdu": "قرآن مجید کی کس سورت کے آغاز میں تسمیہ (بسم اللہ الرحمن الرحیم) نہیں ہے؟",
+    "questionEn": "Which Surah of the Holy Quran does not begin with Bismillahir Rahmanir Raheem?",
+    "optionsUrdu": [
+      "سورۃ التوبہ (Surah At-Tawbah)",
+      "سورۃ النمل",
+      "سورۃ الانفال",
+      "سورۃ یونس"
+    ],
+    "optionsEn": [
+      "Surah At-Tawbah",
+      "Surah An-Naml",
+      "Surah Al-Anfal",
+      "Surah Yunus"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ التوبہ کے شروع میں بسم اللہ نہیں ہے کیونکہ اس میں مشرکین اور منافقین سے بیزاری اور عہد شکنی پر مواخذے کا اعلان ہے، جبکہ سورۃ النمل میں بسم اللہ دو مرتبہ آئی ہے۔",
+    "explanationEn": "Surah At-Tawbah does not open with Bismillah due to its proclamation of severance with treaty-violating idolaters, whereas Surah An-Naml features Bismillah twice.",
+    "category": "Quran",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-35",
+    "questionUrdu": "اللہ تعالیٰ کے کس جلیل القدر پیغمبر کو \"خلیل اللہ\" (اللہ کا گہرا دوست) کا لقب دیا گیا ہے؟",
+    "questionEn": "Which distinguished prophet was bestowed the honorable title \"Khalilullah\" (Friend of Allah)?",
+    "optionsUrdu": [
+      "حضرت ابراہیم علیہ السلام",
+      "حضرت موسیٰ علیہ السلام",
+      "حضرت عیسیٰ علیہ السلام",
+      "حضرت نوح علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Ibrahim (AS)",
+      "Prophet Musa (AS)",
+      "Prophet Isa (AS)",
+      "Prophet Nuh (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ النساء آیت 125 میں اللہ تعالیٰ نے فرمایا: \"اور اللہ نے ابراہیم کو اپنا گہرا دوست بنا لیا۔\"",
+    "explanationEn": "Surah An-Nisa (4:125) affirms: \"And Allah took Ibrahim as an intimate friend (Khalil).\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-36",
+    "questionUrdu": "جنت کے اس خاص دروازے کا نام کیا ہے جس سے قیامت کے دن صرف روزہ دار داخل ہوں گے؟",
+    "questionEn": "What is the name of the exclusive gate of Paradise through which only fasting believers will enter?",
+    "optionsUrdu": [
+      "باب الریان (Bab ar-Rayyan)",
+      "باب الصلوٰۃ",
+      "باب الجہاد",
+      "باب الصدقہ"
+    ],
+    "optionsEn": [
+      "Bab ar-Rayyan",
+      "Bab as-Salah",
+      "Bab al-Jihad",
+      "Bab as-Sadaqah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح بخاری (1896) میں رسول اللہ ﷺ نے فرمایا: \"جنت کا ایک دروازہ ہے جسے الریان کہا جاتا ہے، قیامت کے دن اس سے صرف روزہ دار داخل ہوں گے، جب وہ داخل ہو جائیں گے تو اسے بند کر دیا جائے گا۔\"",
+    "explanationEn": "In Sahih al-Bukhari (1896), the Prophet ﷺ declared: \"In Paradise there is a gate called Ar-Rayyan through which only those who fast will enter on the Day of Resurrection.\"",
+    "category": "Fasting",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-37",
+    "questionUrdu": "رسول اللہ ﷺ کے چچا حضرت حمزہ بن عبدالمطلب رضی اللہ عنہ کو کس بہادری کے لقب سے یاد کیا جاتا ہے؟",
+    "questionEn": "Which title of valor was bestowed upon the Prophet's uncle, Hamza ibn Abd al-Muttalib (RA)?",
+    "optionsUrdu": [
+      "اسد اللہ (شیرِ خدا)",
+      "سیف اللہ",
+      "ذوالنورین",
+      "فاروقِ اعظم"
+    ],
+    "optionsEn": [
+      "Asadullah (Lion of Allah)",
+      "Sayfullah",
+      "Dhun-Nurayn",
+      "Farooq al-Azam"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "رسول اللہ ﷺ نے حضرت حمزہؓ کو ان کی غیر معمولی شجاعت اور غزوۂ احد میں جامِ شہادت نوش کرنے پر \"اسد اللہ اور اسد رسولہ\" (اللہ اور اس کے رسول کا شیر) اور سید الشہداء کا لقب عطا فرمایا۔",
+    "explanationEn": "Prophet Muhammad ﷺ honored Hamza (RA) with the titles \"Asadullah\" (Lion of Allah) and Leader of the Martyrs (Sayyid ash-Shuhada) following his martyrdom at Uhud.",
+    "category": "Seerah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-38",
+    "questionUrdu": "اسلام کی تاریخ میں سب سے پہلی شہید ہونے والی عظیم خاتون صحابیہ کون تھیں؟",
+    "questionEn": "Who was the very first martyr (male or female) in the history of Islam?",
+    "optionsUrdu": [
+      "حضرت سمیہ بنت خیاط رضی اللہ عنہا",
+      "حضرت خدیجہ الکبریٰؓ",
+      "حضرت فاطمۃ الزہراءؓ",
+      "حضرت اسماء بنت عمیسؓ"
+    ],
+    "optionsEn": [
+      "Sumayyah bint Khayyat (RA)",
+      "Khadijah al-Kubra (RA)",
+      "Fatimah az-Zahra (RA)",
+      "Asma bint Umays (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "حضرت سمیہ رضی اللہ عنہا (حضرت عمار بن یاسرؓ کی والدہ) کو مکہ میں ابو جہل نے توحید پر ثابت قدم رہنے کی پاداش میں شہید کیا، وہ اسلام کی پہلی شہید ہیں۔",
+    "explanationEn": "Sumayyah bint Khayyat (RA), mother of Ammar ibn Yasir, was brutally martyred in Makkah by Abu Jahl for refusing to renounce Islam, making her the first martyr of the faith.",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-39",
+    "questionUrdu": "کس جلیل القدر پیغمبر پر آسمانی کتاب \"زبور\" نازل فرمائی گئی؟",
+    "questionEn": "To which revered Prophet was the holy scripture \"Zabur\" (Psalms) revealed by Allah?",
+    "optionsUrdu": [
+      "حضرت داؤد علیہ السلام",
+      "حضرت موسیٰ علیہ السلام",
+      "حضرت عیسیٰ علیہ السلام",
+      "حضرت سلیمان علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Dawud (AS)",
+      "Prophet Musa (AS)",
+      "Prophet Isa (AS)",
+      "Prophet Sulaiman (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ النساء (4:163) اور سورۃ الاسراء (17:55) میں اللہ تعالیٰ نے فرمایا: \"اور ہم نے داؤد کو زبور عطا فرمائی۔\"",
+    "explanationEn": "Surah An-Nisa (4:163) and Surah Al-Isra (17:55) state: \"And to Dawud We gave the Zabur (Psalms).\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-40",
+    "questionUrdu": "مدینہ منورہ کے گرد خندق کھودنے کا دانشمندانہ مشورہ کس عظیم صحابی نے دیا تھا؟",
+    "questionEn": "Which companion suggested digging the defensive trench around Madinah during the Battle of the Trench?",
+    "optionsUrdu": [
+      "حضرت سلمان فارسی رضی اللہ عنہ",
+      "حضرت ابو عبیدہ بن الجراحؓ",
+      "حضرت سعد بن معاذؓ",
+      "حضرت حذیفہ بن الیمانؓ"
+    ],
+    "optionsEn": [
+      "Salman al-Farsi (RA)",
+      "Abu Ubaidah ibn al-Jarrah (RA)",
+      "Sa'd ibn Mu'adh (RA)",
+      "Hudhayfah ibn al-Yaman (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "غزوۂ احزاب (خندق) سن 5 ہجری میں حضرت سلمان فارسیؓ نے ایرانی جنگی تکنیک کے مطابق مدینہ کے کھلے حصوں پر خندق کھودنے کا مشورہ دیا جس نے دشمن کے متحدہ لشکر کو ناکام بنا دیا۔",
+    "explanationEn": "Salman al-Farsi (RA) proposed digging the trench during the Battle of the Trench (5 AH), an innovative defensive strategy that protected Madinah from the confederate armies.",
+    "category": "Seerah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-41",
+    "questionUrdu": "قرآن مجید کے مطابق کس پیغمبر نے اللہ کے حکم سے گود میں دودھ پیتے ہوئے شیرخوارگی میں کلام فرمایا؟",
+    "questionEn": "According to the Holy Quran, which Prophet spoke miraculously as an infant in the cradle?",
+    "optionsUrdu": [
+      "حضرت عیسیٰ علیہ السلام",
+      "حضرت یحییٰ علیہ السلام",
+      "حضرت یوسف علیہ السلام",
+      "حضرت اسماعیل علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Isa (AS)",
+      "Prophet Yahya (AS)",
+      "Prophet Yusuf (AS)",
+      "Prophet Ismail (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ مریم (19:30) میں حضرت عیسیٰ علیہ السلام نے گود میں فرمایا: \"بے شک میں اللہ کا بندہ ہوں، اس نے مجھے کتاب عطا فرمائی اور مجھے نبی بنایا۔\"",
+    "explanationEn": "Surah Maryam (19:30) narrates that Prophet Isa (AS) spoke from the cradle: \"Indeed, I am the servant of Allah. He has given me the Scripture and made me a prophet.\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-42",
+    "questionUrdu": "رسول اللہ ﷺ نے اپنے کس جلیل القدر صحابی کو \"امین الامۃ\" (اس امت کے سب سے بڑے امانت دار) کا لقب دیا؟",
+    "questionEn": "Which illustrious companion was titled \"Ameen al-Ummah\" (The Trustworthy of this Nation) by the Prophet ﷺ?",
+    "optionsUrdu": [
+      "حضرت ابو عبیدہ بن الجراح رضی اللہ عنہ",
+      "حضرت عثمان غنیؓ",
+      "حضرت علی المرتضیٰؓ",
+      "حضرت عبداللہ بن مسعودؓ"
+    ],
+    "optionsEn": [
+      "Abu Ubaidah ibn al-Jarrah (RA)",
+      "Uthman ibn Affan (RA)",
+      "Ali ibn Abi Talib (RA)",
+      "Abdullah ibn Mas'ud (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح بخاری (3744) میں رسول اللہ ﷺ نے فرمایا: \"ہر امت کا ایک امین ہوتا ہے، اور ہماری امت کے امین ابو عبیدہ بن الجراح ہیں۔\"",
+    "explanationEn": "In Sahih al-Bukhari (3744), the Messenger of Allah ﷺ affirmed: \"Every nation has an Ameen (trustworthy custodian), and the Ameen of this nation is Abu Ubaidah ibn al-Jarrah.\"",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "islamic-q-43",
+    "questionUrdu": "مسلمانوں کے دوسرے خلیفہ راشد حضرت عمر فاروق رضی اللہ عنہ نے اسلامی ہجری کیلنڈر کا آغاز کس اہم واقعے سے فرمایا؟",
+    "questionEn": "From which monumental historical event did Caliph Umar ibn al-Khattab (RA) inaugurate the Islamic Hijri calendar?",
+    "optionsUrdu": [
+      "رسول اللہ ﷺ کی مکہ سے مدینہ ہجرت سے",
+      "غزوہ بدر کی فتح سے",
+      "رسول اللہ ﷺ کی ولادت باسعادت سے",
+      "فتح مکہ کے دن سے"
+    ],
+    "optionsEn": [
+      "The Hijrah (Migration) of the Prophet ﷺ from Makkah to Madinah",
+      "The victory at the Battle of Badr",
+      "The birth of the Prophet ﷺ",
+      "The Conquest of Makkah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "حضرت عمر فاروقؓ نے سن 16 ہجری میں صحابہ کرام کے مشورے سے اسلامی کیلنڈر کی ابتدا رسول اللہ ﷺ کی مکہ سے مدینہ منورہ ہجرت سے فرمائی، کیونکہ اس سے اسلامی ریاست کی بنیاد پڑی۔",
+    "explanationEn": "In 16 AH, Caliph Umar (RA), after consulting the Companions, established the Hijrah (migration from Makkah to Madinah in 622 CE) as the inaugural milestone of the Islamic calendar.",
+    "category": "History",
+    "difficulty": "beginner",
+    "forKids": false
   }
 ];
 
@@ -4419,6 +4649,1157 @@ export const NEW_ADULT_QUESTIONS: QuizQuestion[] = [
     category: 'Prophets',
     difficulty: 'beginner',
     forKids: false
+  }
+,
+  {
+    "id": "adult-gen-176",
+    "questionUrdu": "قرآن مجید کی سب سے چھوٹی سورت کون سی ہے جس میں صرف تین آیات ہیں؟",
+    "questionEn": "Which is the shortest Surah in the Holy Quran, containing only three verses?",
+    "optionsUrdu": [
+      "سورۃ الکوثر",
+      "سورۃ العصر",
+      "سورۃ النصر",
+      "سورۃ الاخلاص"
+    ],
+    "optionsEn": [
+      "Surah Al-Kawthar",
+      "Surah Al-Asr",
+      "Surah An-Nasr",
+      "Surah Al-Ikhlas"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ الکوثر (سورت نمبر 108) قرآن کی سب سے مختصر سورت ہے جس میں اللہ نے رسول اللہ ﷺ کو حوضِ کوثر اور بے شمار خیر کی خوشخبری دی۔",
+    "explanationEn": "Surah Al-Kawthar (Chapter 108) is the shortest chapter of the Quran, promising the Prophet ﷺ the celestial river of Kawthar and abundant grace.",
+    "category": "Quran",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-177",
+    "questionUrdu": "قرآن مجید کی سب سے طویل آیت کس سورت میں ہے اور اسے کیا کہا جاتا ہے؟",
+    "questionEn": "In which Surah is the longest verse of the Holy Quran located, and what is it titled?",
+    "optionsUrdu": [
+      "سورۃ البقرہ (آیت الدَّین - آیت نمبر 282)",
+      "سورۃ آل عمران (آیت 18)",
+      "سورۃ النساء (آیت 176)",
+      "سورۃ المائدہ (آیت 3)"
+    ],
+    "optionsEn": [
+      "Surah Al-Baqarah (Ayat ad-Dayn - 2:282)",
+      "Surah Ali 'Imran (3:18)",
+      "Surah An-Nisa (4:176)",
+      "Surah Al-Ma'idah (5:3)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ البقرہ کی آیت 282 قرآن کی سب سے لمبی آیت ہے، جس میں ادھار اور مالی لین دین کو لکھ کر دستاویز بنانے اور گواہ بنانے کے تفصیلی احکام ہیں۔",
+    "explanationEn": "Verse 2:282 of Surah Al-Baqarah is the longest single verse in the Quran, establishing legal principles of debt contracts, documentation, and witnessing.",
+    "category": "Quran",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-178",
+    "questionUrdu": "حدیث کی سب سے معروف اور مستند ترین چھ کتابوں کو مشترکہ طور پر کیا کہا جاتا ہے؟",
+    "questionEn": "What is the collective scholarly term for the six major authentic canonical collections of Hadith?",
+    "optionsUrdu": [
+      "صحاح ستہ (Sihah Sittah / Kutub al-Sittah)",
+      "مسندات اربعہ",
+      "سنن خمسہ",
+      "جوامع ثلاثہ"
+    ],
+    "optionsEn": [
+      "Sihah Sittah (The Six Books)",
+      "Musnadat Arba'ah",
+      "Sunan Khamsah",
+      "Jawami Thalathah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحاح ستہ میں صحیح بخاری، صحیح مسلم، سنن ابی داؤد، جامع ترمذی، سنن نسائی اور سنن ابن ماجہ شامل ہیں۔",
+    "explanationEn": "The Six Major Hadith Compendiums (Kutub al-Sittah) are Sahih al-Bukhari, Sahih Muslim, Sunan Abi Dawud, Jami at-Tirmidhi, Sunan an-Nasa'i, and Sunan Ibn Majah.",
+    "category": "Hadith",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-179",
+    "questionUrdu": "کس جلیل القدر پیغمبر کی قوم پر اللہ تعالیٰ نے مچھروں اور ٹڈی دل کا عذاب بھیجا تھا؟",
+    "questionEn": "Against the tyrannical Pharaoh and people of which Prophet were plagues of locusts and lice sent as divine signs?",
+    "optionsUrdu": [
+      "حضرت موسیٰ علیہ السلام",
+      "حضرت یوسف علیہ السلام",
+      "حضرت ہود علیہ السلام",
+      "حضرت لوط علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Musa (AS)",
+      "Prophet Yusuf (AS)",
+      "Prophet Hud (AS)",
+      "Prophet Lut (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ الاعراف (7:133) میں فرمایا: \"تو ہم نے ان پر طوفان، ٹڈی دل، جوئیں، مینڈک اور خون کی نشانیاں بھیجیں، مگر انہوں نے تکبر کیا۔\"",
+    "explanationEn": "Surah Al-A'raf (7:133) details the signs sent to Pharaoh and his court during the mission of Prophet Musa (AS).",
+    "category": "Prophets",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-180",
+    "questionUrdu": "کس خلیفہ راشد کے دور میں اسلامی سلطنت کی پہلی بحری فوج (Navy) تشکیل دی گئی؟",
+    "questionEn": "During the Caliphate of which Rightly Guided Caliph was the first Islamic naval fleet established?",
+    "optionsUrdu": [
+      "حضرت عثمان غنی رضی اللہ عنہ",
+      "حضرت ابوبکر صدیقؓ",
+      "حضرت عمر فاروقؓ",
+      "حضرت علی المرتضیٰؓ"
+    ],
+    "optionsEn": [
+      "Uthman ibn Affan (RA)",
+      "Abu Bakr as-Siddiq (RA)",
+      "Umar ibn al-Khattab (RA)",
+      "Ali ibn Abi Talib (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "خلیفہ سوم حضرت عثمان غنیؓ کی اجازت سے حضرت امیر معاویہؓ نے بحیرہ روم میں پہلی اسلامی بحریہ قائم کی جس سے قبرص فتح ہوا۔",
+    "explanationEn": "Under Caliph Uthman (RA), the first Islamic naval expedition set sail under the leadership of Mu'awiyah (RA), securing the island of Cyprus.",
+    "category": "History",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-181",
+    "questionUrdu": "حج کے ارکان میں سے سب سے بنیادی اور لازمی رکن کون سا ہے جس کے بغیر حج ادا نہیں ہوتا؟",
+    "questionEn": "Which is the core, irreplaceable pillar of Hajj without which the pilgrimage is completely invalid?",
+    "optionsUrdu": [
+      "وقوفِ عرفہ (میدانِ عرفات میں ٹھہرنا)",
+      "رمی جمرات (کنکریاں مارنا)",
+      "طوافِ وداع",
+      "منیٰ میں رات گزارنا"
+    ],
+    "optionsEn": [
+      "Wuquf at Arafah (Standing at Arafah)",
+      "Rami al-Jamarat",
+      "Tawaf al-Wada",
+      "Staying overnight in Mina"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "رسول اللہ ﷺ نے فرمایا: \"الْحَجُّ عَرَفَةُ\" یعنی حج کا اصل رکن 9 ذوالحجہ کو عرفات میں وقوف کرنا ہے۔ (جامع ترمذی: 889)۔",
+    "explanationEn": "Prophet Muhammad ﷺ declared: \"Hajj is 'Arafah.\" (Jami at-Tirmidhi 889). Standing at Arafah on the 9th of Dhul-Hijjah is its supreme cornerstone.",
+    "category": "Hajj",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-182",
+    "questionUrdu": "نمازِ جنازہ میں کتنے سجدے اور کتنے رکوع ہوتے ہیں؟",
+    "questionEn": "How many prostrations (Sujud) and bowings (Ruku) are performed in the Funeral Prayer (Salat al-Janazah)?",
+    "optionsUrdu": [
+      "کوئی رکوع اور سجدہ نہیں ہوتا (صرف 4 تکبیرات اور قیام ہوتا ہے)",
+      "1 رکوع اور 2 سجدے",
+      "2 رکوع اور 4 سجدے",
+      "صرف 1 سجدہ"
+    ],
+    "optionsEn": [
+      "Zero Ruku and Zero Sujud (only 4 Takbeers while standing)",
+      "1 Ruku and 2 Sujud",
+      "2 Ruku and 4 Sujud",
+      "Only 1 Sujud"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "نمازِ جنازہ دعائے مغفرت پر مشتمل ہے جس میں نہ رکوع ہوتا ہے اور نہ ہی سجدہ، بلکہ کھڑے ہو کر چار تکبیرات کے ساتھ ادا کی جاتی ہے۔",
+    "explanationEn": "Salat al-Janazah consists exclusively of four Takbeers while standing upright, containing no physical bowings (Ruku) or prostrations (Sujud).",
+    "category": "Salah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-183",
+    "questionUrdu": "قرآن مجید میں کتنے انبیاء کرام کے نام صراحت کے ساتھ ذکر کیے گئے ہیں؟",
+    "questionEn": "How many Prophets of Allah are mentioned explicitly by name in the Holy Quran?",
+    "optionsUrdu": [
+      "25 انبیاء کرام",
+      "12 انبیاء کرام",
+      "40 انبیاء کرام",
+      "114 انبیاء کرام"
+    ],
+    "optionsEn": [
+      "25 Prophets",
+      "12 Prophets",
+      "40 Prophets",
+      "114 Prophets"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "قرآن مجید میں کل 25 انبیاء و رسل کا نام مبارک ذکر ہوا ہے، جن میں حضرت آدم، نوح، ابراہیم، موسیٰ، عیسیٰ اور حضرت محمد ﷺ شامل ہیں۔",
+    "explanationEn": "A total of 25 Prophets are explicitly named across the Quran, from Adam (AS) to the final Seal of Prophets Muhammad ﷺ.",
+    "category": "Quran",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-184",
+    "questionUrdu": "غزوۂ احد میں تیر اندازوں کو کس پہاڑی درے پر رسول اللہ ﷺ نے ہر حال میں جمے رہنے کا حکم دیا تھا؟",
+    "questionEn": "At the Battle of Uhud, on which strategic hill pass did the Prophet ﷺ command 50 archers to stand firm without leaving?",
+    "optionsUrdu": [
+      "جبل الرماۃ (کوہِ رمات)",
+      "جبل ثور",
+      "جبل نور",
+      "جبل ابوقبیس"
+    ],
+    "optionsEn": [
+      "Jabal ar-Rumat (The Archers' Hill)",
+      "Jabal Thawr",
+      "Jabal an-Nur",
+      "Jabal Abu Qubays"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "رسول اللہ ﷺ نے حضرت عبداللہ بن جبیرؓ کی قیادت میں 50 تیر اندازوں کو جبل الرماۃ پر تعینات فرمایا اور تاکید کی کہ چاہے ہم جیتیں یا ہاریں، یہ جگہ نہ چھوڑنا۔",
+    "explanationEn": "The Prophet ﷺ placed 50 archers atop Jabal ar-Rumat under Abdullah ibn Jubayr (RA) to protect the Muslim rear flank at Mount Uhud.",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-185",
+    "questionUrdu": "اسلام میں زرعی پیداوار (فصلوں اور پھلوں) پر ادا کیے جانے والے عشر کی شرعی شرح کیا ہے اگر زمین قدرتی بارش سے سیراب ہو؟",
+    "questionEn": "What is the Shari'ah rate of Ushr (agricultural Zakat) on crops irrigated naturally by rain or springs?",
+    "optionsUrdu": [
+      "10 فیصد (دسواں حصہ - 1/10)",
+      "5 فیصد (بیسواں حصہ - 1/20)",
+      "2.5 فیصد",
+      "15 فیصد"
+    ],
+    "optionsEn": [
+      "10 percent (one-tenth - 1/10)",
+      "5 percent (one-twentieth - 1/20)",
+      "2.5 percent",
+      "15 percent"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح بخاری (1483) کے مطابق اگر زمین بارش یا چشموں سے بغیر مشقت سیراب ہو تو عشر (10%) واجب ہوتا ہے، اور مصنوعی ذرائع (ٹیوب ویل وغیرہ) پر نصف عشر (5%) ہوتا ہے۔",
+    "explanationEn": "In Sahih al-Bukhari (1483), lands irrigated naturally by rain or natural springs incur a 10% levy (Ushr), whereas artificially irrigated lands incur 5% (Nisf al-Ushr).",
+    "category": "Zakat",
+    "difficulty": "advanced",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-186",
+    "questionUrdu": "صلحِ حدیبیہ کس سن ہجری میں واقع ہوئی اور قرآن نے اسے کیا قرار دیا؟",
+    "questionEn": "In which Hijri year did the Treaty of Hudaybiyyah take place, and what does the Quran declare it?",
+    "optionsUrdu": [
+      "سن 6 ہجری (فتح مبین - کھلی فتح)",
+      "سن 2 ہجری",
+      "سن 8 ہجری",
+      "سن 10 ہجری"
+    ],
+    "optionsEn": [
+      "6 AH (Fath Mubeen - Clear Victory)",
+      "2 AH",
+      "8 AH",
+      "10 AH"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صلحِ حدیبیہ ذوالقعدہ 6 ہجری میں طے پائی، اور اللہ تعالیٰ نے سورۃ الفتح کی پہلی آیت میں اسے \"فتح مبین\" (کھلی اور روشن فتح) قرار دیا کیونکہ اس سے امن اور دعوت کا راستہ کھلا۔",
+    "explanationEn": "Concluded in Dhul-Qa'dah, 6 AH, Surah Al-Fath (48:1) heralded the Treaty of Hudaybiyyah as a \"clear triumph\" because peace allowed the rapid spread of Islam.",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-187",
+    "questionUrdu": "حضرت یونس علیہ السلام مچھلی کے پیٹ میں کس مشہور قرآنی تسبیح و دعا کے ذریعے اللہ کو پکارتے رہے؟",
+    "questionEn": "Which famous supplication did Prophet Yunus (AS) continuously recite within the belly of the whale?",
+    "optionsUrdu": [
+      "لَا إِلَٰهَ إِلَّا أَنتَ سُبْحَانَكَ إِنِّي كُنتُ مِنَ الظَّالِمِينَ",
+      "رَبِّ إِنِّي ظَلَمْتُ نَفْسِي فَاغْفِرْ لِي",
+      "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+      "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً"
+    ],
+    "optionsEn": [
+      "La ilaha illa Anta subhanaka inni kuntu minaz-zalimeen",
+      "Rabbi inni zalamtu nafsi faghfir li",
+      "HasbunAllahu wa ni'mal wakeel",
+      "Rabbana atina fid-dunya hasanah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ الانبیاء آیت 87 میں یہ دعا بیان ہوئی ہے جسے \"آیتِ کریمہ\" کہا جاتا ہے، اور حدیث میں ہے کہ جو پریشان حال مسلمان یہ دعا مانگے اللہ اس کی دعا قبول فرماتا ہے۔",
+    "explanationEn": "Found in Surah Al-Anbiya (21:87), the Prophet ﷺ affirmed that whenever any distressed Muslim calls upon Allah with this dua, Allah answers them.",
+    "category": "Duas",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-188",
+    "questionUrdu": "مسافر کے لیے چار رکعت والی فرض نمازوں (ظہر، عصر، عشاء) کو دو رکعت کر کے پڑھنے کو شریعت میں کیا کہتے ہیں؟",
+    "questionEn": "What is the Islamic legal term for shortening a 4-Rak'ah obligatory prayer into 2 Rak'ahs while on a journey?",
+    "optionsUrdu": [
+      "قصر (Qasr)",
+      "جمع (Jam')",
+      "قضا (Qada)",
+      "نفل (Nafl)"
+    ],
+    "optionsEn": [
+      "Qasr",
+      "Jam'",
+      "Qada",
+      "Nafl"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "شریعت نے مسافر کے لیے آسانی رکھی ہے کہ وہ دورانِ سفر چار رکعت والی فرض نمازوں میں قصر کرے یعنی دو رکعت ادا کرے۔ (سورۃ النساء: 101)۔",
+    "explanationEn": "Shortening 4-Rak'ah obligatory prayers to 2 during legitimate travel is termed Qasr, an established divine concession (Surah An-Nisa 4:101).",
+    "category": "Salah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-189",
+    "questionUrdu": "رسول اللہ ﷺ کی زوجہ محترمہ حضرت عائشہ صدیقہ رضی اللہ عنہا کے والد ماجد کا کیا نام ہے؟",
+    "questionEn": "Who was the father of Mother of the Believers, Aisha (RA)?",
+    "optionsUrdu": [
+      "حضرت ابوبکر صدیق رضی اللہ عنہ",
+      "حضرت عمر فاروقؓ",
+      "حضرت عثمان غنیؓ",
+      "حضرت علی المرتضیٰؓ"
+    ],
+    "optionsEn": [
+      "Abu Bakr as-Siddiq (RA)",
+      "Umar ibn al-Khattab (RA)",
+      "Uthman ibn Affan (RA)",
+      "Ali ibn Abi Talib (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "حضرت عائشہ صدیقہؓ اسلام کے پہلے خلیفہ اور رسول اللہ ﷺ کے سب سے قریبی رفیق حضرت ابوبکر صدیقؓ کی صاحبزادی تھیں۔",
+    "explanationEn": "Aisha (RA) was the daughter of Abu Bakr as-Siddiq (RA), the first Caliph of Islam and the closest companion of the Prophet ﷺ.",
+    "category": "Seerah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-190",
+    "questionUrdu": "قرآن مجید میں حضرت ایوب علیہ السلام کی کس عظیم صفت کی سب سے زیادہ تعریف کی گئی ہے؟",
+    "questionEn": "For which noble virtue is Prophet Ayyub (Job) AS most renowned and praised in the Holy Quran?",
+    "optionsUrdu": [
+      "بے مثال صبر اور شکر (Patience & Fortitude)",
+      "بہادری اور تلوار بازی",
+      "شاہی اقتدار اور سلطنت",
+      "طویل بحری سفر"
+    ],
+    "optionsEn": [
+      "Exemplary Patience and Sabr",
+      "Martial valor",
+      "Regal empire and wealth",
+      "Maritime voyaging"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ ص (38:44) میں اللہ نے حضرت ایوبؑ کے بارے میں فرمایا: \"بے شک ہم نے اسے صابر پایا، وہ کتنا اچھا بندہ تھا، یقیناً وہ بہت رجوع کرنے والا تھا۔\"",
+    "explanationEn": "Surah Sad (38:44) praises Prophet Ayyub (AS): \"Indeed, We found him patient, an excellent servant. Indeed, he was one repeatedly turning back [to Allah].\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-191",
+    "questionUrdu": "سورۃ الفاتحہ کے دیگر مشہور اسمائے گرامی میں سے کون سا نام شامل نہیں ہے؟",
+    "questionEn": "Which of the following is NOT a recognized authentic name of Surah Al-Fatihah?",
+    "optionsUrdu": [
+      "سورۃ الانفال",
+      "ام الکتاب (ماں قرآن کی)",
+      "السبع المثانی",
+      "الشفاء"
+    ],
+    "optionsEn": [
+      "Surah Al-Anfal",
+      "Umm al-Kitab",
+      "As-Sab' al-Mathani",
+      "Ash-Shifa"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ الفاتحہ کے ناموں میں ام الکتاب، السبع المثانی، الشفاء، اور الصلوٰۃ شامل ہیں، جبکہ سورۃ الانفال ایک الگ آزاد سورت (سورت نمبر 8) ہے۔",
+    "explanationEn": "Surah Al-Fatihah is known as Umm al-Kitab, As-Sab' al-Mathani, and Ash-Shifa, whereas Surah Al-Anfal is an entirely distinct chapter (Chapter 8).",
+    "category": "Quran",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-192",
+    "questionUrdu": "کس صحابی کو رسول اللہ ﷺ نے اپنی زندگی میں قرآن کے چار مستند اساتذہ میں شمار فرمایا تھا؟",
+    "questionEn": "Which companion was named by the Prophet ﷺ as one of the four foremost teachers from whom the Quran should be directly learned?",
+    "optionsUrdu": [
+      "حضرت عبداللہ بن مسعود رضی اللہ عنہ",
+      "حضرت خالد بن ولیدؓ",
+      "حضرت عمرو بن العاصؓ",
+      "حضرت زبیر بن العوامؓ"
+    ],
+    "optionsEn": [
+      "Abdullah ibn Mas'ud (RA)",
+      "Khalid ibn al-Walid (RA)",
+      "Amr ibn al-As (RA)",
+      "Zubayr ibn al-Awwam (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح بخاری (3758) میں رسول اللہ ﷺ نے فرمایا: \"قرآن چار افراد سے سیکھو: عبداللہ بن مسعود، سالم مولیٰ ابی حذیفہ، معاذ بن جبل، اور ابی بن کعب۔\"",
+    "explanationEn": "In Sahih al-Bukhari (3758), the Prophet ﷺ advised: \"Take the Quran from four: Abdullah ibn Mas'ud, Salim the freed slave of Abu Hudhayfah, Mu'adh ibn Jabal, and Ubayy ibn Ka'b.\"",
+    "category": "Hadith",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-193",
+    "questionUrdu": "قرآن مجید کے مطابق قارون کس نبی کی قوم میں سے تھا جس نے اپنی دولت پر غرور کیا؟",
+    "questionEn": "According to the Quran, Qarun (Korah) was from the people of which Prophet before being swallowed by the earth?",
+    "optionsUrdu": [
+      "حضرت موسیٰ علیہ السلام",
+      "حضرت عیسیٰ علیہ السلام",
+      "حضرت یوسف علیہ السلام",
+      "حضرت شعیب علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Musa (AS)",
+      "Prophet Isa (AS)",
+      "Prophet Yusuf (AS)",
+      "Prophet Shu'ayb (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ القصص (28:76) میں فرمایا: \"بے شک قارون موسیٰ کی قوم میں سے تھا، پھر اس نے ان پر سرکشی کی اور ہم نے اسے اتنے خزانے دیے تھے جن کی چابیاں اٹھانا ایک جماعت پر بھاری تھا۔\"",
+    "explanationEn": "Surah Al-Qasas (28:76) records that Qarun belonged to the nation of Prophet Musa (AS) but rebelled through arrogance in his vast wealth.",
+    "category": "Prophets",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-194",
+    "questionUrdu": "حضرت یوسف علیہ السلام کو مصر میں قید خانے سے رہائی کے بعد کون سا اہم حکومتی عہدہ دیا گیا؟",
+    "questionEn": "Which prestigious governmental post was Prophet Yusuf (AS) appointed to in Egypt after his exoneration?",
+    "optionsUrdu": [
+      "خزانوں اور مالی امور کے نگران (وزیرِ خزانہ)",
+      "فوج کے سپہ سالار",
+      "بحری بیڑے کے کپتان",
+      "شہر کے معمار"
+    ],
+    "optionsEn": [
+      "Custodian of Storehouses & Treasury (Finance Minister)",
+      "General of the armed forces",
+      "Fleet Admiral",
+      "Chief Architect"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ یوسف (12:55) میں حضرت یوسفؑ نے فرمایا: \"مجھے زمین کے خزانوں پر مقرر فرما دیجیے، بے شک میں حفاظت کرنے والا، علم والا ہوں۔\"",
+    "explanationEn": "Surah Yusuf (12:55) quotes Yusuf (AS): \"Appoint me over the storehouses of the land. Indeed, I will be a knowing guardian.\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-195",
+    "questionUrdu": "حضرت سلیمان علیہ السلام کو اللہ تعالیٰ نے کس چیز کی زبان سمجھنے کی معجزانہ صلاحیت عطا فرمائی تھی؟",
+    "questionEn": "Which miraculous ability was Prophet Sulaiman (Solomon) AS divinely gifted to understand?",
+    "optionsUrdu": [
+      "پرندوں اور جانوروں کی بولیاں (Language of birds & beasts)",
+      "سمندری مچھلیوں کی لہریں",
+      "درختوں کے گرنے کی آواز",
+      "پتھروں کی کھدائی"
+    ],
+    "optionsEn": [
+      "The speech of birds, ants, and animals",
+      "Ocean tides",
+      "The rustling of leaves",
+      "Carving stones"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ النمل آیت 16 میں فرمایا: \"اور سلیمان داؤد کے وارث ہوئے اور انہوں نے کہا: اے لوگو! ہمیں پرندوں کی بولی سکھائی گئی ہے۔\"",
+    "explanationEn": "Surah An-Naml (27:16) states: \"And Sulaiman inherited Dawud. He said: 'O people, we have been taught the language of birds.'\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-196",
+    "questionUrdu": "مسلمانوں کے پہلے قبلے \"مسجدِ اقصیٰ\" سے کعبۃ اللہ کی طرف تحویلِ قبلہ کا حکم کس ہجری سال میں نازل ہوا؟",
+    "questionEn": "In which Hijri year was the command revealed changing the Qibla direction from Jerusalem to the Kaaba in Makkah?",
+    "optionsUrdu": [
+      "سن 2 ہجری (ماہِ رجب یا شعبان)",
+      "سن 1 ہجری",
+      "سن 4 ہجری",
+      "سن 6 ہجری"
+    ],
+    "optionsEn": [
+      "2 AH (in Rajab or Sha'ban)",
+      "1 AH",
+      "4 AH",
+      "6 AH"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "ہجرت کے تقریباً 16 یا 17 ماہ بعد سن 2 ہجری میں سورۃ البقرہ آیت 144 کے ذریعے قبلہ بیت المقدس سے کعبہ مکرمہ کی طرف تبدیل کیا گیا، جس مسجد میں یہ حکم آیا اسے \"مسجدِ قبلتین\" کہا جاتا ہے۔",
+    "explanationEn": "In 2 AH, roughly 16-17 months after Hijrah, verse 2:144 changed the Qibla from Jerusalem to the Kaaba; the historic site where this prayer took place is Masjid al-Qiblatayn.",
+    "category": "History",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-197",
+    "questionUrdu": "اسلام میں کس قسم کے جانور کی قربانی یا گوشت کھانا قطعی حرام قرار دیا گیا ہے؟",
+    "questionEn": "Which of the following animals is unconditionally and explicitly declared Haram to consume in the Holy Quran?",
+    "optionsUrdu": [
+      "خنزیر (سور کا گوشت)",
+      "بکری اور بھیڑ",
+      "اونٹ",
+      "گائے اور بیل"
+    ],
+    "optionsEn": [
+      "Swine (Pork)",
+      "Goat and sheep",
+      "Camel",
+      "Cow and bull"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ المائدہ (5:3) میں فرمایا: \"تم پر مردار، خون، سور کا گوشت اور وہ جانور جس پر اللہ کے سوا کسی اور کا نام پکارا گیا ہو، حرام کر دیا گیا ہے۔\"",
+    "explanationEn": "Surah Al-Ma'idah (5:3) explicitly prohibits carrion, flowing blood, the flesh of swine, and that which has been dedicated to other than Allah.",
+    "category": "Halal",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-198",
+    "questionUrdu": "نماز میں قراءت کے دوران کھڑے ہونے کی حالت کو کیا کہا جاتا ہے؟",
+    "questionEn": "What is the physical standing posture during which the Quran is recited in Salah called?",
+    "optionsUrdu": [
+      "قیام (Qiyam)",
+      "رکوع (Ruku)",
+      "سجود (Sujud)",
+      "قعدہ (Qa'dah)"
+    ],
+    "optionsEn": [
+      "Qiyam",
+      "Ruku",
+      "Sujud",
+      "Qa'dah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "قیام نماز کا ایک لازمی فرض رکن ہے جس میں قبلہ رخ سیدھا کھڑے ہو کر سورۃ الفاتحہ اور قرآن کی تلاوت کی جاتی ہے۔",
+    "explanationEn": "Qiyam is the upright standing pillar of Salah during which Surah Al-Fatihah and additional Quranic passages are recited.",
+    "category": "Salah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-199",
+    "questionUrdu": "رسول اللہ ﷺ نے فتحِ مکہ کے موقع پر عام معافی کا اعلان کرتے ہوئے کس دشمن کے گھر کو بھی جائے امن قرار دیا تھا؟",
+    "questionEn": "Upon entering Makkah peacefully, whose house did Prophet Muhammad ﷺ declare a sanctuary of safety for anyone who entered it?",
+    "optionsUrdu": [
+      "ابو سفیان بن حرب کا گھر",
+      "ابو جہل کا گھر",
+      "امیہ بن خلف کا گھر",
+      "عتبہ بن ربیعہ کا گھر"
+    ],
+    "optionsEn": [
+      "The house of Abu Sufyan ibn Harb",
+      "The house of Abu Jahl",
+      "The house of Umayyah ibn Khalaf",
+      "The house of 'Utbah ibn Rabi'ah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "رسول اللہ ﷺ نے اعلان فرمایا: \"جو شخص ابو سفیان کے گھر میں داخل ہو جائے وہ محفوظ ہے، اور جو اپنے گھر کا دروازہ بند کر لے وہ محفوظ ہے۔\" (صحیح مسلم: 1780)۔",
+    "explanationEn": "The Prophet ﷺ proclaimed magnanimously: \"Whoever enters the house of Abu Sufyan is safe, and whoever locks their door is safe.\" (Sahih Muslim 1780).",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-200",
+    "questionUrdu": "قرآن مجید کی کس سورت کو تلاوت کرنے کا ثواب ایک تہائی قرآن (1/3 Quran) کے برابر قرار دیا گیا ہے؟",
+    "questionEn": "Which Surah is described in authentic Hadith as equaling one-third of the Quran in reward and meaning?",
+    "optionsUrdu": [
+      "سورۃ الاخلاص (Surah Al-Ikhlas)",
+      "سورۃ الفاتحہ",
+      "سورۃ الملک",
+      "سورۃ یٰس"
+    ],
+    "optionsEn": [
+      "Surah Al-Ikhlas",
+      "Surah Al-Fatihah",
+      "Surah Al-Mulk",
+      "Surah Ya-Sin"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح بخاری (5015) میں رسول اللہ ﷺ نے فرمایا: \"کیا تم میں سے کوئی عاجز ہے کہ رات میں ایک تہائی قرآن پڑھے؟ صحابہ نے پوچھا: کیسے؟ فرمایا: قل ہو اللہ احد ایک تہائی قرآن کے برابر ہے۔\"",
+    "explanationEn": "In Sahih al-Bukhari (5015), the Prophet ﷺ affirmed that Surah Al-Ikhlas encapsulates pure monotheism, equaling one-third of the Quran in spiritual weight.",
+    "category": "Quran",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-201",
+    "questionUrdu": "رسول اللہ ﷺ نے کس رات کی عبادت کو ایک ہزار مہینوں کی عبادت سے افضل قرار دیا ہے؟",
+    "questionEn": "Which sacred night is declared in the Holy Quran to be better in reward than one thousand months?",
+    "optionsUrdu": [
+      "شبِ قدر (Laylatul Qadr)",
+      "شبِ معراج",
+      "شبِ برات",
+      "شبِ عید"
+    ],
+    "optionsEn": [
+      "Laylatul Qadr (The Night of Decree)",
+      "Laylatul Mi'raj",
+      "Laylatul Bara'ah",
+      "Laylatul Eid"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ القدر (97:3) میں اللہ تعالیٰ نے فرمایا: \"لَيْلَةُ الْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ\" یعنی شبِ قدر ہزار مہینوں سے بہتر ہے۔",
+    "explanationEn": "Surah Al-Qadr (97:3) proclaims: \"The Night of Decree is better than a thousand months (over 83 years of continuous worship).\"",
+    "category": "Quran",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-202",
+    "questionUrdu": "مسلمانوں کے چوتھے خلیفہ راشد حضرت علی المرتضیٰ رضی اللہ عنہ کی کنیت کیا تھی جو رسول اللہ ﷺ نے پیار سے رکھی تھی؟",
+    "questionEn": "Which affectionate Kunya (agnomen) did the Prophet ﷺ confer upon Ali ibn Abi Talib (RA) when he found him lying on the dust?",
+    "optionsUrdu": [
+      "ابو تراب (مٹی والے)",
+      "ابو بکر",
+      "ابو حفص",
+      "ابو ہریرہ"
+    ],
+    "optionsEn": [
+      "Abu Turab (Father of Dust)",
+      "Abu Bakr",
+      "Abu Hafs",
+      "Abu Hurairah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح بخاری (3703) میں ہے کہ جب رسول اللہ ﷺ مسجد میں تشریف لائے اور حضرت علیؓ کو مٹی پر سوئے دیکھا تو پیار سے مٹی جھاڑتے ہوئے فرمایا: \"قم یا ابا تراب\" (اٹھو اے مٹی والے)۔",
+    "explanationEn": "In Sahih al-Bukhari (3703), the Prophet ﷺ playfully dusted off Ali's back in the mosque, saying: \"Rise, O Abu Turab (Father of Dust)!\" which Ali cherished as his favorite title.",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-203",
+    "questionUrdu": "فرمانِ نبوی ﷺ کے مطابق کون سی سورۃ روزانہ رات کو پڑھنے سے عذابِ قبر سے حفاظت رہتی ہے؟",
+    "questionEn": "Which Surah did the Prophet ﷺ describe as an intercessor and protector from the punishment of the grave when recited nightly?",
+    "optionsUrdu": [
+      "سورۃ الملک (Surah Al-Mulk - تبارک الذی)",
+      "سورۃ الرحمن",
+      "سورۃ الواقعہ",
+      "سورۃ الدخان"
+    ],
+    "optionsEn": [
+      "Surah Al-Mulk (Chapter 67)",
+      "Surah Ar-Rahman",
+      "Surah Al-Waqi'ah",
+      "Surah Ad-Dukhan"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "جامع ترمذی (2890) میں ہے کہ رسول اللہ ﷺ نے فرمایا: \"قرآن میں 30 آیات پر مشتمل ایک سورت ہے جو انسان کی شفاعت کرتی ہے یہاں تک کہ اس کی بخشش ہو جائے، اور وہ سورۃ تبارک الذی بیدہ الملک ہے۔\"",
+    "explanationEn": "In Jami at-Tirmidhi (2890), the Prophet ﷺ described Surah Al-Mulk (30 verses) as an advocate that intercedes continuously until its reciter is forgiven and shielded in the grave.",
+    "category": "Quran",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-204",
+    "questionUrdu": "شریعت میں کسی کی عیب جوئی کرنے اور پیٹھ پیچھے برائی کرنے کو کس چیز کے مترادف قرار دیا گیا ہے؟",
+    "questionEn": "In Surah Al-Hujurat (49:12), backbiting (Gheebah) a fellow Muslim is compared to which horrific act?",
+    "optionsUrdu": [
+      "اپنے مردہ بھائی کا گوشت کھانا",
+      "سمندر کو گندا کرنا",
+      "کعبہ پر حملہ کرنا",
+      "چوری کرنا"
+    ],
+    "optionsEn": [
+      "Eating the flesh of one's dead brother",
+      "Polluting the ocean",
+      "Attacking the sanctuary",
+      "Committing robbery"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ الحجرات (49:12) میں فرمایا: \"اور تم میں سے کوئی کسی کی غیبت نہ کرے، کیا تم میں سے کوئی اپنے مردہ بھائی کا گوشت کھانا پسند کرے گا؟ تم تو اس سے گھن کھاؤ گے۔\"",
+    "explanationEn": "Surah Al-Hujurat (49:12) poses the striking moral question: \"And do not spy or backbite each other. Would one of you like to eat the flesh of his brother when dead? You would detest it.\"",
+    "category": "Manners",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-205",
+    "questionUrdu": "رسول اللہ ﷺ کی اونٹنی کا کیا نام تھا جس پر سوار ہو کر آپ ﷺ نے مکہ سے مدینہ ہجرت فرمائی؟",
+    "questionEn": "What was the name of the Prophet's beloved she-camel upon which he made the historic journey of Hijrah?",
+    "optionsUrdu": [
+      "القصواء (Al-Qaswa)",
+      "الدلجم",
+      "العضباء",
+      "البراق"
+    ],
+    "optionsEn": [
+      "Al-Qaswa",
+      "Ad-Daljam",
+      "Al-Adba",
+      "Al-Buraq"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "رسول اللہ ﷺ کی مشہور اونٹنی کا نام \"القصواء\" تھا، مدینہ منورہ پہنچنے پر اسی اونٹنی کے بیٹھنے کی جگہ پر مسجد نبوی تعمیر کی گئی۔",
+    "explanationEn": "Al-Qaswa was the Prophet's she-camel during Hijrah; the site where she knelt under divine direction became the location of the Prophet's Mosque in Madinah.",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-206",
+    "questionUrdu": "اسلامی شریعت کے مطابق وضو کے کتنے لازمی فرائض ہیں جن کے بغیر وضو درست نہیں ہوتا؟",
+    "questionEn": "According to the Holy Quran (Surah Al-Ma'idah 5:6), how many obligatory fard acts comprise Wudu?",
+    "optionsUrdu": [
+      "4 فرائض (چہرہ دھونا، کہنیوں سمیت ہاتھ دھونا، سر کا مسح، اور ٹخنوں سمیت پاؤں دھونا)",
+      "3 فرائض",
+      "6 فرائض",
+      "8 فرائض"
+    ],
+    "optionsEn": [
+      "4 Fard obligations (washing face, arms to elbows, wiping head, and feet to ankles)",
+      "3 obligations",
+      "6 obligations",
+      "8 obligations"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ المائدہ آیت 6 میں وضو کے چار فرائض بیان ہوئے ہیں: چہرہ دھونا، کہنیوں سمیت دونوں بازو دھونا، چوتھائی سر کا مسح کرنا، اور ٹخنوں سمیت پاؤں دھونا۔",
+    "explanationEn": "Surah Al-Ma'idah (5:6) explicitly decrees the four Quranic pillars of Wudu: washing the entire face, washing both arms up to the elbows, wiping over the head, and washing the feet up to the ankles.",
+    "category": "Salah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-207",
+    "questionUrdu": "کون سے صحابی رسول اللہ ﷺ کے سب سے پہلے مؤذن (اذان دینے والے) تھے؟",
+    "questionEn": "Which venerable companion was appointed as the very first Mu'adhin (caller to prayer) in Islam?",
+    "optionsUrdu": [
+      "حضرت بلال بن رباح رضی اللہ عنہ",
+      "حضرت عبداللہ بن ام مکتومؓ",
+      "حضرت ابو محذورہؓ",
+      "حضرت سعد القرظؓ"
+    ],
+    "optionsEn": [
+      "Bilal ibn Rabah (RA)",
+      "Abdullah ibn Umm Maktum (RA)",
+      "Abu Mahdhura (RA)",
+      "Sa'd al-Qaraz (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "حضرت بلال حبشی رضی اللہ عنہ کو رسول اللہ ﷺ نے اپنی خوبصورت، پر سوز آواز اور ایمان میں ثابت قدمی کی بنا پر مدینہ منورہ میں اسلام کا پہلا مؤذن مقرر فرمایا۔",
+    "explanationEn": "Bilal ibn Rabah (RA) was appointed by the Prophet ﷺ as the first Mu'adhin in Islamic history, immortalized for his deep melodic voice and steadfast devotion under persecution.",
+    "category": "Seerah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-208",
+    "questionUrdu": "قرآن مجید میں اللہ تعالیٰ نے کن لوگوں کے بارے میں فرمایا کہ \"اللہ ان سے راضی ہوا اور وہ اللہ سے راضی ہوئے\"؟",
+    "questionEn": "Regarding which blessed group did Allah state in the Quran: \"Allah is pleased with them and they are pleased with Him\"?",
+    "optionsUrdu": [
+      "مہاجرین و انصار اور صحابہ کرام رضوان اللہ علیہم اجمعین",
+      "اہلِ کتاب",
+      "مشرکینِ مکہ",
+      "رومی سلطنت کے بادشاہ"
+    ],
+    "optionsEn": [
+      "The Muhajirun, Ansar, and righteous Sahabah (RA)",
+      "The People of the Book",
+      "The pagans of Makkah",
+      "Byzantine monarchs"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ التوبہ (9:100) اور سورۃ الفتح میں اللہ تعالیٰ نے مہاجرین، انصار اور اخلاص کے ساتھ ان کی پیروی کرنے والے صحابہ کے لیے اپنی دائمی رضامندی کا اعلان فرمایا ہے۔",
+    "explanationEn": "Surah At-Tawbah (9:100) honors the foremost Muhajirun, Ansar, and those who followed them in righteousness with eternal divine pleasure (Radhiya Allahu 'anhum wa radhu 'anh).",
+    "category": "Quran",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-209",
+    "questionUrdu": "سود (Riba) کی حرمت کا قطعی اور آخری حکم قرآن مجید کی کس سورت میں نازل ہوا؟",
+    "questionEn": "In which Surah are the decisive, stern Quranic verses strictly prohibiting usury and interest (Riba) articulated?",
+    "optionsUrdu": [
+      "سورۃ البقرہ (آیات 275-279)",
+      "سورۃ الاخلاص",
+      "سورۃ الکوثر",
+      "سورۃ الواقعہ"
+    ],
+    "optionsEn": [
+      "Surah Al-Baqarah (2:275-279)",
+      "Surah Al-Ikhlas",
+      "Surah Al-Kawthar",
+      "Surah Al-Waqi'ah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ البقرہ (2:275) میں فرمایا: \"اور اللہ نے تجارت کو حلال کیا اور سود کو حرام ٹھہرایا ہے\" اور سود خوروں کے خلاف اللہ اور اس کے رسول کی طرف سے جنگ کا اعلان ہے۔",
+    "explanationEn": "Surah Al-Baqarah (2:275-279) irrevocably declares trade permissible and usury forbidden, commanding believers to abandon all remaining interest.",
+    "category": "Halal",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-210",
+    "questionUrdu": "حج اور عمرہ کے دوران صفا اور مروہ کی دو پہاڑیوں کے درمیان سات چکر لگانے کو کیا کہا جاتا ہے؟",
+    "questionEn": "What is the ritual brisk walking back and forth seven times between the hills of Safa and Marwah called?",
+    "optionsUrdu": [
+      "سعی (Sa'i)",
+      "طواف (Tawaf)",
+      "احرام (Ihram)",
+      "حلق (Halq)"
+    ],
+    "optionsEn": [
+      "Sa'i",
+      "Tawaf",
+      "Ihram",
+      "Halq"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صفا اور مروہ کے درمیان سعی کرنا حضرت ہاجرہ علیہا السلام کی یاد میں ادا کیا جاتا ہے جب وہ اپنے معصوم بچے اسماعیلؑ کے لیے پانی کی تلاش میں دوڑی تھیں۔ (سورۃ البقرہ: 158)۔",
+    "explanationEn": "Sa'i is the devotional pacing between Safa and Marwah, commemorating Lady Hajar's desperate quest for water for her infant son Ismail (AS) before the gushing of Zamzam.",
+    "category": "Hajj",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-211",
+    "questionUrdu": "رسول اللہ ﷺ کی وفات کے بعد سب سے پہلے کس جلیل القدر صحابی کو مسلمانوں کا خلیفہ منتخب کیا گیا؟",
+    "questionEn": "Who was unanimously affirmed by the companions as the first Caliph of Islam following the death of the Prophet ﷺ?",
+    "optionsUrdu": [
+      "حضرت ابوبکر صدیق رضی اللہ عنہ",
+      "حضرت عمر فاروقؓ",
+      "حضرت عثمان غنیؓ",
+      "حضرت علی المرتضیٰؓ"
+    ],
+    "optionsEn": [
+      "Abu Bakr as-Siddiq (RA)",
+      "Umar ibn al-Khattab (RA)",
+      "Uthman ibn Affan (RA)",
+      "Ali ibn Abi Talib (RA)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سقیفہ بنی ساعدہ میں مہاجرین و انصار کے اتفاق سے حضرت ابوبکر صدیقؓ کو پہلا خلیفہ راشد چنا گیا جنہوں نے امت کو متحد رکھا۔",
+    "explanationEn": "At Saqifah Bani Sa'idah, Abu Bakr as-Siddiq (RA) was pledged allegiance as the first successor (Khalifah) to lead the Muslim Ummah.",
+    "category": "History",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-212",
+    "questionUrdu": "قرآن مجید میں کس پیغمبر کی اونٹنی (ناقۃ اللہ) کا معجزہ اور اس کی ہلاکت کی سرکشی کا ذکر ہے؟",
+    "questionEn": "The miraculous She-Camel of Allah (Naqatullah) was sent as a divine sign to the people of which Prophet?",
+    "optionsUrdu": [
+      "حضرت صالح علیہ السلام (قومِ ثمود)",
+      "حضرت ہود علیہ السلام",
+      "حضرت شعیب علیہ السلام",
+      "حضرت لوط علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Salih (AS) - Nation of Thamud",
+      "Prophet Hud (AS)",
+      "Prophet Shu'ayb (AS)",
+      "Prophet Lut (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "قومِ ثمود نے حضرت صالح علیہ السلام سے پہاڑ کی چٹان سے زندہ اونٹنی نکالنے کا مطالبہ کیا، جب معجزہ ظاہر ہوا تو سرکشوں نے اسے قتل کر دیا اور عذاب سے تباہ کر دیے گئے۔",
+    "explanationEn": "The people of Thamud demanded a sign, so Allah caused a living she-camel to emerge from rock for Prophet Salih (AS); their slaughter of her triggered their divine destruction.",
+    "category": "Prophets",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-213",
+    "questionUrdu": "کس جنگ میں رسول اللہ ﷺ کے دندانِ مبارک شہید ہوئے اور چہرہ مبارک زخمی ہوا؟",
+    "questionEn": "In which defensive battle did Prophet Muhammad ﷺ sustain facial injuries and have his tooth chipped?",
+    "optionsUrdu": [
+      "غزوۂ احد (Battle of Uhud)",
+      "غزوۂ بدر",
+      "غزوۂ خندق",
+      "غزوۂ حنین"
+    ],
+    "optionsEn": [
+      "The Battle of Uhud",
+      "The Battle of Badr",
+      "The Battle of the Trench",
+      "The Battle of Hunayn"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سن 3 ہجری میں غزوۂ احد کے دوران شدید معرکے میں رسول اللہ ﷺ زخمی ہوئے، مگر آپ ﷺ نے بددعا کے بجائے فرمایا: \"اے اللہ! میری قوم کو معاف فرما کیونکہ وہ نہیں جانتے۔\"",
+    "explanationEn": "During the Battle of Uhud (3 AH), the Prophet ﷺ suffered physical injury when his helmet links pressed into his cheek and his tooth was struck, yet he prayed for his people's guidance.",
+    "category": "Seerah",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-214",
+    "questionUrdu": "حدیث کے مطابق جمعہ کے دن کی وہ کون سی گھڑی ہے جس میں مانگی گئی دعا رد نہیں ہوتی؟",
+    "questionEn": "According to authentic Hadith, during which approximate hour on Friday is supplication guaranteed to be answered (Sa'at al-Ijabah)?",
+    "optionsUrdu": [
+      "عصر کی نماز کے بعد سے لے کر غروبِ آفتاب تک کے آخری لمحات",
+      "فجر سے طلوعِ آفتاب تک",
+      "جمعرات کی نصف شب",
+      "ظہر کے فورا بعد"
+    ],
+    "optionsEn": [
+      "The final moments between Asr prayer and sunset",
+      "From Fajr until sunrise",
+      "Midnight on Thursday",
+      "Immediately after Dhuhr"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سنن ابی داؤد (1048) اور جامع ترمذی میں رسول اللہ ﷺ نے فرمایا: \"جمعہ کے دن میں ایک گھڑی ایسی ہے جس میں مسلمان بندہ جو بھی خیر مانگے اللہ عطا فرماتا ہے، اور اسے عصر کے بعد آخری وقت میں تلاش کرو۔\"",
+    "explanationEn": "In Sunan Abi Dawud (1048), the Prophet ﷺ stated: \"Seek the hour of guaranteed acceptance on Friday in the last hour after 'Asr prayer until sunset.\"",
+    "category": "Hadith",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-215",
+    "questionUrdu": "اسلام میں زکوٰۃ کے مصارف (مستحقین) کا تفصیلی بیان قرآن مجید کی کس سورت اور آیت میں آیا ہے؟",
+    "questionEn": "In which Quranic verse are the eight divinely specified categories of Zakat recipients enumerated?",
+    "optionsUrdu": [
+      "سورۃ التوبہ (آیت 60)",
+      "سورۃ البقرہ (آیت 43)",
+      "سورۃ النساء (آیت 29)",
+      "سورۃ الانفال (آیت 1)"
+    ],
+    "optionsEn": [
+      "Surah At-Tawbah (9:60)",
+      "Surah Al-Baqarah (2:43)",
+      "Surah An-Nisa (4:29)",
+      "Surah Al-Anfal (8:1)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ التوبہ آیت 60 میں زکوٰۃ کے آٹھ مصارف بیان فرمائے گئے ہیں جن میں فقراء، مساکین، عاملین زکوٰۃ، مقروض، اور مسافر وغیرہ شامل ہیں۔",
+    "explanationEn": "Surah At-Tawbah (9:60) specifies the eight exclusive beneficiaries of Zakat: the poor, the destitute, administrators of Zakat, those whose hearts are to be reconciled, freeing captives, debtors, in the cause of Allah, and stranded travelers.",
+    "category": "Zakat",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-216",
+    "questionUrdu": "حضرت ابراہیم علیہ السلام کے بڑے بیٹے کا کیا نام تھا جنہیں اللہ کی راہ میں قربان کرنے کا خواب دکھایا گیا؟",
+    "questionEn": "Who was the eldest son of Prophet Ibrahim (AS) whom he prepared to sacrifice in obedience to the divine vision?",
+    "optionsUrdu": [
+      "حضرت اسماعیل علیہ السلام",
+      "حضرت اسحاق علیہ السلام",
+      "حضرت یعقوب علیہ السلام",
+      "حضرت یوسف علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Ismail (AS)",
+      "Prophet Ishaq (AS)",
+      "Prophet Ya'qub (AS)",
+      "Prophet Yusuf (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ الصافات (37:102) میں حضرت اسماعیل علیہ السلام کی تسلیم و رضا کا ذکر ہے جنہوں نے والد کے خواب پر خوشی سے فرمایا: \"اے میرے ابا جان! وہی کیجیے جس کا آپ کو حکم دیا گیا ہے۔\"",
+    "explanationEn": "Surah As-Saffat (37:102) recounts Ismail's (AS) sublime submission when his father shared his vision: \"O my father, do as you are commanded; you will find me, if Allah wills, among the patient.\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-217",
+    "questionUrdu": "قرآن مجید کے کل کتنے پارے (اجزاء) ہیں اور اس میں کل کتنی سورتیں ہیں؟",
+    "questionEn": "How many Juz (parts) and how many Surahs (chapters) comprise the complete Holy Quran?",
+    "optionsUrdu": [
+      "30 پارے اور 114 سورتیں",
+      "20 پارے اور 100 سورتیں",
+      "40 پارے اور 120 سورتیں",
+      "25 پارے اور 110 سورتیں"
+    ],
+    "optionsEn": [
+      "30 Juz and 114 Surahs",
+      "20 Juz and 100 Surahs",
+      "40 Juz and 120 Surahs",
+      "25 Juz and 110 Surahs"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "قرآن مجید کی تلاوت کی سہولت کے لیے اسے 30 اجزاء (پاروں) میں تقسیم کیا گیا ہے اور اس میں کل 114 سورتیں ہیں جن میں سے 86 مکی اور 28 مدنی ہیں۔",
+    "explanationEn": "The Holy Quran consists of 30 Juz and 114 Surahs, traditionally categorized into 86 Makkan and 28 Madinan revelations.",
+    "category": "Quran",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-218",
+    "questionUrdu": "رسول اللہ ﷺ نے اپنے آخری حج (حجۃ الوداع) میں میدانِ عرفات میں جو خطبہ دیا اسے تاریخ میں کس نام سے جانا جاتا ہے؟",
+    "questionEn": "What is the historic sermon delivered by Prophet Muhammad ﷺ atop Mount Arafat during his solitary Hajj called?",
+    "optionsUrdu": [
+      "خطبۂ حجۃ الوداع (The Farewell Sermon)",
+      "خطبۂ غدیر",
+      "خطبۂ مدینہ",
+      "خطبۂ خیبر"
+    ],
+    "optionsEn": [
+      "Khutbah Hajjat al-Wada' (The Farewell Sermon)",
+      "Khutbah Ghadir",
+      "Khutbah Madinah",
+      "Khutbah Khaybar"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سن 10 ہجری میں خطبۂ حجۃ الوداع اسلام کا تاریخی منشورِ انسانیت ہے جس میں نسل، رنگ اور زبان کی بنیاد پر برتری کی نفی کی گئی اور سب کو آدم کی اولاد قرار دیا گیا۔",
+    "explanationEn": "Delivered in 10 AH, the Farewell Sermon established foundational human rights, declaring that no Arab has superiority over a non-Arab, nor white over black, except by piety.",
+    "category": "Seerah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-219",
+    "questionUrdu": "اسلام کے کس بنیادی رکن کو \"امانت دارانہ معاشی توازن\" اور غریبوں کی لازمی کفالت کا ذریعہ بنایا گیا ہے؟",
+    "questionEn": "Which essential Pillar of Islam directly establishes economic equilibrium by obligating wealth redistribution to the impoverished?",
+    "optionsUrdu": [
+      "زکوٰۃ (Zakat)",
+      "حج (Hajj)",
+      "روزہ (Sawm)",
+      "کلمہ طیبہ"
+    ],
+    "optionsEn": [
+      "Zakat",
+      "Hajj",
+      "Sawm",
+      "Shahadah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "زکوٰۃ اسلام کا تیسرا بنیادی رکن ہے جو صاحبِ نصاب مسلمانوں کے زائد مال پر سالانہ 2.5 فیصد لاگو ہوتا ہے تاکہ معاشرے کے محروم طبقات کی دیکھ بھال ہو سکے۔",
+    "explanationEn": "Zakat is the third pillar of Islam, purifying wealth through an annual 2.5% contribution on surplus qualifying assets to uplift society's vulnerable.",
+    "category": "Zakat",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-220",
+    "questionUrdu": "رسول اللہ ﷺ کی ولادت باسعادت کس مشہور تاریخی سال میں واقع ہوئی؟",
+    "questionEn": "In which famous historical year was Prophet Muhammad ﷺ born in Makkah?",
+    "optionsUrdu": [
+      "عام الفیل (ہاتھیوں والے سال، 571 عیسوی)",
+      "عام الحزن",
+      "عام الوفود",
+      "عام الرمادہ"
+    ],
+    "optionsEn": [
+      "'Am al-Feel (The Year of the Elephant, ~571 CE)",
+      "'Am al-Huzn",
+      "'Am al-Wufood",
+      "'Am ar-Ramadah"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "نبی کریم ﷺ کی ولادت ربیع الاول میں عام الفیل کو ہوئی، جس سال ابرہہ نے ہاتھیوں کے لشکر کے ساتھ کعبۃ اللہ پر حملہ کیا تھا اور ابابیلوں کے ذریعے تباہ ہوا۔",
+    "explanationEn": "The Prophet ﷺ was born in the Year of the Elephant (circa 571 CE), the fateful year Abraha's army attempted to destroy the Kaaba and was routed by flocks of birds.",
+    "category": "Seerah",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-221",
+    "questionUrdu": "حدیثِ نبوی ﷺ کے مطابق کون سی دو سورتیں قیامت کے دن اپنے پڑھنے والے پر بادلوں کی طرح سایہ فگن ہوں گی؟",
+    "questionEn": "According to Sahih Muslim (804), which two luminous Surahs (Az-Zahrawayn) will shade their regular reciters like clouds on Judgment Day?",
+    "optionsUrdu": [
+      "سورۃ البقرہ اور سورۃ آل عمران",
+      "سورۃ الفاتحہ اور سورۃ یٰس",
+      "سورۃ الملک اور سورۃ القلم",
+      "سورۃ الناس اور سورۃ الفلق"
+    ],
+    "optionsEn": [
+      "Surah Al-Baqarah and Surah Ali 'Imran",
+      "Surah Al-Fatihah and Surah Ya-Sin",
+      "Surah Al-Mulk and Surah Al-Qalam",
+      "Surah An-Nas and Surah Al-Falaq"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح مسلم (804) میں رسول اللہ ﷺ نے فرمایا: \"الزہراوین یعنی سورۃ البقرہ اور سورۃ آل عمران پڑھا کرو، قیامت کے دن یہ دو بادلوں یا پرندوں کے دو جھنڈوں کی طرح آ کر اپنے پڑھنے والے کی طرف سے جھگڑا کریں گی۔\"",
+    "explanationEn": "In Sahih Muslim (804), the Prophet ﷺ advised: \"Recite the two bright ones: Al-Baqarah and Ali 'Imran, for on the Day of Resurrection they will come like two clouds shading their companion.\"",
+    "category": "Hadith",
+    "difficulty": "intermediate",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-222",
+    "questionUrdu": "کون سے پیغمبر لکڑی کے تختوں اور میخوں سے بنی کشتی (کشتیٔ نوح) کے ذریعے طوفان سے محفوظ رکھے گئے؟",
+    "questionEn": "Which Prophet built the massive Ark from wooden planks and nails under divine revelation to rescue the believers from the Great Deluge?",
+    "optionsUrdu": [
+      "حضرت نوح علیہ السلام",
+      "حضرت ہود علیہ السلام",
+      "حضرت ادریس علیہ السلام",
+      "حضرت صالح علیہ السلام"
+    ],
+    "optionsEn": [
+      "Prophet Nuh (Noah) AS",
+      "Prophet Hud (AS)",
+      "Prophet Idris (AS)",
+      "Prophet Salih (AS)"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ القمر آیت 13 اور سورۃ ہود میں فرمایا: \"اور ہم نے اسے تختوں اور میخوں والی کشتی پر سوار کیا جو ہماری آنکھوں کے سامنے چلتی تھی۔\"",
+    "explanationEn": "Surah Al-Qamar (54:13) relates regarding Prophet Nuh (AS): \"And We carried him on a construction of planks and nails, sailing under Our eyes.\"",
+    "category": "Prophets",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-223",
+    "questionUrdu": "اسلام میں والدین کے ساتھ نافرمانی اور بدسلوکی کو کس درجے کا گناہ قرار دیا گیا ہے؟",
+    "questionEn": "What spiritual classification is given to disobedience and disrespect toward parents (Uquq al-Walidayn) in Islam?",
+    "optionsUrdu": [
+      "کبیرہ ترین گناہوں میں سے (Among the Greatest Major Sins)",
+      "مکروہِ تنزیہی",
+      "صغیرہ گناہ",
+      "مباح"
+    ],
+    "optionsEn": [
+      "Among the Greatest Major Sins (Kaba'ir)",
+      "Makruh Tanzihi",
+      "A minor mistake",
+      "Permissible"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "صحیح بخاری (2654) میں رسول اللہ ﷺ نے شرک کے فورا بعد والدین کی نافرمانی کو سب سے بڑا کبیرہ گناہ قرار دیا ہے۔",
+    "explanationEn": "In Sahih al-Bukhari (2654), the Prophet ﷺ categorized disrespecting parents alongside Shirk as one of the most perilous destructive sins (Akbar al-Kaba'ir).",
+    "category": "Manners",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-224",
+    "questionUrdu": "اللہ تعالیٰ نے قرآن مجید کی حفاظت کی ذمہ داری کس کے سپرد فرمائی ہے؟",
+    "questionEn": "To whom did Allah attribute the eternal preservation and safeguarding of the Holy Quran against alteration?",
+    "optionsUrdu": [
+      "اللہ تعالیٰ نے بذاتِ خود اپنی حفاظت کا اعلان فرمایا (سورۃ الحجر: 9)",
+      "فرشتوں کے سپرد",
+      "انسانی بادشاہوں کے سپرد",
+      "علماء کی ذاتی کاوشوں پر"
+    ],
+    "optionsEn": [
+      "Allah Himself divinely guaranteed its preservation (Surah Al-Hijr 15:9)",
+      "Left exclusively to angels",
+      "Entrusted to worldly monarchs",
+      "Left to human discretion"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سورۃ الحجر آیت 9 میں اللہ تعالیٰ نے اعلان فرمایا: \"إِنَّا نَحْنُ نَزَّلْنَا الذِّكْرَ وَإِنَّا لَهُ لَحَافِظُونَ\" (بے شک ہم ہی نے اس ذکر کو اتارا ہے اور ہم ہی اس کے نگہبان ہیں)۔",
+    "explanationEn": "Surah Al-Hijr (15:9) unequivocally decrees: \"Indeed, it is We who sent down the Quran and indeed, We will be its guardian.\"",
+    "category": "Quran",
+    "difficulty": "beginner",
+    "forKids": false
+  },
+  {
+    "id": "adult-gen-225",
+    "questionUrdu": "مسلمانوں کے لیے ہفتے کا کون سا دن عبادت، غسل، خطبہ اور اجتماعی نماز کے لیے سب سے افضل اور عید کا دن قرار دیا گیا ہے؟",
+    "questionEn": "Which day of the week is crowned as the master of days (Sayyid al-Ayyam), dedicated to communal prayer and congregational sermon?",
+    "optionsUrdu": [
+      "جمعۃ المبارک (Friday)",
+      "پیر کا دن",
+      "اتوار کا دن",
+      "ہفتہ کا دن"
+    ],
+    "optionsEn": [
+      "Jumu'ah (Friday)",
+      "Monday",
+      "Sunday",
+      "Saturday"
+    ],
+    "correctIndex": 0,
+    "explanationUrdu": "سنن ابن ماجہ (1084) میں رسول اللہ ﷺ نے فرمایا: \"بے شک جمعہ کا دن تمام دنوں کا سردار اور اللہ کے نزدیک عید الفطر اور عید الاضحیٰ سے بھی زیادہ عظمت والا ہے۔\"",
+    "explanationEn": "In Sunan Ibn Majah (1084), the Prophet ﷺ stated: \"Friday is the master of days and the greatest of them before Allah, possessing elevated blessings and virtue.\"",
+    "category": "Salah",
+    "difficulty": "beginner",
+    "forKids": false
   }
 ];
 

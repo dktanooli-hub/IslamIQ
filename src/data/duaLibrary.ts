@@ -745,5 +745,126 @@ export const VERIFIED_DUAS: DuaItem[] = [
     occasionUrdu: 'بچوں پر پھونکنے اور ان کی حفاظت کے لیے صبح و شام اور باہر جاتے وقت پڑھنا سنتِ ابراہیمی و نبوی ہے۔',
     occasionEn: 'Prophetic supplication recited over children and dependents for divine protection from the evil eye and harm.'
   }
+,
+  {
+    "id": "dua-63",
+    "titleEn": "Dua for Entering the Home",
+    "titleUrdu": "گھر میں داخل ہوتے وقت کی مسنون دعا",
+    "arabic": "بِسْمِ اللَّهِ وَلَجْنَا، وَبِسْمِ اللَّهِ خَرَجْنَا، وَعَلَى اللَّهِ رَبِّنَا تَوَكَّلْنَا",
+    "transliteration": "Bismillahi walajna, wa bismillahi kharajna, wa 'alallahi Rabbina tawakkalna",
+    "translationUrdu": "اللہ کے نام کے ساتھ ہم داخل ہوئے، اور اللہ کے نام کے ساتھ ہم نکلے، اور اپنے رب اللہ پر ہم نے بھروسا کیا۔",
+    "translationEn": "In the name of Allah we enter, and in the name of Allah we leave, and upon our Lord we place our trust.",
+    "reference": "Sunan Abi Dawud 5096 (Sahih)",
+    "occasionUrdu": "گھر میں داخل ہوتے وقت پڑھیں اور گھر والوں کو سلام کریں تاکہ شیطان داخل نہ ہو سکے۔",
+    "occasionEn": "Recited upon entering the house, followed by greeting the family with Salam, barring Satan from the dwelling."
+  },
+  {
+    "id": "dua-64",
+    "titleEn": "Dua for Leaving the Home",
+    "titleUrdu": "گھر سے باہر نکلتے وقت کی حفاظت کی دعا",
+    "arabic": "بِسْمِ اللَّهِ، تَوَكَّلْتُ عَلَى اللَّهِ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+    "transliteration": "Bismillahi, tawakkaltu 'alallahi, wa la hawla wa la quwwata illa billah",
+    "translationUrdu": "اللہ کے نام کے ساتھ، میں نے اللہ پر بھروسا کیا، اور گناہ سے بچنے اور نیکی کرنے کی طاقت صرف اللہ ہی کی توفیق سے ہے۔",
+    "translationEn": "In the name of Allah, I place my trust in Allah; there is no power and no might except by Allah.",
+    "reference": "Sunan Abi Dawud 5095, Jami at-Tirmidhi 3426 (Sahih)",
+    "occasionUrdu": "گھر سے باہر نکلتے وقت پڑھنے سے فرشتے کہتے ہیں: تجھے کافی کر دیا گیا اور تیری حفاظت کر دی گئی۔",
+    "occasionEn": "Supplicated when stepping outside; angels declare: 'You are guided, defended, and protected.'"
+  },
+  {
+    "id": "dua-65",
+    "titleEn": "Dua for Boarding a Vehicle / Travel",
+    "titleUrdu": "گاڑی یا سواری پر سوار ہوتے وقت کی مسنون دعا",
+    "arabic": "سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَٰذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ، وَإِنَّا إِلَىٰ رَبِّنَا لَمُنقَلِبُونَ",
+    "transliteration": "Subhanalladhi sakh-khara lana hadha wa ma kunna lahu muqrineen, wa inna ila Rabbina lamunqaliboon",
+    "translationUrdu": "پاک ہے وہ ذات جس نے اس (سواری) کو ہمارے تابع کر دیا حالانکہ ہم اسے قابو میں لانے والے نہ تھے، اور بے شک ہم اپنے رب ہی کی طرف لوٹ کر جانے والے ہیں۔",
+    "translationEn": "Glory to Him who has subjected this to us, and we could never have achieved it by ourselves; and surely to our Lord we shall return.",
+    "reference": "Surah Az-Zukhruf 43:13-14, Sahih Muslim 1342",
+    "occasionUrdu": "سفر پر روانہ ہوتے وقت یا گاڑی پر سوار ہوتے ہی بسم اللہ اور اللہ اکبر کے بعد پڑھیں۔",
+    "occasionEn": "Recited when mounting a conveyance or embarking on travel to acknowledge divine blessing and safety."
+  },
+  {
+    "id": "dua-66",
+    "titleEn": "Dua for Breaking the Fast (Iftar)",
+    "titleUrdu": "روزہ افطار کرتے وقت کی مستند مسنون دعا",
+    "arabic": "ذَهَبَ الظَّمَأُ، وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ",
+    "transliteration": "Dhahabadh-dhama'u, wabtallatil-'urooqu, wa thabatal-ajru in sha Allah",
+    "translationUrdu": "پیاس ختم ہو گئی، رگیں تر ہو گئیں، اور ان شاء اللہ ثواب پکا ہو گیا۔",
+    "translationEn": "The thirst has gone, the veins are moistened, and the reward is confirmed, if Allah wills.",
+    "reference": "Sunan Abi Dawud 2357 (Hasan)",
+    "occasionUrdu": "کھجور یا پانی سے روزہ افطار کرنے کے بعد پڑھیں؛ دعا کی قبولیت کا خاص وقت ہوتا ہے۔",
+    "occasionEn": "Supplicated immediately after tasting the date or water at sunset when breaking the fast."
+  },
+  {
+    "id": "dua-67",
+    "titleEn": "Dua When Looking into the Mirror",
+    "titleUrdu": "آئینہ دیکھتے وقت حسنِ اخلاق کی مسنون دعا",
+    "arabic": "اللَّهُمَّ كَمَا حَسَّنْتَ خَلْقِي فَحَسِّنْ خُلُقِي",
+    "transliteration": "Allahumma kama hassanta khalqi fahassin khuluqi",
+    "translationUrdu": "اے اللہ! جس طرح تو نے میری ظاہری صورت اچھی بنائی ہے اسی طرح میرے باطنی اخلاق کو بھی بہترین بنا دے۔",
+    "translationEn": "O Allah, just as You have beautified my physical form, so too beautify my character and manners.",
+    "reference": "Musnad Ahmad 24392, Sahih Ibn Hibban",
+    "occasionUrdu": "آئینہ دیکھتے وقت یا تیار ہوتے وقت پڑھیں تاکہ دل میں عاجزی اور اچھے اخلاق کا شعور پیدا ہو۔",
+    "occasionEn": "Recited while viewing one's reflection to cultivate humility and supplicate for noble prophetic character."
+  },
+  {
+    "id": "dua-68",
+    "titleEn": "Dua When Entering the Mosque",
+    "titleUrdu": "مسجد میں داخل ہوتے وقت رحمت کی دعا",
+    "arabic": "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ",
+    "transliteration": "Allahummaf-tah lee abwaba rahmatika",
+    "translationUrdu": "اے اللہ! میرے لیے اپنی خاص رحمت کے دروازے کھول دے۔",
+    "translationEn": "O Allah, open for me the gates of Your divine mercy.",
+    "reference": "Sahih Muslim 713",
+    "occasionUrdu": "مسجد میں دایاں پاؤں پہلے رکھ کر درود شریف کے بعد پڑھیں۔",
+    "occasionEn": "Recited stepping with the right foot forward into the mosque after sending peace upon the Prophet ﷺ."
+  },
+  {
+    "id": "dua-69",
+    "titleEn": "Dua When Leaving the Mosque",
+    "titleUrdu": "مسجد سے نکلتے وقت فضل اور روزی کی دعا",
+    "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+    "transliteration": "Allahumma inni as'aluka min fadlika",
+    "translationUrdu": "اے اللہ! میں تجھ سے تیرے فضل اور حلال نعمتوں کا سوال کرتا ہوں۔",
+    "translationEn": "O Allah, I ask You of Your generous bounty and grace.",
+    "reference": "Sahih Muslim 713",
+    "occasionUrdu": "نماز کے بعد مسجد سے بایاں پاؤں پہلے نکالتے ہوئے پڑھیں۔",
+    "occasionEn": "Supplicated stepping with the left foot out of the mosque into worldly affairs."
+  },
+  {
+    "id": "dua-70",
+    "titleEn": "Quranic Supplication for Parents",
+    "titleUrdu": "والدین کی مغفرت اور رحمت کے لیے قرآنی دعا",
+    "arabic": "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+    "transliteration": "Rabbir-hamhuma kama rabbayani sagheera",
+    "translationUrdu": "اے میرے پروردگار! ان دونوں پر رحم فرما جیسا کہ انہوں نے بچپن میں مجھے شفقت سے پالا۔",
+    "translationEn": "My Lord, have mercy upon them as they brought me up [when I was] small.",
+    "reference": "Surah Al-Isra 17:24",
+    "occasionUrdu": "ہر نماز کے بعد، تشہد میں، اور صبح و شام والدین کے لیے کثرت سے مانگیں۔",
+    "occasionEn": "Recited regularly for one's mother and father, both during their lives and after their passing."
+  },
+  {
+    "id": "dua-71",
+    "titleEn": "Dua for Steadfastness in Faith",
+    "titleUrdu": "دل کو حق اور ایمان پر مضبوط رکھنے کی دعا",
+    "arabic": "يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَىٰ دِينِكَ",
+    "transliteration": "Ya Muqallibal-quloobi thabbit qalbi 'ala deenik",
+    "translationUrdu": "اے دلوں کو پھیرنے والے! میرے دل کو اپنے سچے دین پر ثابت قدم رکھ۔",
+    "translationEn": "O Turner of hearts, keep my heart steadfast upon Your religion.",
+    "reference": "Jami at-Tirmidhi 2140 (Sahih)",
+    "occasionUrdu": "رسول اللہ ﷺ کثرت سے یہ دعا مانگتے تھے تاکہ شکوک اور گمراہی سے دل محفوظ رہے۔",
+    "occasionEn": "One of the most frequent supplications of the Prophet ﷺ to safeguard the heart from deviation."
+  },
+  {
+    "id": "dua-72",
+    "titleEn": "The Comprehensive Quranic Prayer for Both Worlds",
+    "titleUrdu": "دنیا اور آخرت کی ہر بھلائی مانگنے کی جامع قرآنی دعا",
+    "arabic": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+    "transliteration": "Rabbana atina fid-dunya hasanatan wa fil-akhirati hasanatan wa qina 'adhaban-nar",
+    "translationUrdu": "اے ہمارے پروردگار! ہمیں دنیا میں بھی بھلائی عطا فرما اور آخرت میں بھی بھلائی عطا فرما اور ہمیں دوزخ کے عذاب سے بچا۔",
+    "translationEn": "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.",
+    "reference": "Surah Al-Baqarah 2:201, Sahih al-Bukhari 6389",
+    "occasionUrdu": "طواف، نمازوں کے بعد اور دعاؤں کے اختتام پر رسول اللہ ﷺ کی سب سے زیادہ مانگی جانے والی دعا۔",
+    "occasionEn": "The most recited supplication of Prophet Muhammad ﷺ encompassing health, faith, provision, and salvation."
+  }
 ];
 

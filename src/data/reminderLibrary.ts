@@ -793,5 +793,116 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     practicalTipEn: 'Teach a beneficial Sunnah to someone or contribute to a sustainable charity that yields perpetual reward.',
     reference: 'Sahih Muslim 1631, Sunan an-Nasa\'i 3651'
   }
+,
+  {
+    "id": "rem-73",
+    "titleEn": "The Miraculous Relief of Constant Istighfar",
+    "titleUrdu": "کثرتِ استغفار: تنگیوں سے نجات اور کشادہ رزق کا ذریعہ",
+    "bodyEn": "The Prophet ﷺ stated: \"Whoever increases his seeking of forgiveness (Istighfar), Allah will grant him relief from every worry, a way out from every hardship, and provide for him from sources he never anticipated.\" (Sunan Abi Dawud 1518, Sunan Ibn Majah 3819). Turning to Allah removes invisible barriers in life.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"جو شخص کثرت سے استغفار کو اپنا معمول بنا لے، اللہ تعالیٰ اس کی ہر پریشانی کو کشادگی میں، ہر تنگی کو آسانی میں بدل دے گا اور اسے ایسی جگہ سے رزق عطا فرمائے گا جہاں سے اس کا گمان بھی نہ ہو گا۔\"",
+    "category": "Spiritual Growth",
+    "practicalTipUrdu": "دن میں کم از کم 100 مرتبہ \"استغفر اللہ\" زبان اور دل سے پڑھنے کا معمول بنائیں۔",
+    "practicalTipEn": "Recite \"Astaghfirullah\" at least 100 times throughout your day while driving, walking, or resting.",
+    "reference": "Sunan Abi Dawud 1518, Musnad Ahmad 2234"
+  },
+  {
+    "id": "rem-74",
+    "titleEn": "Safeguarding the Tongue from Backbiting and Gossip",
+    "titleUrdu": "زبان کی حفاظت اور غیبت و جھوٹ سے پرہیز",
+    "bodyEn": "Mu'adh ibn Jabal (RA) asked: \"O Messenger of Allah, will we be held accountable for what we utter?\" The Prophet ﷺ replied: \"Are people thrown into the Hellfire on their faces except as a harvest of their tongues?\" (Jami at-Tirmidhi 2616). Restraining the tongue preserves months of good deeds from evaporating.",
+    "bodyUrdu": "حضرت معاذؓ نے پوچھا: کیا ہم اپنی باتوں پر بھی پکڑے جائیں گے؟ آپ ﷺ نے فرمایا: \"لوگوں کو دوزخ میں اوندھے منہ گرانے والی چیز ان کی زبان کی کاٹی ہوئی فصل (باتیں) ہی تو ہے۔\" کسی کی غیبت کرنا اپنے نیک اعمال اس کے حوالے کرنے کے مترادف ہے۔",
+    "category": "Manners & Ethics",
+    "practicalTipUrdu": "کسی کی غیر موجودگی میں اس کے عیب بیان کرنے سے رکیں اور محفل میں اچھی باتیں کریں۔",
+    "practicalTipEn": "Practice the golden rule of speech: never say behind someone what you would not say with respect to their face.",
+    "reference": "Jami at-Tirmidhi 2616, Sahih al-Bukhari 6477"
+  },
+  {
+    "id": "rem-75",
+    "titleEn": "Your Cheerful Smile is Counted as Charity",
+    "titleUrdu": "مسکراہٹ اور خندہ پیشانی بھی ایک صدقہ ہے",
+    "bodyEn": "The Prophet ﷺ taught: \"Your smiling in the face of your brother is charity for you.\" (Jami at-Tirmidhi 1956). Radiating warmth, uplifting an anxious soul, and greeting others with genuine happiness costs nothing yet carries eternal divine reward.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"اپنے بھائی کے سامنے تمہارا مسکرانا تمہارے لیے صدقہ ہے۔\" ہر وقت چہرے پر اداسی یا غصہ سجانے کے بجائے مسکراہٹ کے ساتھ ملنا سنتِ نبوی اور دلوں کو جوڑنے کا اکسیر ہے۔",
+    "category": "Manners & Ethics",
+    "practicalTipUrdu": "گھر والوں، بچوں اور ملنے جلنے والوں کو مسکرا کر خوش دلی سے سلام کریں۔",
+    "practicalTipEn": "Make a conscious effort today to greet everyone—at home, work, or market—with a bright, welcoming smile.",
+    "reference": "Jami at-Tirmidhi 1956, Sahih Ibn Hibban 474"
+  },
+  {
+    "id": "rem-76",
+    "titleEn": "Gratitude in Seasons of Comfort and Ease",
+    "titleUrdu": "خوشی اور آسانی کے ایام میں اللہ کا شکر ادا کرنا",
+    "bodyEn": "The Messenger of Allah ﷺ said: \"Remember Allah in times of ease and prosperity, and He will remember you in times of adversity.\" (Jami at-Tirmidhi 2516). True believers do not only call upon their Lord during crises; they thank Him continuously while health and sustenance flow freely.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"تم خوشحالی اور آسانی میں اللہ کو یاد رکھو، وہ تنگی اور مصیبت میں تمہیں یاد رکھے گا۔\" جب سب کچھ ٹھیک چل رہا ہو تو اللہ کا احسان مانیں تاکہ نعمتوں میں برکت اور اضافہ ہو۔",
+    "category": "Spiritual Growth",
+    "practicalTipUrdu": "دن بھر ملنے والی ہر چھوٹی بڑی نعمت پر دل کی گہرائی سے \"الحمد للہ\" کہیں۔",
+    "practicalTipEn": "Identify three quiet blessings today—clean water, sight, peace—and express heartfelt gratitude to Allah for them.",
+    "reference": "Jami at-Tirmidhi 2516, Musnad Ahmad 2804"
+  },
+  {
+    "id": "rem-77",
+    "titleEn": "The Quiet Honor of Tahajjud Prayer",
+    "titleUrdu": "تہجد کی نماز: خالق کے ساتھ تنہائی کا خاص نور",
+    "bodyEn": "The Prophet ﷺ said: \"You should perform the night prayer (Qiyam al-Layl), for it was the custom of the righteous before you, a means of drawing close to your Lord, an expiation for sins, and a deterrent from wrongdoing.\" (Jami at-Tirmidhi 3549). Just two Rak'ahs in the stillness of the night illuminate the heart.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"رات کی نماز (تہجد) کا اہتمام کرو، کیونکہ یہ تم سے پہلے کے نیک لوگوں کا شیوہ، تمہارے رب کی قربت کا ذریعہ اور گناہوں کو مٹانے والی ہے۔\" فجر سے دس منٹ پہلے اٹھ کر مانگی گئی دعا نشانے پر بیٹھتی ہے۔",
+    "category": "Spiritual Growth",
+    "practicalTipUrdu": "فجر کی اذان سے 15 منٹ پہلے اٹھ کر 2 رکعت تہجد پڑھیں اور اپنے لیے اور امت کے لیے دعا کریں۔",
+    "practicalTipEn": "Wake up 10 minutes prior to Fajr athan, pray two quiet Rak'ahs of Tahajjud, and whisper your deepest prayers.",
+    "reference": "Jami at-Tirmidhi 3549, Sahih Muslim 758"
+  },
+  {
+    "id": "rem-78",
+    "titleEn": "Transforming Honest Work into Worship through Sincere Intention",
+    "titleUrdu": "حلال کمائی اور حسنِ نیت سے روزمرہ کام کو عبادت بنانا",
+    "bodyEn": "The Prophet ﷺ passed by a hardworking man and his companions remarked on his labor. The Prophet said: \"If he went out striving to provide for his young children, he is in the path of Allah; if he went out to support his elderly parents, he is in the path of Allah.\" (Tabarani, Sahih al-Jami 1428).",
+    "bodyUrdu": "رسول اللہ ﷺ نے محنت مزدوری کرنے والے کے بارے میں فرمایا کہ اگر وہ اپنے چھوٹے بچوں، بوڑھے والدین یا اپنی عزت کی حفاظت کے لیے حلال روزی کمانے نکلا ہے تو وہ اللہ کے راستے میں ہے۔ نیک نیت دنیاوی کام کو بھی عبادت بنا دیتی ہے۔",
+    "category": "Halal Living",
+    "practicalTipUrdu": "صبح کام پر نکلتے وقت نیت کریں کہ میں حلال کما کر اپنے گھر والوں کی جائز کفالت کروں گا۔",
+    "practicalTipEn": "Before beginning your job or studies, consciously renew your intention to earn honestly and honor your responsibilities.",
+    "reference": "Al-Mu'jam al-Kabir (At-Tabarani), Sahih al-Jami 1428"
+  },
+  {
+    "id": "rem-79",
+    "titleEn": "The Sacred Rights and Dignity of Neighbors",
+    "titleUrdu": "پڑوسی کے حقوق اور حسنِ سلوک کی غیر معمولی تاکید",
+    "bodyEn": "The Prophet ﷺ emphasized: \"Angel Jibreel kept enjoining me to treat the neighbor kindly until I thought he would include him among the heirs.\" (Sahih al-Bukhari 6014). Respecting neighbors' privacy, protecting them from disturbance, and sharing food softens neighborhoods and builds peaceful societies.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"جبریل علیہ السلام مجھے پڑوسی کے بارے میں اس قدر نصیحت فرماتے رہے کہ مجھے گمان ہونے لگا کہ شاید وہ اسے وراثت میں حصہ دار بنا دیں گے۔\" پڑوسی کو تکلیف سے بچانا ایمان کی نشانی ہے۔",
+    "category": "Manners & Ethics",
+    "practicalTipUrdu": "اپنے پڑوسیوں کو کوئی کھانا یا پھل بھیجیں اور ان کے آرام اور سکون کا خیال رکھیں۔",
+    "practicalTipEn": "Check in on an elderly or lonely neighbor, share a dish from your kitchen, and avoid loud late-night disturbances.",
+    "reference": "Sahih al-Bukhari 6014, Sahih Muslim 2624"
+  },
+  {
+    "id": "rem-80",
+    "titleEn": "Contemplating the Magnificence of Creation (Tafakkur)",
+    "titleUrdu": "کائنات کے حسن اور قدرتِ الٰہی پر غور و فکر کرنا (تفکر)",
+    "bodyEn": "The Quran describes the men of understanding: \"Who remember Allah while standing or sitting or [lying] on their sides and give thought to the creation of the heavens and the earth, [saying], 'Our Lord, You did not create this aimlessly; exalted are You!'\" (Surah Ali 'Imran 3:191). An hour of sincere reflection deepens faith immensely.",
+    "bodyUrdu": "قرآن عقل والوں کی صفت بیان کرتا ہے کہ وہ اٹھتے، بیٹھتے اور لیٹتے اللہ کو یاد کرتے ہیں اور زمین و آسمان کی پیدائش پر غور کرتے ہیں اور پکار اٹھتے ہیں کہ اے ہمارے رب! تو نے یہ سب بے مقصد نہیں بنایا۔",
+    "category": "Spiritual Growth",
+    "practicalTipUrdu": "کھلے آسمان، پرندوں اور درختوں کو دیکھ کر کچھ لمحے اللہ کی کاریگری اور عظمت کو محسوس کریں۔",
+    "practicalTipEn": "Take 5 quiet minutes to observe nature—the sunrise, leaves, clouds—and let your heart praise the Almighty Maker.",
+    "reference": "Surah Ali 'Imran 3:190-191"
+  },
+  {
+    "id": "rem-81",
+    "titleEn": "True Patience is at the First Sudden Shock",
+    "titleUrdu": "حقیقی صبر وہ ہے جو مصیبت کے پہلے صدمے پر اختیار کیا جائے",
+    "bodyEn": "Prophet Muhammad ﷺ advised a grieving woman: \"Verily, true patience (Sabr) is at the first stroke of a calamity.\" (Sahih al-Bukhari 1283). To hold one's composure, utter words of praise (Inna lillahi wa inna ilayhi raji'un), and avoid angry outcries when bad news first strikes is the hallmark of noble faith.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"صبر تو وہی معتبر ہے جو مصیبت کے پہلے صدمے کے وقت کیا جائے۔\" ناگہانی نقصان یا غم کی خبر ملتے ہی \"انا للہ وانا الیہ راجعون\" کہنا اور جزع فزع سے بچنا ہی حقیقی صبر ہے۔",
+    "category": "Spiritual Growth",
+    "practicalTipUrdu": "کسی بھی ناپسندیدہ بات پر غصے میں آپا کھونے کے بجائے فورا پانی پیئیں، تعوذ پڑھیں اور خاموش رہیں۔",
+    "practicalTipEn": "When unexpected bad news or delay hits, pause, breathe, recite the Istirja' (Inna lillahi...), and hold back sharp words.",
+    "reference": "Sahih al-Bukhari 1283, Sahih Muslim 926"
+  },
+  {
+    "id": "rem-82",
+    "titleEn": "Elevating the Blessed Day of Friday with Salawat",
+    "titleUrdu": "جمعۃ المبارک کے دن کثرت سے درود شریف کا تحفہ بھیجنا",
+    "bodyEn": "The Messenger of Allah ﷺ said: \"Among the best of your days is Friday. On it Adam was created and on it he passed away. So send abundant blessings upon me on it, for your blessings are presented to me.\" (Sunan Abi Dawud 1047, Sunan an-Nasa'i 1374). Every blessing draws ten mercies from Allah.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"تمہارے دنوں میں سب سے افضل دن جمعہ کا دن ہے، پس اس دن مجھ پر کثرت سے درود بھیجا کرو، کیونکہ تمہارا درود مجھ پر پیش کیا جاتا ہے۔\" ایک بار درود پڑھنے پر اللہ کی دس رحمتیں نازل ہوتی ہیں۔",
+    "category": "Sunnah & Worship",
+    "practicalTipUrdu": "ہر جمعہ کو کم از کم 100 مرتبہ درودِ ابراہیمی یا کوئی بھی درود شریف پڑھنے کا التزام کریں۔",
+    "practicalTipEn": "Make Friday your designated day of Salawat: recite blessings on the Prophet ﷺ whenever moving between appointments.",
+    "reference": "Sunan Abi Dawud 1047, Jami at-Tirmidhi 488"
+  }
 ];
 

@@ -5,11 +5,11 @@
  * 
  * Features:
  * 1. Reads the complete verified baseline dataset from IslamIQ source files:
- *    - 420 Quiz Questions (Adult General, Islamic Q&A, and Kids Quiz)
- *    - 72 Quran Verses with bilingual translations & reflections
- *    - 72 Authentic Hadiths with narrator, source & grading
- *    - 62 Masnoon Duas with transliteration & references
- *    - 72 Islamic Reminders with practical tips & references
+ *    - 530 Quiz Questions (Adult General, Islamic Q&A, and Kids Quiz)
+ *    - 92 Quran Verses with bilingual translations & reflections
+ *    - 92 Authentic Hadiths with narrator, source & grading
+ *    - 72 Masnoon Duas with transliteration & references
+ *    - 82 Islamic Reminders with practical tips & references
  *    - 71 Verified Islamic Q&A entries with categorizations
  *    - Categories & Taxonomy
  * 2. Connects to Supabase using createClient from @supabase/supabase-js.

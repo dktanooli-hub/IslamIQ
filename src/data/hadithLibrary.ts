@@ -985,5 +985,126 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     lessonUrdu: 'ظاہری سجاوٹ سے زیادہ اپنے دل کی صفائی، اخلاص اور نیک اعمال سنوارنے کی فکر کریں۔',
     lessonEn: 'Prioritize inner spiritual purity and righteous conduct above outward status, superficial appearances, and worldly pride.'
   }
+,
+  {
+    "id": "hadith-83",
+    "arabic": "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ",
+    "textUrdu": "تم میں سے بہترین شخص وہ ہے جو قرآن مجید سیکھے اور اسے دوسروں کو سکھائے۔",
+    "textEn": "The best among you are those who learn the Quran and teach it.",
+    "narrator": "Uthman ibn Affan (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "5027",
+    "grade": "Sahih",
+    "lessonUrdu": "روزانہ قرآن پڑھنے اور اس کی تعلیمات کو دوسروں تک پہنچانے کا اہتمام کریں۔",
+    "lessonEn": "Dedicate daily time to studying the words of the Quran and conveying its wisdom to family and peers."
+  },
+  {
+    "id": "hadith-84",
+    "arabic": "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الْآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ",
+    "textUrdu": "جو شخص اللہ اور یومِ آخرت پر ایمان رکھتا ہے اسے چاہیے کہ اچھی بات کہے یا خاموش رہے۔",
+    "textEn": "Whoever believes in Allah and the Last Day, let him speak good or remain silent.",
+    "narrator": "Abu Hurairah (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "6018",
+    "grade": "Sahih",
+    "lessonUrdu": "بے فائدہ اور نقصان دہ گفتگو سے اپنی زبان کو محفوظ رکھیں۔",
+    "lessonEn": "Practice mindful speech; if your words will not bring benefit or peace, choose gracious silence."
+  },
+  {
+    "id": "hadith-85",
+    "arabic": "لَا يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لِأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ",
+    "textUrdu": "تم میں سے کوئی شخص اس وقت تک کامل مومن نہیں ہو سکتا جب تک کہ وہ اپنے بھائی کے لیے وہی پسند نہ کرے جو اپنے لیے پسند کرتا ہے۔",
+    "textEn": "None of you truly believes until he loves for his brother what he loves for himself.",
+    "narrator": "Anas ibn Malik (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "13",
+    "grade": "Sahih",
+    "lessonUrdu": "حسد اور خود غرضی سے بچیں اور سب کے لیے دل میں خیر خواہی رکھیں۔",
+    "lessonEn": "Eradicate envy from your heart and sincerely desire for others the very blessings you cherish for yourself."
+  },
+  {
+    "id": "hadith-86",
+    "arabic": "اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ، وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا، وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ",
+    "textUrdu": "تم جہاں کہیں بھی ہو اللہ سے ڈرو، اور برائی کے بعد نیکی کرو جو اسے مٹا دے، اور لوگوں کے ساتھ اچھے اخلاق سے پیش آؤ۔",
+    "textEn": "Fear Allah wherever you are, follow up a bad deed with a good deed which will wipe it out, and behave well towards the people.",
+    "narrator": "Abu Dharr & Mu'adh ibn Jabal (RA)",
+    "source": "Jami at-Tirmidhi",
+    "hadithNumber": "1987",
+    "grade": "Hasan Sahih",
+    "lessonUrdu": "تنہائی اور جلوت دونوں میں تقویٰ اپنائیں اور لغزش ہونے پر فوری توبہ اور صدقہ کریں۔",
+    "lessonEn": "Maintain consciousness of Allah in private and public, rapidly neutralizing mistakes with sincere good actions."
+  },
+  {
+    "id": "hadith-87",
+    "arabic": "الْمُسْلِمُ أَخُو الْمُسْلِمِ: لَا يَظْلِمُهُ، وَلَا يُسْلِمُهُ، وَمَنْ كَانَ فِي حَاجَةِ أَخِيهِ كَانَ اللَّهُ فِي حَاجَتِهِ",
+    "textUrdu": "مسلمان مسلمان کا بھائی ہے: نہ اس پر ظلم کرے اور نہ اسے بے یار و مددگار چھوڑے، اور جو اپنے بھائی کی ضرورت میں لگا رہے گا اللہ اس کی ضرورت پوری فرمائے گا۔",
+    "textEn": "A Muslim is the brother of a Muslim: he does not wrong him, nor surrender him. Whoever fulfills the need of his brother, Allah will fulfill his need.",
+    "narrator": "Abdullah ibn Umar (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "2442",
+    "grade": "Sahih",
+    "lessonUrdu": "اپنے مسلمان بھائیوں کی مصیبت میں مددگار بنیں اور کبھی کسی کی حق تلفی نہ کریں۔",
+    "lessonEn": "Stand faithfully with fellow believers in times of trial and actively assist others to receive divine assistance."
+  },
+  {
+    "id": "hadith-88",
+    "arabic": "تَهَادَوْا تَحَابُّوا",
+    "textUrdu": "آپس میں تحائف کا تبادلہ کیا کرو، اس سے تمہارے درمیان باہمی محبت بڑھے گی۔",
+    "textEn": "Give gifts to one another and you will love one another.",
+    "narrator": "Abu Hurairah (RA)",
+    "source": "Al-Adab Al-Mufrad (Al-Bukhari)",
+    "hadithNumber": "594",
+    "grade": "Hasan",
+    "lessonUrdu": "رشتہ داروں اور دوستوں کو چھوٹے موٹے تحائف دے کر دلوں میں الفت پیدا کریں۔",
+    "lessonEn": "Foster warmth, heal rifts, and cultivate mutual affection by giving thoughtful gifts."
+  },
+  {
+    "id": "hadith-89",
+    "arabic": "مَنْ دَلَّ عَلَى خَيْرٍ فَلَهُ مِثْلُ أَجْرِ فَاعِلِهِ",
+    "textUrdu": "جس نے کسی نیکی کی رہنمائی کی، اسے اس نیکی کرنے والے جتنا ہی ثواب ملے گا۔",
+    "textEn": "Whoever guides someone to a good deed will have a reward equal to that of its doer.",
+    "narrator": "Abu Mas'ud al-Ansari (RA)",
+    "source": "Sahih Muslim",
+    "hadithNumber": "1893",
+    "grade": "Sahih",
+    "lessonUrdu": "نیکی اور بھلائی کی باتیں پھیلائیں تاکہ صدقہ جاریہ کے طور پر آپ کو مسلسل اجر ملتا رہے۔",
+    "lessonEn": "Share beneficial Islamic reminders and inspire others toward worship; you share in their continuous rewards."
+  },
+  {
+    "id": "hadith-90",
+    "arabic": "إِنَّ الصِّدْقَ يَهْدِي إِلَى الْبِرِّ، وَإِنَّ الْبِرَّ يَهْدِي إِلَى الْجَنَّةِ",
+    "textUrdu": "بے شک سچائی نیکی کی طرف رہنمائی کرتی ہے، اور نیکی جنت کا راستہ دکھاتی ہے۔",
+    "textEn": "Indeed, truthfulness leads to righteousness, and righteousness leads to Paradise.",
+    "narrator": "Abdullah ibn Mas'ud (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "6094",
+    "grade": "Sahih",
+    "lessonUrdu": "ہر حال میں سچ بولنے کی عادت اپنائیں، سچائی برکت اور سلامتی کا باعث ہے۔",
+    "lessonEn": "Commit to absolute truthfulness in all statements and transactions to build an unshakeable path to Jannah."
+  },
+  {
+    "id": "hadith-91",
+    "arabic": "الرَّاحِمُونَ يَرْحَمُهُمُ الرَّحْمَنُ، ارْحَمُوا مَنْ فِي الْأَرْضِ يَرْحَمْكُمْ مَنْ فِي السَّمَاءِ",
+    "textUrdu": "رحم کرنے والوں پر رحمن رحم فرماتا ہے۔ تم زمین والوں پر رحم کرو، آسمان والا تم پر رحم فرمائے گا۔",
+    "textEn": "Those who show mercy will be shown mercy by the Most Merciful. Show mercy to those on the earth, and the One in the heavens will show mercy to you.",
+    "narrator": "Abdullah ibn Amr (RA)",
+    "source": "Jami at-Tirmidhi",
+    "hadithNumber": "1924",
+    "grade": "Sahih",
+    "lessonUrdu": "انسانوں اور جانوروں سب کے ساتھ شفقت اور رحم دلی سے پیش آئیں۔",
+    "lessonEn": "Extend kindness and compassion to all living creatures to attract Allah's all-encompassing mercy."
+  },
+  {
+    "id": "hadith-92",
+    "arabic": "احْفَظِ اللَّهَ يَحْفَظْكَ، احْفَظِ اللَّهَ تَجِدْهُ تُجَاهَكَ، إِذَا سَأَلْتَ فَاسْأَلِ اللَّهَ، وَإِذَا اسْتَعَنْتَ فَاسْتَعِنْ بِاللَّهِ",
+    "textUrdu": "تم اللہ کے احکام کی حفاظت کرو اللہ تمہاری حفاظت فرمائے گا، تم اللہ کے حقوق کا خیال رکھو تم اسے اپنے سامنے پاؤ گے، جب مانگو تو اللہ سے مانگو اور جب مدد چاہو تو اللہ ہی سے مدد طلب کرو۔",
+    "textEn": "Be mindful of Allah and He will protect you. Be mindful of Allah and you will find Him before you. If you ask, ask of Allah; if you seek help, seek help of Allah.",
+    "narrator": "Abdullah ibn Abbas (RA)",
+    "source": "Jami at-Tirmidhi",
+    "hadithNumber": "2516",
+    "grade": "Hasan Sahih",
+    "lessonUrdu": "اپنے فرائض اور اخلاق کو سنوار کر اللہ کی نصرت اور توکل کو اپنی ڈھال بنائیں۔",
+    "lessonEn": "Anchor your heart in unwavering monotheism, seeking refuge, provision, and assistance exclusively from Allah."
+  }
 ];
 
