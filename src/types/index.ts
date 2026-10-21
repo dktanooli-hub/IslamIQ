@@ -80,6 +80,8 @@ export interface QuranVerse {
   reference?: string;
 }
 
+export type HadithGrade = 'Sahih' | 'Hasan' | 'Hasan Sahih';
+
 export interface HadithItem {
   id: string;
   arabic: string;
@@ -88,7 +90,7 @@ export interface HadithItem {
   narrator: string;
   source: string;
   hadithNumber: string;
-  grade: 'Sahih' | 'Hasan';
+  grade: HadithGrade;
   lessonUrdu: string;
   lessonEn: string;
 }
