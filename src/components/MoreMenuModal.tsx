@@ -21,7 +21,8 @@ import {
   Scale,
   Layers,
   ChevronRight,
-  Flame
+  Flame,
+  MapPin
 } from 'lucide-react';
 
 interface MenuItem {
@@ -265,6 +266,17 @@ export const MoreMenuModal: React.FC = () => {
           icon: Compass,
           badge: 'Compass',
           badgeUrdu: 'کمپاس'
+        },
+        {
+          id: 'nearby-mosques',
+          path: '/nearby-mosques',
+          titleEn: 'Nearby Mosques',
+          titleUrdu: 'قریبی مساجد',
+          descEn: 'Interactive map to locate masjids, distances & Google Maps directions',
+          descUrdu: 'قریبی مساجد، نقشہ، فاصلہ اور درست راستے معلوم کریں',
+          icon: MapPin,
+          badge: 'Map',
+          badgeUrdu: 'نقشہ'
         },
         {
           id: 'zakat-calculator',

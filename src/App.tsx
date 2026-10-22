@@ -53,6 +53,7 @@ const TayammumGuide = React.lazy(() => import('./components/seo/TayammumGuide'))
 const HajjUmrahGuide = React.lazy(() => import('./components/seo/HajjUmrahGuide'));
 const StoriesOfTheProphetsGuide = React.lazy(() => import('./components/seo/StoriesOfTheProphetsGuide'));
 const RightsInIslamGuide = React.lazy(() => import('./components/seo/RightsInIslamGuide'));
+const NearbyMosques = React.lazy(() => import('./components/tools/NearbyMosques'));
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, setUserMode, toastMessage, contentLang, setIsShareOpen } = useApp();
@@ -75,7 +76,7 @@ export const App: React.FC = () => {
           'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar',
           'seerah-of-prophet-muhammad', 'ghusl-taharah-guide', 'tayammum-guide',
           'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam',
-          'ask-a-scholar'
+          'ask-a-scholar', 'nearby-mosques'
         ];
 
         if (validCleanTabs.includes(path as AppTab)) {
@@ -274,6 +275,11 @@ export const App: React.FC = () => {
         title: 'Ask a Scholar • Authentic Islamic Q&A, Masail & Fatwa | IslamIQ',
         path: '/ask-a-scholar',
         desc: 'Dedicated Ask a Scholar portal for private, authentic Islamic guidance on Salah, Fasting, Zakat, everyday matters, Masail, and formal Fatwa across the four Fiqh schools.'
+      },
+      'nearby-mosques': {
+        title: 'Nearby Mosques Finder • Masjids Near Me with Directions | IslamIQ',
+        path: '/nearby-mosques',
+        desc: 'Find nearby mosques and masjids on an interactive map. Search by radius, view distances, wudu facilities, and open turn-by-turn Google Maps directions.'
       }
     };
 
@@ -556,6 +562,14 @@ export const App: React.FC = () => {
             </div>
           }>
             <RightsInIslamGuide />
+          </React.Suspense>
+        ) : activeTab === 'nearby-mosques' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <NearbyMosques />
           </React.Suspense>
         ) : (
           isKids ? (

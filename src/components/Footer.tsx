@@ -36,6 +36,7 @@ export const Footer: React.FC = () => {
     { id: 'stories-of-the-prophets', label: 'Stories of Prophets', labelUrdu: 'قصص الانبیاء' },
     { id: 'rights-in-islam', label: 'Rights in Islam', labelUrdu: 'حقوق العباد' },
     { id: 'ask-a-scholar', label: 'Ask a Scholar', labelUrdu: 'علمائے کرام سے رہنمائی' },
+    { id: 'nearby-mosques', label: 'Nearby Mosques', labelUrdu: 'قریبی مساجد' },
   ];
 
   const navLinks: { id: AppTab; label: string; labelUrdu: string }[] = [

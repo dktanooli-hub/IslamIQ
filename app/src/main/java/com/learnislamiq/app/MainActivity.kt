@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import android.webkit.GeolocationPermissions
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
@@ -101,6 +102,35 @@ class MainActivity : ComponentActivity() {
     }
   }
 
+  // Geolocation permission launcher for Qibla compass and Nearby Mosques
+  private var pendingGeolocationOrigin: String? = null
+  private var pendingGeolocationCallback: GeolocationPermissions.Callback? = null
+
+  private val locationPermissionsLauncher = registerForActivityResult(
+    ActivityResultContracts.RequestMultiplePermissions()
+  ) { permissions ->
+    val fineGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+    val coarseGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+    val isGranted = fineGranted || coarseGranted
+    pendingGeolocationCallback?.invoke(pendingGeolocationOrigin, isGranted, false)
+    pendingGeolocationCallback = null
+    pendingGeolocationOrigin = null
+  }
+
+  fun handleGeolocationPermissionPrompt(origin: String?, callback: GeolocationPermissions.Callback?) {
+    val fineGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    val coarseGranted = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    if (fineGranted || coarseGranted) {
+      callback?.invoke(origin, true, false)
+    } else {
+      pendingGeolocationOrigin = origin
+      pendingGeolocationCallback = callback
+      locationPermissionsLauncher.launch(
+        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
+      )
+    }
+  }
+
   override fun onDestroy() {
     nativeBridge?.destroy()
     super.onDestroy()
@@ -135,6 +165,7 @@ class MainActivity : ComponentActivity() {
             modifier = Modifier.padding(innerPadding),
             onRequestAudioPermission = { requestRecordAudioPermission() },
             onHandleWebPermission = { req -> handleWebAudioPermissionRequest(req) },
+            onHandleGeolocationPermission = { origin, cb -> handleGeolocationPermissionPrompt(origin, cb) },
             onBridgeCreated = { bridge -> nativeBridge = bridge }
           )
         }
@@ -154,6 +185,7 @@ fun IslamIQMainScreen(
   modifier: Modifier = Modifier,
   onRequestAudioPermission: () -> Unit = {},
   onHandleWebPermission: (PermissionRequest) -> Unit = {},
+  onHandleGeolocationPermission: (String?, GeolocationPermissions.Callback?) -> Unit = { _, _ -> },
   onBridgeCreated: (IslamIQNativeBridge) -> Unit = {}
 ) {
   var webViewInstance by remember { mutableStateOf<WebView?>(null) }
@@ -201,6 +233,7 @@ fun IslamIQMainScreen(
             mediaPlaybackRequiresUserGesture = false
             allowFileAccess = false
             allowContentAccess = true
+            setGeolocationEnabled(true)
             userAgentString = "${userAgentString} IslamIQ-Android-App/2.0"
           }
 
@@ -301,6 +334,13 @@ fun IslamIQMainScreen(
 
             override fun onPermissionRequestCanceled(request: PermissionRequest?) {
               super.onPermissionRequestCanceled(request)
+            }
+
+            override fun onGeolocationPermissionsShowPrompt(
+              origin: String?,
+              callback: GeolocationPermissions.Callback?
+            ) {
+              onHandleGeolocationPermission(origin, callback)
             }
           }
 

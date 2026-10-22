@@ -44,7 +44,8 @@ export type AppTab =
   | 'hajj-umrah-guide'
   | 'stories-of-the-prophets'
   | 'rights-in-islam'
-  | 'ask-a-scholar';
+  | 'ask-a-scholar'
+  | 'nearby-mosques';
 
 export interface QuizQuestion {
   id: string;

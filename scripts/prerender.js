@@ -423,6 +423,27 @@ const routes = [
       </ul>
       <p>Notice: All categories are currently informational. Submissions will open upon completion of the scholarly accreditation and privacy protocols.</p>
     `
+  },
+  {
+    path: 'nearby-mosques',
+    title: 'Nearby Mosques Finder • Masjids Near Me with Directions | IslamIQ',
+    desc: 'Find nearby mosques and masjids on an interactive map. Search by radius, view distances, wudu facilities, and open turn-by-turn Google Maps directions.',
+    h1: 'Nearby Mosques & Masjids Finder — Interactive Map & Directions',
+    content: `
+      <h2>Locate Mosques Near You</h2>
+      <p>IslamIQ Nearby Mosques finder connects you to local masjids and places of worship using OpenStreetMap community-verified geospatial data and real-time device geolocation.</p>
+      <h2>Key Features</h2>
+      <ul>
+        <li><strong>Interactive Map:</strong> Visual exploration powered by OpenStreetMap tiles and custom masjid markers.</li>
+        <li><strong>Distance &amp; Travel Times:</strong> Calculated distance with estimated walking and driving times.</li>
+        <li><strong>Turn-by-Turn Directions:</strong> Instant one-tap navigation via Google Maps.</li>
+        <li><strong>Custom Search Radii:</strong> Filter by 1 km (walking distance), 5 km, 10 km, or 25 km.</li>
+        <li><strong>Amenities &amp; Facilities:</strong> Information on Wudu areas, women's prayer spaces, and Jumu'ah services where recorded in OpenStreetMap.</li>
+        <li><strong>100% Private:</strong> Your GPS coordinates remain entirely on-device and are never saved or sent to any remote database.</li>
+      </ul>
+      <h2>Sunnah Etiquette of the Masjid</h2>
+      <p>Enter the masjid with the right foot, recite the entering supplication (Allahumma iftah li abwaba rahmatik), offer two rakats of Tahiyyat al-Masjid before sitting, and maintain serene tranquility within the house of Allah.</p>
+    `
   }
 ];
 
