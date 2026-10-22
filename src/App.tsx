@@ -76,7 +76,7 @@ export const App: React.FC = () => {
           'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar',
           'seerah-of-prophet-muhammad', 'ghusl-taharah-guide', 'tayammum-guide',
           'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam',
-          'ask-a-scholar', 'nearby-mosques'
+          'ask-a-scholar', 'nearby-mosques', 'salah', 'quiz', 'search', 'tasbih', 'qibla'
         ];
 
         if (validCleanTabs.includes(path as AppTab)) {
@@ -280,6 +280,31 @@ export const App: React.FC = () => {
         title: 'Nearby Mosques Finder • Masjids Near Me with Directions | IslamIQ',
         path: '/nearby-mosques',
         desc: 'Find nearby mosques and masjids on an interactive map. Search by radius, view distances, wudu facilities, and open turn-by-turn Google Maps directions.'
+      },
+      salah: {
+        title: 'Salah Tracker • Daily Namaz Tracker & Timings | IslamIQ',
+        path: '/salah',
+        desc: 'Track your five daily obligatory prayers, view weekly streaks, and build consistent Salah habits with IslamIQ Salah Tracker.'
+      },
+      quiz: {
+        title: 'Islamic Quiz • Test Your Knowledge | IslamIQ',
+        path: '/quiz',
+        desc: 'Interactive Islamic quiz with authentic questions, multiple levels, and verified references for kids and adults.'
+      },
+      search: {
+        title: 'Islamic Q&A Search • Knowledge Finder | IslamIQ',
+        path: '/search',
+        desc: 'Search authentic Islamic questions and answers, Quranic topics, Hadith references, and educational guides.'
+      },
+      tasbih: {
+        title: 'Tasbih Counter • Digital Dhikr | IslamIQ',
+        path: '/tasbih',
+        desc: 'Digital Tasbih counter for daily Dhikr and remembrance of Allah with preset Duas, Arabic text, and counters.'
+      },
+      qibla: {
+        title: 'Qibla Direction • Kaaba Compass | IslamIQ',
+        path: '/qibla',
+        desc: 'Find the accurate Qibla direction towards the Holy Kaaba in Makkah with real-time compass alignment.'
       }
     };
 

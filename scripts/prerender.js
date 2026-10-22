@@ -444,6 +444,83 @@ const routes = [
       <h2>Sunnah Etiquette of the Masjid</h2>
       <p>Enter the masjid with the right foot, recite the entering supplication (Allahumma iftah li abwaba rahmatik), offer two rakats of Tahiyyat al-Masjid before sitting, and maintain serene tranquility within the house of Allah.</p>
     `
+  },
+  {
+    path: 'salah',
+    title: 'Salah Tracker • Daily Namaz Tracker & Timings | IslamIQ',
+    desc: 'Track your five daily obligatory prayers, view weekly streaks, and build consistent Salah habits with IslamIQ Salah Tracker.',
+    h1: 'Salah Tracker — Daily Namaz & Prayer Habit Tracker',
+    content: `
+      <h2>Build a Consistent Daily Prayer Habit</h2>
+      <p>Salah (the daily ritual prayer) is the second pillar of Islam and the foundation of Muslim spiritual life. The Prophet Muhammad ﷺ instructed: <em>"Pray as you have seen me praying"</em> (Sahih al-Bukhari 6008).</p>
+      <h2>Key Features of Salah Tracker</h2>
+      <ul>
+        <li><strong>Daily Prayer Checklist:</strong> Record Fajr, Dhuhr, Asr, Maghrib, and Isha as you complete them each day.</li>
+        <li><strong>Consistency &amp; Streaks:</strong> Monitor weekly streaks and prayer completion percentages to maintain steadfast worship.</li>
+        <li><strong>Voluntary Night Prayers:</strong> Track Tahajjud and Sunnah nawafil prayers alongside obligatory prayers.</li>
+        <li><strong>Private &amp; Offline-First:</strong> All prayer tracking data stays secure and private on your device in LocalStorage.</li>
+      </ul>
+      <h2>Educational Salah Resources</h2>
+      <p>Learn proper prayer mechanics and ablution in our step-by-step educational guides: <a href="/how-to-perform-salah" style="color: #059669; font-weight: 600;">How to Perform Salah</a>, <a href="/how-to-perform-wudu" style="color: #059669; font-weight: 600;">How to Perform Wudu</a>, and <a href="/salah-learning" style="color: #059669; font-weight: 600;">Salah Learning Hub</a>.</p>
+    `
+  },
+  {
+    path: 'quiz',
+    title: 'Islamic Quiz • Test Your Knowledge | IslamIQ',
+    desc: 'Interactive Islamic quiz with authentic questions, multiple levels, and verified references for kids and adults.',
+    h1: 'Islamic Quiz — Authentic Questions, Answers & Verified Sources',
+    content: `
+      <h2>Test & Expand Your Islamic Knowledge</h2>
+      <p>Challenge yourself and your family with authentic multiple-choice questions covering the Holy Quran, the Sunnah, the Prophets, Islamic history, and foundational morals.</p>
+      <h2>Key Features of IslamIQ Quiz</h2>
+      <ul>
+        <li><strong>Beginner to Advanced Levels:</strong> Adaptive difficulties suitable for both new learners and knowledgeable students.</li>
+        <li><strong>Dedicated Kids Mode:</strong> Cheerful interface with tailored questions and encouraging positive feedback.</li>
+        <li><strong>Verified References:</strong> Every answer is referenced with Quranic Surahs and Sahih Hadith collections.</li>
+        <li><strong>Gamified Learning:</strong> Earn experience points (XP), maintain daily learning streaks, and unlock Islamic knowledge badges.</li>
+      </ul>
+      <h2>More Quizzes & Q&amp;A</h2>
+      <p>Explore our specialized hubs: <a href="/islamic-quiz" style="color: #059669; font-weight: 600;">Islamic Quiz Online</a>, <a href="/kids-islamic-quiz" style="color: #059669; font-weight: 600;">Kids Islamic Quiz</a>, and <a href="/islamic-questions-answers" style="color: #059669; font-weight: 600;">Questions &amp; Answers</a>.</p>
+    `
+  },
+  {
+    path: 'search',
+    title: 'Islamic Q&A Search • Knowledge Finder | IslamIQ',
+    desc: 'Search authentic Islamic questions and answers, Quranic topics, Hadith references, and educational guides.',
+    h1: 'Islamic Knowledge & Q&A Search Engine',
+    content: `
+      <h2>Instant Access to Verified Islamic Learning</h2>
+      <p>Quickly search hundreds of verified questions and answers, articles of faith, prayer guidelines, and moral lessons backed by Quran and Sunnah evidence.</p>
+      <h2>Search Capabilities</h2>
+      <ul>
+        <li><strong>Fast Keyword Search:</strong> Search topics across Salah, Wudu, Fasting, Zakat, Hajj, Aqeedah, and Family relations.</li>
+        <li><strong>Authentic Sources:</strong> Direct references to Sahih al-Bukhari, Sahih Muslim, and classical scholars of Islam.</li>
+        <li><strong>Bilingual Search:</strong> Full support for English and Urdu search terms and reading.</li>
+        <li><strong>Direct Guide Links:</strong> Connect directly to comprehensive step-by-step guides for in-depth study.</li>
+      </ul>
+      <h2>Looking for Scholarly Answers?</h2>
+      <p>Consult our confidential scholarly service: <a href="/ask-a-scholar" style="color: #059669; font-weight: 600;">Ask a Scholar Portal</a>.</p>
+    `
+  },
+  {
+    path: 'tasbih',
+    title: 'Tasbih Counter • Digital Dhikr | IslamIQ',
+    desc: 'Digital Tasbih counter for daily Dhikr and remembrance of Allah with preset Duas, Arabic text, and counters.',
+    h1: 'Digital Tasbih Counter — Daily Dhikr & Remembrance',
+    content: `
+      <h2>Remembrance of Allah (Dhikr)</h2>
+      <p>Keep your heart and tongue connected to Allah with our digital Tasbih counter. Choose from preset Sunnah supplications such as SubhanAllah, Alhamdulillah, and Allahu Akbar, or create your own custom dhikr targets.</p>
+    `
+  },
+  {
+    path: 'qibla',
+    title: 'Qibla Direction • Kaaba Compass | IslamIQ',
+    desc: 'Find the accurate Qibla direction towards the Holy Kaaba in Makkah with real-time compass alignment.',
+    h1: 'Qibla Direction Compass — Accurate Kaaba Locator',
+    content: `
+      <h2>Face the Sacred Qibla (Kaaba) Anywhere</h2>
+      <p>Determine the precise compass direction to the Kaaba in Makkah using your device sensors and location. Designed with high precision and offline compass fallback.</p>
+    `
   }
 ];
 
