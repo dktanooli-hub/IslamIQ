@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { VERIFIED_QURAN_VERSES, VERIFIED_HADITHS, VERIFIED_DUAS, ISLAMIC_REMINDERS } from '../data/verifiedContent';
-import { BookOpen, Sparkles, Share2, Copy, Check, Heart, Volume2, ShieldCheck, Flame, ChevronRight, Layers, Award, Compass } from 'lucide-react';
+import { BookOpen, Sparkles, Share2, Copy, Check, Heart, Volume2, ShieldCheck, Flame, ChevronRight, Layers, Award, Compass, MapPin } from 'lucide-react';
 import { SpeechEngine } from '../utils/audio';
 import { AdBanner } from './AdBanner';
 import { AD_CONFIG } from '../config/adConfig';
@@ -107,7 +107,7 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
 
           {/* Quick Dashboard Action Cards */}
           <div className={`grid gap-2.5 mt-5 pt-4 border-t border-white/10 ${
-            isKids ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-5'
+            isKids ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-6'
           }`}>
             <a
               href="/salah"
@@ -141,6 +141,27 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
                 <div className="text-base font-bold flex items-center justify-between">
                   <span>{contentLang === 'urdu' ? 'کمپاس' : 'Compass'}</span>
                   <Compass className="w-4 h-4 text-goldAccent animate-pulse" />
+                </div>
+              </a>
+            )}
+
+            {!isKids && (
+              <a
+                href="/nearby-mosques"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveTab('nearby-mosques');
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className="bg-gradient-to-br from-teal-500/20 to-emerald-500/20 hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm rounded-2xl p-2.5 text-left border border-teal-300/30 block group"
+                title={contentLang === 'urdu' ? 'قریبی مساجد — مساجد تلاش کریں' : 'Nearby Mosques — Find Mosques Near You'}
+              >
+                <div className="text-[11px] text-teal-200 font-medium">{contentLang === 'urdu' ? 'قریبی مساجد' : 'Nearby Mosques'}</div>
+                <div className="text-base font-bold flex items-center justify-between">
+                  <span className="text-xs sm:text-[13px] font-bold leading-tight truncate">
+                    {contentLang === 'urdu' ? 'قریب مساجد' : 'Find Mosques Near You'}
+                  </span>
+                  <MapPin className="w-4 h-4 text-teal-300 shrink-0 group-hover:scale-110 transition-transform" />
                 </div>
               </a>
             )}
