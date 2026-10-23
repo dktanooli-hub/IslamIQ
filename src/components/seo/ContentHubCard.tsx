@@ -19,7 +19,8 @@ import {
   Share2,
   Scale,
   Layers,
-  LayoutGrid
+  LayoutGrid,
+  Clock
 } from 'lucide-react';
 
 type HubCategoryKey = 'all' | 'learn' | 'guides' | 'tools' | 'other';
@@ -185,6 +186,17 @@ export const ContentHubCard: React.FC = () => {
       descUrdu: 'روزے کے مسائل، سحر و افطار',
       descEn: 'Fasting rules, Laylat al-Qadr & Zakat',
       icon: Moon,
+    },
+    {
+      id: 'islamic-daily-life',
+      category: 'guides',
+      titleUrdu: 'اسلامی روزمرہ زندگی',
+      titleEn: 'Islamic Daily Life',
+      descUrdu: 'صبح سے رات تک ۲۴ گھنٹے مسنون معمول',
+      descEn: '24-hour Sunnah routine & etiquette',
+      icon: Clock,
+      badge: '24h Sunnah',
+      badgeUrdu: '۲۴ گھنٹے',
     },
 
     // TOOLS

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { VERIFIED_QURAN_VERSES, VERIFIED_HADITHS, VERIFIED_DUAS, ISLAMIC_REMINDERS } from '../data/verifiedContent';
-import { BookOpen, Sparkles, Share2, Copy, Check, Heart, Volume2, ShieldCheck, Flame, ChevronRight, Layers, Award, Compass, MapPin } from 'lucide-react';
+import { BookOpen, Sparkles, Share2, Copy, Check, Heart, Volume2, ShieldCheck, Flame, ChevronRight, Layers, Award, Compass, MapPin, Clock } from 'lucide-react';
 import { SpeechEngine } from '../utils/audio';
 import { AdBanner } from './AdBanner';
 import { AD_CONFIG } from '../config/adConfig';
@@ -216,6 +216,116 @@ export const DailyFeed: React.FC<DailyFeedProps> = ({ onNavigateToStatusWithText
           </div>
         </div>
       </div>
+
+      {/* Prominent Featured Card: Islamic Daily Life (24-Hour Sunnah Routine) */}
+      {!isKids && (
+        <a
+          href="/islamic-daily-life"
+          onClick={(e) => {
+            e.preventDefault();
+            setActiveTab('islamic-daily-life');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className="group block relative rounded-3xl overflow-hidden border border-emerald-500/35 shadow-lg hover:shadow-2xl transition-all duration-300 active:scale-[0.99] cursor-pointer bg-slate-950 min-h-[300px] sm:min-h-[290px] flex flex-col justify-end"
+        >
+          {/* Fallback CSS Islamic Geometric Ambient Background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950 opacity-90" />
+
+          {/* High-Quality Authentic Islamic Photographic Background */}
+          <img
+            src="/assets/images/islamic_daily_life.jpg"
+            alt="Islamic Daily Life Sunnah Routine"
+            className="absolute inset-0 w-full h-full object-cover object-[center_40%] group-hover:scale-105 transition-transform duration-700 ease-out"
+            loading="lazy"
+            onError={(e) => {
+              (e.currentTarget as HTMLElement).style.display = 'none';
+            }}
+          />
+
+          {/* Sophisticated Dark Emerald & Slate Gradient Overlay for Pristine Contrast */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/85 to-slate-950/30 sm:bg-gradient-to-r sm:from-slate-950 sm:via-slate-950/90 sm:to-slate-950/35 transition-opacity duration-300 pointer-events-none" />
+
+          {/* Emerald & Warm Gold Ambient Accent Glow */}
+          <div className="absolute -top-12 -right-12 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-400/30 transition-all duration-500" />
+          <div className="absolute -bottom-10 left-1/3 w-48 h-48 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
+
+          {/* Card Content */}
+          <div className="relative z-10 p-5 sm:p-7 md:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-5 sm:gap-6">
+            <div className="space-y-3 max-w-xl">
+              
+              {/* Badges Row */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/25 text-emerald-300 border border-emerald-400/40 text-[11px] sm:text-xs font-black tracking-wide uppercase shadow-sm backdrop-blur-md">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>{contentLang === 'urdu' ? 'مسنون معمول • ۲۴ گھنٹے' : '24-Hour Sunnah Routine'}</span>
+                </span>
+                <span className="text-[11px] font-semibold text-emerald-200 bg-emerald-950/70 border border-emerald-500/40 px-2.5 py-0.5 rounded-full backdrop-blur-md flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-goldAccent" />
+                  <span>{contentLang === 'urdu' ? 'صبح تا رات رہنمائی' : 'Morning to Night'}</span>
+                </span>
+                <span className="hidden sm:inline-flex text-[11px] font-semibold text-amber-200 bg-amber-950/60 border border-amber-400/30 px-2.5 py-0.5 rounded-full backdrop-blur-md">
+                  {contentLang === 'urdu' ? 'روزانہ کی چیک لسٹ' : 'Daily Checklist Included'}
+                </span>
+              </div>
+
+              {/* Headings */}
+              <div>
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight font-serif drop-shadow-md">
+                  Islamic Daily Life
+                </h2>
+                <p className="text-lg sm:text-xl font-bold text-amber-300 font-urdu mt-1 drop-shadow-sm" dir="rtl">
+                  اسلامی روزمرہ زندگی
+                </p>
+              </div>
+
+              {/* Subtitle */}
+              <p className="text-sm sm:text-base font-semibold text-emerald-100/95 leading-snug drop-shadow-xs">
+                {contentLang === 'urdu'
+                  ? 'صبح سے رات تک کا مسنون طریقہ اور اسلامی رہنمائی'
+                  : 'A Sunnah-inspired guide from morning to night'}
+              </p>
+
+              {/* Description */}
+              <p className="text-xs sm:text-sm text-slate-300/90 leading-relaxed font-normal max-w-lg drop-shadow-xs">
+                {contentLang === 'urdu'
+                  ? 'صبح و شام کے مسنون اذکار، حلال رزق، اخلاق، کھانے پینے کے آداب، گھر کے حقوق اور سونے کی سنتیں مستند احادیث کی روشنی میں۔'
+                  : 'Transform every daily moment into worship with verified prayers, morning and evening adhkar, workplace ethics, and Sunnah sleep practices.'}
+              </p>
+
+              {/* Feature Highlights Pills */}
+              <div className="flex flex-wrap items-center gap-2 pt-1 text-[11px]">
+                <span className="px-2.5 py-1 rounded-xl bg-slate-900/70 text-emerald-300 border border-emerald-500/30 font-semibold backdrop-blur-md flex items-center gap-1">
+                  <Check className="w-3 h-3 text-goldAccent" />
+                  <span>{contentLang === 'urdu' ? 'صبح و فجر' : 'Morning & Fajr'}</span>
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-slate-900/70 text-emerald-300 border border-emerald-500/30 font-semibold backdrop-blur-md flex items-center gap-1">
+                  <Check className="w-3 h-3 text-goldAccent" />
+                  <span>{contentLang === 'urdu' ? 'حلال رزق و اخلاق' : 'Work & Manners'}</span>
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-slate-900/70 text-emerald-300 border border-emerald-500/30 font-semibold backdrop-blur-md flex items-center gap-1">
+                  <Check className="w-3 h-3 text-goldAccent" />
+                  <span>{contentLang === 'urdu' ? 'شام و حقوق' : 'Family & Rights'}</span>
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-slate-900/70 text-amber-200 border border-amber-400/30 font-semibold backdrop-blur-md flex items-center gap-1">
+                  <Check className="w-3 h-3 text-goldAccent" />
+                  <span>{contentLang === 'urdu' ? 'سونے کی سنتیں' : 'Sleep Sunnah'}</span>
+                </span>
+              </div>
+            </div>
+
+            {/* CTA Button Column */}
+            <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-white/10">
+              <span className="text-xs font-bold text-emerald-300/90 hidden sm:inline-block">
+                {contentLang === 'urdu' ? 'مکمل مسنون معمول پڑھیں ←' : 'Read Complete Sunnah Routine →'}
+              </span>
+              <div className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 group-hover:from-emerald-400 group-hover:to-teal-400 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-950/50 transition-all group-hover:scale-105 active:scale-95">
+                <span>{contentLang === 'urdu' ? 'رہنمائی دیکھیں' : 'Explore Guide'}</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </div>
+          </div>
+        </a>
+      )}
 
       {/* Inspire Sharing: Sadaqah Jariyah Banner Card */}
       {!isKids && (
