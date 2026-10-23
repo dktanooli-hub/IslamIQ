@@ -35,6 +35,7 @@ export const Footer: React.FC = () => {
     { id: 'hajj-umrah-guide', label: 'Hajj & Umrah Guide', labelUrdu: 'حج و عمرہ گائیڈ' },
     { id: 'stories-of-the-prophets', label: 'Stories of Prophets', labelUrdu: 'قصص الانبیاء' },
     { id: 'rights-in-islam', label: 'Rights in Islam', labelUrdu: 'حقوق العباد' },
+    { id: 'islamic-daily-life', label: 'Islamic Daily Life', labelUrdu: 'اسلامی روزمرہ زندگی' },
     { id: 'ask-a-scholar', label: 'Ask a Scholar', labelUrdu: 'علمائے کرام سے رہنمائی' },
     { id: 'nearby-mosques', label: 'Nearby Mosques', labelUrdu: 'قریبی مساجد' },
   ];
