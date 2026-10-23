@@ -54,6 +54,7 @@ const HajjUmrahGuide = React.lazy(() => import('./components/seo/HajjUmrahGuide'
 const StoriesOfTheProphetsGuide = React.lazy(() => import('./components/seo/StoriesOfTheProphetsGuide'));
 const RightsInIslamGuide = React.lazy(() => import('./components/seo/RightsInIslamGuide'));
 const NearbyMosques = React.lazy(() => import('./components/tools/NearbyMosques'));
+const IslamicDailyLifeGuide = React.lazy(() => import('./components/seo/IslamicDailyLifeGuide'));
 
 export const App: React.FC = () => {
   const { activeTab, setActiveTab, userMode, setUserMode, toastMessage, contentLang, setIsShareOpen } = useApp();
@@ -75,7 +76,7 @@ export const App: React.FC = () => {
           'islamic-manners-for-kids', 'quran-learning-guide', 'hadith-learning-guide',
           'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar',
           'seerah-of-prophet-muhammad', 'ghusl-taharah-guide', 'tayammum-guide',
-          'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam',
+          'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam', 'islamic-daily-life',
           'ask-a-scholar', 'nearby-mosques', 'salah', 'quiz', 'search', 'tasbih', 'qibla'
         ];
 
@@ -270,6 +271,11 @@ export const App: React.FC = () => {
         title: 'Rights in Islam (Huqooq-ul-Ibad): Parents, Spouses, Neighbors & Workers | IslamIQ',
         path: '/rights-in-islam',
         desc: 'Comprehensive guide to social rights in Islam (Huqooq-ul-Ibad). Discover rights of parents, children, spouses, neighbors, relatives, orphans, and workers with Quran and Hadith evidence.'
+      },
+      'islamic-daily-life': {
+        title: 'Islamic Daily Life: 24-Hour Sunnah Routine & Everyday Etiquette | IslamIQ',
+        path: '/islamic-daily-life',
+        desc: 'Comprehensive guide to living Islam daily. Follow the 24-hour Sunnah routine from morning waking and Fajr to work ethics, family manners, evening adhkar, and sleep Sunnahs.'
       },
       'ask-a-scholar': {
         title: 'Ask a Scholar • Authentic Islamic Q&A, Masail & Fatwa | IslamIQ',
@@ -595,6 +601,14 @@ export const App: React.FC = () => {
             </div>
           }>
             <NearbyMosques />
+          </React.Suspense>
+        ) : activeTab === 'islamic-daily-life' ? (
+          <React.Suspense fallback={
+            <div className="flex items-center justify-center p-12">
+              <div className="w-8 h-8 border-4 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          }>
+            <IslamicDailyLifeGuide />
           </React.Suspense>
         ) : (
           isKids ? (

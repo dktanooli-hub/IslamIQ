@@ -521,6 +521,59 @@ const routes = [
       <h2>Face the Sacred Qibla (Kaaba) Anywhere</h2>
       <p>Determine the precise compass direction to the Kaaba in Makkah using your device sensors and location. Designed with high precision and offline compass fallback.</p>
     `
+  },
+  {
+    path: 'islamic-daily-life',
+    title: 'Islamic Daily Life: 24-Hour Sunnah Routine & Everyday Etiquette | IslamIQ',
+    desc: 'Comprehensive guide to living Islam daily. Follow the 24-hour Sunnah routine from morning waking and Fajr to work ethics, family manners, evening adhkar, and sleep Sunnahs.',
+    h1: 'Islamic Daily Life: 24-Hour Sunnah Routine & Everyday Etiquette',
+    content: `
+      <h2>Living Islam Every Day: A Chronological 24-Hour Guide</h2>
+      <p>Islam is a complete way of life that transforms ordinary daily moments into rewarding acts of worship through pure intention and adherence to the Sunnah of Prophet Muhammad ﷺ. This guide organizes the day into four chronological phases—Morning, Daytime, Evening, and Night—distinguishing obligatory acts (Fard) from beloved Sunnahs and recommended practices (Mustahabb).</p>
+
+      <h2>Phase 1: Morning Awakening & Fajr (صبح اور نماز فجر)</h2>
+      <p>The believer begins the day conscious of Allah before the sun rises.</p>
+      <ul>
+        <li><strong>Waking Supplication:</strong> الحمد لله الذي أحيانا بعد ما أماتنا وإليه النشور (Alhamdulillahil-ladhi ahyana ba'da ma amatana wa ilayhin-nushoor — All praise belongs to Allah who gave us life after having given us death, and unto Him is the resurrection) [Sahih al-Bukhari 6324].</li>
+        <li><strong>Miswak &amp; Sunnah Ablution:</strong> Use the tooth-stick (Miswak) and perform thorough Wudu with mindful intention. Review our <a href="/how-to-perform-wudu" style="color: #047857; font-weight: 600;">How to Perform Wudu Guide</a>.</li>
+        <li><strong>Fajr Prayer (Fard &amp; Sunnah):</strong> The two Sunnah rakats before Fajr hold immense value: <em>"The two rak'ahs before dawn (Fajr) are better than this world and everything in it"</em> [Sahih Muslim 725]. The two Fard rakats are strictly obligatory.</li>
+        <li><strong>Morning Adhkar:</strong> Recite Ayat al-Kursi (2:255), the Mu'awwidhat (Surahs Al-Ikhlas, Al-Falaq, An-Nas), and authentic morning supplications for divine protection.</li>
+      </ul>
+
+      <h2>Phase 2: Daytime, Work, Halal Earning & Etiquette (دن کا معمول اور حلال روزی)</h2>
+      <p>Engaging in work, studies, and social interactions with Islamic integrity constitutes worship.</p>
+      <ul>
+        <li><strong>Halal Earning &amp; Honesty:</strong> Prophet Muhammad ﷺ stated: <em>"The honest and trustworthy merchant will be with the prophets, the truthful, and the martyrs"</em> [Jami at-Tirmidhi 1209]. Deceit, fraud, and usury are strictly forbidden.</li>
+        <li><strong>Guarding the Tongue:</strong> <em>"Whoever believes in Allah and the Last Day, let him speak good or remain silent"</em> [Sahih al-Bukhari 6018]. Avoid backbiting (Gheebah), slander, and false speech.</li>
+        <li><strong>Etiquette of Eating and Drinking:</strong> Begin meals with <em>Bismillah</em>, eat with the right hand, partake of what is directly in front of you, and conclude with praising Allah [Sahih al-Bukhari 5376].</li>
+        <li><strong>Dhuhr &amp; Asr Prayers:</strong> Pause daily endeavors to offer obligatory Dhuhr (4 Fard with Sunnah Mu'akkadah) and Asr (4 Fard). Track your daily habits on our <a href="/salah" style="color: #047857; font-weight: 600;">Salah Tracker</a>.</li>
+      </ul>
+
+      <h2>Phase 3: Evening, Family Care & Maghrib (شام، گھر کے حقوق اور نماز مغرب)</h2>
+      <p>As dusk arrives, the focus shifts toward home, family, and spiritual reflection.</p>
+      <ul>
+        <li><strong>Bringing Children Indoors at Twilight:</strong> The Prophet ﷺ instructed to restrain children and mention Allah's name when darkness begins [Sahih al-Bukhari 3280].</li>
+        <li><strong>Maghrib Prayer:</strong> Perform the 3 obligatory rakats immediately after sunset, followed by 2 confirmed Sunnah rakats.</li>
+        <li><strong>Kindness to Family &amp; Spouses:</strong> <em>"The best of you are those who are best to their families, and I am the best among you to my family"</em> [Jami at-Tirmidhi 3895]. Spend quality time with parents, spouses, and children. Review the <a href="/rights-in-islam" style="color: #047857; font-weight: 600;">Rights in Islam Guide</a>.</li>
+        <li><strong>Evening Adhkar:</strong> Recite the prescribed evening supplications, seeking refuge in Allah's perfect words from the evil of what He has created [Sahih Muslim 2709].</li>
+      </ul>
+
+      <h2>Phase 4: Night, Isha & Sunnah Sleep Practices (رات کا آرام اور مسنون طریقہ)</h2>
+      <p>Closing the day with purification, prayer, and protection.</p>
+      <ul>
+        <li><strong>Isha Prayer:</strong> Perform 4 Fard rakats followed by 2 Sunnah Mu'akkadah and the Witr prayer (1 or 3 rakats), which is heavily emphasized.</li>
+        <li><strong>Sunnah Sleep Practices:</strong> Sleep in a state of Wudu, dust the bedding three times with the border of one's garment, lie on the right side with the right hand placed under the cheek, and recite Surah Al-Mulk for protection.</li>
+        <li><strong>Sleep Supplication:</strong> باسمك ربي وضعت جنبي وبك أرفعه (Bismika Rabbi wada'tu janbi wa bika arfa'uh — In Your name my Lord I lie down, and in Your name I arise) [Sahih al-Bukhari 6320].</li>
+        <li><strong>Daily Self-Reflection (Muhasabah):</strong> Spend a brief moment reviewing the day's deeds, seeking forgiveness (Istighfar) for shortcomings, and renewing intention to serve Allah tomorrow.</li>
+      </ul>
+
+      <h2>Frequently Asked Questions About Islamic Daily Routine</h2>
+      <h3>Is it necessary to complete every single Sunnah every single day?</h3>
+      <p>Obligatory acts (the five daily prayers, halal earnings, fulfilling family rights) are strictly binding on every mature Muslim. Sunnahs and recommended supplications elevate spiritual rank and compensate for flaws in obligatory acts, but should be built up gradually with consistency: <em>"The most beloved of deeds to Allah are those that are most consistent, even if they are few"</em> [Sahih al-Bukhari 6464].</p>
+
+      <h3>How can I stay consistent when busy with modern work or study?</h3>
+      <p>Anchor your day around the five Salah times. Plan your calendar around Fajr, Dhuhr, Asr, Maghrib, and Isha. Even short moments of Dhikr—such as Istighfar during commutes or SubhanAllah while walking—transform your day into continual worship.</p>
+    `
   }
 ];
 
@@ -613,6 +666,7 @@ const homeFallback = `
           <li style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px;"><a href="/zakat-basics" style="color: #047857; font-weight: 700; text-decoration: none; font-size: 16px;">Zakat Basics &amp; Nisab Thresholds &raquo;</a><p style="font-size: 13px; color: #64748b; margin-top: 4px;">Gold &amp; silver Nisab standards, 2.5% calculation, and 8 Quranic categories.</p></li>
           <li style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px;"><a href="/stories-of-the-prophets" style="color: #047857; font-weight: 700; text-decoration: none; font-size: 16px;">Stories of the Prophets &raquo;</a><p style="font-size: 13px; color: #64748b; margin-top: 4px;">Lessons from Adam, Nuh, Ibrahim, Yusuf, Musa, and Isa (AS) in the Quran.</p></li>
           <li style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px;"><a href="/rights-in-islam" style="color: #047857; font-weight: 700; text-decoration: none; font-size: 16px;">Rights in Islam (Huqooq-ul-Ibad) &raquo;</a><p style="font-size: 13px; color: #64748b; margin-top: 4px;">Rights of parents, children, spouses, neighbors, orphans, and workers.</p></li>
+          <li style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px;"><a href="/islamic-daily-life" style="color: #047857; font-weight: 700; text-decoration: none; font-size: 16px;">Islamic Daily Life &amp; Sunnah Routine &raquo;</a><p style="font-size: 13px; color: #64748b; margin-top: 4px;">24-hour Sunnah routine, morning/evening adhkar, and everyday etiquette.</p></li>
           <li style="border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px;"><a href="/islamic-manners-for-kids" style="color: #047857; font-weight: 700; text-decoration: none; font-size: 16px;">Islamic Manners for Kids &raquo;</a><p style="font-size: 13px; color: #64748b; margin-top: 4px;">Sunnah etiquettes of eating, greeting with Salam, and honoring parents.</p></li>
         </ul>
       </section>

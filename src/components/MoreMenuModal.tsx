@@ -22,7 +22,8 @@ import {
   Layers,
   ChevronRight,
   Flame,
-  MapPin
+  MapPin,
+  Clock
 } from 'lucide-react';
 
 interface MenuItem {
@@ -237,6 +238,17 @@ export const MoreMenuModal: React.FC = () => {
           descEn: 'Fasting rules, Suhoor, Iftar, Laylat al-Qadr & Zakat al-Fitr',
           descUrdu: 'روزے کے مسائل، سحر و افطار اور صدقۃ الفطر',
           icon: Moon
+        },
+        {
+          id: 'islamic-daily-life',
+          path: '/islamic-daily-life',
+          titleEn: 'Islamic Daily Life',
+          titleUrdu: 'اسلامی روزمرہ زندگی',
+          descEn: '24-hour Sunnah routine, daily checklist, morning & evening adhkar',
+          descUrdu: 'صبح سے رات تک کا ۲۴ گھنٹے مسنون معمول اور روزمرہ آداب',
+          icon: Clock,
+          badge: '24h Routine',
+          badgeUrdu: '۲۴ گھنٹے'
         }
       ]
     },

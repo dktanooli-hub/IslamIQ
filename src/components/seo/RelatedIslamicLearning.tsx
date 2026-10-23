@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { AppTab } from '../../types';
-import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, Moon, Coins, Calculator, Calendar, ArrowRight, ArrowLeft, Scale, ShieldCheck, Award } from 'lucide-react';
+import { BookOpen, HelpCircle, CheckSquare, Sparkles, Compass, Heart, Droplets, Moon, Coins, Calculator, Calendar, ArrowRight, ArrowLeft, Scale, ShieldCheck, Award, Clock } from 'lucide-react';
 
 interface RelatedLearningItem {
   id: AppTab;
@@ -228,6 +228,14 @@ export const RelatedIslamicLearning: React.FC<RelatedIslamicLearningProps> = ({ 
       descEn: 'Sacred rights of parents, children, spouses, neighbors, orphans, and workers.',
       descUrdu: 'والدین، اولاد، شریکِ حیات، پڑوسی، رشتہ داروں اور مزدوروں کے حقوق قرآن و سنت میں۔',
       icon: Scale,
+    },
+    {
+      id: 'islamic-daily-life',
+      titleEn: 'Islamic Daily Life & Sunnah Routine',
+      titleUrdu: 'اسلامی روزمرہ زندگی اور مسنون معمول',
+      descEn: '24-hour Sunnah routine, daily checklist, morning & evening adhkar, and everyday etiquette.',
+      descUrdu: 'صبح سے رات تک کا ۲۴ گھنٹے مسنون معمول، روزانہ اذکار اور اسلامی آداب۔',
+      icon: Clock,
     },
   ];
 
