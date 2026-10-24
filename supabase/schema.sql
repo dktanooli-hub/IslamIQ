@@ -1128,7 +1128,38 @@ REVOKE ALL ON FUNCTION public.admin_update_scholar_inquiry(UUID, TEXT, TEXT, TEX
 GRANT EXECUTE ON FUNCTION public.admin_update_scholar_inquiry(UUID, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO authenticated;
 
 -- =============================================================================
--- 12. IDEMPOTENT REAL-TIME REPLICATION
+-- 12. PUBLIC SCHOLARS LIBRARY TABLE (Admin-Managed Islamic Q&A)
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS public.scholar_qa_library (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    slug TEXT UNIQUE NOT NULL,
+    title TEXT NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    references_details TEXT NOT NULL DEFAULT '',
+    category TEXT NOT NULL DEFAULT 'General',
+    language TEXT NOT NULL DEFAULT 'english' CHECK (language IN ('english', 'urdu')),
+    status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
+    views_count INTEGER NOT NULL DEFAULT 0 CHECK (views_count >= 0),
+    published_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT pg_catalog.now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT pg_catalog.now(),
+    
+    CONSTRAINT chk_scholar_qa_title_length CHECK (length(btrim(title)) >= 3 AND length(title) <= 300),
+    CONSTRAINT chk_scholar_qa_question_length CHECK (length(btrim(question)) >= 5 AND length(question) <= 6000),
+    CONSTRAINT chk_scholar_qa_answer_length CHECK (length(btrim(answer)) >= 5 AND length(answer) <= 20000),
+    CONSTRAINT chk_scholar_qa_slug_length CHECK (length(btrim(slug)) >= 3 AND length(slug) <= 150)
+);
+
+CREATE INDEX IF NOT EXISTS idx_scholar_qa_library_status ON public.scholar_qa_library(status);
+CREATE INDEX IF NOT EXISTS idx_scholar_qa_library_slug ON public.scholar_qa_library(slug);
+CREATE INDEX IF NOT EXISTS idx_scholar_qa_library_category ON public.scholar_qa_library(category);
+CREATE INDEX IF NOT EXISTS idx_scholar_qa_library_language ON public.scholar_qa_library(language);
+CREATE INDEX IF NOT EXISTS idx_scholar_qa_library_published_at ON public.scholar_qa_library(published_at DESC);
+CREATE INDEX IF NOT EXISTS idx_scholar_qa_library_created_at ON public.scholar_qa_library(created_at DESC);
+
+-- =============================================================================
+-- 13. IDEMPOTENT REAL-TIME REPLICATION
 -- =============================================================================
 DO $$
 BEGIN
@@ -1159,10 +1190,14 @@ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'verified_qas') THEN
         ALTER PUBLICATION supabase_realtime ADD TABLE public.verified_qas;
     END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND schemaname = 'public' AND tablename = 'scholar_qa_library') THEN
+        ALTER PUBLICATION supabase_realtime ADD TABLE public.scholar_qa_library;
+    END IF;
 END $$;
 
 -- =============================================================================
--- 12. DCL PERMISSIONS & ZERO-TRUST ROW-LEVEL SECURITY (RLS) FOR ALL 9 TABLES
+-- 14. DCL PERMISSIONS & ZERO-TRUST ROW-LEVEL SECURITY (RLS) FOR ALL 11 TABLES
 -- =============================================================================
 
 -- Table-level DCL grants:
@@ -1174,6 +1209,7 @@ GRANT SELECT ON public.duas TO anon, authenticated;
 GRANT SELECT ON public.reminders TO anon, authenticated;
 GRANT SELECT ON public.verified_qas TO anon, authenticated;
 GRANT SELECT ON public.categories TO anon, authenticated;
+GRANT SELECT ON public.scholar_qa_library TO anon, authenticated;
 
 GRANT INSERT, UPDATE, DELETE ON public.quiz_questions TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.quran_verses TO authenticated;
@@ -1182,6 +1218,7 @@ GRANT INSERT, UPDATE, DELETE ON public.duas TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.reminders TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.verified_qas TO authenticated;
 GRANT INSERT, UPDATE, DELETE ON public.categories TO authenticated;
+GRANT INSERT, UPDATE, DELETE ON public.scholar_qa_library TO authenticated;
 
 -- Admin table: Deny direct access to anon completely
 REVOKE ALL ON public.app_admins FROM PUBLIC, anon;
@@ -1199,9 +1236,10 @@ REVOKE ALL ON public.scholar_inquiries FROM PUBLIC, anon;
 REVOKE INSERT, UPDATE, DELETE ON public.scholar_inquiries FROM authenticated;
 GRANT SELECT ON public.scholar_inquiries TO authenticated;
 
--- Enable RLS across all 10 tables
+-- Enable RLS across all 11 tables
 ALTER TABLE public.app_admins ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quiz_questions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.scholar_qa_library ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.quran_verses ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.hadiths ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.duas ENABLE ROW LEVEL SECURITY;
@@ -1509,8 +1547,47 @@ CREATE POLICY "Admin can view scholar inquiries"
     TO authenticated
     USING (public.is_admin());
 
+-- -----------------------------------------------------------------------------
+-- TABLE 11: public.scholar_qa_library
+-- -----------------------------------------------------------------------------
+-- Zero-Trust Access Policies:
+--   - Anonymous visitors: Can ONLY read published entries (status = 'published').
+--   - Authenticated users: Can read published entries, or all entries (including drafts) if verified Admin.
+--   - INSERT, UPDATE, DELETE: Strictly restricted to verified Admins (public.is_admin()).
+-- -----------------------------------------------------------------------------
+DROP POLICY IF EXISTS "Anon can view published scholar qas" ON public.scholar_qa_library;
+CREATE POLICY "Anon can view published scholar qas"
+    ON public.scholar_qa_library FOR SELECT
+    TO anon
+    USING (status = 'published');
+
+DROP POLICY IF EXISTS "Authenticated can view scholar qas" ON public.scholar_qa_library;
+CREATE POLICY "Authenticated can view scholar qas"
+    ON public.scholar_qa_library FOR SELECT
+    TO authenticated
+    USING (status = 'published' OR public.is_admin());
+
+DROP POLICY IF EXISTS "Admin can insert scholar qas" ON public.scholar_qa_library;
+CREATE POLICY "Admin can insert scholar qas"
+    ON public.scholar_qa_library FOR INSERT
+    TO authenticated
+    WITH CHECK (public.is_admin());
+
+DROP POLICY IF EXISTS "Admin can update scholar qas" ON public.scholar_qa_library;
+CREATE POLICY "Admin can update scholar qas"
+    ON public.scholar_qa_library FOR UPDATE
+    TO authenticated
+    USING (public.is_admin())
+    WITH CHECK (public.is_admin());
+
+DROP POLICY IF EXISTS "Admin can delete scholar qas" ON public.scholar_qa_library;
+CREATE POLICY "Admin can delete scholar qas"
+    ON public.scholar_qa_library FOR DELETE
+    TO authenticated
+    USING (public.is_admin());
+
 -- =============================================================================
--- 13. ADMIN-ONLY DIAGNOSTICS: SECURE VIEW & RPC FUNCTION
+-- 15. ADMIN-ONLY DIAGNOSTICS: SECURE VIEW & RPC FUNCTION
 -- =============================================================================
 -- Genuinely restricted to verified administrators:
 -- 1. The view public.v_database_statistics enforces WHERE public.is_admin() = TRUE,

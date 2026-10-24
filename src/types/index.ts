@@ -45,6 +45,7 @@ export type AppTab =
   | 'stories-of-the-prophets'
   | 'rights-in-islam'
   | 'ask-a-scholar'
+  | 'scholars-library'
   | 'nearby-mosques'
   | 'islamic-daily-life';
 
@@ -306,6 +307,38 @@ export interface ScholarInquiry extends PublicScholarInquiry {
   userId?: string | null;
   adminNotes?: string | null;
   updatedAt: string;
+}
+
+/**
+ * Public Scholars Library (Admin-managed Islamic Q&A)
+ */
+export type ScholarQALanguage = 'english' | 'urdu';
+export type ScholarQAPublicationStatus = 'draft' | 'published';
+
+export interface ScholarQALibraryItem {
+  id: string;
+  slug: string;
+  title: string;
+  question: string;
+  answer: string;
+  referencesDetails: string;
+  category: string;
+  language: ScholarQALanguage;
+  status: ScholarQAPublicationStatus;
+  viewsCount?: number;
+  publishedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ScholarQAFormData {
+  title: string;
+  question: string;
+  answer: string;
+  referencesDetails: string;
+  category: string;
+  language: ScholarQALanguage;
+  status: ScholarQAPublicationStatus;
 }
 
 

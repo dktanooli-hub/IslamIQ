@@ -16,7 +16,9 @@ import {
   QuizCategory,
   QuizDifficulty,
   QuizAttemptRecord,
-  AppTab
+  AppTab,
+  ScholarQALibraryItem,
+  ScholarQAFormData
 } from '../types';
 import {
   DHIKR_LIST,
@@ -28,6 +30,7 @@ import {
   ISLAMIC_REMINDERS,
   VERIFIED_QA_DATABASE
 } from '../data/verifiedContent';
+import { INITIAL_SCHOLAR_LIBRARY } from '../data/scholarLibraryData';
 import { sounds } from '../utils/audio';
 import { getLocalDateStr, normalizeSalahHistory } from '../utils/dateUtils';
 import { AdminAuthService, PRIMARY_ADMIN_EMAIL } from '../services/adminAuth';
@@ -155,6 +158,16 @@ interface AppContextType {
   migrateLocalToSupabase: () => Promise<{ success: boolean; migratedCount: number; error?: string }>;
   isCloudSyncing: boolean;
   cloudSyncError: string | null;
+
+  // Public & Admin Scholars Library
+  publicScholarLibrary: ScholarQALibraryItem[];
+  adminScholarLibrary: ScholarQALibraryItem[];
+  isLoadingScholarLibrary: boolean;
+  fetchPublicScholarLibrary: () => Promise<void>;
+  fetchAdminScholarLibrary: () => Promise<void>;
+  adminSaveScholarQA: (item: Partial<ScholarQALibraryItem> & ScholarQAFormData) => Promise<{ success: boolean; data?: ScholarQALibraryItem; error?: string }>;
+  adminDeleteScholarQA: (id: string) => Promise<{ success: boolean; error?: string }>;
+  adminToggleScholarQAPublish: (id: string, newStatus: 'published' | 'draft') => Promise<{ success: boolean; error?: string }>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -254,6 +267,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (tabParam === 'tasbih') return 'tasbih';
         if (tabParam === 'search') return 'search';
         if (tabParam === 'status') return 'status';
+        if (tabParam === 'ask-a-scholar') return 'ask-a-scholar';
+        if (tabParam === 'scholars-library') return 'scholars-library';
         if (tabParam === 'daily' || tabParam === 'home') return 'home';
 
         const path = url.pathname.replace(/^\//, '').toLowerCase();
@@ -288,7 +303,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           'tayammum-guide',
           'hajj-umrah-guide',
           'stories-of-the-prophets',
-          'rights-in-islam'
+          'rights-in-islam',
+          'ask-a-scholar',
+          'scholars-library',
+          'nearby-mosques',
+          'islamic-daily-life'
         ];
         if (validCleanTabs.includes(path as AppTab)) {
           return path as AppTab;
@@ -298,6 +317,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         if (path === 'qibla') return 'qibla';
         if (path === 'tasbih') return 'tasbih';
         if (path === 'search') return 'search';
+        if (path === 'scholars-library') return 'scholars-library';
+        if (path === 'ask-a-scholar') return 'ask-a-scholar';
       } catch {
         // Fallback to home
       }
@@ -475,6 +496,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [adminUid, setAdminUid] = useState<string | null>(null);
   const [isCloudSyncing, setIsCloudSyncing] = useState<boolean>(false);
   const [cloudSyncError, setCloudSyncError] = useState<string | null>(null);
+
+  // Public & Admin Scholars Library State
+  const [publicScholarLibrary, setPublicScholarLibrary] = useState<ScholarQALibraryItem[]>(INITIAL_SCHOLAR_LIBRARY);
+  const [adminScholarLibrary, setAdminScholarLibrary] = useState<ScholarQALibraryItem[]>(INITIAL_SCHOLAR_LIBRARY);
+  const [isLoadingScholarLibrary, setIsLoadingScholarLibrary] = useState<boolean>(false);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -736,6 +762,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       unsubscribeQAs();
     };
   }, []);
+
+  // Load Public Scholars Library on startup
+  useEffect(() => {
+    fetchPublicScholarLibrary();
+  }, []);
+
+  // Fetch full Admin Scholars Library (including drafts) when admin is authenticated
+  useEffect(() => {
+    if (isAdminAuthenticated) {
+      fetchAdminScholarLibrary();
+    }
+  }, [isAdminAuthenticated]);
 
   // Save Admin DB to LocalStorage as offline cache (does not overwrite or replace cloud databases)
   useEffect(() => {
@@ -1194,6 +1232,110 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Explicit Supabase Admin Bootstrap & Diagnostics
   const claimAdminBootstrap = async (): Promise<{ success: boolean; message?: string; error?: string }> => {
     return AdminAuthService.claimAdminBootstrap();
+  };
+
+  // ---------------------------------------------------------------------------
+  // Public & Admin Scholars Library (Admin-managed Q&A)
+  // ---------------------------------------------------------------------------
+  const fetchPublicScholarLibrary = async () => {
+    setIsLoadingScholarLibrary(true);
+    try {
+      const items = await SupabaseService.getPublicScholarQALibrary();
+      if (items && items.length > 0) {
+        setPublicScholarLibrary(items);
+      }
+    } catch (err) {
+      console.warn('Failed to load public scholar library:', err);
+    } finally {
+      setIsLoadingScholarLibrary(false);
+    }
+  };
+
+  const fetchAdminScholarLibrary = async () => {
+    setIsLoadingScholarLibrary(true);
+    try {
+      const res = await SupabaseService.adminGetAllScholarQAs();
+      if (res.success && res.data) {
+        setAdminScholarLibrary(res.data);
+      }
+    } catch (err) {
+      console.warn('Failed to load admin scholar library:', err);
+    } finally {
+      setIsLoadingScholarLibrary(false);
+    }
+  };
+
+  const adminSaveScholarQA = async (item: Partial<ScholarQALibraryItem> & ScholarQAFormData) => {
+    const res = await SupabaseService.adminSaveScholarQA(item);
+    if (res.success && res.data) {
+      const saved = res.data;
+      setAdminScholarLibrary(prev => {
+        const idx = prev.findIndex(x => x.id === saved.id);
+        if (idx >= 0) {
+          const next = [...prev];
+          next[idx] = saved;
+          return next;
+        }
+        return [saved, ...prev];
+      });
+
+      if (saved.status === 'published') {
+        setPublicScholarLibrary(prev => {
+          const idx = prev.findIndex(x => x.id === saved.id);
+          if (idx >= 0) {
+            const next = [...prev];
+            next[idx] = saved;
+            return next;
+          }
+          return [saved, ...prev];
+        });
+      } else {
+        setPublicScholarLibrary(prev => prev.filter(x => x.id !== saved.id));
+      }
+      showToast(item.id ? 'Scholar Q&A updated! ✅' : 'Scholar Q&A created! ✅');
+    } else {
+      showToast(res.error || 'Failed to save Scholar Q&A');
+    }
+    return res;
+  };
+
+  const adminDeleteScholarQA = async (id: string) => {
+    const res = await SupabaseService.adminDeleteScholarQA(id);
+    if (res.success) {
+      setAdminScholarLibrary(prev => prev.filter(x => x.id !== id));
+      setPublicScholarLibrary(prev => prev.filter(x => x.id !== id));
+      showToast('Scholar Q&A deleted.');
+    } else {
+      showToast(res.error || 'Failed to delete Scholar Q&A');
+    }
+    return res;
+  };
+
+  const adminToggleScholarQAPublish = async (id: string, newStatus: 'published' | 'draft') => {
+    const res = await SupabaseService.adminToggleScholarQAPublication(id, newStatus);
+    if (res.success) {
+      setAdminScholarLibrary(prev => prev.map(x => {
+        if (x.id === id) {
+          return {
+            ...x,
+            status: newStatus,
+            publishedAt: newStatus === 'published' ? new Date().toISOString() : null,
+            updatedAt: new Date().toISOString()
+          };
+        }
+        return x;
+      }));
+
+      if (newStatus === 'published') {
+        fetchPublicScholarLibrary();
+      } else {
+        setPublicScholarLibrary(prev => prev.filter(x => x.id !== id));
+      }
+      showToast(newStatus === 'published' ? 'Entry published to Public Library! 🌐' : 'Entry moved to Drafts 🔒');
+    } else {
+      showToast(res.error || 'Failed to update publication status');
+    }
+    return res;
   };
 
   const fetchDatabaseStats = async (): Promise<void> => {
@@ -1772,7 +1914,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         migrateLocalToFirestore,
         migrateLocalToSupabase,
         isCloudSyncing,
-        cloudSyncError
+        cloudSyncError,
+
+        // Public & Admin Scholars Library
+        publicScholarLibrary,
+        adminScholarLibrary,
+        isLoadingScholarLibrary,
+        fetchPublicScholarLibrary,
+        fetchAdminScholarLibrary,
+        adminSaveScholarQA,
+        adminDeleteScholarQA,
+        adminToggleScholarQAPublish
       }}
     >
       {children}

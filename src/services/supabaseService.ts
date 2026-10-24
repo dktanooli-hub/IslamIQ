@@ -11,8 +11,11 @@ import {
   ScholarSubmissionResult,
   PublicScholarInquiry,
   ScholarInquiry,
-  ScholarInquiryStatus
+  ScholarInquiryStatus,
+  ScholarQALibraryItem,
+  ScholarQAFormData
 } from '../types';
+import { INITIAL_SCHOLAR_LIBRARY } from '../data/scholarLibraryData';
 
 export interface DatabaseStats {
   totalQuizQuestions: number;
@@ -1233,6 +1236,293 @@ listenQuestions(
       success: false,
       error: 'Direct deletion of scholar inquiries is disabled to maintain audit integrity. Please reject the inquiry using adminUpdateScholarInquiry with a rejection reason.'
     };
+  },
+
+  // ---------------------------------------------------------------------------
+  // 12. PUBLIC SCHOLARS LIBRARY (public.scholar_qa_library)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Fetch all published scholar library Q&As.
+   * RLS strictly ensures only status='published' is returned for public queries.
+   */
+  async getPublicScholarQALibrary(): Promise<ScholarQALibraryItem[]> {
+    if (!isSupabaseConfigured()) {
+      return INITIAL_SCHOLAR_LIBRARY;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('scholar_qa_library')
+        .select('*')
+        .eq('status', 'published')
+        .order('published_at', { ascending: false });
+
+      if (error) {
+        console.warn('[Supabase] getPublicScholarQALibrary error:', error.message);
+        return INITIAL_SCHOLAR_LIBRARY;
+      }
+
+      if (!data || data.length === 0) {
+        return INITIAL_SCHOLAR_LIBRARY;
+      }
+
+      return data.map((row: any) => ({
+        id: row.id,
+        slug: row.slug,
+        title: row.title,
+        question: row.question,
+        answer: row.answer,
+        referencesDetails: row.references_details || '',
+        category: row.category || 'General',
+        language: row.language || 'english',
+        status: row.status,
+        viewsCount: row.views_count || 0,
+        publishedAt: row.published_at,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }));
+    } catch (err) {
+      console.warn('[Supabase] getPublicScholarQALibrary fallback:', err);
+      return INITIAL_SCHOLAR_LIBRARY;
+    }
+  },
+
+  /**
+   * Fetch a single published scholar Q&A by its SEO slug or UUID id.
+   */
+  async getPublicScholarQABySlugOrId(identifier: string): Promise<ScholarQALibraryItem | null> {
+    const clean = identifier.trim();
+    if (!clean) return null;
+
+    if (isSupabaseConfigured()) {
+      try {
+        const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(clean);
+        let query = supabase.from('scholar_qa_library').select('*');
+        if (isUuid) {
+          query = query.or(`slug.eq.${clean},id.eq.${clean}`);
+        } else {
+          query = query.eq('slug', clean);
+        }
+
+        const { data, error } = await query.maybeSingle();
+        if (!error && data) {
+          return {
+            id: data.id,
+            slug: data.slug,
+            title: data.title,
+            question: data.question,
+            answer: data.answer,
+            referencesDetails: data.references_details || '',
+            category: data.category || 'General',
+            language: data.language || 'english',
+            status: data.status,
+            viewsCount: data.views_count || 0,
+            publishedAt: data.published_at,
+            createdAt: data.created_at,
+            updatedAt: data.updated_at
+          };
+        }
+      } catch {}
+    }
+
+    const found = INITIAL_SCHOLAR_LIBRARY.find(item => item.slug === clean || item.id === clean);
+    return found || null;
+  },
+
+  /**
+   * Admin-only: Fetch all scholar library items (both published and drafts).
+   * RLS strictly verifies public.is_admin() before returning drafts.
+   */
+  async adminGetAllScholarQAs(): Promise<{ success: boolean; data?: ScholarQALibraryItem[]; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: true, data: INITIAL_SCHOLAR_LIBRARY };
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('scholar_qa_library')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      const items: ScholarQALibraryItem[] = (data || []).map((row: any) => ({
+        id: row.id,
+        slug: row.slug,
+        title: row.title,
+        question: row.question,
+        answer: row.answer,
+        referencesDetails: row.references_details || '',
+        category: row.category || 'General',
+        language: row.language || 'english',
+        status: row.status,
+        viewsCount: row.views_count || 0,
+        publishedAt: row.published_at,
+        createdAt: row.created_at,
+        updatedAt: row.updated_at
+      }));
+
+      return { success: true, data: items };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to fetch scholar QA library' };
+    }
+  },
+
+  /**
+   * Admin-only: Save (Insert or Update) a scholar Q&A entry.
+   */
+  async adminSaveScholarQA(item: Partial<ScholarQALibraryItem>): Promise<{ success: boolean; data?: ScholarQALibraryItem; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: false, error: 'Supabase configuration is not active.' };
+    }
+
+    try {
+      const title = (item.title || '').trim();
+      const question = (item.question || '').trim();
+      const answer = (item.answer || '').trim();
+      const referencesDetails = (item.referencesDetails || '').trim();
+      const category = (item.category || 'General').trim();
+      const language = item.language || 'english';
+      const status = item.status || 'draft';
+
+      if (title.length < 3) {
+        return { success: false, error: 'Title must be at least 3 characters.' };
+      }
+      if (question.length < 5) {
+        return { success: false, error: 'Question must be at least 5 characters.' };
+      }
+      if (answer.length < 5) {
+        return { success: false, error: 'Answer must be at least 5 characters.' };
+      }
+
+      // Generate or clean slug
+      let slug = (item.slug && item.slug.trim()) ? item.slug.trim().toLowerCase().replace(/[\s_]+/g, '-') : '';
+      if (!slug || slug.length < 3) {
+        slug = title
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/[\s_-]+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .substring(0, 100);
+        if (!slug || slug.length < 3) {
+          slug = `qa-${Date.now().toString(36)}`;
+        }
+      }
+
+      const now = new Date().toISOString();
+      const row: any = {
+        title,
+        question,
+        answer,
+        references_details: referencesDetails,
+        category,
+        language,
+        status,
+        slug,
+        updated_at: now
+      };
+
+      if (item.id) {
+        row.id = item.id;
+      }
+
+      if (status === 'published') {
+        row.published_at = item.publishedAt || now;
+      } else {
+        row.published_at = null;
+      }
+
+      const { data, error } = await supabase
+        .from('scholar_qa_library')
+        .upsert(row)
+        .select()
+        .single();
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      const saved: ScholarQALibraryItem = {
+        id: data.id,
+        slug: data.slug,
+        title: data.title,
+        question: data.question,
+        answer: data.answer,
+        referencesDetails: data.references_details || '',
+        category: data.category || 'General',
+        language: data.language || 'english',
+        status: data.status,
+        viewsCount: data.views_count || 0,
+        publishedAt: data.published_at,
+        createdAt: data.created_at,
+        updatedAt: data.updated_at
+      };
+
+      return { success: true, data: saved };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to save scholar QA entry.' };
+    }
+  },
+
+  /**
+   * Admin-only: Delete a scholar Q&A entry.
+   */
+  async adminDeleteScholarQA(id: string): Promise<{ success: boolean; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: false, error: 'Supabase configuration is not active.' };
+    }
+
+    try {
+      const { error } = await supabase
+        .from('scholar_qa_library')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to delete entry.' };
+    }
+  },
+
+  /**
+   * Admin-only: Toggle publication status of a scholar Q&A.
+   */
+  async adminToggleScholarQAPublication(id: string, newStatus: 'published' | 'draft'): Promise<{ success: boolean; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: false, error: 'Supabase configuration is not active.' };
+    }
+
+    try {
+      const updates: any = {
+        status: newStatus,
+        updated_at: new Date().toISOString()
+      };
+      if (newStatus === 'published') {
+        updates.published_at = new Date().toISOString();
+      } else {
+        updates.published_at = null;
+      }
+
+      const { error } = await supabase
+        .from('scholar_qa_library')
+        .update(updates)
+        .eq('id', id);
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (err: any) {
+      return { success: false, error: err?.message || 'Failed to update publication status.' };
+    }
   }
 };
 

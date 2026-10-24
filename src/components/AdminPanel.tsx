@@ -34,14 +34,18 @@ import {
   CloudOff,
   Database,
   Mail,
-  Scale
+  Scale,
+  Library,
+  FileText
 } from 'lucide-react';
 import { supabaseService } from '../services/supabaseService';
 import {
   ScholarInquiry,
   ScholarInquiryStatus,
   ScholarInquiryCategory,
-  MadhhabPreference
+  MadhhabPreference,
+  ScholarQALibraryItem,
+  ScholarQAFormData
 } from '../types';
 
 interface AdminPanelProps {
@@ -95,7 +99,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     activeBackend,
     claimAdminBootstrap,
     databaseStats,
-    fetchDatabaseStats
+    fetchDatabaseStats,
+    publicScholarLibrary,
+    adminScholarLibrary,
+    isLoadingScholarLibrary,
+    fetchAdminScholarLibrary,
+    adminSaveScholarQA,
+    adminDeleteScholarQA,
+    adminToggleScholarQAPublish
   } = useApp();
 
   // Migration & Bootstrap running state
@@ -110,7 +121,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   const [loginError, setLoginError] = useState('');
 
   // Admin Navigation Tabs
-  const [activeAdminTab, setActiveAdminTab] = useState<'questions' | 'daily' | 'categories' | 'analytics' | 'monetization' | 'scholar'>('questions');
+  const [activeAdminTab, setActiveAdminTab] = useState<'questions' | 'daily' | 'categories' | 'analytics' | 'monetization' | 'scholar' | 'scholar-library'>('questions');
   const [dailySubTab, setDailySubTab] = useState<'quran' | 'hadith' | 'dua' | 'reminder'>('quran');
 
   // Question Filters
@@ -648,6 +659,150 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     });
   }, [scholarInquiries, scholarSearchQuery]);
 
+  // ---------------------------------------------------------------------------
+  // Public Scholars Library State & Handlers
+  // ---------------------------------------------------------------------------
+  const [qaSearchQuery, setQaSearchQuery] = useState('');
+  const [qaStatusFilter, setQaStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
+  const [qaCategoryFilter, setQaCategoryFilter] = useState<string>('all');
+  const [qaLangFilter, setQaLangFilter] = useState<'all' | 'english' | 'urdu'>('all');
+
+  const [isQAModalOpen, setIsQAModalOpen] = useState(false);
+  const [editingQA, setEditingQA] = useState<ScholarQALibraryItem | null>(null);
+  const [qaFormData, setQaFormData] = useState<ScholarQAFormData>({
+    title: '',
+    question: '',
+    answer: '',
+    referencesDetails: '',
+    category: 'General',
+    language: 'english',
+    status: 'published'
+  });
+  const [qaCustomCategory, setQaCustomCategory] = useState('');
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
+  const [qaFormError, setQaFormError] = useState<string | null>(null);
+  const [isSavingQA, setIsSavingQA] = useState(false);
+
+  // Delete confirmation modal state
+  const [deletingQAItem, setDeletingQAItem] = useState<ScholarQALibraryItem | null>(null);
+  const [isDeletingQA, setIsDeletingQA] = useState(false);
+
+  const handleOpenAddQA = () => {
+    setEditingQA(null);
+    setQaFormData({
+      title: '',
+      question: '',
+      answer: '',
+      referencesDetails: '',
+      category: categories[0] || 'General',
+      language: 'english',
+      status: 'published'
+    });
+    setQaCustomCategory('');
+    setIsCustomCategory(false);
+    setQaFormError(null);
+    setIsQAModalOpen(true);
+  };
+
+  const handleOpenEditQA = (item: ScholarQALibraryItem) => {
+    setEditingQA(item);
+    const isCustom = !categories.includes(item.category);
+    setIsCustomCategory(isCustom);
+    setQaCustomCategory(isCustom ? item.category : '');
+    setQaFormData({
+      title: item.title,
+      question: item.question,
+      answer: item.answer,
+      referencesDetails: item.referencesDetails || '',
+      category: item.category,
+      language: item.language,
+      status: item.status
+    });
+    setQaFormError(null);
+    setIsQAModalOpen(true);
+  };
+
+  const handleSaveQASubmit = async (overrideStatus?: 'published' | 'draft') => {
+    setQaFormError(null);
+    const finalCategory = isCustomCategory ? (qaCustomCategory.trim() || 'General') : qaFormData.category;
+    const finalStatus = overrideStatus || qaFormData.status;
+
+    if (!qaFormData.title.trim()) {
+      setQaFormError('Title is required for the public library entry.');
+      return;
+    }
+    if (!qaFormData.question.trim()) {
+      setQaFormError('Question is required.');
+      return;
+    }
+    if (!qaFormData.answer.trim()) {
+      setQaFormError('Answer is required.');
+      return;
+    }
+
+    setIsSavingQA(true);
+    try {
+      const payload: Partial<ScholarQALibraryItem> & ScholarQAFormData = {
+        id: editingQA?.id,
+        title: qaFormData.title.trim(),
+        question: qaFormData.question.trim(),
+        answer: qaFormData.answer.trim(),
+        referencesDetails: qaFormData.referencesDetails.trim(),
+        category: finalCategory,
+        language: qaFormData.language,
+        status: finalStatus
+      };
+
+      const res = await adminSaveScholarQA(payload);
+      if (res.success) {
+        setIsQAModalOpen(false);
+      } else {
+        setQaFormError(res.error || 'Failed to save Q&A');
+      }
+    } catch (err: any) {
+      setQaFormError(err?.message || 'Unexpected error while saving');
+    } finally {
+      setIsSavingQA(false);
+    }
+  };
+
+  const handleConfirmDeleteQA = async () => {
+    if (!deletingQAItem) return;
+    setIsDeletingQA(true);
+    try {
+      await adminDeleteScholarQA(deletingQAItem.id);
+      setDeletingQAItem(null);
+    } finally {
+      setIsDeletingQA(false);
+    }
+  };
+
+  const filteredScholarLibrary = useMemo(() => {
+    return adminScholarLibrary.filter(item => {
+      if (qaStatusFilter !== 'all' && item.status !== qaStatusFilter) {
+        return false;
+      }
+      if (qaCategoryFilter !== 'all' && item.category !== qaCategoryFilter) {
+        return false;
+      }
+      if (qaLangFilter !== 'all' && item.language !== qaLangFilter) {
+        return false;
+      }
+      if (qaSearchQuery.trim()) {
+        const q = qaSearchQuery.toLowerCase().trim();
+        const matchTitle = item.title.toLowerCase().includes(q);
+        const matchQ = item.question.toLowerCase().includes(q);
+        const matchA = item.answer.toLowerCase().includes(q);
+        const matchRef = (item.referencesDetails || '').toLowerCase().includes(q);
+        const matchCat = (item.category || '').toLowerCase().includes(q);
+        if (!matchTitle && !matchQ && !matchA && !matchRef && !matchCat) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }, [adminScholarLibrary, qaStatusFilter, qaCategoryFilter, qaLangFilter, qaSearchQuery]);
+
   /* -------------------------------------------------------------------------- */
   /* SCREEN 1: SECURE FIRST-TIME OWNER SETUP (IF NOT INITIALIZED YET)           */
   /* -------------------------------------------------------------------------- */
@@ -982,6 +1137,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
               ⚖️
             </div>
           </button>
+
+          {/* Public Scholars Library Quick Access KPI Card */}
+          <button
+            type="button"
+            onClick={() => setActiveAdminTab('scholar-library')}
+            className={`p-2.5 rounded-2xl border text-left transition-all shadow-2xs flex items-center justify-between cursor-pointer col-span-2 sm:col-span-1 ${
+              activeAdminTab === 'scholar-library'
+                ? 'bg-teal-50 border-teal-400 ring-2 ring-teal-500/20'
+                : 'bg-white hover:bg-teal-50/40 border-slate-200'
+            }`}
+            title="Open Public Scholars Library Management"
+          >
+            <div>
+              <span className="text-slate-500 font-medium flex items-center gap-1">
+                <span>Public Q&A Library</span>
+              </span>
+              <div className="text-base font-black text-slate-900">
+                {adminScholarLibrary.length}{' '}
+                <span className="text-[11px] font-bold text-teal-700">
+                  ({adminScholarLibrary.filter(i => i.status === 'published').length} live)
+                </span>
+              </div>
+            </div>
+            <div className="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs">
+              📚
+            </div>
+          </button>
         </div>
 
         {/* Mobile Section Selector (screens < sm) */}
@@ -1001,6 +1183,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             <option value="analytics">Quiz Attempts & Stats</option>
             <option value="monetization">Google Ads & Earning</option>
             <option value="scholar">⚖️ Ask a Scholar ({scholarInquiries.length}{pendingScholarCount > 0 ? ` - ${pendingScholarCount} pending` : ''})</option>
+            <option value="scholar-library">📚 Public Scholars Library ({adminScholarLibrary.length})</option>
           </select>
         </div>
 
@@ -1090,6 +1273,22 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                 {pendingScholarCount} new
               </span>
             )}
+          </button>
+
+          <button
+            onClick={() => setActiveAdminTab('scholar-library')}
+            className={`py-3 px-3 text-xs font-bold border-b-2 flex items-center gap-1.5 whitespace-nowrap transition-all ${
+              activeAdminTab === 'scholar-library'
+                ? 'border-teal-600 text-teal-800 font-black bg-teal-50/50'
+                : 'border-transparent text-teal-700 hover:text-teal-900 hover:bg-teal-50/20'
+            }`}
+            title="Manage Public Islamic Scholars Library"
+          >
+            <Library className="w-4 h-4 text-teal-700" />
+            <span>Public Scholars Library</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-teal-100 text-teal-800 border border-teal-300">
+              {adminScholarLibrary.length}
+            </span>
           </button>
         </div>
 
@@ -2265,6 +2464,281 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
             </div>
           )}
 
+          {/* ================================================================ */}
+          {/* TAB 7: PUBLIC SCHOLARS LIBRARY MANAGEMENT                        */}
+          {/* ================================================================ */}
+          {activeAdminTab === 'scholar-library' && (
+            <div className="space-y-5">
+              
+              {/* Header Info Card */}
+              <div className="bg-gradient-to-br from-teal-900 via-slate-900 to-emerald-950 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-teal-500/10 rounded-full blur-2xl pointer-events-none" />
+                <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="space-y-1 max-w-2xl">
+                    <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/30 text-[10px] font-bold uppercase tracking-wider">
+                      <Library className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Public Islamic Q&A Repository</span>
+                    </div>
+                    <h2 className="text-lg sm:text-xl font-black text-white">
+                      Public Scholars Library Management
+                    </h2>
+                    <p className="text-xs text-slate-300 leading-relaxed">
+                      Add, edit, publish, or retract verified Islamic Q&A entries. Published articles are indexed by search engines and displayed publicly to visitors. Drafts remain strictly confidential to admins.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+                    <button
+                      onClick={() => fetchAdminScholarLibrary()}
+                      disabled={isLoadingScholarLibrary}
+                      className="px-3.5 py-2.5 bg-slate-800/80 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs"
+                      title="Reload library from database"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isLoadingScholarLibrary ? 'animate-spin text-teal-400' : ''}`} />
+                      <span>{isLoadingScholarLibrary ? 'Refreshing...' : 'Refresh'}</span>
+                    </button>
+
+                    <button
+                      onClick={handleOpenAddQA}
+                      className="px-4 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-95"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Add New Q&A</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Status Quick Counters */}
+                <div className="grid grid-cols-3 gap-2 pt-4 border-t border-white/10 mt-4 max-w-md">
+                  <div className="bg-white/10 backdrop-blur-md rounded-xl p-2 text-center">
+                    <span className="text-[10px] text-slate-300 block font-semibold">Total Entries</span>
+                    <span className="text-base font-black text-white">{adminScholarLibrary.length}</span>
+                  </div>
+                  <div className="bg-emerald-500/20 backdrop-blur-md rounded-xl p-2 text-center border border-emerald-500/30">
+                    <span className="text-[10px] text-emerald-200 block font-semibold">Published (Live)</span>
+                    <span className="text-base font-black text-emerald-300">
+                      {adminScholarLibrary.filter(i => i.status === 'published').length}
+                    </span>
+                  </div>
+                  <div className="bg-amber-500/20 backdrop-blur-md rounded-xl p-2 text-center border border-amber-500/30">
+                    <span className="text-[10px] text-amber-200 block font-semibold">Drafts (Private)</span>
+                    <span className="text-base font-black text-amber-300">
+                      {adminScholarLibrary.filter(i => i.status === 'draft').length}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Filters & Search Toolbar */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 space-y-3 shadow-2xs">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                  
+                  {/* Status Pills */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {(
+                      [
+                        { id: 'all', label: `All (${adminScholarLibrary.length})` },
+                        { id: 'published', label: `Published (${adminScholarLibrary.filter(i => i.status === 'published').length})` },
+                        { id: 'draft', label: `Drafts (${adminScholarLibrary.filter(i => i.status === 'draft').length})` }
+                      ] as const
+                    ).map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => setQaStatusFilter(tab.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                          qaStatusFilter === tab.id
+                            ? 'bg-teal-700 text-white shadow-xs'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Category & Language & Search Filters */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* Category Dropdown */}
+                    <select
+                      value={qaCategoryFilter}
+                      onChange={e => setQaCategoryFilter(e.target.value)}
+                      className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    >
+                      <option value="all">All Categories</option>
+                      {Array.from(new Set([...categories, ...adminScholarLibrary.map(x => x.category)])).map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
+                    </select>
+
+                    {/* Language Dropdown */}
+                    <select
+                      value={qaLangFilter}
+                      onChange={e => setQaLangFilter(e.target.value as any)}
+                      className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    >
+                      <option value="all">All Languages</option>
+                      <option value="english">English</option>
+                      <option value="urdu">اردو (Urdu)</option>
+                    </select>
+
+                    {/* Search Input */}
+                    <div className="relative w-full sm:w-60">
+                      <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <input
+                        type="text"
+                        value={qaSearchQuery}
+                        onChange={e => setQaSearchQuery(e.target.value)}
+                        placeholder="Search Q&As..."
+                        className="w-full pl-8 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      />
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Entries List */}
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs">
+                {isLoadingScholarLibrary ? (
+                  <div className="p-12 text-center text-slate-500 space-y-2">
+                    <RefreshCw className="w-6 h-6 animate-spin mx-auto text-teal-600" />
+                    <p className="text-xs font-semibold">Loading Public Scholars Library...</p>
+                  </div>
+                ) : filteredScholarLibrary.length === 0 ? (
+                  <div className="p-12 text-center text-slate-500 space-y-3">
+                    <Library className="w-10 h-10 mx-auto text-slate-300" />
+                    <p className="text-sm font-bold text-slate-700">No Scholars Library Entries Found</p>
+                    <p className="text-xs text-slate-400 max-w-md mx-auto">
+                      {qaSearchQuery || qaStatusFilter !== 'all' || qaCategoryFilter !== 'all' || qaLangFilter !== 'all'
+                        ? 'No Q&As match your current search and filter criteria.'
+                        : 'Create your first public Q&A entry using the button below.'}
+                    </p>
+                    <button
+                      onClick={handleOpenAddQA}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-teal-600 text-white font-bold text-xs hover:bg-teal-700 transition-all shadow-xs"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Add New Q&A</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-slate-100">
+                    {filteredScholarLibrary.map(item => {
+                      const isPublished = item.status === 'published';
+                      return (
+                        <div
+                          key={item.id}
+                          className="p-4 sm:p-5 hover:bg-slate-50/70 transition-colors flex flex-col md:flex-row md:items-start justify-between gap-4"
+                        >
+                          <div className="space-y-2 flex-1">
+                            {/* Badges & Meta */}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span
+                                className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1 border ${
+                                  isPublished
+                                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                                    : 'bg-amber-50 text-amber-800 border-amber-200'
+                                }`}
+                              >
+                                {isPublished ? <Globe className="w-3 h-3 text-emerald-600" /> : <Lock className="w-3 h-3 text-amber-600" />}
+                                <span>{isPublished ? 'Published' : 'Draft'}</span>
+                              </span>
+
+                              <span className="px-2 py-0.5 rounded-md bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-semibold">
+                                {item.category}
+                              </span>
+
+                              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium uppercase font-mono">
+                                {item.language === 'urdu' ? 'اردو' : 'English'}
+                              </span>
+
+                              {item.slug && (
+                                <span className="text-[10px] text-slate-400 font-mono hidden sm:inline" title="SEO Slug">
+                                  /{item.slug}
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Title (Prominent) */}
+                            <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                              {item.title}
+                            </h3>
+
+                            {/* Question Excerpt */}
+                            <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200/80 text-xs text-slate-700">
+                              <span className="font-bold text-teal-800 mr-1.5">Question:</span>
+                              <span className={item.language === 'urdu' ? 'urdu-text' : ''}>
+                                {item.question}
+                              </span>
+                            </div>
+
+                            {/* Answer Excerpt */}
+                            <div className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                              <span className="font-bold text-slate-800 mr-1.5">Answer:</span>
+                              <span className={item.language === 'urdu' ? 'urdu-text' : ''}>
+                                {item.answer}
+                              </span>
+                            </div>
+
+                            {/* References Excerpt if present */}
+                            {item.referencesDetails && (
+                              <div className="text-[11px] text-slate-500 bg-amber-50/50 p-2 rounded-lg border border-amber-200/60 line-clamp-2">
+                                <span className="font-bold text-amber-900 mr-1">References & Details:</span>
+                                <span>{item.referencesDetails}</span>
+                              </div>
+                            )}
+
+                            <div className="text-[10px] text-slate-400 pt-1 flex items-center gap-3">
+                              <span>Added: {new Date(item.createdAt).toLocaleDateString()}</span>
+                              {item.publishedAt && (
+                                <span>Published: {new Date(item.publishedAt).toLocaleDateString()}</span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex md:flex-col items-center gap-2 shrink-0 self-end md:self-start">
+                            <button
+                              onClick={() => handleOpenEditQA(item)}
+                              className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all"
+                              title="Edit Q&A details"
+                            >
+                              <Edit className="w-3.5 h-3.5" />
+                              <span>Edit</span>
+                            </button>
+
+                            <button
+                              onClick={() => adminToggleScholarQAPublish(item.id, isPublished ? 'draft' : 'published')}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
+                                isPublished
+                                  ? 'bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200'
+                                  : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
+                              }`}
+                              title={isPublished ? 'Unpublish to draft status' : 'Publish entry to public library'}
+                            >
+                              {isPublished ? <Lock className="w-3.5 h-3.5 text-amber-700" /> : <Globe className="w-3.5 h-3.5 text-emerald-700" />}
+                              <span>{isPublished ? 'Unpublish' : 'Publish'}</span>
+                            </button>
+
+                            <button
+                              onClick={() => setDeletingQAItem(item)}
+                              className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold flex items-center gap-1.5 transition-all"
+                              title="Delete Q&A"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline">Delete</span>
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+            </div>
+          )}
+
         </div>
 
       </div>
@@ -3218,6 +3692,296 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
               </div>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {/* ================================================================ */}
+      {/* MODAL: ADD / EDIT PUBLIC SCHOLAR Q&A ENTRY                       */}
+      {/* ================================================================ */}
+      {isQAModalOpen && (
+        <div className="fixed inset-0 z-60 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-3 overflow-y-auto">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full p-6 border border-slate-200 my-auto max-h-[92vh] overflow-y-auto animate-scaleUp">
+            
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold">
+                  <Library className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-slate-900">
+                    {editingQA ? 'Edit Scholar Q&A (سوال و جواب میں ترمیم)' : 'Add New Public Q&A (نیا شرعی سوال و جواب)'}
+                  </h2>
+                  <p className="text-xs text-slate-500">
+                    Enter verified question, answer, and citations for the Public Scholars Library.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsQAModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 font-bold text-lg p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Error banner */}
+            {qaFormError && (
+              <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>{qaFormError}</span>
+              </div>
+            )}
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSaveQASubmit();
+              }}
+              className="space-y-4 text-xs"
+            >
+              {/* Title */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Title (عنوان) <span className="text-rose-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={qaFormData.title}
+                  onChange={(e) => setQaFormData({ ...qaFormData, title: e.target.value })}
+                  placeholder="e.g. Is a Voluntary or Obligatory Fast Valid If Intention Was Not Formed Before Fajr?"
+                  maxLength={250}
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  required
+                />
+                <span className="text-[10px] text-slate-400 mt-0.5 block">
+                  Displayed as the public library entry title and used to generate the permanent SEO URL.
+                </span>
+              </div>
+
+              {/* Question */}
+              <div>
+                <label className="block font-bold text-slate-700 mb-1">
+                  Question (مکمل سوال) <span className="text-rose-500">*</span>
+                </label>
+                <textarea
+                  rows={3}
+                  value={qaFormData.question}
+                  onChange={(e) => setQaFormData({ ...qaFormData, question: e.target.value })}
+                  placeholder="Enter the complete question asked by seekers..."
+                  className={`w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    qaFormData.language === 'urdu' ? 'urdu-text text-sm' : ''
+                  }`}
+                  required
+                />
+              </div>
+
+              {/* Answer */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-bold text-slate-700">
+                    Answer (مستند تفصیلی جواب) <span className="text-rose-500">*</span>
+                  </label>
+                  <span className="text-[10px] text-slate-400">
+                    Supports readable paragraphs and structured lists
+                  </span>
+                </div>
+                <textarea
+                  rows={6}
+                  value={qaFormData.answer}
+                  onChange={(e) => setQaFormData({ ...qaFormData, answer: e.target.value })}
+                  placeholder="Provide the complete, readable scholarly answer, including relevant jurisprudential nuances..."
+                  className={`w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    qaFormData.language === 'urdu' ? 'urdu-text text-sm' : ''
+                  }`}
+                  required
+                />
+              </div>
+
+              {/* References & Details (Separate field per requirement) */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-bold text-slate-700">
+                    References & Details (حوالہ جات، آیات، احادیث، فقہی تفاصیل)
+                  </label>
+                  <span className="text-[10px] text-slate-400">
+                    Placed at the end of the public entry
+                  </span>
+                </div>
+                <textarea
+                  rows={3}
+                  value={qaFormData.referencesDetails}
+                  onChange={(e) => setQaFormData({ ...qaFormData, referencesDetails: e.target.value })}
+                  placeholder="Quran verses (Surah name, numbers), Hadith collection and numbers (Sahih al-Bukhari, Sahih Muslim), classical scholar compendiums, relevant disclaimers..."
+                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+
+              {/* Category, Language, Status Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+                {/* Category */}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Category</label>
+                  <select
+                    value={isCustomCategory ? '__custom__' : qaFormData.category}
+                    onChange={(e) => {
+                      if (e.target.value === '__custom__') {
+                        setIsCustomCategory(true);
+                      } else {
+                        setIsCustomCategory(false);
+                        setQaFormData({ ...qaFormData, category: e.target.value });
+                      }
+                    }}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs"
+                  >
+                    {categories.map((c, i) => (
+                      <option key={i} value={c}>{c}</option>
+                    ))}
+                    <option value="Sawm">Sawm (Fasting)</option>
+                    <option value="Taharah">Taharah (Purification)</option>
+                    <option value="Zakat">Zakat & Charity</option>
+                    <option value="Hajj">Hajj & Umrah</option>
+                    <option value="General">General</option>
+                    <option value="__custom__">+ Custom Category...</option>
+                  </select>
+
+                  {isCustomCategory && (
+                    <input
+                      type="text"
+                      value={qaCustomCategory}
+                      onChange={(e) => setQaCustomCategory(e.target.value)}
+                      placeholder="Type custom category..."
+                      className="w-full mt-1.5 p-1.5 bg-white border border-slate-200 rounded-lg text-xs"
+                      required
+                    />
+                  )}
+                </div>
+
+                {/* Language */}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Language</label>
+                  <select
+                    value={qaFormData.language}
+                    onChange={(e) => setQaFormData({ ...qaFormData, language: e.target.value as any })}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold"
+                  >
+                    <option value="english">English</option>
+                    <option value="urdu">اردو (Urdu)</option>
+                  </select>
+                </div>
+
+                {/* Publication Status */}
+                <div>
+                  <label className="block font-bold text-slate-700 mb-1">Publication Status</label>
+                  <select
+                    value={qaFormData.status}
+                    onChange={(e) => setQaFormData({ ...qaFormData, status: e.target.value as any })}
+                    className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800"
+                  >
+                    <option value="published">🌐 Published (Public)</option>
+                    <option value="draft">🔒 Draft (Private)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Form Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 pt-3 border-t border-slate-100">
+                <button
+                  type="button"
+                  onClick={() => setIsQAModalOpen(false)}
+                  className="w-full sm:w-auto px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-all"
+                >
+                  Cancel
+                </button>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                  {/* Save Draft Button */}
+                  <button
+                    type="button"
+                    disabled={isSavingQA}
+                    onClick={() => handleSaveQASubmit('draft')}
+                    className="w-full sm:w-auto px-4 py-2 bg-slate-200 hover:bg-slate-300 disabled:opacity-50 text-slate-800 font-bold rounded-xl transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <Lock className="w-3.5 h-3.5 text-slate-600" />
+                    <span>Save Draft</span>
+                  </button>
+
+                  {/* Publish / Primary Save Button */}
+                  <button
+                    type="submit"
+                    disabled={isSavingQA}
+                    className="w-full sm:w-auto px-5 py-2 bg-teal-700 hover:bg-teal-800 disabled:opacity-50 text-white font-bold rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+                  >
+                    <Check className="w-3.5 h-3.5" />
+                    <span>
+                      {isSavingQA
+                        ? 'Saving...'
+                        : qaFormData.status === 'published'
+                        ? 'Publish to Public Library'
+                        : 'Save Entry'}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+      )}
+
+      {/* ================================================================ */}
+      {/* MODAL: CONFIRM DELETE SCHOLAR Q&A ENTRY                          */}
+      {/* ================================================================ */}
+      {deletingQAItem && (
+        <div className="fixed inset-0 z-70 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full text-center space-y-3.5 border border-slate-200 shadow-2xl animate-scaleUp">
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 mx-auto flex items-center justify-center">
+              <Trash2 className="w-6 h-6" />
+            </div>
+
+            <h3 className="text-sm font-bold text-slate-900">
+              Delete Scholar Q&A Entry?
+            </h3>
+
+            <p className="text-xs text-slate-500">
+              Are you sure you want to permanently delete this public library entry?
+            </p>
+
+            <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-left">
+              <span className="font-bold text-slate-800 text-xs block line-clamp-1">
+                {deletingQAItem.title}
+              </span>
+              <span className="text-[11px] text-slate-500 block line-clamp-2 mt-0.5">
+                {deletingQAItem.question}
+              </span>
+            </div>
+
+            <p className="text-[11px] text-rose-600 font-medium">
+              This action cannot be undone and will permanently remove the record from Supabase.
+            </p>
+
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeletingQAItem(null)}
+                className="w-1/2 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isDeletingQA}
+                onClick={handleConfirmDeleteQA}
+                className="w-1/2 py-2.5 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>{isDeletingQA ? 'Deleting...' : 'Permanently Delete'}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
