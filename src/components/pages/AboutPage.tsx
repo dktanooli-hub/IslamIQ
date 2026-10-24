@@ -127,6 +127,48 @@ export const AboutPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Editorial Methodology & Sources */}
+      <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+        <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
+          <Award className="w-5 h-5 text-emerald-600" />
+          <span>{isUrdu ? 'تحقیقی و ادارتی طریقہ کار' : 'Editorial & Verification Methodology'}</span>
+        </div>
+
+        <div className="space-y-3 text-xs sm:text-sm text-slate-700 leading-relaxed">
+          <p>
+            {isUrdu
+              ? 'اسلام آئی کیو کا ادارتی اصول کتبِ سلف اور معتبر مآخذ کی مکمل پاسداری پر مبنی ہے۔ ہمارا مواد مندرجہ ذیل اصولوں کے تحت مرتب کیا جاتا ہے:'
+              : 'IslamIQ adheres to a rigorous editorial standard grounded in primary classical Islamic sources and mainstream scholarly consensus:'}
+          </p>
+          <ul className="list-disc list-inside space-y-1.5 text-slate-600 pl-1">
+            <li>
+              <strong>{isUrdu ? 'قرآنِ مجید:' : 'The Holy Quran:'}</strong>{' '}
+              {isUrdu
+                ? 'رسم عثمانی کے مطابق آیات اور معتبر اردو و انگریزی تراجم (جیسے صحیح انٹرنیشنل) کے ساتھ۔'
+                : 'Canonical Uthmani script with recognized translations (including Saheeh International) and exact Surah/Ayah citations.'}
+            </li>
+            <li>
+              <strong>{isUrdu ? 'کتبِ احادیث:' : 'Hadith Verification:'}</strong>{' '}
+              {isUrdu
+                ? 'صحاح ستہ بالخصوص صحیح بخاری اور صحیح مسلم کی روایات، مع باب اور حدیث نمبر۔'
+                : 'Primary Hadith collections, prioritizing Sahih al-Bukhari and Sahih Muslim, followed by the four Sunan (Abu Dawud, at-Tirmidhi, an-Nasa\'i, Ibn Majah), with clear book and hadith numbering.'}
+            </li>
+            <li>
+              <strong>{isUrdu ? 'فقہی تنوع اور مذاہب اربعہ:' : 'Handling Scholarly Differences (Ikhtilaf):'}</strong>{' '}
+              {isUrdu
+                ? 'فروعی اور اجتہادی مسائل میں مذاہب اربعہ (حنفی، شافعی، مالکی، حنبلی) کے مسلمہ علمی اختلاف کا احترام کیا جاتا ہے۔'
+                : 'On subsidiary matters of jurisprudence where classical scholars differed, IslamIQ presents established positions across the four major Sunni schools of thought (Hanafi, Shafi\'i, Maliki, Hanbali) impartially without partisanship.'}
+            </li>
+            <li>
+              <strong>{isUrdu ? 'غیر جانبدارانہ تعلیمی کردار:' : 'Educational Scope:'}</strong>{' '}
+              {isUrdu
+                ? 'ہم کسی نئے مسلک یا فرقہ وارانہ بحث کی ترویج نہیں کرتے بلکہ امت کے متفقہ علمی ورثے کو آسان انداز میں پیش کرتے ہیں۔'
+                : 'The platform serves purely educational objectives and refrains from sectarian controversies or issuing binding religious edicts.'}
+            </li>
+          </ul>
+        </div>
+      </div>
+
       {/* Official Identity Badge */}
       <div className="bg-slate-900 text-white rounded-3xl p-6 text-center space-y-3">
         <div className="text-xs uppercase font-bold tracking-widest text-emerald-400">

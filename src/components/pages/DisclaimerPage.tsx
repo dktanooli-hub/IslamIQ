@@ -100,6 +100,18 @@ export const DisclaimerPage: React.FC = () => {
         </div>
       </div>
 
+      {/* Educational Scope vs Formal Judicial Fatwa */}
+      <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-3">
+        <h3 className="font-bold text-slate-900 text-sm sm:text-base">
+          {isUrdu ? 'تعلیمی مواد اور باقاعدہ فتاویٰ میں فرق' : 'Distinction Between Educational Study & Formal Legal Decrees'}
+        </h3>
+        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          {isUrdu
+            ? 'اسلام آئی کیو پر موجود رہنمائی، مضامین اور ٹولز عمومی معلومات اور دینی فہم کی بہتری کے لیے ہیں۔ خاندانی تنازعات، وراثت کی تقسیم، طلاق و نکاح، تجارتی تنازعات یا پیچیدہ قانونی معاملات کے لیے کسی مقامی مستند دارالافتاء یا قاضی سے باضابطہ فتویٰ حاصل کرنا لازمی ہے۔'
+            : 'All educational guides, tools, and Q&A content on IslamIQ are provided exclusively for general informational and spiritual enrichment. For binding legal matters, matrimonial contracts, estate/inheritance distribution, or judicial disputes, Muslims must seek direct, in-person consultation with accredited Islamic scholars, local Shariah boards, or recognized Fatwa councils.'}
+        </p>
+      </div>
+
       {/* Official Contact Footer */}
       <div className="bg-slate-900 text-white rounded-3xl p-6 text-center space-y-2">
         <div className="text-xs uppercase font-bold tracking-widest text-emerald-400">
