@@ -651,27 +651,88 @@ export const routes = [
   },
   {
     path: 'stories-of-the-prophets',
-    title: 'Stories of the Prophets: Authentic Quranic Accounts & Lessons | IslamIQ',
-    desc: 'Authentic educational guide to the Stories of the Prophets in the Quran: Adam, Nuh, Ibrahim, Yusuf, Musa, and Isa (AS) with reliable lessons and references.',
-    h1: 'Stories of the Prophets (Qasas al-Anbiya) — Authentic Quranic Accounts',
+    title: 'Stories of the 25 Prophets in the Quran: Authentic Accounts & Lessons | IslamIQ',
+    desc: 'Comprehensive educational guide to all 25 Prophets named in the Quran (from Adam to Muhammad ﷺ). Authentic Quranic verses, life milestones, and moral lessons.',
+    h1: 'Stories of the Prophets (Qasas al-Anbiya) — All 25 Quranic Prophets',
     content: `
       <h2>Prophetic Guidance Through Human History</h2>
-      <p>Allah revealed the stories of the noble Prophets in the Quran to strengthen the faith of believers, provide moral blueprints, and demonstrate the ultimate triumph of truth over falsehood (Surah Hud 11:120).</p>
+      <p>The Holy Quran explicitly mentions 25 noble Prophets and Messengers by name, spanning from Prophet Adam (the father of humanity) to Prophet Muhammad ﷺ (the Seal of the Prophets). Their stories serve as divine guideposts of unwavering monotheism (Tawheed), steadfast patience (Sabr), moral courage, and divine mercy (Surah Hud 11:120).</p>
 
-      <h2>1. Prophet Adam (عَلَيْهِ ٱلسَّلَامُ) — The First Human & Prophet</h2>
-      <p>Created from clay and honored by Allah, Adam and Hawwa resided in Paradise. Misled by Iblis's deceit, they ate from the forbidden tree. Unlike Satan who persisted in arrogance, Adam immediately took accountability and made heartfelt repentance: <em>"Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers"</em> (Surah Al-A'raf 7:23). Allah mercifully accepted their repentance, establishing that humble Tawbah overcomes sin.</p>
+      <h2>1. Prophet Adam (عَلَيْهِ ٱلسَّلَامُ) — The First Human &amp; Prophet</h2>
+      <p>Created from clay and honored by Allah, Adam and Hawwa resided in Paradise. Misled by Iblis's deceit, they ate from the forbidden tree. Unlike Satan who persisted in arrogance, Adam immediately took accountability and made heartfelt repentance: <em>"Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers"</em> (Surah Al-A'raf 7:23). Allah accepted their repentance, establishing that humble Tawbah overcomes sin.</p>
 
-      <h2>2. Prophet Nuh (عَلَيْهِ ٱلسَّلَامُ) — 950 Years of Steadfast Da'wah</h2>
-      <p>When humanity first succumbed to idolatry, Prophet Nuh called his people night and day for 950 years with boundless patience (Surah Nuh 71:5). Ridiculed by the elite, he built the Ark under divine inspiration. When the Great Flood came, only the believers aboard were saved. Even Nuh's rebellious son perished, proving that lineage without righteous faith cannot grant salvation.</p>
+      <h2>2. Prophet Idris / Enoch (عَلَيْهِ ٱلسَّلَامُ) — Man of Truth &amp; Elevated Station</h2>
+      <p>Praised in the Quran as a man of steadfast truth and a prophet whom Allah raised to a high station (Surah Maryam 19:56–57). Early Islamic scholarship recognizes his profound scholarly wisdom, piety, and disciplined devotion as among the earliest teachers of humanity.</p>
 
-      <h2>3. Prophet Ibrahim (عَلَيْهِ ٱلسَّلَامُ) — Khalilullah (Friend of Allah)</h2>
-      <p>The champion of pure monotheism who challenged idol-worshipping tyrants, survived the fire miraculously, and willingly submitted to sacrifice his beloved son Isma'il until ransomed by Allah. Together, Ibrahim and Isma'il raised the foundations of the Kaaba in Makkah (Surah Al-Baqarah 2:127).</p>
+      <h2>3. Prophet Nuh / Noah (عَلَيْهِ ٱلسَّلَامُ) — 950 Years of Steadfast Da'wah</h2>
+      <p>When humanity first succumbed to idolatry, Prophet Nuh called his people night and day for 950 years with boundless patience (Surah Nuh 71:5). Commanded by Allah, he constructed the Ark amidst mockery. When the Great Deluge came, only the believers aboard were saved. Even Nuh's rebellious son perished, proving that lineage without righteous faith cannot grant salvation.</p>
 
-      <h2>4. Prophet Yusuf (عَلَيْهِ ٱلسَّلَامُ) — From the Well to the Throne</h2>
-      <p>Betrayed by envious brothers, cast into a deep well, sold into slavery, and unjustly imprisoned for years, Yusuf (AS) maintained unshakeable trust in Allah (Tawakkul) and moral purity. Elevated to minister of Egypt, he forgave his brothers completely, stating: <em>"No blame will there be upon you today"</em> (Surah Yusuf 12:92).</p>
+      <h2>4. Prophet Hud (عَلَيْهِ ٱلسَّلَامُ) — Messenger to the People of 'Ad</h2>
+      <p>Sent to the mighty civilization of 'Ad in southern Arabia who built towering palaces and boasted in their physical strength (Surah Fussilat 41:15). Hud urged them to abandon idolatry and tyrannical oppression. When they persisted in defiance, a furious barren gale destroyed their monuments while Hud and the believers were rescued (Surah Hud 11:50–60).</p>
 
-      <h2>5. Prophet Musa (عَلَيْهِ ٱلسَّلَامُ) & Prophet Isa (عَلَيْهِ ٱلسَّلَامُ)</h2>
-      <p>Musa (AS) stood fearlessly before Pharaoh, liberated Bani Israel, and received the Tawrat. Isa (AS), born miraculously to Maryam (AS), healed the sick by Allah's leave, taught humility, and prophesied the coming of Prophet Muhammad ﷺ.</p>
+      <h2>5. Prophet Salih (عَلَيْهِ ٱلسَّلَامُ) — Sent to Thamud &amp; The Miracle of the She-Camel</h2>
+      <p>Sent to Thamud who carved dwellings into mountain rock in Al-Hijr. Allah granted them a miraculous She-Camel as a test of reverence and resource sharing. When rebellious chieftains hamstrung the camel, a deafening blast and earthquake overtook the oppressors, while Salih and the faithful were saved (Surah Al-A'raf 7:73–79).</p>
+
+      <h2>6. Prophet Ibrahim / Abraham (عَلَيْهِ ٱلسَّلَامُ) — Khalilullah (Friend of Allah)</h2>
+      <p>The champion of pure monotheism who challenged idol-worshipping tyrants, survived the raging fire by Allah's command, and submitted willingly to sacrifice his beloved son Ismail until ransomed by Allah. Together, Ibrahim and Ismail raised the foundations of the Kaaba in Makkah (Surah Al-Baqarah 2:127).</p>
+
+      <h2>7. Prophet Lut / Lot (عَلَيْهِ ٱلسَّلَامُ) — Caller to Moral Purity &amp; Witness to Justice</h2>
+      <p>Commissioned to Sodom and Gomorrah to denounce unprecedented obscenities and public corruption. Lut urged them to preserve natural Fitrah and family sanctity. Escaping with his righteous daughters before dawn, the corrupt cities were overturned and marked with baked stones (Surah Hud 11:77–83).</p>
+
+      <h2>8. Prophet Ismail / Ishmael (عَلَيْهِ ٱلسَّلَامُ) — The Patient Son (Dhabiullah)</h2>
+      <p>The firstborn son of Ibrahim, settled as an infant in the valley of Makkah where the Zamzam well welled up. Exemplified complete submission to Allah during the sacrifice test, co-built the Kaaba with his father, and is praised in the Quran for fulfilling promises (Surah Maryam 19:54–55).</p>
+
+      <h2>9. Prophet Ishaq / Isaac (عَلَيْهِ ٱلسَّلَامُ) — Forefather of Israelite Prophets</h2>
+      <p>Granted as a glad tiding to Sarah and Ibrahim in old age. Praised in the Quran as a righteous prophet endowed with strength in good deeds and spiritual vision (Surah Sad 38:45), fathering Prophet Ya'qub (Israel).</p>
+
+      <h2>10. Prophet Ya'qub / Jacob (عَلَيْهِ ٱلسَّلَامُ) — Embodiment of Beautiful Patience</h2>
+      <p>Endured decades of sorrow over the separation from Yusuf with dignifying patience (<em>Sabrun Jameel</em>), never despairing of Allah's mercy: <em>"I only complain of my suffering and grief to Allah"</em> (Surah Yusuf 12:86). On his deathbed, he extracted a solemn covenant of monotheism from all his sons.</p>
+
+      <h2>11. Prophet Yusuf / Joseph (عَلَيْهِ ٱلسَّلَامُ) — From the Well to the Throne</h2>
+      <p>Cast into a well by jealous brothers, sold into servitude in Egypt, resisted temptation with steadfast Taqwa, and was unjustly imprisoned. Interpreting Pharaoh's dream, he managed Egypt's food crisis and magnanimously forgave his repentant brothers: <em>"No blame will there be upon you today"</em> (Surah Yusuf 12:92).</p>
+
+      <h2>12. Prophet Ayyub / Job (عَلَيْهِ ٱلسَّلَامُ) — Standard of Patience &amp; Gratitude</h2>
+      <p>Tested with the loss of immense wealth, children, and agonizing illness over many years. His tongue never ceased praising Allah. Supplicating with profound modesty (Surah Al-Anbiya 21:83), Allah cured him with a miraculous cool spring and restored his family and abundance.</p>
+
+      <h2>13. Prophet Shu'ayb / Jethro (عَلَيْهِ ٱلسَّلَامُ) — Champion of Economic Justice</h2>
+      <p>Known as <em>Khatib al-Anbiya</em> (The Orator of the Prophets) for his eloquent da'wah to Madyan. Warned against commercial fraud, unjust weights, and road robberies, proclaiming that lawful earnings are far superior to ill-gotten wealth (Surah Hud 11:84–95).</p>
+
+      <h2>14. Prophet Musa / Moses (عَلَيْهِ ٱلسَّلَامُ) — Kalimullah (Spoken to by Allah)</h2>
+      <p>Born under Pharaoh's genocide, raised in the palace, called at Mount Tur, and sent with clear miracles to liberate Bani Israel. Proclaimed unyielding faith at the Red Sea: <em>"Indeed, with me is my Lord; He will guide me"</em> (Surah Ash-Shu'ara 26:62). Received the Tawrat on Mount Sinai.</p>
+
+      <h2>15. Prophet Harun / Aaron (عَلَيْهِ ٱلسَّلَامُ) — Eloquent Brother &amp; Ministerial Ally</h2>
+      <p>Granted prophethood in response to Musa's prayer to support the mission before Pharaoh. Stood firm against idolatry during the golden calf crisis, exercising wisdom and restraint to prevent communal division (Surah Ta-Ha 20:29–32, 94).</p>
+
+      <h2>16. Prophet Dhu'l-Kifl / Ezekiel (عَلَيْهِ ٱلسَّلَامُ) — Steadfast Fulfiller of Pledges</h2>
+      <p>Honored among the elite patient and righteous servants (Surah Al-Anbiya 21:85–86). Celebrated for fulfilling solemn covenants of justice, fasting, nightly prayer, and restraining anger in leadership.</p>
+
+      <h2>17. Prophet Dawud / David (عَلَيْهِ ٱلسَّلَامُ) — The Just King &amp; Reciter of Zabur</h2>
+      <p>Slew Jalut (Goliath) by Allah's leave and governed as a just prophet-king. Given the Zabur; iron was softened in his hands to forge chainmail armor. Ate exclusively from the work of his own hands and was praised for the best prayer and fast (Surah Sad 38:17–26).</p>
+
+      <h2>18. Prophet Sulayman / Solomon (عَلَيْهِ ٱلسَّلَامُ) — Wise King of Unmatched Dominion</h2>
+      <p>Inherited Dawud's wisdom and was blessed with command over the wind, jinn, and the speech of animals. When hearing an ant, he prayed for continuous gratitude (Surah An-Naml 27:19). Invited Queen Bilqis to Islam and renovated Bayt al-Maqdis.</p>
+
+      <h2>19. Prophet Ilyas / Elijah (عَلَيْهِ ٱلسَّلَامُ) — Dauntless Caller Who Denounced Baal</h2>
+      <p>Confronted the people of Baalbek who worshipped the pagan idol Baal: <em>"Do you call upon Baal and leave the best of creators?"</em> (Surah As-Saffat 37:125). Endured severe persecution and was greeted with divine peace in the Quran.</p>
+
+      <h2>20. Prophet Al-Yasa / Elisha (عَلَيْهِ ٱلسَّلَامُ) — The Righteous Chosen Guide</h2>
+      <p>Faithful disciple and successor to Prophet Ilyas, carrying forward the commandments of the Tawrat among Bani Israel. Ranked explicitly in the Quran among <em>Al-Akhyar</em> (the outstandingly good) and preferred over the worlds (Surah Sad 38:48, Surah Al-An'am 6:86).</p>
+
+      <h2>21. Prophet Yunus / Jonah (عَلَيْهِ ٱلسَّلَامُ) — Dhun-Nun &amp; Supplication of Darkness</h2>
+      <p>Departed Nineveh prematurely and was swallowed by a great whale. In the depths of the sea, he supplicated: <em>"La ilaha illa Anta, Subhanaka inni kuntu minaz-zalimeen"</em> (Surah Al-Anbiya 21:87). Saved by Allah, his entire city of over 100,000 sincerely repented and believed.</p>
+
+      <h2>22. Prophet Zakariyya / Zechariah (عَلَيْهِ ٱلسَّلَامُ) — Supplicant for Righteous Heirs</h2>
+      <p>Pious guardian of Maryam in the temple sanctuary. Despite old age and a barren wife, he made a private heartfelt supplication for an heir to inherit prophetic knowledge (Surah Maryam 19:3–6). Angels announced the miraculous birth of Yahya.</p>
+
+      <h2>23. Prophet Yahya / John the Baptist (عَلَيْهِ ٱلسَّلَامُ) — Chaste &amp; Compassionate Herald</h2>
+      <p>Blessed son of Zakariyya, uniquely named by Allah. Endowed with judgment in youth, profound tenderness (<em>Hanan</em>), chastity, and filial piety. Confirmed the coming of Isa and stood bravely for righteousness (Surah Maryam 19:12–15).</p>
+
+      <h2>24. Prophet Isa / Jesus (عَلَيْهِ ٱلسَّلَامُ) — The Messiah &amp; Word from Allah</h2>
+      <p>Born miraculously without a father to the Virgin Maryam. Spoke in the cradle and healed the sick and raised the dead strictly by Allah's leave (<em>Bi-idhnillah</em>). Confirmed the Tawrat, prophesied Ahmad (Muhammad ﷺ), and was raised alive to heaven, refuting the false claim of crucifixion (Surah An-Nisa 4:157).</p>
+
+      <h2>25. Prophet Muhammad (صَلَّىٰ ٱللَّٰهُ عَلَيْهِ وَآلِهِ وَسَلَّمَ) — The Seal of the Prophets</h2>
+      <p>The final and universal Messenger of Allah (<em>Khatam an-Nabiyyin</em>) sent as a mercy to all creation (Surah Al-Ahzab 33:40, Surah Al-Anbiya 21:107). Revealed the Holy Quran over 23 years, exemplified the highest moral character (<em>Khuluq 'Azim</em>), liberated Makkah with magnanimous pardon, and delivered the Farewell Sermon establishing universal human equality.</p>
+      <p><em>For a complete, chronological biography of the Prophet's life, milestones, and battles, visit our dedicated <a href="/seerah-of-prophet-muhammad">Seerah of Prophet Muhammad ﷺ Guide</a>.</em></p>
     `
   },
   {
