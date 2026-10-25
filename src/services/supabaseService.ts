@@ -13,7 +13,8 @@ import {
   ScholarInquiry,
   ScholarInquiryStatus,
   ScholarQALibraryItem,
-  ScholarQAFormData
+  ScholarQAFormData,
+  ScholarQALanguage
 } from '../types';
 import { INITIAL_SCHOLAR_LIBRARY } from '../data/scholarLibraryData';
 
@@ -1243,6 +1244,60 @@ listenQuestions(
   // ---------------------------------------------------------------------------
 
   /**
+   * Helper to normalize database row into ScholarQALibraryItem with full bilingual support.
+   */
+  mapScholarQARow(row: any): ScholarQALibraryItem {
+    const isUrduOnly = row.language === 'urdu';
+
+    // English fields with backward-compatible fallback
+    const titleEn = row.title_en || (!isUrduOnly ? row.title : null) || null;
+    const questionEn = row.question_en || (!isUrduOnly ? row.question : null) || null;
+    const answerEn = row.answer_en || (!isUrduOnly ? row.answer : null) || null;
+    const referencesDetailsEn = row.references_details_en || (!isUrduOnly ? (row.references_details || '') : null) || '';
+
+    // Urdu fields with backward-compatible fallback
+    const titleUrdu = row.title_ur || (isUrduOnly ? row.title : null) || null;
+    const questionUrdu = row.question_ur || (isUrduOnly ? row.question : null) || null;
+    const answerUrdu = row.answer_ur || (isUrduOnly ? row.answer : null) || null;
+    const referencesDetailsUrdu = row.references_details_ur || (isUrduOnly ? (row.references_details || '') : null) || '';
+
+    const hasEn = Boolean(titleEn && questionEn && answerEn);
+    const hasUr = Boolean(titleUrdu && questionUrdu && answerUrdu);
+    let resolvedLang: ScholarQALanguage = 'english';
+    if (hasEn && hasUr) {
+      resolvedLang = 'both';
+    } else if (hasUr) {
+      resolvedLang = 'urdu';
+    } else {
+      resolvedLang = 'english';
+    }
+
+    return {
+      id: row.id,
+      slug: row.slug,
+      title: titleEn || titleUrdu || row.title,
+      question: questionEn || questionUrdu || row.question,
+      answer: answerEn || answerUrdu || row.answer,
+      referencesDetails: referencesDetailsEn || referencesDetailsUrdu || row.references_details || '',
+      titleEn,
+      questionEn,
+      answerEn,
+      referencesDetailsEn,
+      titleUrdu,
+      questionUrdu,
+      answerUrdu,
+      referencesDetailsUrdu,
+      category: row.category || 'General',
+      language: row.language === 'both' || row.language === 'bilingual' ? 'both' : resolvedLang,
+      status: row.status,
+      viewsCount: row.views_count || 0,
+      publishedAt: row.published_at,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at
+    };
+  },
+
+  /**
    * Fetch all published scholar library Q&As.
    * RLS strictly ensures only status='published' is returned for public queries.
    */
@@ -1267,21 +1322,7 @@ listenQuestions(
         return INITIAL_SCHOLAR_LIBRARY;
       }
 
-      return data.map((row: any) => ({
-        id: row.id,
-        slug: row.slug,
-        title: row.title,
-        question: row.question,
-        answer: row.answer,
-        referencesDetails: row.references_details || '',
-        category: row.category || 'General',
-        language: row.language || 'english',
-        status: row.status,
-        viewsCount: row.views_count || 0,
-        publishedAt: row.published_at,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at
-      }));
+      return data.map((row: any) => this.mapScholarQARow(row));
     } catch (err) {
       console.warn('[Supabase] getPublicScholarQALibrary fallback:', err);
       return INITIAL_SCHOLAR_LIBRARY;
@@ -1307,21 +1348,7 @@ listenQuestions(
 
         const { data, error } = await query.maybeSingle();
         if (!error && data) {
-          return {
-            id: data.id,
-            slug: data.slug,
-            title: data.title,
-            question: data.question,
-            answer: data.answer,
-            referencesDetails: data.references_details || '',
-            category: data.category || 'General',
-            language: data.language || 'english',
-            status: data.status,
-            viewsCount: data.views_count || 0,
-            publishedAt: data.published_at,
-            createdAt: data.created_at,
-            updatedAt: data.updated_at
-          };
+          return this.mapScholarQARow(data);
         }
       } catch {}
     }
@@ -1349,22 +1376,7 @@ listenQuestions(
         return { success: false, error: error.message };
       }
 
-      const items: ScholarQALibraryItem[] = (data || []).map((row: any) => ({
-        id: row.id,
-        slug: row.slug,
-        title: row.title,
-        question: row.question,
-        answer: row.answer,
-        referencesDetails: row.references_details || '',
-        category: row.category || 'General',
-        language: row.language || 'english',
-        status: row.status,
-        viewsCount: row.views_count || 0,
-        publishedAt: row.published_at,
-        createdAt: row.created_at,
-        updatedAt: row.updated_at
-      }));
-
+      const items: ScholarQALibraryItem[] = (data || []).map((row: any) => this.mapScholarQARow(row));
       return { success: true, data: items };
     } catch (err: any) {
       return { success: false, error: err?.message || 'Failed to fetch scholar QA library' };
@@ -1373,35 +1385,76 @@ listenQuestions(
 
   /**
    * Admin-only: Save (Insert or Update) a scholar Q&A entry.
+   * Supports bilingual English and Urdu content in the same linked record.
    */
-  async adminSaveScholarQA(item: Partial<ScholarQALibraryItem>): Promise<{ success: boolean; data?: ScholarQALibraryItem; error?: string }> {
+  async adminSaveScholarQA(item: Partial<ScholarQALibraryItem> & Partial<ScholarQAFormData>): Promise<{ success: boolean; data?: ScholarQALibraryItem; error?: string }> {
     if (!isSupabaseConfigured()) {
       return { success: false, error: 'Supabase configuration is not active.' };
     }
 
     try {
-      const title = (item.title || '').trim();
-      const question = (item.question || '').trim();
-      const answer = (item.answer || '').trim();
-      const referencesDetails = (item.referencesDetails || '').trim();
-      const category = (item.category || 'General').trim();
-      const language = item.language || 'english';
-      const status = item.status || 'draft';
+      const titleEn = (item.titleEn || (!item.titleUrdu ? item.title : '') || '').trim();
+      const questionEn = (item.questionEn || (!item.questionUrdu ? item.question : '') || '').trim();
+      const answerEn = (item.answerEn || (!item.answerUrdu ? item.answer : '') || '').trim();
+      const referencesDetailsEn = (item.referencesDetailsEn !== undefined ? item.referencesDetailsEn : (item.referencesDetails || '')).trim();
 
-      if (title.length < 3) {
-        return { success: false, error: 'Title must be at least 3 characters.' };
+      const titleUrdu = (item.titleUrdu || (item.language === 'urdu' ? item.title : '') || '').trim();
+      const questionUrdu = (item.questionUrdu || (item.language === 'urdu' ? item.question : '') || '').trim();
+      const answerUrdu = (item.answerUrdu || (item.language === 'urdu' ? item.answer : '') || '').trim();
+      const referencesDetailsUrdu = (item.referencesDetailsUrdu !== undefined ? item.referencesDetailsUrdu : '').trim();
+
+      const hasEnglish = Boolean(titleEn || questionEn || answerEn);
+      const hasUrdu = Boolean(titleUrdu || questionUrdu || answerUrdu);
+
+      if (!hasEnglish && !hasUrdu) {
+        return { success: false, error: 'Please provide at least English or Urdu content for the Q&A.' };
       }
-      if (question.length < 5) {
-        return { success: false, error: 'Question must be at least 5 characters.' };
+
+      if (hasEnglish) {
+        if (!titleEn || titleEn.length < 3) {
+          return { success: false, error: 'English Title must be at least 3 characters.' };
+        }
+        if (!questionEn || questionEn.length < 5) {
+          return { success: false, error: 'English Question must be at least 5 characters.' };
+        }
+        if (!answerEn || answerEn.length < 5) {
+          return { success: false, error: 'English Answer must be at least 5 characters.' };
+        }
       }
-      if (answer.length < 5) {
-        return { success: false, error: 'Answer must be at least 5 characters.' };
+
+      if (hasUrdu) {
+        if (!titleUrdu || titleUrdu.length < 3) {
+          return { success: false, error: 'Urdu Title must be at least 3 characters.' };
+        }
+        if (!questionUrdu || questionUrdu.length < 5) {
+          return { success: false, error: 'Urdu Question must be at least 5 characters.' };
+        }
+        if (!answerUrdu || answerUrdu.length < 5) {
+          return { success: false, error: 'Urdu Answer must be at least 5 characters.' };
+        }
       }
+
+      const primaryTitle = titleEn || titleUrdu;
+      const primaryQuestion = questionEn || questionUrdu;
+      const primaryAnswer = answerEn || answerUrdu;
+      const primaryRef = referencesDetailsEn || referencesDetailsUrdu || '';
+
+      let resolvedLang: 'english' | 'urdu' | 'both' = 'english';
+      if (hasEnglish && hasUrdu) {
+        resolvedLang = 'both';
+      } else if (hasUrdu) {
+        resolvedLang = 'urdu';
+      } else {
+        resolvedLang = 'english';
+      }
+
+      const category = (item.category || 'General').trim();
+      const status = item.status || 'draft';
 
       // Generate or clean slug
       let slug = (item.slug && item.slug.trim()) ? item.slug.trim().toLowerCase().replace(/[\s_]+/g, '-') : '';
       if (!slug || slug.length < 3) {
-        slug = title
+        slug = (titleEn || primaryTitle)
           .toLowerCase()
           .replace(/[^\w\s-]/g, '')
           .replace(/[\s_-]+/g, '-')
@@ -1414,12 +1467,20 @@ listenQuestions(
 
       const now = new Date().toISOString();
       const row: any = {
-        title,
-        question,
-        answer,
-        references_details: referencesDetails,
+        title: primaryTitle,
+        question: primaryQuestion,
+        answer: primaryAnswer,
+        references_details: primaryRef,
+        title_en: titleEn || null,
+        question_en: questionEn || null,
+        answer_en: answerEn || null,
+        references_details_en: referencesDetailsEn || null,
+        title_ur: titleUrdu || null,
+        question_ur: questionUrdu || null,
+        answer_ur: answerUrdu || null,
+        references_details_ur: referencesDetailsUrdu || null,
         category,
-        language,
+        language: resolvedLang,
         status,
         slug,
         updated_at: now
@@ -1445,23 +1506,7 @@ listenQuestions(
         return { success: false, error: error.message };
       }
 
-      const saved: ScholarQALibraryItem = {
-        id: data.id,
-        slug: data.slug,
-        title: data.title,
-        question: data.question,
-        answer: data.answer,
-        referencesDetails: data.references_details || '',
-        category: data.category || 'General',
-        language: data.language || 'english',
-        status: data.status,
-        viewsCount: data.views_count || 0,
-        publishedAt: data.published_at,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at
-      };
-
-      return { success: true, data: saved };
+      return { success: true, data: this.mapScholarQARow(data) };
     } catch (err: any) {
       return { success: false, error: err?.message || 'Failed to save scholar QA entry.' };
     }

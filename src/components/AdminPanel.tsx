@@ -662,20 +662,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
   // ---------------------------------------------------------------------------
   // Public Scholars Library State & Handlers
   // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+  // Public Scholars Library State & Handlers
+  // ---------------------------------------------------------------------------
   const [qaSearchQuery, setQaSearchQuery] = useState('');
   const [qaStatusFilter, setQaStatusFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [qaCategoryFilter, setQaCategoryFilter] = useState<string>('all');
-  const [qaLangFilter, setQaLangFilter] = useState<'all' | 'english' | 'urdu'>('all');
+  const [qaLangFilter, setQaLangFilter] = useState<'all' | 'both' | 'english' | 'urdu'>('all');
 
   const [isQAModalOpen, setIsQAModalOpen] = useState(false);
+  const [adminFormLangTab, setAdminFormLangTab] = useState<'en' | 'ur' | 'both'>('en');
   const [editingQA, setEditingQA] = useState<ScholarQALibraryItem | null>(null);
   const [qaFormData, setQaFormData] = useState<ScholarQAFormData>({
-    title: '',
-    question: '',
-    answer: '',
-    referencesDetails: '',
+    titleEn: '',
+    questionEn: '',
+    answerEn: '',
+    referencesDetailsEn: '',
+    titleUrdu: '',
+    questionUrdu: '',
+    answerUrdu: '',
+    referencesDetailsUrdu: '',
     category: 'General',
-    language: 'english',
     status: 'published'
   });
   const [qaCustomCategory, setQaCustomCategory] = useState('');
@@ -689,13 +696,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
 
   const handleOpenAddQA = () => {
     setEditingQA(null);
+    setAdminFormLangTab('en');
     setQaFormData({
-      title: '',
-      question: '',
-      answer: '',
-      referencesDetails: '',
+      titleEn: '',
+      questionEn: '',
+      answerEn: '',
+      referencesDetailsEn: '',
+      titleUrdu: '',
+      questionUrdu: '',
+      answerUrdu: '',
+      referencesDetailsUrdu: '',
       category: categories[0] || 'General',
-      language: 'english',
       status: 'published'
     });
     setQaCustomCategory('');
@@ -709,15 +720,39 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     const isCustom = !categories.includes(item.category);
     setIsCustomCategory(isCustom);
     setQaCustomCategory(isCustom ? item.category : '');
+
+    const tEn = item.titleEn || (item.language !== 'urdu' ? item.title : '') || '';
+    const qEn = item.questionEn || (item.language !== 'urdu' ? item.question : '') || '';
+    const aEn = item.answerEn || (item.language !== 'urdu' ? item.answer : '') || '';
+    const rEn = item.referencesDetailsEn || (item.language !== 'urdu' ? item.referencesDetails : '') || '';
+
+    const tUr = item.titleUrdu || (item.language === 'urdu' ? item.title : '') || '';
+    const qUr = item.questionUrdu || (item.language === 'urdu' ? item.question : '') || '';
+    const aUr = item.answerUrdu || (item.language === 'urdu' ? item.answer : '') || '';
+    const rUr = item.referencesDetailsUrdu || (item.language === 'urdu' ? item.referencesDetails : '') || '';
+
     setQaFormData({
-      title: item.title,
-      question: item.question,
-      answer: item.answer,
-      referencesDetails: item.referencesDetails || '',
+      titleEn: tEn,
+      questionEn: qEn,
+      answerEn: aEn,
+      referencesDetailsEn: rEn,
+      titleUrdu: tUr,
+      questionUrdu: qUr,
+      answerUrdu: aUr,
+      referencesDetailsUrdu: rUr,
       category: item.category,
-      language: item.language,
       status: item.status
     });
+
+    // Auto-select tab based on available content
+    if (!tEn && tUr) {
+      setAdminFormLangTab('ur');
+    } else if (tEn && tUr) {
+      setAdminFormLangTab('both');
+    } else {
+      setAdminFormLangTab('en');
+    }
+
     setQaFormError(null);
     setIsQAModalOpen(true);
   };
@@ -727,29 +762,69 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
     const finalCategory = isCustomCategory ? (qaCustomCategory.trim() || 'General') : qaFormData.category;
     const finalStatus = overrideStatus || qaFormData.status;
 
-    if (!qaFormData.title.trim()) {
-      setQaFormError('Title is required for the public library entry.');
+    const tEn = qaFormData.titleEn.trim();
+    const qEn = qaFormData.questionEn.trim();
+    const aEn = qaFormData.answerEn.trim();
+    const rEn = qaFormData.referencesDetailsEn.trim();
+
+    const tUr = qaFormData.titleUrdu.trim();
+    const qUr = qaFormData.questionUrdu.trim();
+    const aUr = qaFormData.answerUrdu.trim();
+    const rUr = qaFormData.referencesDetailsUrdu.trim();
+
+    const hasEnglish = Boolean(tEn || qEn || aEn);
+    const hasUrdu = Boolean(tUr || qUr || aUr);
+
+    if (!hasEnglish && !hasUrdu) {
+      setQaFormError('Please enter content for at least one language (English or Urdu).');
       return;
     }
-    if (!qaFormData.question.trim()) {
-      setQaFormError('Question is required.');
-      return;
+
+    // Validation for English if provided
+    if (hasEnglish) {
+      if (!tEn) {
+        setQaFormError('English Title is required when English content is entered.');
+        return;
+      }
+      if (!qEn) {
+        setQaFormError('English Question is required when English content is entered.');
+        return;
+      }
+      if (!aEn) {
+        setQaFormError('English Answer is required when English content is entered.');
+        return;
+      }
     }
-    if (!qaFormData.answer.trim()) {
-      setQaFormError('Answer is required.');
-      return;
+
+    // Validation for Urdu if provided
+    if (hasUrdu) {
+      if (!tUr) {
+        setQaFormError('Urdu Title (اردو عنوان) is required when Urdu content is entered.');
+        return;
+      }
+      if (!qUr) {
+        setQaFormError('Urdu Question (اردو سوال) is required when Urdu content is entered.');
+        return;
+      }
+      if (!aUr) {
+        setQaFormError('Urdu Answer (اردو جواب) is required when Urdu content is entered.');
+        return;
+      }
     }
 
     setIsSavingQA(true);
     try {
       const payload: Partial<ScholarQALibraryItem> & ScholarQAFormData = {
         id: editingQA?.id,
-        title: qaFormData.title.trim(),
-        question: qaFormData.question.trim(),
-        answer: qaFormData.answer.trim(),
-        referencesDetails: qaFormData.referencesDetails.trim(),
+        titleEn: tEn,
+        questionEn: qEn,
+        answerEn: aEn,
+        referencesDetailsEn: rEn,
+        titleUrdu: tUr,
+        questionUrdu: qUr,
+        answerUrdu: aUr,
+        referencesDetailsUrdu: rUr,
         category: finalCategory,
-        language: qaFormData.language,
         status: finalStatus
       };
 
@@ -785,17 +860,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
       if (qaCategoryFilter !== 'all' && item.category !== qaCategoryFilter) {
         return false;
       }
-      if (qaLangFilter !== 'all' && item.language !== qaLangFilter) {
+
+      const hasEn = Boolean(item.titleEn && item.questionEn) || (item.language !== 'urdu' && Boolean(item.title));
+      const hasUr = Boolean(item.titleUrdu && item.questionUrdu) || (item.language === 'urdu' && Boolean(item.title));
+
+      if (qaLangFilter === 'both' && (!hasEn || !hasUr)) {
         return false;
       }
+      if (qaLangFilter === 'english' && !hasEn) {
+        return false;
+      }
+      if (qaLangFilter === 'urdu' && !hasUr) {
+        return false;
+      }
+
       if (qaSearchQuery.trim()) {
         const q = qaSearchQuery.toLowerCase().trim();
-        const matchTitle = item.title.toLowerCase().includes(q);
-        const matchQ = item.question.toLowerCase().includes(q);
-        const matchA = item.answer.toLowerCase().includes(q);
-        const matchRef = (item.referencesDetails || '').toLowerCase().includes(q);
+        const matchTitleEn = (item.titleEn || item.title || '').toLowerCase().includes(q);
+        const matchTitleUr = (item.titleUrdu || '').toLowerCase().includes(q);
+        const matchQEn = (item.questionEn || item.question || '').toLowerCase().includes(q);
+        const matchQUr = (item.questionUrdu || '').toLowerCase().includes(q);
+        const matchAEn = (item.answerEn || item.answer || '').toLowerCase().includes(q);
+        const matchAUr = (item.answerUrdu || '').toLowerCase().includes(q);
         const matchCat = (item.category || '').toLowerCase().includes(q);
-        if (!matchTitle && !matchQ && !matchA && !matchRef && !matchCat) {
+        if (!matchTitleEn && !matchTitleUr && !matchQEn && !matchQUr && !matchAEn && !matchAUr && !matchCat) {
           return false;
         }
       }
@@ -2577,8 +2665,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                       className="px-2.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
                     >
                       <option value="all">All Languages</option>
-                      <option value="english">English</option>
-                      <option value="urdu">اردو (Urdu)</option>
+                      <option value="both">🇬🇧 + 🇵🇰 Bilingual Only</option>
+                      <option value="english">English Content</option>
+                      <option value="urdu">اردو (Urdu) Content</option>
                     </select>
 
                     {/* Search Input */}
@@ -2625,6 +2714,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                   <div className="divide-y divide-slate-100">
                     {filteredScholarLibrary.map(item => {
                       const isPublished = item.status === 'published';
+                      const hasEn = Boolean(item.titleEn && item.questionEn) || (item.language !== 'urdu' && Boolean(item.title));
+                      const hasUr = Boolean(item.titleUrdu && item.questionUrdu) || (item.language === 'urdu' && Boolean(item.title));
+                      const titleEn = item.titleEn || (item.language !== 'urdu' ? item.title : '');
+                      const titleUr = item.titleUrdu || (item.language === 'urdu' ? item.title : '');
+
                       return (
                         <div
                           key={item.id}
@@ -2648,9 +2742,19 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                                 {item.category}
                               </span>
 
-                              <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-medium uppercase font-mono">
-                                {item.language === 'urdu' ? 'اردو' : 'English'}
-                              </span>
+                              {hasEn && hasUr ? (
+                                <span className="px-2 py-0.5 rounded-md bg-teal-100/70 border border-teal-300 text-teal-900 text-[10px] font-bold">
+                                  🇬🇧 English + 🇵🇰 اردو
+                                </span>
+                              ) : hasUr ? (
+                                <span className="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-semibold">
+                                  🇵🇰 اردو Only
+                                </span>
+                              ) : (
+                                <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-semibold">
+                                  🇬🇧 English Only
+                                </span>
+                              )}
 
                               {item.slug && (
                                 <span className="text-[10px] text-slate-400 font-mono hidden sm:inline" title="SEO Slug">
@@ -2659,17 +2763,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                               )}
                             </div>
 
-                            {/* Title (Prominent) */}
-                            <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
-                              {item.title}
-                            </h3>
+                            {/* Titles (Prominently displayed) */}
+                            <div className="space-y-1">
+                              {titleEn && (
+                                <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                                  {titleEn}
+                                </h3>
+                              )}
+                              {titleUr && (
+                                <h4 className="text-sm font-bold text-teal-900 urdu-text leading-snug">
+                                  {titleUr}
+                                </h4>
+                              )}
+                            </div>
 
                             {/* Question Excerpt */}
-                            <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200/80 text-xs text-slate-700">
-                              <span className="font-bold text-teal-800 mr-1.5">Question:</span>
-                              <span className={item.language === 'urdu' ? 'urdu-text' : ''}>
-                                {item.question}
-                              </span>
+                            <div className="bg-slate-50 rounded-xl p-2.5 border border-slate-200/80 text-xs text-slate-700 space-y-1">
+                              {item.questionEn && (
+                                <div>
+                                  <span className="font-bold text-teal-800 mr-1.5">Question (EN):</span>
+                                  <span className="line-clamp-2">{item.questionEn}</span>
+                                </div>
+                              )}
+                              {item.questionUrdu && (
+                                <div className="pt-1 border-t border-slate-200/50">
+                                  <span className="font-bold text-teal-800 mr-1.5">سوال (UR):</span>
+                                  <span className="urdu-text line-clamp-2">{item.questionUrdu}</span>
+                                </div>
+                              )}
                             </div>
 
                             {/* Answer Excerpt */}
@@ -3743,88 +3864,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
               }}
               className="space-y-4 text-xs"
             >
-              {/* Title */}
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Title (عنوان) <span className="text-rose-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={qaFormData.title}
-                  onChange={(e) => setQaFormData({ ...qaFormData, title: e.target.value })}
-                  placeholder="e.g. Is a Voluntary or Obligatory Fast Valid If Intention Was Not Formed Before Fajr?"
-                  maxLength={250}
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  required
-                />
-                <span className="text-[10px] text-slate-400 mt-0.5 block">
-                  Displayed as the public library entry title and used to generate the permanent SEO URL.
-                </span>
-              </div>
-
-              {/* Question */}
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Question (مکمل سوال) <span className="text-rose-500">*</span>
-                </label>
-                <textarea
-                  rows={3}
-                  value={qaFormData.question}
-                  onChange={(e) => setQaFormData({ ...qaFormData, question: e.target.value })}
-                  placeholder="Enter the complete question asked by seekers..."
-                  className={`w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                    qaFormData.language === 'urdu' ? 'urdu-text text-sm' : ''
-                  }`}
-                  required
-                />
-              </div>
-
-              {/* Answer */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block font-bold text-slate-700">
-                    Answer (مستند تفصیلی جواب) <span className="text-rose-500">*</span>
-                  </label>
-                  <span className="text-[10px] text-slate-400">
-                    Supports readable paragraphs and structured lists
-                  </span>
-                </div>
-                <textarea
-                  rows={6}
-                  value={qaFormData.answer}
-                  onChange={(e) => setQaFormData({ ...qaFormData, answer: e.target.value })}
-                  placeholder="Provide the complete, readable scholarly answer, including relevant jurisprudential nuances..."
-                  className={`w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                    qaFormData.language === 'urdu' ? 'urdu-text text-sm' : ''
-                  }`}
-                  required
-                />
-              </div>
-
-              {/* References & Details (Separate field per requirement) */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="block font-bold text-slate-700">
-                    References & Details (حوالہ جات، آیات، احادیث، فقہی تفاصیل)
-                  </label>
-                  <span className="text-[10px] text-slate-400">
-                    Placed at the end of the public entry
-                  </span>
-                </div>
-                <textarea
-                  rows={3}
-                  value={qaFormData.referencesDetails}
-                  onChange={(e) => setQaFormData({ ...qaFormData, referencesDetails: e.target.value })}
-                  placeholder="Quran verses (Surah name, numbers), Hadith collection and numbers (Sahih al-Bukhari, Sahih Muslim), classical scholar compendiums, relevant disclaimers..."
-                  className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500"
-                />
-              </div>
-
-              {/* Category, Language, Status Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+              {/* Common Meta: Category & Publication Status */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
                 {/* Category */}
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Category</label>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Topic / Category (موضوع) <span className="text-rose-500">*</span>
+                  </label>
                   <select
                     value={isCustomCategory ? '__custom__' : qaFormData.category}
                     onChange={(e) => {
@@ -3835,17 +3881,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                         setQaFormData({ ...qaFormData, category: e.target.value });
                       }
                     }}
-                    className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs"
+                    className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold"
                   >
                     {categories.map((c, i) => (
                       <option key={i} value={c}>{c}</option>
                     ))}
-                    <option value="Sawm">Sawm (Fasting)</option>
-                    <option value="Taharah">Taharah (Purification)</option>
-                    <option value="Zakat">Zakat & Charity</option>
-                    <option value="Hajj">Hajj & Umrah</option>
-                    <option value="General">General</option>
-                    <option value="__custom__">+ Custom Category...</option>
+                    <option value="Sawm">Sawm (Fasting / صوم)</option>
+                    <option value="Salah">Salah (Prayer / نماز)</option>
+                    <option value="Taharah">Taharah (Purification / طہارت)</option>
+                    <option value="Zakat">Zakat & Charity (زکوٰۃ و صدقات)</option>
+                    <option value="Hajj">Hajj & Umrah (حج و عمرہ)</option>
+                    <option value="General">General / عام مسائل</option>
+                    <option value="__custom__">+ Add Custom Category...</option>
                   </select>
 
                   {isCustomCategory && (
@@ -3853,38 +3900,257 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                       type="text"
                       value={qaCustomCategory}
                       onChange={(e) => setQaCustomCategory(e.target.value)}
-                      placeholder="Type custom category..."
-                      className="w-full mt-1.5 p-1.5 bg-white border border-slate-200 rounded-lg text-xs"
+                      placeholder="Type custom category name..."
+                      className="w-full mt-1.5 p-2 bg-white border border-teal-300 rounded-xl text-xs"
                       required
                     />
                   )}
                 </div>
 
-                {/* Language */}
-                <div>
-                  <label className="block font-bold text-slate-700 mb-1">Language</label>
-                  <select
-                    value={qaFormData.language}
-                    onChange={(e) => setQaFormData({ ...qaFormData, language: e.target.value as any })}
-                    className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold"
-                  >
-                    <option value="english">English</option>
-                    <option value="urdu">اردو (Urdu)</option>
-                  </select>
-                </div>
-
                 {/* Publication Status */}
                 <div>
-                  <label className="block font-bold text-slate-700 mb-1">Publication Status</label>
+                  <label className="block font-bold text-slate-700 mb-1">
+                    Publication Status (اشاعت کی حیثیت)
+                  </label>
                   <select
                     value={qaFormData.status}
                     onChange={(e) => setQaFormData({ ...qaFormData, status: e.target.value as any })}
                     className="w-full p-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800"
                   >
-                    <option value="published">🌐 Published (Public)</option>
-                    <option value="draft">🔒 Draft (Private)</option>
+                    <option value="published">🌐 Published (Live in Public Library)</option>
+                    <option value="draft">🔒 Draft (Confidential Admin Work)</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Language Section Tabs */}
+              <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setAdminFormLangTab('en')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      adminFormLangTab === 'en'
+                        ? 'bg-teal-700 text-white shadow-xs'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    <span>🇬🇧 English Content</span>
+                    {qaFormData.titleEn.trim() && (
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAdminFormLangTab('ur')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      adminFormLangTab === 'ur'
+                        ? 'bg-teal-700 text-white shadow-xs'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    <span>🇵🇰 اردو مواد</span>
+                    {qaFormData.titleUrdu.trim() && (
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setAdminFormLangTab('both')}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                      adminFormLangTab === 'both'
+                        ? 'bg-teal-700 text-white shadow-xs'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    <span>View Both (دونوں دیکھیں)</span>
+                  </button>
+                </div>
+
+                <span className="text-[10px] text-slate-400 hidden sm:inline">
+                  Single linked Q&A entry
+                </span>
+              </div>
+
+              {/* SECTION: ENGLISH FIELDS */}
+              {(adminFormLangTab === 'en' || adminFormLangTab === 'both') && (
+                <div className="space-y-3 p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80">
+                  <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                    <span className="font-bold text-slate-800 flex items-center gap-1.5 text-xs">
+                      <span className="text-base">🇬🇧</span>
+                      <span>English Version (انگریزی زبان میں مواد)</span>
+                    </span>
+                    <span className="text-[10px] text-slate-500">
+                      {qaFormData.titleEn.trim() ? '✓ Content entered' : 'Optional if Urdu provided'}
+                    </span>
+                  </div>
+
+                  {/* English Title */}
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      English Title
+                    </label>
+                    <input
+                      type="text"
+                      value={qaFormData.titleEn}
+                      onChange={(e) => setQaFormData({ ...qaFormData, titleEn: e.target.value })}
+                      placeholder="e.g. Is Fasting Valid If Intention Was Not Formed Before Fajr?"
+                      maxLength={250}
+                      className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                    <span className="text-[10px] text-slate-400 mt-0.5 block">
+                      Displayed as the primary English heading and permanent shareable link base.
+                    </span>
+                  </div>
+
+                  {/* English Question */}
+                  <div>
+                    <label className="block font-bold text-slate-700 mb-1">
+                      English Question
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={qaFormData.questionEn}
+                      onChange={(e) => setQaFormData({ ...qaFormData, questionEn: e.target.value })}
+                      placeholder="Enter the complete question asked by seekers in English..."
+                      className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 leading-relaxed"
+                    />
+                  </div>
+
+                  {/* English Answer */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-bold text-slate-700">
+                        English Answer
+                      </label>
+                      <span className="text-[10px] text-slate-400">
+                        Supports paragraphs and numbered lists
+                      </span>
+                    </div>
+                    <textarea
+                      rows={5}
+                      value={qaFormData.answerEn}
+                      onChange={(e) => setQaFormData({ ...qaFormData, answerEn: e.target.value })}
+                      placeholder="Provide the complete, readable scholarly answer in English..."
+                      className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+
+                  {/* English References & Details */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-bold text-slate-700">
+                        English References & Details
+                      </label>
+                      <span className="text-[10px] text-slate-400">
+                        Placed at the end of the public entry
+                      </span>
+                    </div>
+                    <textarea
+                      rows={3}
+                      value={qaFormData.referencesDetailsEn}
+                      onChange={(e) => setQaFormData({ ...qaFormData, referencesDetailsEn: e.target.value })}
+                      placeholder="Quran verses (Surah name, numbers), Hadith collection and numbers (Sahih al-Bukhari, Sahih Muslim), classical scholar compendiums..."
+                      className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-mono leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* SECTION: URDU FIELDS */}
+              {(adminFormLangTab === 'ur' || adminFormLangTab === 'both') && (
+                <div className="space-y-3 p-4 rounded-2xl bg-teal-50/40 border border-teal-200/80">
+                  <div className="flex items-center justify-between border-b border-teal-200/60 pb-2">
+                    <span className="font-bold text-teal-900 flex items-center gap-1.5 text-xs">
+                      <span className="text-base">🇵🇰</span>
+                      <span>Urdu Version (اردو زبان میں مواد)</span>
+                    </span>
+                    <span className="text-[10px] text-teal-700">
+                      {qaFormData.titleUrdu.trim() ? '✓ اردو مواد درج ہے' : 'انگریزی مواد کی صورت میں اختیاری'}
+                    </span>
+                  </div>
+
+                  {/* Urdu Title */}
+                  <div>
+                    <label className="block font-bold text-teal-900 mb-1">
+                      Urdu Title (عنوان برائے اردو قارئین)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      value={qaFormData.titleUrdu}
+                      onChange={(e) => setQaFormData({ ...qaFormData, titleUrdu: e.target.value })}
+                      placeholder="مثال: کیا فجر سے پہلے روزے کی نیت نہ کرنے پر روزہ صحیح ہو جاتا ہے؟"
+                      maxLength={250}
+                      className="w-full p-2.5 bg-white border border-teal-200 rounded-xl text-xs urdu-text font-bold text-right focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+
+                  {/* Urdu Question */}
+                  <div>
+                    <label className="block font-bold text-teal-900 mb-1">
+                      Urdu Question (مکمل سوال)
+                    </label>
+                    <textarea
+                      rows={3}
+                      dir="rtl"
+                      value={qaFormData.questionUrdu}
+                      onChange={(e) => setQaFormData({ ...qaFormData, questionUrdu: e.target.value })}
+                      placeholder="سائل کی طرف سے پوچھا گیا مکمل سوال اردو میں درج فرمائیں..."
+                      className="w-full p-2.5 bg-white border border-teal-200 rounded-xl text-xs urdu-text text-right focus:outline-none focus:ring-2 focus:ring-teal-500 leading-relaxed"
+                    />
+                  </div>
+
+                  {/* Urdu Answer */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-bold text-teal-900">
+                        Urdu Answer (مستند تفصیلی شرعی جواب)
+                      </label>
+                      <span className="text-[10px] text-teal-700">
+                        پیراگراف اور تفصیلی شقیں
+                      </span>
+                    </div>
+                    <textarea
+                      rows={6}
+                      dir="rtl"
+                      value={qaFormData.answerUrdu}
+                      onChange={(e) => setQaFormData({ ...qaFormData, answerUrdu: e.target.value })}
+                      placeholder="مستند شواہد، فقہی باریکیوں اور ائمہ اربعہ کے اقوال کے ساتھ مکمل جواب..."
+                      className="w-full p-2.5 bg-white border border-teal-200 rounded-xl text-xs urdu-text text-right leading-loose focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+
+                  {/* Urdu References & Details */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block font-bold text-teal-900">
+                        Urdu References & Details (حوالہ جات و تفاصیل)
+                      </label>
+                      <span className="text-[10px] text-teal-700">
+                        تحریر کے اختتام پر دکھایا جائے گا
+                      </span>
+                    </div>
+                    <textarea
+                      rows={3}
+                      dir="rtl"
+                      value={qaFormData.referencesDetailsUrdu}
+                      onChange={(e) => setQaFormData({ ...qaFormData, referencesDetailsUrdu: e.target.value })}
+                      placeholder="قرآنی آیات (سورۃ و آیت نمبر)، کتب احادیث (صحیح بخاری، صحیح مسلم وغیرہ)، معتبر فقہی کتب کے حوالے..."
+                      className="w-full p-2.5 bg-white border border-teal-200 rounded-xl text-xs urdu-text text-right leading-relaxed focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Informative Guidance */}
+              <div className="p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-[11px] text-amber-900 flex items-start gap-2">
+                <span className="text-base shrink-0">💡</span>
+                <p className="leading-relaxed">
+                  <strong>Bilingual Linking:</strong> Both English and Urdu translations belong to this single Q&A record. Public visitors can switch between English and Urdu using a 1-click toggle on the article page. If only one language is filled, the public page displays the available language without empty sections.
+                </p>
               </div>
 
               {/* Form Action Buttons */}

@@ -8,17 +8,14 @@ import {
   Share2,
   Copy,
   Check,
-  ExternalLink,
-  Clock,
-  Sparkles,
   ChevronRight,
   Scale,
   MessageSquare,
   Globe,
-  FileText,
   CheckCircle2,
   BookmarkCheck,
-  Tag
+  Tag,
+  Languages
 } from 'lucide-react';
 import { ScholarQALibraryItem } from '../../types';
 
@@ -31,17 +28,20 @@ export const PublicScholarsLibraryPage: React.FC = () => {
     isLoadingScholarLibrary
   } = useApp();
 
-  const isUrdu = contentLang === 'urdu';
+  const isSiteUrdu = contentLang === 'urdu';
 
-  // Selected item for full reader view
+  // Selected item for full reader detail view
   const [selectedQA, setSelectedQA] = useState<ScholarQALibraryItem | null>(null);
 
-  // Search and Category filters
+  // Active language inside the detail view reader ('english' | 'urdu')
+  const [readerLang, setReaderLang] = useState<'english' | 'urdu'>('english');
+
+  // Search and Category filters on directory listing
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [copiedLink, setCopiedLink] = useState(false);
 
-  // Read URL query params on mount to support direct deep-linking
+  // Read URL query params on mount to support direct deep-linking (/scholars-library?q=[slug])
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -55,7 +55,7 @@ export const PublicScholarsLibraryPage: React.FC = () => {
           item => (slugParam && item.slug === slugParam) || (idParam && item.id === idParam)
         );
         if (found) {
-          setSelectedQA(found);
+          handleSelectQA(found);
         }
       }
     } catch {
@@ -63,30 +63,60 @@ export const PublicScholarsLibraryPage: React.FC = () => {
     }
   }, [publicScholarLibrary]);
 
-  // Handle selecting an entry
+  // Handle selecting an entry to open dedicated detail view
   const handleSelectQA = (item: ScholarQALibraryItem) => {
     setSelectedQA(item);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    try {
-      const newUrl = new URL(window.location.href);
-      newUrl.pathname = '/scholars-library';
-      newUrl.searchParams.set('q', item.slug);
-      newUrl.searchParams.delete('id');
-      window.history.pushState(null, '', newUrl.toString());
-    } catch {}
+
+    // Determine initial language for the selected item
+    const hasEn = Boolean(item.titleEn && item.questionEn) || (item.language !== 'urdu' && Boolean(item.title));
+    const hasUr = Boolean(item.titleUrdu && item.questionUrdu) || (item.language === 'urdu' && Boolean(item.title));
+
+    if (isSiteUrdu && hasUr) {
+      setReaderLang('urdu');
+    } else if (hasEn) {
+      setReaderLang('english');
+    } else if (hasUr) {
+      setReaderLang('urdu');
+    } else {
+      setReaderLang('english');
+    }
+
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      try {
+        const newUrl = new URL(window.location.href);
+        newUrl.pathname = '/scholars-library';
+        newUrl.searchParams.set('q', item.slug);
+        newUrl.searchParams.delete('id');
+        window.history.pushState(null, '', newUrl.toString());
+      } catch {}
+    }
   };
 
-  // Handle returning to list view
+  // Handle returning to headings-only list view
   const handleBackToList = () => {
     setSelectedQA(null);
-    try {
-      const newUrl = new URL(window.location.href);
-      newUrl.pathname = '/scholars-library';
-      newUrl.searchParams.delete('q');
-      newUrl.searchParams.delete('id');
-      window.history.pushState(null, '', newUrl.toString());
-    } catch {}
+    if (typeof window !== 'undefined') {
+      try {
+        const newUrl = new URL(window.location.href);
+        newUrl.pathname = '/scholars-library';
+        newUrl.searchParams.delete('q');
+        newUrl.searchParams.delete('id');
+        window.history.pushState(null, '', newUrl.toString());
+      } catch {}
+    }
   };
+
+  // Dynamic document title for SEO & bookmarking
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    if (selectedQA) {
+      const activeTitle = (readerLang === 'urdu' ? selectedQA.titleUrdu : selectedQA.titleEn) || selectedQA.title;
+      document.title = `${activeTitle} • Scholars Islamic Q&A Library | IslamIQ`;
+    } else {
+      document.title = 'Public Scholars Library • Islamic Q&A, Masail & Fatwas | IslamIQ';
+    }
+  }, [selectedQA, readerLang]);
 
   // Copy shareable link
   const handleCopyLink = () => {
@@ -95,7 +125,7 @@ export const PublicScholarsLibraryPage: React.FC = () => {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(shareUrl).then(() => {
         setCopiedLink(true);
-        showToast(isUrdu ? 'لنک کاپی ہو گیا!' : 'Shareable link copied to clipboard! 📋');
+        showToast(isSiteUrdu ? 'مستقل لنک کاپی ہو گیا!' : 'Permanent link copied to clipboard! 📋');
         setTimeout(() => setCopiedLink(false), 2500);
       });
     } else {
@@ -112,7 +142,7 @@ export const PublicScholarsLibraryPage: React.FC = () => {
     return Array.from(set).sort();
   }, [publicScholarLibrary]);
 
-  // Filtered published entries
+  // Filtered published entries for Headings-Only listing
   const filteredEntries = useMemo(() => {
     return publicScholarLibrary.filter(item => {
       if (selectedCategory !== 'all' && item.category !== selectedCategory) {
@@ -120,12 +150,13 @@ export const PublicScholarsLibraryPage: React.FC = () => {
       }
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
-        const matchTitle = item.title.toLowerCase().includes(q);
-        const matchQ = item.question.toLowerCase().includes(q);
-        const matchA = item.answer.toLowerCase().includes(q);
-        const matchRef = (item.referencesDetails || '').toLowerCase().includes(q);
+        const matchTitle = (item.title || '').toLowerCase().includes(q);
+        const matchTitleEn = (item.titleEn || '').toLowerCase().includes(q);
+        const matchTitleUr = (item.titleUrdu || '').toLowerCase().includes(q);
+        const matchQEn = (item.questionEn || item.question || '').toLowerCase().includes(q);
+        const matchQUr = (item.questionUrdu || '').toLowerCase().includes(q);
         const matchCat = (item.category || '').toLowerCase().includes(q);
-        if (!matchTitle && !matchQ && !matchA && !matchRef && !matchCat) {
+        if (!matchTitle && !matchTitleEn && !matchTitleUr && !matchQEn && !matchQUr && !matchCat) {
           return false;
         }
       }
@@ -143,45 +174,89 @@ export const PublicScholarsLibraryPage: React.FC = () => {
 
   /* ========================================================================== */
   /* DETAIL VIEW: SINGLE SCHOLAR Q&A READER                                    */
+  /* Complete content in strict order: Title -> Question -> Answer -> Ref      */
   /* ========================================================================== */
   if (selectedQA) {
+    // Check translation availability on this specific record
+    const hasEnglish = Boolean(selectedQA.titleEn && selectedQA.questionEn && selectedQA.answerEn) || (selectedQA.language !== 'urdu' && Boolean(selectedQA.title && selectedQA.question));
+    const hasUrdu = Boolean(selectedQA.titleUrdu && selectedQA.questionUrdu && selectedQA.answerUrdu) || (selectedQA.language === 'urdu' && Boolean(selectedQA.title && selectedQA.question));
+    const isBilingual = hasEnglish && hasUrdu;
+
+    // Resolve active content according to readerLang
+    const isDisplayUrdu = readerLang === 'urdu' && hasUrdu;
+
+    const displayTitle = (isDisplayUrdu ? selectedQA.titleUrdu : selectedQA.titleEn) || selectedQA.title;
+    const displayQuestion = (isDisplayUrdu ? selectedQA.questionUrdu : selectedQA.questionEn) || selectedQA.question;
+    const displayAnswer = (isDisplayUrdu ? selectedQA.answerUrdu : selectedQA.answerEn) || selectedQA.answer;
+    const displayReferences = (isDisplayUrdu ? selectedQA.referencesDetailsUrdu : selectedQA.referencesDetailsEn) || selectedQA.referencesDetails || '';
+
     return (
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-6 animate-fadeIn pb-16">
         
-        {/* Navigation & Breadcrumb */}
+        {/* Navigation & Header Actions Bar */}
         <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
           <button
             onClick={handleBackToList}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition-colors cursor-pointer"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span>{isUrdu ? 'عوامی لائبریری کی طرف واپسی' : 'Back to Scholars Library'}</span>
+            <span>{isSiteUrdu ? 'فہرست کی طرف واپسی' : 'Back to Library Headings'}</span>
           </button>
 
           <div className="flex items-center gap-2">
+            {/* Language Switcher: Only displayed if BOTH English and Urdu translations exist */}
+            {isBilingual && (
+              <div className="inline-flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200 gap-1">
+                <button
+                  type="button"
+                  onClick={() => setReaderLang('english')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    readerLang === 'english'
+                      ? 'bg-teal-700 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="Switch to English translation"
+                >
+                  English
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setReaderLang('urdu')}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer urdu-text ${
+                    readerLang === 'urdu'
+                      ? 'bg-teal-700 text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="اردو ترجمہ ملاحظہ فرمائیں"
+                >
+                  اردو
+                </button>
+              </div>
+            )}
+
             <button
               onClick={handleCopyLink}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold transition-all shadow-2xs"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold transition-all shadow-2xs cursor-pointer"
               title="Copy permanent shareable link"
             >
               {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-slate-500" />}
-              <span>{copiedLink ? (isUrdu ? 'کاپی شدہ' : 'Copied!') : (isUrdu ? 'لنک شیئر کریں' : 'Copy Link')}</span>
+              <span>{copiedLink ? (isSiteUrdu ? 'کاپی شدہ' : 'Copied!') : (isSiteUrdu ? 'لنک شیئر کریں' : 'Copy Link')}</span>
             </button>
 
             <button
               onClick={() => setActiveTab('ask-a-scholar')}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold transition-colors"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 font-bold transition-colors cursor-pointer"
             >
               <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{isUrdu ? 'اپنا سوال پوچھیں' : 'Ask a Scholar'}</span>
+              <span>{isSiteUrdu ? 'نیا سوال پوچھیں' : 'Ask a Scholar'}</span>
             </button>
           </div>
         </div>
 
-        {/* Article Container */}
+        {/* Article Container: Complete Content in strict hierarchy */}
         <article className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
           
-          {/* Header Meta */}
+          {/* Header Meta Badges */}
           <div className="space-y-3 border-b border-slate-100 pb-5">
             <div className="flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-teal-50 border border-teal-200 text-teal-800 font-bold text-xs">
@@ -189,8 +264,14 @@ export const PublicScholarsLibraryPage: React.FC = () => {
                 <span>{selectedQA.category}</span>
               </span>
 
-              <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 font-semibold text-xs uppercase font-mono">
-                {selectedQA.language === 'urdu' ? 'اردو' : 'English'}
+              {/* Language availability indicator */}
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-semibold text-xs">
+                <Languages className="w-3 h-3 text-slate-500" />
+                <span>
+                  {isBilingual
+                    ? (isDisplayUrdu ? 'اردو ترجمہ (انگریزی بھی دستیاب ہے)' : 'English Version (Urdu available)')
+                    : (isDisplayUrdu ? 'صرف اردو' : 'English Only')}
+                </span>
               </span>
 
               {selectedQA.publishedAt && (
@@ -204,36 +285,48 @@ export const PublicScholarsLibraryPage: React.FC = () => {
               )}
             </div>
 
-            {/* Title (Prominently displayed) */}
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 leading-tight">
-              {selectedQA.title}
+            {/* 1. TITLE (Prominently displayed first) */}
+            <h1
+              className={`text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 leading-tight ${
+                isDisplayUrdu ? 'urdu-text text-right font-urdu text-2xl sm:text-3xl lg:text-4xl leading-relaxed' : ''
+              }`}
+            >
+              {displayTitle}
             </h1>
           </div>
 
-          {/* Section 1: Complete Question (Displayed first) */}
+          {/* 2. QUESTION (Displayed complete second) */}
           <div className="rounded-2xl bg-teal-50/70 border border-teal-200/80 p-5 space-y-2">
-            <div className="flex items-center gap-2 text-teal-900 font-bold text-xs uppercase tracking-wider">
-              <BookOpen className="w-4 h-4 text-teal-700" />
-              <span>{isUrdu ? 'مسئلہ / استفسار (The Question)' : 'Question / Seeker Inquiry'}</span>
-            </div>
-            <p className={`text-sm sm:text-base font-semibold text-slate-800 leading-relaxed ${
-              selectedQA.language === 'urdu' ? 'urdu-text text-base sm:text-lg' : ''
+            <div className={`flex items-center gap-2 text-teal-900 font-bold text-xs uppercase tracking-wider ${
+              isDisplayUrdu ? 'justify-end' : ''
             }`}>
-              {selectedQA.question}
+              <BookOpen className="w-4 h-4 text-teal-700" />
+              <span>{isDisplayUrdu ? 'استفسار / مسئلہ (Question)' : 'Question / Seeker Inquiry'}</span>
+            </div>
+            <p
+              className={`text-sm sm:text-base font-semibold text-slate-800 leading-relaxed ${
+                isDisplayUrdu ? 'urdu-text text-right font-urdu text-base sm:text-lg leading-loose' : ''
+              }`}
+            >
+              {displayQuestion}
             </p>
           </div>
 
-          {/* Section 2: Scholarly Answer */}
+          {/* 3. FULL ANSWER (Displayed complete third) */}
           <div className="space-y-3 pt-2">
-            <div className="flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase tracking-wider">
+            <div className={`flex items-center gap-2 text-emerald-800 font-bold text-xs uppercase tracking-wider ${
+              isDisplayUrdu ? 'justify-end' : ''
+            }`}>
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <span>{isUrdu ? 'مستند شرعی جواب (Scholarly Answer)' : 'Verified Scholarly Answer'}</span>
+              <span>{isDisplayUrdu ? 'مستند شرعی جواب (Scholarly Ruling)' : 'Verified Scholarly Answer'}</span>
             </div>
 
-            <div className={`space-y-4 text-sm sm:text-base text-slate-700 leading-relaxed font-normal ${
-              selectedQA.language === 'urdu' ? 'urdu-text text-base sm:text-lg leading-loose' : ''
-            }`}>
-              {selectedQA.answer.split('\n\n').map((paragraph, idx) => (
+            <div
+              className={`space-y-4 text-sm sm:text-base text-slate-700 leading-relaxed font-normal ${
+                isDisplayUrdu ? 'urdu-text text-right font-urdu text-base sm:text-lg leading-loose' : ''
+              }`}
+            >
+              {displayAnswer.split('\n\n').map((paragraph, idx) => (
                 <p key={idx} className="whitespace-pre-line">
                   {paragraph}
                 </p>
@@ -241,19 +334,29 @@ export const PublicScholarsLibraryPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Section 3: References & Details (Placed strictly at the very end per requirement) */}
-          {selectedQA.referencesDetails && (
+          {/* 4. REFERENCES & DETAILS (Placed strictly at the very end per requirement) */}
+          {displayReferences && displayReferences.trim() && (
             <div className="pt-4 border-t border-slate-200">
               <div className="rounded-2xl bg-amber-50/70 border border-amber-200 p-5 space-y-2.5">
-                <div className="flex items-center gap-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
+                <div className={`flex items-center gap-2 text-amber-900 font-bold text-xs uppercase tracking-wider ${
+                  isDisplayUrdu ? 'justify-end' : ''
+                }`}>
                   <Scale className="w-4 h-4 text-amber-700" />
-                  <span>{isUrdu ? 'حوالہ جات و تفاصیل (References & Details)' : 'References & Jurisprudential Details'}</span>
+                  <span>{isDisplayUrdu ? 'حوالہ جات و فقہی تفاصیل (References & Details)' : 'References & Jurisprudential Details'}</span>
                 </div>
-                <div className="text-xs sm:text-sm text-amber-950 font-mono whitespace-pre-line leading-relaxed bg-white/70 p-3 rounded-xl border border-amber-200/60">
-                  {selectedQA.referencesDetails}
+
+                <div
+                  className={`text-xs sm:text-sm text-amber-950 font-mono whitespace-pre-line leading-relaxed bg-white/70 p-3.5 rounded-xl border border-amber-200/60 ${
+                    isDisplayUrdu ? 'urdu-text text-right font-urdu text-sm sm:text-base leading-loose font-normal' : ''
+                  }`}
+                >
+                  {displayReferences}
                 </div>
-                <p className="text-[11px] text-amber-800/80 leading-normal">
-                  All citations, verses, and hadiths are based on established Islamic jurisprudence and authentic classical sources.
+
+                <p className={`text-[11px] text-amber-800/80 leading-normal ${isDisplayUrdu ? 'text-right urdu-text' : ''}`}>
+                  {isDisplayUrdu
+                    ? 'تمام قرآنی آیات، احادیث نبویہ اور فقہی حوالے معتبر ائمہ اور کتبِ فقہ کی تصریحات کے مطابق ہیں۔'
+                    : 'All citations, verses, and hadiths are based on established Islamic jurisprudence and authentic classical sources.'}
                 </p>
               </div>
             </div>
@@ -266,44 +369,49 @@ export const PublicScholarsLibraryPage: React.FC = () => {
               className="inline-flex items-center gap-1.5 font-bold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
-              <span>{isUrdu ? 'تمام سوالات کی فہرست' : 'All Scholars Library Q&As'}</span>
+              <span>{isSiteUrdu ? 'تمام سوالات کے عنوانات' : 'All Scholars Library Headings'}</span>
             </button>
 
             <button
               onClick={handleCopyLink}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold transition-colors"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold transition-colors cursor-pointer"
             >
               <Share2 className="w-3.5 h-3.5 text-slate-600" />
-              <span>{isUrdu ? 'شیئر کریں' : 'Share Article'}</span>
+              <span>{isSiteUrdu ? 'شیئر کریں' : 'Share Article'}</span>
             </button>
           </div>
 
         </article>
 
-        {/* Related Q&As Section */}
+        {/* Related Q&As Section (Headings only) */}
         {relatedEntries.length > 0 && (
           <div className="space-y-3 pt-4">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-teal-600" />
-              <span>{isUrdu ? 'اسی موضوع سے متعلق دیگر سوالات' : `More in ${selectedQA.category}`}</span>
+              <Globe className="w-4 h-4 text-teal-600" />
+              <span>{isSiteUrdu ? 'اسی موضوع سے متعلق مزید عنوانات' : `More in ${selectedQA.category}`}</span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {relatedEntries.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => handleSelectQA(item)}
-                  className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-teal-300 hover:shadow-xs transition-all text-left flex flex-col justify-between space-y-2 cursor-pointer"
-                >
-                  <h4 className="font-bold text-xs text-slate-900 line-clamp-2 leading-snug">
-                    {item.title}
-                  </h4>
-                  <span className="text-[11px] text-teal-700 font-bold inline-flex items-center gap-1">
-                    <span>{isUrdu ? 'مطالعہ کریں' : 'Read Answer'}</span>
-                    <ChevronRight className="w-3 h-3" />
-                  </span>
-                </button>
-              ))}
+              {relatedEntries.map(item => {
+                const relTitle = (isDisplayUrdu && item.titleUrdu ? item.titleUrdu : item.titleEn) || item.title;
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleSelectQA(item)}
+                    className="bg-white p-4 rounded-2xl border border-slate-200 hover:border-teal-400 hover:shadow-xs transition-all text-left flex flex-col justify-between space-y-2 cursor-pointer"
+                  >
+                    <h4 className={`font-bold text-xs text-slate-900 line-clamp-2 leading-snug ${
+                      isDisplayUrdu && item.titleUrdu ? 'urdu-text text-right font-urdu text-sm' : ''
+                    }`}>
+                      {relTitle}
+                    </h4>
+                    <span className="text-[11px] text-teal-700 font-bold inline-flex items-center gap-1">
+                      <span>{isSiteUrdu ? 'مطالعہ فرمائیں' : 'Read Ruling'}</span>
+                      <ChevronRight className="w-3 h-3" />
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -314,6 +422,7 @@ export const PublicScholarsLibraryPage: React.FC = () => {
 
   /* ========================================================================== */
   /* LIST VIEW: PUBLIC SCHOLARS LIBRARY DIRECTORY                               */
+  /* Clean Headings-Only Listing: Titles only, no long descriptions or answers  */
   /* ========================================================================== */
   return (
     <div className="max-w-5xl mx-auto px-4 py-6 space-y-6 animate-fadeIn pb-16">
@@ -324,44 +433,42 @@ export const PublicScholarsLibraryPage: React.FC = () => {
         <div className="relative z-10 space-y-3 max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 border border-teal-400/30 text-xs font-bold uppercase tracking-wider">
             <Library className="w-3.5 h-3.5 text-teal-400" />
-            <span>{isUrdu ? 'عوامی لائبریری برائے علماء' : 'Public Scholars Library'}</span>
+            <span>{isSiteUrdu ? 'عوامی لائبریری برائے علماء' : 'Public Scholars Library'}</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight">
-            {isUrdu
+            {isSiteUrdu
               ? 'مستند اسلامی مسائل اور شرعی رہنمائی کا ذخیرہ'
               : 'Scholarly Islamic Q&A Library'}
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-            {isUrdu
-              ? 'فقہ، طہارت، صوم، نماز اور عام معاملات پر معتبر اور مستند فتاویٰ و تحقیقی جوابات کا مطالعہ فرمائیں۔'
-              : 'Browse verified Islamic answers, jurisprudential rulings, and authentic evidence on fasting, prayer, purification, zakat, and daily living.'}
+            {isSiteUrdu
+              ? 'فقہ، طہارت، صوم، نماز اور روزمرہ معاملات پر تصدیق شدہ شرعی جوابات کے عنوانات ملاحظہ فرمائیں۔ کسی بھی عنوان پر کلک کر کے مکمل سوال، جواب اور مستند حوالہ جات دیکھیں۔'
+              : 'Browse verified Islamic rulings and jurisprudential guidance. Click on any title below to open its dedicated page with the complete question, scholarly answer, and authentic citations.'}
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <button
               onClick={() => setActiveTab('ask-a-scholar')}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition-all shadow-md active:scale-95"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition-all shadow-md active:scale-95 cursor-pointer"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>{isUrdu ? 'نیا سوال ارسال کریں' : 'Submit Private Question'}</span>
+              <span>{isSiteUrdu ? 'نیا سوال ارسال کریں' : 'Submit Private Question'}</span>
             </button>
 
             <button
-              onClick={() => {
-                setActiveTab('ask-a-scholar');
-              }}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/15 transition-all"
+              onClick={() => setActiveTab('ask-a-scholar')}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs border border-white/15 transition-all cursor-pointer"
             >
               <BookmarkCheck className="w-4 h-4 text-teal-300" />
-              <span>{isUrdu ? 'پہلے سے بھیجے گئے سوال کی صورتحال' : 'Check Inquiry Status'}</span>
+              <span>{isSiteUrdu ? 'پہلے سے بھیجے گئے سوال کی صورتحال' : 'Check Inquiry Status'}</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Search & Filter Toolbar */}
+      {/* Search & Topic Filter Toolbar */}
       <div className="bg-white rounded-2xl border border-slate-200 p-4 space-y-3 shadow-2xs">
         <div className="flex flex-col sm:flex-row items-center gap-3">
           
@@ -372,7 +479,7 @@ export const PublicScholarsLibraryPage: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isUrdu ? 'سوال، موضوع یا حوالہ تلاش کریں...' : 'Search questions, rulings, or references...'}
+              placeholder={isSiteUrdu ? 'عنوان یا موضوع تلاش کریں...' : 'Search by title or topic...'}
               className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
             {searchQuery && (
@@ -386,7 +493,7 @@ export const PublicScholarsLibraryPage: React.FC = () => {
           </div>
 
           <div className="text-xs font-semibold text-slate-500 shrink-0">
-            <span>{filteredEntries.length} {filteredEntries.length === 1 ? 'Entry' : 'Entries'}</span>
+            <span>{filteredEntries.length} {filteredEntries.length === 1 ? (isSiteUrdu ? 'عنوان' : 'Ruling') : (isSiteUrdu ? 'عنوانات' : 'Rulings')}</span>
           </div>
         </div>
 
@@ -400,7 +507,7 @@ export const PublicScholarsLibraryPage: React.FC = () => {
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
             }`}
           >
-            {isUrdu ? 'تمام موضوعات' : 'All Topics'}
+            {isSiteUrdu ? 'تمام موضوعات' : 'All Topics'}
           </button>
 
           {availableCategories.map(cat => (
@@ -419,24 +526,24 @@ export const PublicScholarsLibraryPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Directory Grid */}
+      {/* Directory Grid: Headings-Only Listing */}
       {isLoadingScholarLibrary ? (
         <div className="p-12 text-center text-slate-500 space-y-2">
           <div className="w-8 h-8 border-3 border-teal-600 border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-xs font-semibold">
-            {isUrdu ? 'لائبریری لوڈ ہو رہی ہے...' : 'Loading Scholars Library...'}
+            {isSiteUrdu ? 'لائبریری لوڈ ہو رہی ہے...' : 'Loading Scholars Library...'}
           </p>
         </div>
       ) : filteredEntries.length === 0 ? (
         <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-3">
           <Library className="w-12 h-12 text-slate-300 mx-auto" />
           <h3 className="text-base font-bold text-slate-900">
-            {isUrdu ? 'کوئی جواب دستیاب نہیں' : 'No Public Q&As Found'}
+            {isSiteUrdu ? 'کوئی عنوان دستیاب نہیں' : 'No Public Q&A Headings Found'}
           </h3>
           <p className="text-xs text-slate-500 max-w-md mx-auto">
             {searchQuery || selectedCategory !== 'all'
-              ? (isUrdu ? 'مطلوبہ تلاش کے مطابق کوئی اندراج نہیں ملا۔ فلٹر تبدیل کر کے دوبارہ کوشش فرمائیں۔' : 'No entries matched your search query. Try clearing filters or searching for different keywords.')
-              : (isUrdu ? 'فی الوقت کوئی نیا عوامی اندراج موجود نہیں۔' : 'New verified answers are being published regularly by the scholars.')}
+              ? (isSiteUrdu ? 'مطلوبہ تلاش کے مطابق کوئی اندراج نہیں ملا۔ فلٹر تبدیل کر کے دوبارہ کوشش فرمائیں۔' : 'No entries matched your search query. Try clearing filters or searching for different keywords.')
+              : (isSiteUrdu ? 'فی الوقت کوئی نیا عوامی اندراج موجود نہیں۔' : 'New verified rulings are being added regularly by the scholars.')}
           </p>
           {(searchQuery || selectedCategory !== 'all') && (
             <button
@@ -444,80 +551,93 @@ export const PublicScholarsLibraryPage: React.FC = () => {
                 setSearchQuery('');
                 setSelectedCategory('all');
               }}
-              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
             >
-              {isUrdu ? 'فلٹرز ختم کریں' : 'Reset Filters'}
+              {isSiteUrdu ? 'فلٹرز ختم کریں' : 'Reset Filters'}
             </button>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4">
-          {filteredEntries.map(item => (
-            <div
-              key={item.id}
-              onClick={() => handleSelectQA(item)}
-              className="bg-white rounded-3xl border border-slate-200 hover:border-teal-400 p-5 sm:p-6 transition-all hover:shadow-md cursor-pointer space-y-3 group"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <div className="flex items-center gap-2">
-                  <span className="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold">
-                    {item.category}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-semibold uppercase font-mono">
-                    {item.language === 'urdu' ? 'اردو' : 'English'}
-                  </span>
+        <div className="grid grid-cols-1 gap-3">
+          {filteredEntries.map(item => {
+            const hasEn = Boolean(item.titleEn && item.questionEn) || (item.language !== 'urdu' && Boolean(item.title));
+            const hasUr = Boolean(item.titleUrdu && item.questionUrdu) || (item.language === 'urdu' && Boolean(item.title));
+            const isBilingual = hasEn && hasUr;
+
+            // Preferred title based on active site language
+            const primaryTitle = (isSiteUrdu && item.titleUrdu ? item.titleUrdu : item.titleEn) || item.title;
+            const secondaryTitle = (isSiteUrdu && item.titleUrdu ? item.titleEn : (item.titleUrdu !== primaryTitle ? item.titleUrdu : null));
+
+            return (
+              <div
+                key={item.id}
+                onClick={() => handleSelectQA(item)}
+                className="bg-white rounded-2xl border border-slate-200 hover:border-teal-500 p-4 sm:p-5 transition-all hover:shadow-sm cursor-pointer group flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+              >
+                <div className="space-y-1.5 flex-1">
+                  {/* Badges */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[11px] font-bold">
+                      {item.category}
+                    </span>
+
+                    {/* Language Badge */}
+                    {isBilingual ? (
+                      <span className="px-2 py-0.5 rounded-md bg-teal-100/70 border border-teal-300 text-teal-900 text-[10px] font-bold">
+                        🇬🇧 English + 🇵🇰 اردو
+                      </span>
+                    ) : hasUr ? (
+                      <span className="px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-[10px] font-semibold">
+                        🇵🇰 اردو
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 text-[10px] font-semibold">
+                        🇬🇧 English
+                      </span>
+                    )}
+
+                    {item.publishedAt && (
+                      <span className="text-[11px] text-slate-400 font-medium">
+                        {new Date(item.publishedAt).toLocaleDateString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Clickable Heading (Only Title, strictly no answers or summaries on listing) */}
+                  <h2
+                    className={`text-sm sm:text-base font-bold text-slate-900 group-hover:text-teal-800 transition-colors leading-snug ${
+                      isSiteUrdu && item.titleUrdu ? 'urdu-text text-right font-urdu text-base sm:text-lg' : ''
+                    }`}
+                  >
+                    {primaryTitle}
+                  </h2>
+
+                  {/* Secondary title subtitle if bilingual */}
+                  {secondaryTitle && (
+                    <p className={`text-xs text-slate-400 line-clamp-1 ${
+                      isSiteUrdu ? '' : 'urdu-text font-urdu'
+                    }`}>
+                      {secondaryTitle}
+                    </p>
+                  )}
                 </div>
 
-                {item.publishedAt && (
-                  <span className="text-[11px] text-slate-400 font-medium">
-                    {new Date(item.publishedAt).toLocaleDateString(undefined, {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
-                    })}
-                  </span>
-                )}
+                {/* Read Action Button */}
+                <div className="flex items-center gap-1 text-xs font-bold text-teal-700 group-hover:text-teal-900 shrink-0 self-end sm:self-center">
+                  <span>{isSiteUrdu ? 'مکمل فتویٰ و دلائل' : 'Read Ruling & Evidence'}</span>
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
-
-              {/* Title */}
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-teal-800 transition-colors leading-snug">
-                {item.title}
-              </h2>
-
-              {/* Question summary */}
-              <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-200/70 text-xs text-slate-700">
-                <span className="font-bold text-teal-800 mr-1.5">
-                  {isUrdu ? 'سوال:' : 'Question:'}
-                </span>
-                <span className={`line-clamp-2 ${item.language === 'urdu' ? 'urdu-text' : ''}`}>
-                  {item.question}
-                </span>
-              </div>
-
-              {/* Answer summary */}
-              <p className={`text-xs text-slate-600 line-clamp-2 leading-relaxed ${
-                item.language === 'urdu' ? 'urdu-text' : ''
-              }`}>
-                {item.answer}
-              </p>
-
-              {/* Bottom footer */}
-              <div className="pt-2 flex items-center justify-between text-xs border-t border-slate-100">
-                <span className="text-[11px] text-slate-400">
-                  {item.referencesDetails ? (isUrdu ? 'مستند حوالہ جات کے ساتھ' : 'Authentic citations included') : ''}
-                </span>
-
-                <span className="text-teal-700 font-bold inline-flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                  <span>{isUrdu ? 'مکمل شرعی جواب پڑھیں' : 'Read Full Answer'}</span>
-                  <ChevronRight className="w-4 h-4" />
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {/* Informative Guidance Banner */}
+      {/* Seeker Guidance Footer Banner */}
       <div className="rounded-2xl bg-slate-100 border border-slate-200 p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-600">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-bold shrink-0">
@@ -525,21 +645,21 @@ export const PublicScholarsLibraryPage: React.FC = () => {
           </div>
           <div>
             <h4 className="font-bold text-slate-800 text-sm">
-              {isUrdu ? 'اپنے ذاتی فقہی سوال کا حل چاہیے؟' : 'Have a personal question for the scholars?'}
+              {isSiteUrdu ? 'کیا آپ کا کوئی ذاتی فقہی مسئلہ ہے؟' : 'Have a personal question for accredited scholars?'}
             </h4>
             <p className="text-slate-500 mt-0.5">
-              {isUrdu
-                ? 'آپ کا سوال رازداری کے ساتھ تصدیق شدہ علماء کرام کو پیش کیا جاتا ہے۔'
-                : 'Inquiries are kept confidential and answered by accredited Islamic scholars.'}
+              {isSiteUrdu
+                ? 'اپنا سوال رازداری کے ساتھ تصدیق شدہ علماء کرام کو پیش کریں۔ آپ کو نجی ٹریکنگ کوڈ فراہم کیا جائے گا۔'
+                : 'Inquiries are kept confidential and answered directly by qualified Islamic scholars.'}
             </p>
           </div>
         </div>
 
         <button
           onClick={() => setActiveTab('ask-a-scholar')}
-          className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold shrink-0 transition-all shadow-xs"
+          className="px-4 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold shrink-0 transition-all shadow-xs cursor-pointer"
         >
-          {isUrdu ? 'سوال ارسال کریں' : 'Ask a Scholar'}
+          {isSiteUrdu ? 'سوال ارسال کریں' : 'Ask a Scholar'}
         </button>
       </div>
 

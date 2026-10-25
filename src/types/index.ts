@@ -312,16 +312,31 @@ export interface ScholarInquiry extends PublicScholarInquiry {
 /**
  * Public Scholars Library (Admin-managed Islamic Q&A)
  */
-export type ScholarQALanguage = 'english' | 'urdu';
+export type ScholarQALanguage = 'english' | 'urdu' | 'both';
 export type ScholarQAPublicationStatus = 'draft' | 'published';
 
 export interface ScholarQALibraryItem {
   id: string;
   slug: string;
+  
+  // Legacy / fallback primary fields
   title: string;
   question: string;
   answer: string;
   referencesDetails: string;
+
+  // Separate English content fields
+  titleEn?: string | null;
+  questionEn?: string | null;
+  answerEn?: string | null;
+  referencesDetailsEn?: string | null;
+
+  // Separate Urdu content fields
+  titleUrdu?: string | null;
+  questionUrdu?: string | null;
+  answerUrdu?: string | null;
+  referencesDetailsUrdu?: string | null;
+
   category: string;
   language: ScholarQALanguage;
   status: ScholarQAPublicationStatus;
@@ -332,13 +347,27 @@ export interface ScholarQALibraryItem {
 }
 
 export interface ScholarQAFormData {
-  title: string;
-  question: string;
-  answer: string;
-  referencesDetails: string;
+  // English fields
+  titleEn: string;
+  questionEn: string;
+  answerEn: string;
+  referencesDetailsEn: string;
+
+  // Urdu fields
+  titleUrdu: string;
+  questionUrdu: string;
+  answerUrdu: string;
+  referencesDetailsUrdu: string;
+
   category: string;
-  language: ScholarQALanguage;
   status: ScholarQAPublicationStatus;
+
+  // Optional legacy fields for backward compatibility
+  title?: string;
+  question?: string;
+  answer?: string;
+  referencesDetails?: string;
+  language?: ScholarQALanguage;
 }
 
 

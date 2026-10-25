@@ -11,8 +11,11 @@ import android.util.Log
 import android.view.ViewGroup
 import android.webkit.GeolocationPermissions
 import android.webkit.PermissionRequest
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -21,6 +24,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.FragmentActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -65,7 +69,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
   private var nativeBridge: IslamIQNativeBridge? = null
   private var pendingWebPermissionRequest: PermissionRequest? = null
@@ -139,6 +143,23 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
+
+    // Clean up empty or corrupted variations seed files if present in WebView data directory
+    try {
+      val webViewDir = java.io.File(applicationContext.dataDir, "app_webview")
+      if (webViewDir.exists()) {
+        val seed = java.io.File(webViewDir, "variations_seed")
+        val seedNew = java.io.File(webViewDir, "variations_seed_new")
+        if (seed.exists() && seed.length() == 0L) {
+          seed.delete()
+        }
+        if (seedNew.exists() && seedNew.length() == 0L) {
+          seedNew.delete()
+        }
+      }
+    } catch (e: Exception) {
+      Log.d("IslamIQ", "WebView seed cleanup notice: ${e.message}")
+    }
 
     // Initialize Google Mobile Ads SDK on app start
     try {
@@ -271,6 +292,48 @@ fun IslamIQMainScreen(
               if (failingUrl?.contains("learnislamiq.com") == true) {
                 hasError = true
               }
+            }
+
+            override fun onReceivedError(
+              view: WebView?,
+              request: WebResourceRequest?,
+              error: WebResourceError?
+            ) {
+              super.onReceivedError(view, request, error)
+              if (request?.isForMainFrame == true) {
+                val url = request.url?.toString() ?: ""
+                if (url.contains("learnislamiq.com")) {
+                  hasError = true
+                }
+              }
+            }
+
+            override fun onReceivedHttpError(
+              view: WebView?,
+              request: WebResourceRequest?,
+              errorResponse: WebResourceResponse?
+            ) {
+              super.onReceivedHttpError(view, request, errorResponse)
+              if (request?.isForMainFrame == true && (errorResponse?.statusCode ?: 200) >= 500) {
+                val url = request.url?.toString() ?: ""
+                if (url.contains("learnislamiq.com")) {
+                  hasError = true
+                }
+              }
+            }
+
+            override fun onRenderProcessGone(
+              view: WebView?,
+              detail: RenderProcessGoneDetail?
+            ): Boolean {
+              Log.w("IslamIQ", "WebView render process gone. Crashed: ${detail?.didCrash()}")
+              // Handle renderer termination gracefully without terminating host process
+              view?.let {
+                (it.parent as? ViewGroup)?.removeView(it)
+                it.destroy()
+              }
+              hasError = true
+              return true
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {

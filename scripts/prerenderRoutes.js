@@ -1225,25 +1225,35 @@ export const routes = [
   {
     path: 'scholars-library',
     title: 'Public Scholars Library • Islamic Q&A, Masail & Fatwas | IslamIQ',
-    desc: 'Explore the official IslamIQ Public Scholars Library. Verified Islamic questions, answers, and classical citations on worship, fasting, prayer, purification, and daily living.',
+    desc: 'Explore the official IslamIQ Public Scholars Library. Verified Islamic questions, answers, and classical citations in English and Urdu on worship, fasting, prayer, purification, and daily living.',
     h1: 'Public Scholars Library: Verified Islamic Q&A & Scholarly Guidance',
     content: `
-      <h2>Authentic Islamic Guidance from Accredited Scholars</h2>
+      <h2>Authentic Islamic Guidance from Accredited Scholars (مستند شرعی فتاویٰ و رہنمائی)</h2>
       <p>The IslamIQ Public Scholars Library is a curated repository of verified answers, legal verdicts (fatwas), and detailed educational rulings addressing real-world questions on worship, family, financial ethics, and purification.</p>
       <p>Every published entry is transcribed and verified from accredited Islamic scholars, referencing the canonical Holy Quran, Kutub al-Sittah (Sahih al-Bukhari, Sahih Muslim, etc.), and classical compendiums across the established Sunni schools of jurisprudence (Hanafi, Shafi'i, Maliki, Hanbali).</p>
 
-      <h2>Featured Scholarly Inquiries & Detailed Rulings</h2>
+      <h2>Featured Scholarly Inquiries & Detailed Rulings (انگریزی و اردو میں مستند فتاویٰ)</h2>
 
       <article style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
         <h3 style="color: #047857; margin-top: 0;">1. Fasting Intention (Niyyah) Before Fajr for Obligatory and Voluntary Fasts</h3>
-        <p><strong>Question:</strong> If a person wakes up after Fajr without having made the intention to fast the night before, is their fast legally valid in Islamic Shari'ah?</p>
-        <p><strong>Scholarly Answer:</strong> There is an important jurisprudential distinction between obligatory fasts (Fard, such as Ramadan or make-up fasts) and voluntary fasts (Nafl):</p>
+        <p style="font-weight: bold; color: #0f766e;">اردو عنوان: کیا فجر سے پہلے روزے کی نیت نہ کرنے پر روزہ صحیح ہو جاتا ہے؟</p>
+        
+        <p><strong>English Question:</strong> If a person wakes up after Fajr without having made the intention to fast the night before, is their fast legally valid in Islamic Shari'ah?</p>
+        <p><strong>اردو سوال:</strong> اگر کوئی شخص رات کو نیت کیے بغیر فجر کے بعد بیدار ہو تو کیا شریعتِ اسلامیہ میں اس کا روزہ صحیح اور معتبر ہوگا؟</p>
+        
+        <p><strong>English Scholarly Answer:</strong> There is an important jurisprudential distinction between obligatory fasts (Fard, such as Ramadan or make-up fasts) and voluntary fasts (Nafl):</p>
         <ul>
           <li><strong>Obligatory Fast:</strong> The majority of classical scholars (Maliki, Shafi'i, and Hanbali) hold that for obligatory fasts, the intention must be formed at night before the break of true dawn (Fajr). In the Hanafi school, for Ramadan specifically, the intention may be formed up until Dahwat al-Kubra (approximately an hour before Islamic midday), provided one has not consumed food, drink, or engaged in any invalidator since dawn. However, to observe all schools, one should form the intention before dawn.</li>
           <li><strong>Voluntary Fast (Nafl):</strong> All four major Sunni schools agree that for voluntary fasts, the intention may be formed during the morning before midday, provided the person has not eaten, drunk, or engaged in anything that breaks the fast since Fajr, in accordance with the authentic practice of Prophet Muhammad ﷺ.</li>
         </ul>
+
+        <div style="background: #f0fdf4; border-right: 4px solid #059669; padding: 12px; margin: 12px 0; border-radius: 6px;">
+          <strong>اردو شرعی جواب:</strong>
+          <p>فرض اور نفل روزے کے درمیان فقہی طور پر ایک واضح اور بنیادی فرق ہے: ۱. فرض روزہ (رمضان، قضا یا کفارہ): جمہور علمائے کرام (مالکی، شافعی اور حنبلی) کے نزدیک فرض روزے کے لیے رات کے وقت صبح صادق (فجر) سے پہلے نیت کرنا شرط ہے۔ فقہ حنفی میں رمضان المبارک کے لیے ضحوۃ کبریٰ تک نیت کی گنجائش ہے۔ ۲. نفل روزہ: چاروں فقہی مذاہب کا اس پر اتفاق ہے کہ نفل روزے کے لیے صبح کے وقت بھی نیت کی جا سکتی ہے بشرطیکہ منافی صوم کام نہ کیا ہو۔</p>
+        </div>
+
         <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 14px; margin-top: 12px; font-size: 13px;">
-          <strong>References &amp; Classical Details:</strong>
+          <strong>References &amp; Classical Details (حوالہ جات و تفاصیل):</strong>
           <ul>
             <li>Sahih Muslim (Hadith 1154): Mother of the Believers Aisha (RA) reported that the Prophet ﷺ came to her one morning and asked: "Do you have anything [to eat]?" She said: "No." He said: "Then indeed I am fasting."</li>
             <li>Sunan Abi Dawud (2454) &amp; Jami' at-Tirmidhi (730): Hafsah (RA) reported that the Prophet ﷺ said: "Whoever does not determine to fast before dawn has no fast [for obligatory fasts]."</li>
@@ -1254,14 +1264,24 @@ export const routes = [
 
       <article style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
         <h3 style="color: #047857; margin-top: 0;">2. Rectifying Doubts in Salah: The Rules of Sujud as-Sahw (Prostrations of Forgetfulness)</h3>
-        <p><strong>Question:</strong> If someone is praying Salah and becomes uncertain whether they prayed 3 or 4 rakats, how should they rectify the prayer according to the Sunnah?</p>
-        <p><strong>Scholarly Answer:</strong> When uncertainty (Shakk) occurs during prayer regarding the number of rakats performed:</p>
+        <p style="font-weight: bold; color: #0f766e;">اردو عنوان: نماز میں رکعتوں کی تعداد میں شک واقع ہو جائے تو کیا کرنا چاہیے؟</p>
+        
+        <p><strong>English Question:</strong> If someone is praying Salah and becomes uncertain whether they prayed 3 or 4 rakats, how should they rectify the prayer according to the Sunnah?</p>
+        <p><strong>اردو سوال:</strong> اگر کوئی شخص نماز پڑھ رہا ہو اور اسے شک ہو جائے کہ اس نے ۳ رکعتیں پڑھی ہیں یا ۴، تو سنتِ نبوی کے مطابق نماز کی اصلاح کیسے کی جائے؟</p>
+        
+        <p><strong>English Scholarly Answer:</strong> When uncertainty (Shakk) occurs during prayer regarding the number of rakats performed:</p>
         <ul>
           <li><strong>Build upon Certainty (The Minimum Number):</strong> The Prophet ﷺ established the golden rule that one should discard doubt and base the prayer upon what is certain (which is the smaller number). If you are uncertain whether you prayed 3 or 4 rakats, consider it 3 rakats, perform the 4th rakat, sit for Tashahhud, and perform Sujud as-Sahw (two prostrations of forgetfulness).</li>
           <li><strong>Timing of Sujud as-Sahw:</strong> According to authentic traditions, Sujud as-Sahw can be performed either before the Salam or immediately after the Salam, followed by another Salam. Both methods are authentic and valid according to the Sunnah.</li>
         </ul>
+
+        <div style="background: #f0fdf4; border-right: 4px solid #059669; padding: 12px; margin: 12px 0; border-radius: 6px;">
+          <strong>اردو شرعی جواب:</strong>
+          <p>۱. یقین پر بنا کرنا: رسول اللہ ﷺ نے یہ سنہری اصول ارشاد فرمایا کہ شک کو دور کر کے یقین (جو کہ کم تعداد ہے) پر بنیاد رکھی جائے۔ چنانچہ اگر ۳ اور ۴ میں شک ہو تو ۳ قرار دے کر چوتھی رکعت مکمل کریں، تشہد میں بیٹھیں اور سجدہ سہو کریں۔ ۲. سجدہ سہو کا طریقہ: احادیث صحیحہ کی روشنی میں سجدہ سہو سلام پھیرنے سے پہلے بھی کیا جا سکتا ہے اور بعد میں بھی۔</p>
+        </div>
+
         <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 14px; margin-top: 12px; font-size: 13px;">
-          <strong>References &amp; Classical Details:</strong>
+          <strong>References &amp; Classical Details (حوالہ جات و تفاصیل):</strong>
           <ul>
             <li>Sahih Muslim (Hadith 571): Abu Sa'id al-Khudri (RA) narrated that the Messenger of Allah ﷺ said: "When one of you is in doubt during prayer and does not know whether he has prayed three or four rakats, let him cast away doubt and build upon what is certain, then perform two prostrations before uttering the Salam."</li>
             <li>Sahih al-Bukhari (Hadith 401, 1226): Narrations of Dhu al-Yadayn and Abdullah ibn Mas'ud regarding rectifying omissions or additions in prayer.</li>
@@ -1271,14 +1291,24 @@ export const routes = [
 
       <article style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
         <h3 style="color: #047857; margin-top: 0;">3. Does Waterproof Nail Polish or Impermeable Cosmetics Invalidate Wudu (Ablution)?</h3>
-        <p><strong>Question:</strong> Can a Muslim perform Wudu while wearing waterproof nail polish, makeup, or oil-based barriers on the nails and skin?</p>
-        <p><strong>Scholarly Answer:</strong> In Islamic jurisprudence, a foundational condition (Shart) for the validity of Wudu is that water must physically make contact with and wash the required limbs, including the entirety of the face, arms including elbows, wiping the head, and feet including ankles (Surah Al-Ma'idah 5:6).</p>
+        <p style="font-weight: bold; color: #0f766e;">اردو عنوان: کیا واٹر پروف نیل پالش یا تہہ دار کاسمیٹکس سے وضو ہو جاتا ہے؟</p>
+        
+        <p><strong>English Question:</strong> Can a Muslim perform Wudu while wearing waterproof nail polish, makeup, or oil-based barriers on the nails and skin?</p>
+        <p><strong>اردو سوال:</strong> کیا کوئی مسلمان ناخنوں پر واٹر پروف نیل پالش، میک اپ یا تیل نما تہہ جمی ہونے کی حالت میں وضو کر سکتا ہے؟</p>
+        
+        <p><strong>English Scholarly Answer:</strong> In Islamic jurisprudence, a foundational condition (Shart) for the validity of Wudu is that water must physically make contact with and wash the required limbs, including the entirety of the face, arms including elbows, wiping the head, and feet including ankles (Surah Al-Ma'idah 5:6).</p>
         <ul>
           <li><strong>Impermeable Barriers:</strong> Standard commercial nail polish forms a waterproof plastic coating that prevents water from reaching the nail bed. Therefore, Wudu performed over non-permeable nail polish is invalid by consensus of the four Sunni schools of jurisprudence.</li>
           <li><strong>Halal Breathable Polishes:</strong> Products marketed as "breathable" or "permeable" are only valid if water genuinely and easily penetrates to the nail within the normal duration of washing without rubbing. Many Islamic scholars advise caution and recommend removing polish prior to Wudu to ensure certain validity. Natural Henna (Mehndi) leaves a stain without forming a physical barrier, making it fully permissible for Wudu.</li>
         </ul>
+
+        <div style="background: #f0fdf4; border-right: 4px solid #059669; padding: 12px; margin: 12px 0; border-radius: 6px;">
+          <strong>اردو شرعی جواب:</strong>
+          <p>اسلامی فقہ میں وضو کی صحت کے لیے بنیادی شرط یہ ہے کہ پانی اعضائے وضو کی کھال تک بلا رکاوٹ پہنچے (سورۃ المائدہ ۵:۶)۔ عام کمرشل نیل پالش ناخن پر پلاسٹک نما تہہ جما دیتی ہے جو پانی کو روکتی ہے، لہٰذا اس پر وضو باطل ہے۔ حلال کہلانے والی مصنوعات پر بھی علماء احتیاط کا مشورہ دیتے ہیں۔</p>
+        </div>
+
         <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px 14px; margin-top: 12px; font-size: 13px;">
-          <strong>References &amp; Classical Details:</strong>
+          <strong>References &amp; Classical Details (حوالہ جات و تفاصیل):</strong>
           <ul>
             <li>The Holy Quran, Surah Al-Ma'idah (5:6): "O you who have believed, when you rise to [perform] prayer, wash your faces and your forearms to the elbows..."</li>
             <li>Sahih Muslim (Hadith 243): A man performed ablution and left a spot untouched on his foot the size of a fingernail; the Prophet ﷺ saw it and said: "Go back and perform your ablution properly."</li>

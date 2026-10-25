@@ -1137,8 +1137,19 @@ CREATE TABLE IF NOT EXISTS public.scholar_qa_library (
     question TEXT NOT NULL,
     answer TEXT NOT NULL,
     references_details TEXT NOT NULL DEFAULT '',
+    
+    -- Bilingual English & Urdu Content Columns
+    title_en TEXT,
+    question_en TEXT,
+    answer_en TEXT,
+    references_details_en TEXT,
+    title_ur TEXT,
+    question_ur TEXT,
+    answer_ur TEXT,
+    references_details_ur TEXT,
+
     category TEXT NOT NULL DEFAULT 'General',
-    language TEXT NOT NULL DEFAULT 'english' CHECK (language IN ('english', 'urdu')),
+    language TEXT NOT NULL DEFAULT 'english' CHECK (language IN ('english', 'urdu', 'both', 'bilingual')),
     status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published')),
     views_count INTEGER NOT NULL DEFAULT 0 CHECK (views_count >= 0),
     published_at TIMESTAMPTZ,
