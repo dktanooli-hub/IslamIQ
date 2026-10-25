@@ -37,6 +37,7 @@ export const Footer: React.FC = () => {
     { id: 'rights-in-islam', label: 'Rights in Islam', labelUrdu: 'حقوق العباد' },
     { id: 'islamic-daily-life', label: 'Islamic Daily Life', labelUrdu: 'اسلامی روزمرہ زندگی' },
     { id: 'ask-a-scholar', label: 'Ask a Scholar', labelUrdu: 'علمائے کرام سے رہنمائی' },
+    { id: 'scholars-library', label: 'Scholars Library', labelUrdu: 'عوامی لائبریری' },
     { id: 'nearby-mosques', label: 'Nearby Mosques', labelUrdu: 'قریبی مساجد' },
   ];
 

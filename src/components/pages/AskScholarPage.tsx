@@ -25,7 +25,8 @@ import {
   Mail,
   FileText,
   BookmarkCheck,
-  RotateCcw
+  RotateCcw,
+  Library
 } from 'lucide-react';
 import { supabaseService } from '../../services/supabaseService';
 import {
@@ -325,9 +326,22 @@ export const AskScholarPage: React.FC = () => {
           <span>{isUrdu ? 'مرکزی صفحہ پر واپس جائیں' : 'Back to Home'}</span>
         </button>
 
-        <span className="text-[11px] font-semibold text-slate-500 hidden sm:inline-block">
-          IslamIQ • {isUrdu ? 'مستند شرعی استفسار' : 'Ask a Scholar Portal'}
-        </span>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              setActiveTab('scholars-library');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 font-bold text-xs transition-colors cursor-pointer"
+          >
+            <Library className="w-3.5 h-3.5 text-teal-700" />
+            <span>{isUrdu ? 'عوامی لائبریری' : 'Public Scholars Library'}</span>
+          </button>
+
+          <span className="text-[11px] font-semibold text-slate-500 hidden sm:inline-block">
+            IslamIQ • {isUrdu ? 'مستند شرعی استفسار' : 'Ask a Scholar Portal'}
+          </span>
+        </div>
       </div>
 
       {/* Hero Header Section */}

@@ -23,7 +23,8 @@ import {
   ChevronRight,
   Flame,
   MapPin,
-  Clock
+  Clock,
+  Library
 } from 'lucide-react';
 
 interface MenuItem {
@@ -349,6 +350,17 @@ export const MoreMenuModal: React.FC = () => {
           icon: HelpCircle,
           badge: 'Available',
           badgeUrdu: 'دستیاب'
+        },
+        {
+          id: 'scholars-library',
+          path: '/scholars-library',
+          titleEn: 'Public Scholars Library',
+          titleUrdu: 'عوامی لائبریری برائے علماء',
+          descEn: 'Browse verified Islamic rulings, fatwas, and scholarly answers',
+          descUrdu: 'مستند شرعی جوابات، فتاویٰ اور فقہی تحقیقات کا عوامی ذخیرہ',
+          icon: Library,
+          badge: 'Verified',
+          badgeUrdu: 'مستند'
         },
         {
           id: 'islamic-questions-answers',

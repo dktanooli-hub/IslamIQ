@@ -20,6 +20,7 @@ import { PrivacyPolicyPage } from './components/pages/PrivacyPolicyPage';
 import { TermsPage } from './components/pages/TermsPage';
 import { DisclaimerPage } from './components/pages/DisclaimerPage';
 import { AskScholarPage } from './components/pages/AskScholarPage';
+import { PublicScholarsLibraryPage } from './components/pages/PublicScholarsLibraryPage';
 import { IslamicQuizHub } from './components/seo/IslamicQuizHub';
 import { KidsIslamicQuizHub } from './components/seo/KidsIslamicQuizHub';
 import { IslamicQAHub } from './components/seo/IslamicQAHub';
@@ -77,7 +78,7 @@ export const App: React.FC = () => {
           'ramadan-guide', 'zakat-basics', 'zakat-calculator', 'islamic-calendar',
           'seerah-of-prophet-muhammad', 'ghusl-taharah-guide', 'tayammum-guide',
           'hajj-umrah-guide', 'stories-of-the-prophets', 'rights-in-islam', 'islamic-daily-life',
-          'ask-a-scholar', 'nearby-mosques', 'salah', 'quiz', 'search', 'tasbih', 'qibla'
+          'ask-a-scholar', 'scholars-library', 'nearby-mosques', 'salah', 'quiz', 'search', 'tasbih', 'qibla'
         ];
 
         if (validCleanTabs.includes(path as AppTab)) {
@@ -282,6 +283,11 @@ export const App: React.FC = () => {
         path: '/ask-a-scholar',
         desc: 'Dedicated Ask a Scholar portal for private, authentic Islamic guidance on Salah, Fasting, Zakat, everyday matters, Masail, and formal Fatwa across the four Fiqh schools.'
       },
+      'scholars-library': {
+        title: 'Public Scholars Library • Islamic Q&A, Masail & Fatwas | IslamIQ',
+        path: '/scholars-library',
+        desc: 'Explore the official IslamIQ Public Scholars Library. Verified Islamic answers, rulings, and classical citations on worship, fasting, prayer, purification, and daily living.'
+      },
       'nearby-mosques': {
         title: 'Nearby Mosques Finder • Masjids Near Me with Directions | IslamIQ',
         path: '/nearby-mosques',
@@ -428,6 +434,8 @@ export const App: React.FC = () => {
           <DisclaimerPage />
         ) : activeTab === 'ask-a-scholar' ? (
           <AskScholarPage />
+        ) : activeTab === 'scholars-library' ? (
+          <PublicScholarsLibraryPage />
         ) : activeTab === 'islamic-quiz' ? (
           <IslamicQuizHub />
         ) : activeTab === 'kids-islamic-quiz' ? (
