@@ -1273,7 +1273,33 @@ listenQuestions(
       }
 
       if (!data || data.length === 0) {
-        return { success: true, data: [], totalCount: 0 };
+        let totalCount = 0;
+        // If an offset beyond available records was requested, fetch accurate total count
+        if ((options?.offset ?? 0) > 0) {
+          try {
+            const { data: countVal, error: countErr } = await supabase.rpc('get_public_answered_scholar_inquiries_count', {
+              p_category: options?.category && options.category !== 'all' ? options.category : null,
+              p_search: options?.search && options.search.trim() ? options.search.trim() : null
+            });
+            if (!countErr && countVal !== null && countVal !== undefined) {
+              totalCount = Number(countVal);
+            } else {
+              // Fallback to offset 0 query
+              const probe = await supabase.rpc('get_public_answered_scholar_inquiries', {
+                p_limit: 1,
+                p_offset: 0,
+                p_category: options?.category && options.category !== 'all' ? options.category : null,
+                p_search: options?.search && options.search.trim() ? options.search.trim() : null
+              });
+              if (probe.data && probe.data.length > 0) {
+                totalCount = Number(probe.data[0].total_count || 0);
+              }
+            }
+          } catch {
+            totalCount = 0;
+          }
+        }
+        return { success: true, data: [], totalCount };
       }
 
       const totalCount = Number(data[0]?.total_count || data.length);

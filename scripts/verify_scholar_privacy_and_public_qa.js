@@ -312,14 +312,20 @@ test('4. [PATH B: PUBLIC WORKFLOW] Public Consent -> Admin Answer -> Automatical
   assert.equal(publicItem.user_id, undefined, 'user_id must NOT exist on public output');
 });
 
-test('5. [COUNTER ACCURACY] Verified answered counts return exact real values', async () => {
+test('5. [COUNTER ACCURACY & PRIVACY] Public counter strictly hides private inquiries count from anonymous callers', async () => {
+  // Anonymous / Public caller: MUST ONLY see public counts (never discovers total private inquiries count)
   await setAnonymousContext();
-  const counts = await db.query(`SELECT * FROM public.get_scholar_inquiries_answered_count();`);
-  assert.equal(counts.rows.length, 1);
-  const { total_answered, total_public_answered } = counts.rows[0];
-  // We answered 2 inquiries total (1 private, 1 public)
-  assert.equal(Number(total_answered), 2, 'Total answered must be exactly 2');
-  assert.equal(Number(total_public_answered), 1, 'Total public answered must be exactly 1');
+  const anonCounts = await db.query(`SELECT * FROM public.get_scholar_inquiries_answered_count();`);
+  assert.equal(anonCounts.rows.length, 1);
+  assert.equal(Number(anonCounts.rows[0].total_answered), 1, 'Public caller total_answered must reflect ONLY public answered count');
+  assert.equal(Number(anonCounts.rows[0].total_public_answered), 1, 'Public caller total_public_answered must reflect public count');
+
+  // Authenticated Admin caller: Can audit total volume (1 private + 1 public = 2 total)
+  await setAdminContext();
+  const adminCounts = await db.query(`SELECT * FROM public.get_scholar_inquiries_answered_count();`);
+  assert.equal(adminCounts.rows.length, 1);
+  assert.equal(Number(adminCounts.rows[0].total_answered), 2, 'Admin caller sees all answered inquiries (private + public)');
+  assert.equal(Number(adminCounts.rows[0].total_public_answered), 1, 'Admin caller sees public count accurately');
 });
 
 test('6. [NEGATIVE TEST: REJECTION & DRAFTS] Rejected or pending inquiries with public consent NEVER appear in public Q&A', async () => {
@@ -388,4 +394,71 @@ test('7. [UNPUBLISHING AUDIT] Admin unpublishing removes entry from public Q&A',
   const pub = await db.query(`SELECT * FROM public.get_public_answered_scholar_inquiries(50, 0, NULL, 'Airplane');`);
   assert.equal(pub.rows.length, 0, 'Unpublished entry must disappear from public Q&A immediately');
 });
+
+test('8. [PAGINATION COUNT WITH ZERO ROWS] get_public_answered_scholar_inquiries_count returns accurate total count', async () => {
+  await setAdminContext();
+  // Re-publish the airplane prayer inquiry
+  const row = await db.query(`SELECT id FROM public.scholar_inquiries WHERE subject = 'Ruling on Praying on an Airplane During Flight'`);
+  const inqId = row.rows[0].id;
+  await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      p_id => $1,
+      p_status => 'answered',
+      p_scholar_name => 'Shaykh Ahmadullah Qasmi',
+      p_answer_text => 'A passenger on an aircraft must make their best effort to stand and face the Qibla for obligatory prayers.'
+    );
+  `, [inqId]);
+
+  await setAnonymousContext();
+  // Request offset 100 on page with 0 rows
+  const emptyPage = await db.query(`SELECT * FROM public.get_public_answered_scholar_inquiries(10, 100, 'Salah', NULL);`);
+  assert.equal(emptyPage.rows.length, 0, 'Page beyond records must return 0 rows');
+
+  // get_public_answered_scholar_inquiries_count returns exact accurate total count
+  const countRes = await db.query(`SELECT public.get_public_answered_scholar_inquiries_count('Salah', NULL) AS total;`);
+  assert.equal(Number(countRes.rows[0].total), 1, 'Total count must accurately reflect 1 matching inquiry even on empty tail pages');
+});
+
+test('9. [REVISING ANSWER REMOVES FROM PUBLIC RESULTS] Modifying answer text unpublishes until re-verified', async () => {
+  const row = await db.query(`SELECT id FROM public.scholar_inquiries WHERE subject = 'Ruling on Praying on an Airplane During Flight'`);
+  const inqId = row.rows[0].id;
+
+  // Admin edits answer text without passing p_status = 'answered'
+  await setAdminContext();
+  await db.query(`
+    SELECT * FROM public.admin_update_scholar_inquiry(
+      p_id => $1,
+      p_answer_text => 'Updated revised draft for airplane prayer with additional nuances.'
+    );
+  `, [inqId]);
+
+  // Status must be unverified to 'answer_received' and published_at cleared
+  const dbRow = await db.query(`SELECT status, published_at FROM public.scholar_inquiries WHERE id = $1`, [inqId]);
+  assert.equal(dbRow.rows[0].status, 'answer_received');
+  assert.equal(dbRow.rows[0].published_at, null, 'Revising answer must unpublish from public view');
+
+  // Public query must NOT return it
+  await setAnonymousContext();
+  const pub = await db.query(`SELECT * FROM public.get_public_answered_scholar_inquiries(50, 0, NULL, 'Airplane');`);
+  assert.equal(pub.rows.length, 0, 'Inquiry undergoing answer revision must NOT appear in public results');
+});
+
+test('10. [SECURITY DEFINER & GRANTS] Anonymous caller cannot call admin_update_scholar_inquiry', async () => {
+  await setAnonymousContext();
+  const row = await db.query(`SELECT id FROM public.scholar_inquiries LIMIT 1`);
+  const inqId = row.rows[0].id;
+
+  await assert.rejects(
+    async () => {
+      await db.query(`
+        SELECT * FROM public.admin_update_scholar_inquiry(
+          p_id => $1,
+          p_status => 'answered'
+        );
+      `, [inqId]);
+    },
+    /Access denied: Administrator privileges required/
+  );
+});
+
 

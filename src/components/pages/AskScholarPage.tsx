@@ -1217,20 +1217,10 @@ export const AskScholarPage: React.FC = () => {
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-300 shadow-2xs">
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
                 <span>
-                  {answeredCounts.totalAnswered}{' '}
+                  {answeredCounts.totalPublicAnswered}{' '}
                   {isUrdu ? 'سوالات کے تصدیق شدہ جوابات' : 'Questions Answered by Scholars'}
                 </span>
               </span>
-
-              {answeredCounts.totalPublicAnswered > 0 && (
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-900 text-xs font-bold border border-teal-200 shadow-2xs">
-                  <Globe className="w-3.5 h-3.5 text-teal-600" />
-                  <span>
-                    {answeredCounts.totalPublicAnswered}{' '}
-                    {isUrdu ? 'عوامی فتاویٰ' : 'Public Scholarly Q&As'}
-                  </span>
-                </span>
-              )}
             </div>
 
             <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">

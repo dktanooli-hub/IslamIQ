@@ -1,38 +1,69 @@
 -- =============================================================================
--- Migration: Add Privacy Choice & Public Q&A Section to Scholar Inquiries
+-- Migration: Add Privacy Choice & Public Q&A Section to Scholar Inquiries (Safely Revised)
 -- File: supabase/migrations/20261026_add_scholar_inquiry_privacy_and_public_qa.sql
 -- Description:
---   1. Adds mutually exclusive privacy preference fields to public.scholar_inquiries:
+--   1. Ensures audit table public.scholar_inquiry_rate_limits exists with RLS.
+--   2. Adds mutually exclusive privacy preference fields to public.scholar_inquiries:
 --        - share_publicly BOOLEAN NOT NULL DEFAULT false
 --        - consent_timestamp TIMESTAMPTZ
 --        - published_at TIMESTAMPTZ
---      Existing records without a recorded selection default strictly to false (Private).
---   2. Updates public.submit_scholar_inquiry() RPC to record user's privacy choice and timestamp.
---   3. Updates public.admin_update_scholar_inquiry() RPC to automatically manage publication:
---        - If share_publicly is true and status = 'answered', automatically sets published_at.
---        - If share_publicly is false or status != 'answered', keeps published_at as NULL.
---   4. Creates public.get_public_answered_scholar_inquiries() RPC to return sanitized public Q&A:
---        - ONLY returns records with status = 'answered' AND share_publicly = true AND published_at IS NOT NULL.
---        - Strips all identifying seeker data, tokens, and admin notes.
---   5. Creates public.get_scholar_inquiries_answered_count() RPC for the verified answered-questions counter.
+--      Strictly defaults all legacy and new inquiries to false (Private).
+--   3. Creates partial performance index for public answered inquiries.
+--   4. Safely replaces public.submit_scholar_inquiry() RPC:
+--        - Preserves exact 7-parameter signature with p_share_publicly BOOLEAN DEFAULT false.
+--        - DOES NOT drop the existing RPC function.
+--        - Preserves concurrency-safe advisory locks, Unicode validation, rate limiting,
+--          deduplication, 192-bit token hashing, and audit logging in scholar_inquiry_rate_limits.
+--   5. Safely replaces public.admin_update_scholar_inquiry() RPC:
+--        - DOES NOT drop the existing RPC function.
+--        - Strictly enforces public.is_admin() and state transition matrix.
+--        - Unpublishing or revising an answer immediately clears published_at and removes it from public results.
+--        - Automatically sets published_at only if status = 'answered' AND share_publicly is true.
+--   6. Creates public.get_public_answered_scholar_inquiries() RPC:
+--        - Returns ONLY records where status = 'answered' AND share_publicly = true AND published_at IS NOT NULL.
+--        - Excludes all sensitive seeker information (names, emails, user IDs, inquiry numbers, access token hashes, admin notes, rejection reasons).
+--   7. Creates public.get_public_answered_scholar_inquiries_count() RPC:
+--        - Returns the accurate total count for any category / search query even when a requested page has zero rows.
+--   8. Safely replaces public.get_scholar_inquiries_answered_count() RPC:
+--        - Gated with public.is_admin() so anonymous / public callers receive ONLY public answered counts.
+--        - Prevents public callers from discovering the volume of private inquiries.
+--   9. Establishes explicit and safe function grants.
 -- =============================================================================
 
--- 1. Add privacy consent and publication columns
+-- 1. Ensure Rate Limits Audit Table Exists & Is Secured
+CREATE TABLE IF NOT EXISTS public.scholar_inquiry_rate_limits (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    ip_or_fingerprint TEXT NOT NULL,
+    action TEXT NOT NULL DEFAULT 'submit_inquiry',
+    created_at TIMESTAMPTZ NOT NULL DEFAULT pg_catalog.now()
+);
+
+ALTER TABLE public.scholar_inquiry_rate_limits ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON public.scholar_inquiry_rate_limits FROM PUBLIC, anon;
+CREATE INDEX IF NOT EXISTS idx_scholar_rate_limits_lookup 
+    ON public.scholar_inquiry_rate_limits(ip_or_fingerprint, action, created_at DESC);
+
+-- 2. Add privacy consent and publication columns (Idempotent)
 ALTER TABLE public.scholar_inquiries
   ADD COLUMN IF NOT EXISTS share_publicly BOOLEAN NOT NULL DEFAULT false,
   ADD COLUMN IF NOT EXISTS consent_timestamp TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS published_at TIMESTAMPTZ;
 
--- 2. Create partial performance index for public answered inquiries
+-- Backfill legacy records to guarantee strict private-by-default behavior
+UPDATE public.scholar_inquiries
+SET share_publicly = false
+WHERE share_publicly IS NULL;
+
+-- 3. Create partial performance index for public answered inquiries
 CREATE INDEX IF NOT EXISTS idx_scholar_inquiries_public_answered 
   ON public.scholar_inquiries (category, published_at DESC)
   WHERE status = 'answered' AND share_publicly = true AND published_at IS NOT NULL;
 
--- 3. Safely drop prior submit_scholar_inquiry overload to allow default parameter adjustments
-DROP FUNCTION IF EXISTS public.submit_scholar_inquiry(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN);
+-- 4. Safely Replace public.submit_scholar_inquiry
+-- Drop obsolete 6-parameter signature if present from legacy schema to avoid PostgreSQL error 42725 (function not unique)
 DROP FUNCTION IF EXISTS public.submit_scholar_inquiry(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT);
 
--- Primary 7-parameter submit function with default for p_share_publicly
+-- Primary 7-parameter function with default for p_share_publicly (preserves existing 7-arg function without dropping)
 CREATE OR REPLACE FUNCTION public.submit_scholar_inquiry(
     p_subject TEXT,
     p_question_text TEXT,
@@ -152,6 +183,7 @@ BEGIN
     -- 3. Concurrency-Safe Server-Side Rate Limiting & Anti-Flood Controls
     v_user_id := auth.uid();
     IF v_user_id IS NOT NULL THEN
+        -- Concurrency-Safe Per-User Lock: Serialize submissions per authenticated user ID
         PERFORM pg_advisory_xact_lock(hashtext(v_user_id::TEXT));
 
         SELECT count(*) INTO v_recent_count
@@ -162,6 +194,7 @@ BEGIN
             RAISE EXCEPTION 'Rate limit exceeded: Please wait a few minutes before submitting another inquiry.';
         END IF;
     ELSE
+        -- Concurrency-Safe Global Anonymous Lock (Key: 8941720)
         PERFORM pg_advisory_xact_lock(8941720);
 
         SELECT count(*) INTO v_anon_burst_count
@@ -245,7 +278,7 @@ BEGIN
         v_created_at
     );
 
-    -- 7. Audit log in rate limits table
+    -- 7. Audit log in rate limits table (Preserved)
     INSERT INTO public.scholar_inquiry_rate_limits (
         ip_or_fingerprint,
         action,
@@ -268,7 +301,7 @@ $$;
 REVOKE ALL ON FUNCTION public.submit_scholar_inquiry(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.submit_scholar_inquiry(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, BOOLEAN) TO anon, authenticated;
 
--- 4. Update public.admin_update_scholar_inquiry RPC to manage automatic publication
+-- 5. Safely Replace public.admin_update_scholar_inquiry (No DROP statement)
 CREATE OR REPLACE FUNCTION public.admin_update_scholar_inquiry(
     p_id UUID,
     p_status TEXT DEFAULT NULL,
@@ -360,6 +393,15 @@ BEGIN
         ELSE v_row.rejection_reason
     END;
 
+    -- If answer text is modified while inquiry was already answered, and the admin did not explicitly pass
+    -- p_status = 'answered' to re-verify publication, automatically unpublish to 'answer_received' for safety review.
+    IF v_row.status = 'answered' 
+       AND p_status IS NULL 
+       AND p_answer_text IS NOT NULL 
+       AND btrim(p_answer_text) != btrim(COALESCE(v_row.answer_text, '')) THEN
+        v_clean_status := 'answer_received';
+    END IF;
+
     -- 6. Strict validation on transitions
     IF v_clean_status = 'answered' THEN
         IF v_target_answer_text IS NULL OR length(v_target_answer_text) < 10 THEN
@@ -374,7 +416,7 @@ BEGIN
         END IF;
     END IF;
 
-    -- 7. Automatically handle timestamps & automatic publication:
+    -- 7. Automatically handle timestamps & unpublishing/publishing rules
     v_sent_at := v_row.sent_to_scholar_at;
     IF v_clean_status = 'sent_to_scholar' AND v_sent_at IS NULL THEN
         v_sent_at := pg_catalog.now();
@@ -383,14 +425,17 @@ BEGIN
     IF v_clean_status = 'answered' THEN
         v_answered_at := COALESCE(v_row.answered_at, pg_catalog.now());
         -- Automatic Publication Rule:
-        -- If user consented to public sharing, automatically publish.
-        -- Otherwise, keep published_at NULL (strictly private).
+        -- Only publish if seeker consented in advance to public sharing.
+        -- Otherwise, keep strictly private (published_at remains NULL).
         IF v_row.share_publicly IS TRUE THEN
             v_published_at := COALESCE(v_row.published_at, v_answered_at);
         ELSE
             v_published_at := NULL;
         END IF;
     ELSE
+        -- UNPUBLISHING / REVISION RULE:
+        -- Any status other than 'answered' (e.g. unpublishing to 'answer_received' for revisions,
+        -- rejecting, or sending to scholar) immediately removes the entry from public results.
         v_answered_at := NULL;
         v_published_at := NULL;
     END IF;
@@ -435,7 +480,7 @@ $$;
 REVOKE ALL ON FUNCTION public.admin_update_scholar_inquiry(UUID, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.admin_update_scholar_inquiry(UUID, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO authenticated;
 
--- 5. SECURE PUBLIC Q&A QUERY RPC: public.get_public_answered_scholar_inquiries(...)
+-- 6. SECURE PUBLIC Q&A QUERY RPC: public.get_public_answered_scholar_inquiries(...)
 CREATE OR REPLACE FUNCTION public.get_public_answered_scholar_inquiries(
     p_limit INT DEFAULT 20,
     p_offset INT DEFAULT 0,
@@ -523,7 +568,43 @@ $$;
 REVOKE ALL ON FUNCTION public.get_public_answered_scholar_inquiries(INT, INT, TEXT, TEXT) FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.get_public_answered_scholar_inquiries(INT, INT, TEXT, TEXT) TO anon, authenticated;
 
--- 6. PUBLIC ANSWERED INQUIRIES STATS & COUNTER RPC: public.get_scholar_inquiries_answered_count()
+-- 7. SECURE PUBLIC Q&A COUNT RPC (For Accurate Pagination Even When Page Has Zero Rows)
+CREATE OR REPLACE FUNCTION public.get_public_answered_scholar_inquiries_count(
+    p_category TEXT DEFAULT NULL,
+    p_search TEXT DEFAULT NULL
+)
+RETURNS BIGINT
+LANGUAGE plpgsql
+SECURITY DEFINER
+STABLE
+SET search_path = pg_catalog, public, auth, pg_temp
+AS $$
+DECLARE
+    v_clean_cat TEXT := btrim(COALESCE(p_category, ''));
+    v_clean_search TEXT := btrim(COALESCE(p_search, ''));
+    v_count BIGINT;
+BEGIN
+    SELECT count(*)::BIGINT INTO v_count
+    FROM public.scholar_inquiries si
+    WHERE si.status = 'answered'
+      AND si.share_publicly = true
+      AND si.published_at IS NOT NULL
+      AND (v_clean_cat = '' OR v_clean_cat = 'all' OR si.category ILIKE v_clean_cat)
+      AND (
+          v_clean_search = '' 
+          OR si.subject ILIKE ('%' || v_clean_search || '%')
+          OR si.question_text ILIKE ('%' || v_clean_search || '%')
+          OR si.answer_text ILIKE ('%' || v_clean_search || '%')
+      );
+    RETURN COALESCE(v_count, 0);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.get_public_answered_scholar_inquiries_count(TEXT, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.get_public_answered_scholar_inquiries_count(TEXT, TEXT) TO anon, authenticated;
+
+-- 8. PUBLIC ANSWERED INQUIRIES STATS & COUNTER RPC: public.get_scholar_inquiries_answered_count()
+-- Strictly gates private counts behind public.is_admin(); public callers receive ONLY public counts.
 CREATE OR REPLACE FUNCTION public.get_scholar_inquiries_answered_count()
 RETURNS TABLE (
     total_answered BIGINT,
@@ -534,11 +615,30 @@ SECURITY DEFINER
 STABLE
 SET search_path = pg_catalog, public, auth, pg_temp
 AS $$
+DECLARE
+    v_is_admin BOOLEAN := false;
 BEGIN
-    RETURN QUERY
-    SELECT 
-        (SELECT count(*)::BIGINT FROM public.scholar_inquiries WHERE status = 'answered') AS total_answered,
-        (SELECT count(*)::BIGINT FROM public.scholar_inquiries WHERE status = 'answered' AND share_publicly = true AND published_at IS NOT NULL) AS total_public_answered;
+    -- Safely check admin status without raising unhandled exceptions
+    BEGIN
+        v_is_admin := public.is_admin();
+    EXCEPTION WHEN OTHERS THEN
+        v_is_admin := false;
+    END;
+
+    IF v_is_admin THEN
+        -- Authenticated administrators can audit total volume across both private & public
+        RETURN QUERY
+        SELECT 
+            (SELECT count(*)::BIGINT FROM public.scholar_inquiries WHERE status = 'answered') AS total_answered,
+            (SELECT count(*)::BIGINT FROM public.scholar_inquiries WHERE status = 'answered' AND share_publicly = true AND published_at IS NOT NULL) AS total_public_answered;
+    ELSE
+        -- Public and anonymous visitors: strictly report ONLY public answered counts
+        -- Never leak or reveal the count of private inquiries to public callers
+        RETURN QUERY
+        SELECT 
+            (SELECT count(*)::BIGINT FROM public.scholar_inquiries WHERE status = 'answered' AND share_publicly = true AND published_at IS NOT NULL) AS total_answered,
+            (SELECT count(*)::BIGINT FROM public.scholar_inquiries WHERE status = 'answered' AND share_publicly = true AND published_at IS NOT NULL) AS total_public_answered;
+    END IF;
 END;
 $$;
 
