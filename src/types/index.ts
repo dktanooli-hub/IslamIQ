@@ -265,6 +265,7 @@ export interface ScholarInquirySubmission {
   madhhabPreference?: MadhhabPreference | string;
   seekerName?: string;
   seekerEmail?: string;
+  sharePublicly?: boolean;
 }
 
 export interface ScholarSubmissionResult {
@@ -285,6 +286,7 @@ export interface PublicScholarInquiry {
   subject: string;
   questionText: string;
   status: ScholarInquiryStatus;
+  sharePublicly?: boolean;
   scholarName?: string | null;
   scholarQualification?: string | null;
   answerText?: string | null;
@@ -305,8 +307,30 @@ export interface ScholarInquiry extends PublicScholarInquiry {
   seekerName?: string;
   seekerEmail?: string | null;
   userId?: string | null;
+  sharePublicly: boolean;
+  consentTimestamp?: string | null;
+  publishedAt?: string | null;
   adminNotes?: string | null;
   updatedAt: string;
+}
+
+/**
+ * Sanitized Public Q&A item displayed in the dedicated section below the submission form.
+ * Strictly excludes seekerName, seekerEmail, inquiryNumber, access tokens, and adminNotes.
+ */
+export interface PublicAnsweredInquiry {
+  id: string;
+  category: string;
+  madhhabPreference: string;
+  subject: string;
+  questionText: string;
+  scholarName: string;
+  scholarQualification?: string | null;
+  answerText: string;
+  answerArabic?: string | null;
+  reference?: string | null;
+  answeredAt: string;
+  publishedAt: string;
 }
 
 /**

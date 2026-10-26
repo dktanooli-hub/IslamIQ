@@ -14,7 +14,8 @@ import {
   ScholarInquiryStatus,
   ScholarQALibraryItem,
   ScholarQAFormData,
-  ScholarQALanguage
+  ScholarQALanguage,
+  PublicAnsweredInquiry
 } from '../types';
 import { INITIAL_SCHOLAR_LIBRARY } from '../data/scholarLibraryData';
 
@@ -1040,7 +1041,8 @@ listenQuestions(
         p_category: submission.category || 'General',
         p_madhhab_preference: submission.madhhabPreference || 'General',
         p_seeker_name: submission.seekerName || null,
-        p_seeker_email: submission.seekerEmail || null
+        p_seeker_email: submission.seekerEmail || null,
+        p_share_publicly: submission.sharePublicly ?? false
       });
 
       if (error) {
@@ -1156,6 +1158,9 @@ listenQuestions(
         seekerName: row.seeker_name,
         seekerEmail: row.seeker_email,
         userId: row.user_id,
+        sharePublicly: Boolean(row.share_publicly),
+        consentTimestamp: row.consent_timestamp,
+        publishedAt: row.published_at,
         status: row.status as ScholarInquiryStatus,
         scholarName: row.scholar_name,
         scholarQualification: row.scholar_qualification,
@@ -1237,6 +1242,84 @@ listenQuestions(
       success: false,
       error: 'Direct deletion of scholar inquiries is disabled to maintain audit integrity. Please reject the inquiry using adminUpdateScholarInquiry with a rejection reason.'
     };
+  },
+
+  /**
+   * Fetch sanitized public answered inquiries where the user granted public-sharing consent.
+   * Invokes public.get_public_answered_scholar_inquiries RPC.
+   * Excludes identifying details (seekerName, email, inquiryNumber, access tokens, admin notes).
+   */
+  async getPublicAnsweredScholarInquiries(options?: {
+    limit?: number;
+    offset?: number;
+    category?: string;
+    search?: string;
+  }): Promise<{ success: boolean; data: PublicAnsweredInquiry[]; totalCount: number; error?: string }> {
+    if (!isSupabaseConfigured()) {
+      return { success: true, data: [], totalCount: 0 };
+    }
+
+    try {
+      const { data, error } = await supabase.rpc('get_public_answered_scholar_inquiries', {
+        p_limit: options?.limit ?? 20,
+        p_offset: options?.offset ?? 0,
+        p_category: options?.category && options.category !== 'all' ? options.category : null,
+        p_search: options?.search && options.search.trim() ? options.search.trim() : null
+      });
+
+      if (error) {
+        console.warn('[Supabase] getPublicAnsweredScholarInquiries error:', error.message);
+        return { success: false, data: [], totalCount: 0, error: error.message };
+      }
+
+      if (!data || data.length === 0) {
+        return { success: true, data: [], totalCount: 0 };
+      }
+
+      const totalCount = Number(data[0]?.total_count || data.length);
+      const items: PublicAnsweredInquiry[] = data.map((row: any) => ({
+        id: row.id,
+        category: row.category,
+        madhhabPreference: row.madhhab_preference,
+        subject: row.subject,
+        questionText: row.question_text,
+        scholarName: row.scholar_name,
+        scholarQualification: row.scholar_qualification,
+        answerText: row.answer_text,
+        answerArabic: row.answer_arabic,
+        reference: row.reference,
+        answeredAt: row.answered_at,
+        publishedAt: row.published_at
+      }));
+
+      return { success: true, data: items, totalCount };
+    } catch (err: any) {
+      console.warn('[Supabase] getPublicAnsweredScholarInquiries fallback:', err);
+      return { success: false, data: [], totalCount: 0, error: err?.message || 'Failed to fetch public inquiries' };
+    }
+  },
+
+  /**
+   * Fetch real verified counts for the answered-questions counter.
+   * Invokes public.get_scholar_inquiries_answered_count RPC.
+   */
+  async getScholarInquiriesAnsweredCount(): Promise<{ totalAnswered: number; totalPublicAnswered: number }> {
+    if (!isSupabaseConfigured()) {
+      return { totalAnswered: 0, totalPublicAnswered: 0 };
+    }
+
+    try {
+      const { data, error } = await supabase.rpc('get_scholar_inquiries_answered_count');
+      if (error || !data || data.length === 0) {
+        return { totalAnswered: 0, totalPublicAnswered: 0 };
+      }
+      return {
+        totalAnswered: Number(data[0].total_answered || 0),
+        totalPublicAnswered: Number(data[0].total_public_answered || 0)
+      };
+    } catch {
+      return { totalAnswered: 0, totalPublicAnswered: 0 };
+    }
   },
 
   // ---------------------------------------------------------------------------

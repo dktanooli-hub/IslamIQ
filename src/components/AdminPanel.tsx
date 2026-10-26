@@ -2496,6 +2496,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
                               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${statusBadge}`}>
                                 {inquiry.status.replace(/_/g, ' ').toUpperCase()}
                               </span>
+                              {inquiry.sharePublicly ? (
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-50 text-teal-800 border border-teal-200 flex items-center gap-1">
+                                  <Globe className="w-3 h-3 text-teal-600" />
+                                  <span>Share Publicly</span>
+                                </span>
+                              ) : (
+                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1">
+                                  <Lock className="w-3 h-3 text-slate-500" />
+                                  <span>Private Only</span>
+                                </span>
+                              )}
                               <span className="text-[11px] font-semibold text-emerald-800">
                                 {inquiry.category}
                               </span>
@@ -3603,6 +3614,31 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
               </div>
             </div>
 
+            {/* Privacy & Publication Consent Banner */}
+            <div className={`p-3.5 rounded-2xl border text-xs flex items-start gap-3 ${
+              selectedInquiry.sharePublicly
+                ? 'bg-teal-50 border-teal-200 text-teal-900'
+                : 'bg-slate-100 border-slate-200 text-slate-700'
+            }`}>
+              {selectedInquiry.sharePublicly ? (
+                <Globe className="w-5 h-5 text-teal-700 shrink-0 mt-0.5" />
+              ) : (
+                <Lock className="w-5 h-5 text-slate-600 shrink-0 mt-0.5" />
+              )}
+              <div className="space-y-0.5">
+                <span className="font-bold block">
+                  {selectedInquiry.sharePublicly
+                    ? '🌐 Public-Sharing Consent Granted: Questioner agreed in advance to publish answered Q&A'
+                    : '🔒 Private Delivery Selected: Question and answer strictly confidential to seeker'}
+                </span>
+                <p className="text-[11px] opacity-90 leading-relaxed">
+                  {selectedInquiry.sharePublicly
+                    ? `When marked as 'Answered', this question and approved answer will automatically be published in the public Ask a Scholar Q&A section with personal details removed. Consent logged: ${selectedInquiry.consentTimestamp ? new Date(selectedInquiry.consentTimestamp).toLocaleString() : 'Recorded at submission'}.`
+                    : 'This inquiry will NEVER be published publicly or in the library. It is delivered solely to the original seeker through their inquiry credentials.'}
+                </p>
+              </div>
+            </div>
+
             {/* Full Question Text */}
             <div className="space-y-1.5">
               <span className="text-xs font-bold text-slate-700 block">
@@ -3775,8 +3811,18 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ onClose }) => {
 
             {/* Modal Actions */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-200">
-              <div className="text-[11px] text-slate-500 font-medium">
-                Tip: To decline an inquiry, select status <span className="font-bold text-rose-700">Rejected</span> with a closure reason.
+              <div className="text-[11px] font-medium">
+                {selectedInquiry.sharePublicly ? (
+                  <span className="text-teal-800 font-semibold flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                    <span>Answering will automatically publish this sanitized Q&A in the public Ask a Scholar section.</span>
+                  </span>
+                ) : (
+                  <span className="text-slate-600 font-medium flex items-center gap-1.5">
+                    <Lock className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                    <span>Marked Private — answering delivers it only to seeker via token; never shown publicly.</span>
+                  </span>
+                )}
               </div>
 
               <div className="flex items-center gap-2 w-full sm:w-auto justify-end">

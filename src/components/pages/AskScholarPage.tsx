@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   ArrowLeft,
@@ -26,14 +26,21 @@ import {
   FileText,
   BookmarkCheck,
   RotateCcw,
-  Library
+  Library,
+  Globe,
+  ChevronDown,
+  ChevronUp,
+  Calendar,
+  MessageSquare,
+  Share2
 } from 'lucide-react';
 import { supabaseService } from '../../services/supabaseService';
 import {
   ScholarInquiryCategory,
   MadhhabPreference,
   PublicScholarInquiry,
-  ScholarSubmissionResult
+  ScholarSubmissionResult,
+  PublicAnsweredInquiry
 } from '../../types';
 
 export const AskScholarPage: React.FC = () => {
@@ -53,6 +60,11 @@ export const AskScholarPage: React.FC = () => {
   const [seekerName, setSeekerName] = useState('');
   const [seekerEmail, setSeekerEmail] = useState('');
 
+  // Privacy Preference (Mutually Exclusive Options):
+  // Option 1: Private (false) vs Option 2: Share Publicly (true)
+  // Default is strictly false (Private) per safety requirement
+  const [sharePublicly, setSharePublicly] = useState<boolean>(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submissionResult, setSubmissionResult] = useState<ScholarSubmissionResult | null>(null);
@@ -67,6 +79,46 @@ export const AskScholarPage: React.FC = () => {
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [inquiryDetails, setInquiryDetails] = useState<PublicScholarInquiry | null>(null);
+
+  // ---------------------------------------------------------------------------
+  // DEDICATED PUBLIC ANSWERED Q&A SECTION STATE & COUNTER
+  // ---------------------------------------------------------------------------
+  const [publicInquiries, setPublicInquiries] = useState<PublicAnsweredInquiry[]>([]);
+  const [isLoadingPublicInquiries, setIsLoadingPublicInquiries] = useState<boolean>(true);
+  const [publicCategoryFilter, setPublicCategoryFilter] = useState<string>('all');
+  const [publicSearchQuery, setPublicSearchQuery] = useState<string>('');
+  const [answeredCounts, setAnsweredCounts] = useState<{ totalAnswered: number; totalPublicAnswered: number }>({
+    totalAnswered: 0,
+    totalPublicAnswered: 0
+  });
+  const [expandedInquiryId, setExpandedInquiryId] = useState<string | null>(null);
+
+  // Load public answered Q&A and real answered-questions counter
+  const fetchPublicAnsweredData = async () => {
+    setIsLoadingPublicInquiries(true);
+    try {
+      const [inqRes, countRes] = await Promise.all([
+        supabaseService.getPublicAnsweredScholarInquiries({
+          category: publicCategoryFilter,
+          search: publicSearchQuery
+        }),
+        supabaseService.getScholarInquiriesAnsweredCount()
+      ]);
+
+      if (inqRes.success) {
+        setPublicInquiries(inqRes.data);
+      }
+      setAnsweredCounts(countRes);
+    } catch (err) {
+      console.warn('Error fetching public answered scholar inquiries:', err);
+    } finally {
+      setIsLoadingPublicInquiries(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPublicAnsweredData();
+  }, [publicCategoryFilter, publicSearchQuery]);
 
   // Categories list with Urdu & English labels
   const categoriesList: { value: ScholarInquiryCategory; en: string; urdu: string }[] = [
@@ -169,7 +221,8 @@ export const AskScholarPage: React.FC = () => {
         category,
         madhhabPreference,
         seekerName: seekerName.trim() || undefined,
-        seekerEmail: seekerEmail.trim() || undefined
+        seekerEmail: seekerEmail.trim() || undefined,
+        sharePublicly
       });
 
       if (!res.success || !res.data) {
@@ -196,6 +249,7 @@ export const AskScholarPage: React.FC = () => {
     setMadhhabPreference('General');
     setSeekerName('');
     setSeekerEmail('');
+    setSharePublicly(false);
     setSubmitError(null);
     setSubmissionResult(null);
   };
@@ -524,6 +578,39 @@ export const AskScholarPage: React.FC = () => {
                   </div>
                 </div>
 
+                {/* Privacy Confirmation Notice */}
+                <div className={`p-4 rounded-2xl border text-xs flex items-start gap-3 ${
+                  sharePublicly
+                    ? 'bg-teal-50/70 border-teal-200 text-teal-950'
+                    : 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+                }`}>
+                  {sharePublicly ? (
+                    <Globe className="w-5 h-5 text-teal-700 shrink-0 mt-0.5" />
+                  ) : (
+                    <Lock className="w-5 h-5 text-emerald-700 shrink-0 mt-0.5" />
+                  )}
+                  <div className="space-y-0.5">
+                    <span className="font-bold block">
+                      {sharePublicly
+                        ? isUrdu
+                          ? 'انتخاب: جواب موصول ہونے پر عوامی اشاعت کی پیشگی اجازت'
+                          : 'Recorded Preference: Share Publicly After Answering'
+                        : isUrdu
+                          ? 'انتخاب: ذاتی سوال — جواب صرف آپ کے لیے'
+                          : 'Recorded Preference: Private — Only I Can See My Answer'}
+                    </span>
+                    <p className="text-[11px] opacity-90 leading-relaxed">
+                      {sharePublicly
+                        ? isUrdu
+                          ? 'آپ کا سوال اور جواب عالمِ دین کی حتمی منظوری کے بعد عوامی سیکشن میں بھی شائع ہوں گے۔ آپ کا نام، ای میل اور ذاتی تفصیلات مکمل پوشیدہ رکھی جائیں گی۔'
+                          : 'Your question and verified answer will be accessible privately with your token and also automatically published in the public Ask a Scholar section without any personal identifiers.'
+                        : isUrdu
+                          ? 'یہ سوال اور اس کا جواب مکمل طور پر نجی رہیں گے اور صرف آپ کے دیے گئے خفیہ ٹوکن سے دیکھے جا سکیں گے۔'
+                          : 'Your inquiry and answer will remain completely confidential and accessible solely using your secret access token.'}
+                    </p>
+                  </div>
+                </div>
+
               </div>
 
               {/* Action Buttons */}
@@ -719,6 +806,81 @@ export const AskScholarPage: React.FC = () => {
                   ? '🔒 رازداری کی ضمانت: ای میل کبھی بھی عوامی طور پر ظاہر نہیں کی جاتی اور نہ ہی غیر متعلقہ افراد کو دی جاتی ہے۔'
                   : '🔒 Confidentiality: Your email is strictly confidential, never exposed publicly, and used only by administration if clarification is required.'}
               </p>
+
+              {/* Privacy Choice (Mutually Exclusive Options) */}
+              <div className="space-y-3 pt-2">
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>{isUrdu ? 'رازداری اور اشاعت کا انتخاب *' : 'Privacy & Publication Choice *'}</span>
+                  </label>
+                  <p className="text-[11px] text-slate-500">
+                    {isUrdu
+                      ? 'براہ کرم سوال جمع کروانے سے پہلے درج ذیل میں سے ایک آپشن منتخب کریں (بنیادی انتخاب: نجی):'
+                      : 'Select one option below before submitting (default is set to Private for your safety):'}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Option 1: Private */}
+                  <label
+                    onClick={() => setSharePublicly(false)}
+                    className={`relative flex items-start gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                      !sharePublicly
+                        ? 'border-emerald-600 bg-emerald-50/50 shadow-xs ring-1 ring-emerald-500/30'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="scholar_privacy_choice"
+                      checked={!sharePublicly}
+                      onChange={() => setSharePublicly(false)}
+                      className="mt-1 w-4 h-4 text-emerald-600 focus:ring-emerald-500 border-slate-300"
+                    />
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                        <Lock className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                        <span>{isUrdu ? 'ذاتی سوال — جواب صرف میرے لیے' : 'Private — Only I Can See My Answer'}</span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        {isUrdu
+                          ? 'سوال اور جواب مکمل طور پر نجی رہیں گے اور صرف انکوائری نمبر اور خفیہ رسائی ٹوکن کے ذریعے سائل کو فراہم کیے جائیں گے۔'
+                          : 'The question and answer will remain private and will be delivered only to the person who submitted the inquiry through the existing secure inquiry tracking system.'}
+                      </p>
+                    </div>
+                  </label>
+
+                  {/* Option 2: Share Publicly */}
+                  <label
+                    onClick={() => setSharePublicly(true)}
+                    className={`relative flex items-start gap-3 p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                      sharePublicly
+                        ? 'border-teal-600 bg-teal-50/50 shadow-xs ring-1 ring-teal-500/30'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="scholar_privacy_choice"
+                      checked={sharePublicly}
+                      onChange={() => setSharePublicly(true)}
+                      className="mt-1 w-4 h-4 text-teal-600 focus:ring-teal-500 border-slate-300"
+                    />
+                    <div className="space-y-1 flex-1">
+                      <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                        <Globe className="w-3.5 h-3.5 text-teal-700 shrink-0" />
+                        <span>{isUrdu ? 'عوام کے ساتھ شیئر کریں' : 'Share Publicly After Answering'}</span>
+                      </div>
+                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                        {isUrdu
+                          ? 'سائل پیشگی اتفاق کرتا ہے کہ جب مفتی/عالمِ دین جواب دے دیں گے، تو نام اور ذاتی معلومات ہٹا کر سوال اور منظور شدہ جواب عوامی سیکشن میں شائع ہو سکتا ہے۔'
+                          : 'The user agrees in advance that, once the admin has answered the question, the question and approved answer may be published in the public Ask a Scholar Q&A section.'}
+                      </p>
+                    </div>
+                  </label>
+                </div>
+              </div>
 
               {/* Submit Button */}
               <div className="pt-2">
@@ -1042,6 +1204,220 @@ export const AskScholarPage: React.FC = () => {
 
         </div>
       )}
+
+      {/* ===================================================================== */}
+      {/* DEDICATED PUBLIC ANSWERED Q&A SECTION (Immediately Below Form)        */}
+      {/* ===================================================================== */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+        
+        {/* Section Header with Real Answered-Questions Counter */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+          <div className="space-y-1.5">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold border border-emerald-300 shadow-2xs">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                <span>
+                  {answeredCounts.totalAnswered}{' '}
+                  {isUrdu ? 'سوالات کے تصدیق شدہ جوابات' : 'Questions Answered by Scholars'}
+                </span>
+              </span>
+
+              {answeredCounts.totalPublicAnswered > 0 && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-50 text-teal-900 text-xs font-bold border border-teal-200 shadow-2xs">
+                  <Globe className="w-3.5 h-3.5 text-teal-600" />
+                  <span>
+                    {answeredCounts.totalPublicAnswered}{' '}
+                    {isUrdu ? 'عوامی فتاویٰ' : 'Public Scholarly Q&As'}
+                  </span>
+                </span>
+              )}
+            </div>
+
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+              {isUrdu ? 'عوامی سوال و جواب (علمائے کرام کی شرعی رہنمائی)' : 'Public Scholar Q&A (Approved Answers)'}
+            </h2>
+            <p className="text-xs text-slate-600 max-w-2xl leading-relaxed">
+              {isUrdu
+                ? 'وہ سوالات جنہیں سائلین نے عام مسلمانوں کے دینی فائدے کے لیے شیئر کرنے کی پیشگی اجازت دی اور معتمد علمائے کرام نے ان کا تفصیلی شرعی جواب تحریر فرمایا۔ تمام سائلین کے نام، ای میل اور ذاتی کوائف مکمل حذف کر دیے گئے ہیں۔'
+                : 'Browse questions where questioners consented in advance to share their verified answers for public benefit. All identifying personal information is strictly excluded.'}
+            </p>
+          </div>
+
+          <button
+            onClick={() => fetchPublicAnsweredData()}
+            disabled={isLoadingPublicInquiries}
+            className="self-start md:self-center px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold flex items-center gap-1.5 transition-all shrink-0 active:scale-95"
+            title="Refresh Q&A list"
+          >
+            <RotateCcw className={`w-3.5 h-3.5 ${isLoadingPublicInquiries ? 'animate-spin text-emerald-600' : ''}`} />
+            <span>{isUrdu ? 'تازہ کریں' : 'Refresh'}</span>
+          </button>
+        </div>
+
+        {/* Filter and Search Bar */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200">
+          
+          {/* Category Dropdown */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-600 shrink-0">
+              {isUrdu ? 'شعبہ:' : 'Category:'}
+            </span>
+            <select
+              value={publicCategoryFilter}
+              onChange={(e) => setPublicCategoryFilter(e.target.value)}
+              className="px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            >
+              <option value="all">{isUrdu ? 'تمام شعبہ جات' : 'All Categories'}</option>
+              {categoriesList.map((cat) => (
+                <option key={cat.value} value={cat.value}>
+                  {isUrdu ? cat.urdu : cat.en}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Search Input */}
+          <div className="relative flex-1 md:max-w-xs">
+            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              value={publicSearchQuery}
+              onChange={(e) => setPublicSearchQuery(e.target.value)}
+              placeholder={isUrdu ? 'سوالات میں تلاش کریں...' : 'Search answered questions...'}
+              className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            />
+          </div>
+        </div>
+
+        {/* Public Answered Inquiries List */}
+        {isLoadingPublicInquiries ? (
+          <div className="py-12 text-center text-slate-500 space-y-2">
+            <div className="w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin mx-auto" />
+            <p className="text-xs font-semibold">
+              {isUrdu ? 'عوامی سوال و جواب لوڈ ہو رہے ہیں...' : 'Loading verified public answers...'}
+            </p>
+          </div>
+        ) : publicInquiries.length === 0 ? (
+          <div className="py-12 text-center text-slate-500 space-y-2">
+            <BookOpen className="w-8 h-8 mx-auto text-slate-300" />
+            <p className="text-xs font-bold text-slate-700">
+              {isUrdu ? 'کوئی عوامی سوال و جواب نہیں ملا' : 'No Public Answered Q&As Found'}
+            </p>
+            <p className="text-[11px] text-slate-400 max-w-sm mx-auto">
+              {publicSearchQuery || publicCategoryFilter !== 'all'
+                ? isUrdu
+                  ? 'آپ کی تلاش یا فلٹر کے مطابق کوئی سوال نہیں ملا۔ فلٹر تبدیل کر کے دوبارہ کوشش کریں۔'
+                  : 'No answered questions match your search or category filter.'
+                : isUrdu
+                  ? 'جب سائلین عوام کے ساتھ شیئر کرنے کا انتخاب کریں گے اور مفتیانِ عظام جواب تحریر فرما دیں گے، تو وہ سوالات خودکار طور پر یہاں ظاہر ہوں گے۔'
+                  : 'Questions answered with public-sharing consent will automatically appear here once approved by scholars.'}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {publicInquiries.map((inquiry) => (
+              <div
+                key={inquiry.id}
+                className="rounded-2xl border border-slate-200 bg-white hover:border-emerald-300 transition-all shadow-2xs overflow-hidden"
+              >
+                {/* Card Header & Content */}
+                <div className="p-4 sm:p-5 space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="px-2.5 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] font-bold">
+                        {inquiry.category}
+                      </span>
+                      <span className="text-[11px] text-slate-400">•</span>
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        {inquiry.madhhabPreference}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+                      <Calendar className="w-3.5 h-3.5" />
+                      <span>
+                        {inquiry.answeredAt
+                          ? new Date(inquiry.answeredAt).toLocaleDateString()
+                          : inquiry.publishedAt
+                          ? new Date(inquiry.publishedAt).toLocaleDateString()
+                          : ''}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Question Subject & Text */}
+                  <div className="space-y-1.5">
+                    <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+                      {inquiry.subject}
+                    </h3>
+                    <div className="text-xs text-slate-700 bg-slate-50 p-3.5 rounded-xl border border-slate-100 whitespace-pre-wrap leading-relaxed font-normal">
+                      <span className="font-bold text-slate-800 block mb-1">
+                        {isUrdu ? 'سائل کا سوال:' : 'Question:'}
+                      </span>
+                      {inquiry.questionText}
+                    </div>
+                  </div>
+
+                  {/* Verified Answer Block */}
+                  <div className="space-y-2.5 pt-2 border-t border-slate-100">
+                    {/* Scholar Attribution */}
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                        <Award className="w-3.5 h-3.5 text-emerald-700" />
+                      </div>
+                      <div className="leading-tight">
+                        <span className="font-bold text-slate-900 block">
+                          {inquiry.scholarName || (isUrdu ? 'مستند مفتی / عالمِ دین' : 'Qualified Islamic Scholar')}
+                        </span>
+                        {inquiry.scholarQualification && (
+                          <span className="text-[11px] text-slate-500">
+                            {inquiry.scholarQualification}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Answer Text */}
+                    <div className="text-xs sm:text-sm text-slate-800 whitespace-pre-wrap leading-relaxed font-medium bg-emerald-50/40 p-4 rounded-xl border border-emerald-100">
+                      <span className="font-bold text-emerald-900 block mb-1.5">
+                        {isUrdu ? 'شرعی جواب و رہنمائی:' : 'Verified Scholarly Answer:'}
+                      </span>
+                      {inquiry.answerText}
+                    </div>
+
+                    {/* Arabic Citations if present */}
+                    {inquiry.answerArabic && (
+                      <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-right leading-loose font-serif text-xs sm:text-sm text-slate-900" dir="rtl">
+                        <span className="font-sans font-bold text-[10px] text-slate-400 block mb-1" dir="ltr">
+                          {isUrdu ? 'نصوص و عربی عبارات:' : 'Arabic Textual Citations:'}
+                        </span>
+                        {inquiry.answerArabic}
+                      </div>
+                    )}
+
+                    {/* References & Compendiums */}
+                    {inquiry.reference && (
+                      <div className="p-3 rounded-xl bg-amber-50/60 border border-amber-200 text-xs text-amber-950 flex items-start gap-2">
+                        <BookmarkCheck className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="font-bold block text-amber-900 text-[11px]">
+                            {isUrdu ? 'فقہی حوالہ جات و مراجع:' : 'Classical References & Compendiums:'}
+                          </span>
+                          <span className="text-[11px] font-mono leading-relaxed">
+                            {inquiry.reference}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
 
       {/* Information & Theological Guidelines Section */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-5">
