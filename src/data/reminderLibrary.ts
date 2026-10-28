@@ -903,6 +903,116 @@ export const ISLAMIC_REMINDERS: IslamicReminder[] = [
     "practicalTipUrdu": "ہر جمعہ کو کم از کم 100 مرتبہ درودِ ابراہیمی یا کوئی بھی درود شریف پڑھنے کا التزام کریں۔",
     "practicalTipEn": "Make Friday your designated day of Salawat: recite blessings on the Prophet ﷺ whenever moving between appointments.",
     "reference": "Sunan Abi Dawud 1047, Jami at-Tirmidhi 488"
+  },
+  {
+    "id": "rem-83",
+    "titleEn": "The Silent Strength of Tahajjud (The Night Prayer)",
+    "titleUrdu": "تہجد کی خاموش طاقت اور قربِ الٰہی",
+    "bodyEn": "The Prophet ﷺ said: \"The closest that a servant comes to his Lord is in the middle of the late night, so if you are able to be among those who remember Allah at that hour, then do so.\" (Jami at-Tirmidhi 3579). In the stillness before dawn, sincere prayers find an open door directly to the Almighty.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"بندہ اپنے رب کے سب سے زیادہ قریب رات کے آخری حصے میں ہوتا ہے، پس اگر تم اس وقت اللہ کو یاد کرنے والوں میں شامل ہو سکتے ہو تو ضرور ہو جاؤ۔\" سحر کی پرسکون گھڑیوں میں مانگی گئی دعا سیدھی قبولیت کے دروازے پر پہنچتی ہے۔",
+    "category": "Sunnah & Worship",
+    "practicalTipUrdu": "فجر سے صرف 10 منٹ پہلے اٹھ کر 2 رکعت تہجد اور استغفار کا معمول بنائیں۔",
+    "practicalTipEn": "Set your alarm 10 minutes before Fajr Adhan to pray two short Rak'ahs and make sincere personal supplication.",
+    "reference": "Jami at-Tirmidhi 3579, Sahih Muslim 758"
+  },
+  {
+    "id": "rem-84",
+    "titleEn": "Visiting the Sick as an Act of Mercy",
+    "titleUrdu": "مریض کی عیادت اور اس پر فرشتوں کی دعائیں",
+    "bodyEn": "Prophet Muhammad ﷺ taught: \"When a Muslim visits his sick Muslim brother, he remains among the harvested fruits of Paradise until he returns.\" (Sahih Muslim 2568). Moreover, seventy thousand angels pray for mercy upon him until evening or morning.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"جب کوئی مسلمان اپنے کسی بیمار مسلمان بھائی کی عیادت کے لیے جاتا ہے تو وہ لوٹنے تک جنت کے پھلوں کے چناؤ میں رہتا ہے۔\" اور ستر ہزار فرشتے شام تک اس کے لیے دعائے رحمت کرتے ہیں۔",
+    "category": "Social Ethics",
+    "practicalTipUrdu": "اپنے خاندان یا محلے میں کسی بیمار شخص کی خیریت دریافت کریں اور اس کے لیے مسنون دعا پڑھیں۔",
+    "practicalTipEn": "Send a caring message, call, or visit a sick friend or relative and say: 'La ba'sa, tahoorun in sha Allah'.",
+    "reference": "Sahih Muslim 2568, Jami at-Tirmidhi 969"
+  },
+  {
+    "id": "rem-85",
+    "titleEn": "Guarding the Tongue from Backbiting and Slander",
+    "titleUrdu": "غیبت اور چغلی سے زبان کی حفاظت",
+    "bodyEn": "Allah Almighty warns in the Holy Quran: \"And do not backbite each other. Would one of you like to eat the flesh of his brother when dead? You would detest it.\" (Surah Al-Hujurat 49:12). Words spoken in carelessness can dissolve decades of hard-earned good deeds in moments.",
+    "bodyUrdu": "قرآن مجید میں اللہ تعالیٰ کا ارشاد ہے: \"اور تم میں سے کوئی کسی کی غیبت نہ کرے، کیا تم میں سے کوئی اپنے مردہ بھائی کا گوشت کھانا پسند کرے گا؟ تم تو اس سے گھن کھاؤ گے۔\" چند لمحوں کی لاپرواہی کی باتیں برسوں کی نیکیوں کو ضائع کر دیتی ہیں۔",
+    "category": "Moral Character",
+    "practicalTipUrdu": "کسی محفل میں اگر کسی غیر حاضر شخص کا تذکرہ برائی سے ہو تو بات کا رخ اچھے موضوع کی طرف موڑ دیں یا خاموش رہیں۔",
+    "practicalTipEn": "If conversation turns toward speaking ill of someone not present, gently change the subject or defend their honor.",
+    "reference": "Surah Al-Hujurat 49:12, Sahih Muslim 2589"
+  },
+  {
+    "id": "rem-86",
+    "titleEn": "Moderation in Eating and Living (Qana'ah)",
+    "titleUrdu": "کھانے پینے اور زندگی میں میانہ روی اور اعتدال",
+    "bodyEn": "The Messenger of Allah ﷺ said: \"A human being fills no vessel worse than his stomach. A few morsels are sufficient for the son of Adam to keep his back straight. But if he must, then one third for his food, one third for his drink, and one third for his breath.\" (Jami at-Tirmidhi 2380).",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"آدم کے بیٹے نے اپنے پیٹ سے برا کوئی برتن نہیں بھرا، انسان کے لیے چند لقمے کافی ہیں جو اس کی کمر سیدھی رکھ سکیں، لیکن اگر زیادہ کھانا ضروری ہو تو ایک تہائی پیٹ کھانے کے لیے، ایک تہائی پانی کے لیے اور ایک تہائی سانس کے لیے رکھے۔\"",
+    "category": "Healthy Living",
+    "practicalTipUrdu": "کھانا ہمیشہ بھوک رکھ کر کھائیں اور اسراف و زیادہ کھانے سے پرہیز کریں۔",
+    "practicalTipEn": "Stop eating just before you feel completely full; it brings lightness to worship and protects physical health.",
+    "reference": "Jami at-Tirmidhi 2380, Sunan Ibn Majah 3349"
+  },
+  {
+    "id": "rem-87",
+    "titleEn": "The Blessing of Early Morning Barakah",
+    "titleUrdu": "صبح کے ابتدائی اوقات میں خیر و برکت",
+    "bodyEn": "Prophet Muhammad ﷺ supplicated: \"O Allah, bless my nation in their early mornings.\" (Sunan Abi Dawud 2606). Utilizing the hours right after Fajr for learning, worship, and honest work brings divine prosperity, mental clarity, and enduring tranquility.",
+    "bodyUrdu": "رسول اللہ ﷺ نے دعا فرمائی: \"اے اللہ! میری امت کے لیے ان کے صبح کے ابتدائی اوقات میں برکت عطا فرما۔\" نماز فجر کے بعد کا وقت ذکر، علم اور رزق حلال کی تلاش میں لگانے سے دن میں برکت اور ذہنی سکون نصیب ہوتا ہے۔",
+    "category": "Productivity",
+    "practicalTipUrdu": "فجر کے فوراً بعد سونے کے بجائے کم از کم ایک گھنٹہ تلاوت، مطالعہ یا کام کے لیے وقف کریں۔",
+    "practicalTipEn": "Dedicate the first hour after Fajr prayer to Quran reflection and vital planning before checking phone notifications.",
+    "reference": "Sunan Abi Dawud 2606, Jami at-Tirmidhi 1212"
+  },
+  {
+    "id": "rem-88",
+    "titleEn": "Relieving the Debtor and Showing Financial Mercy",
+    "titleUrdu": "تنگ دست مقروض کو مہلت دینا اور مالی آسانی پیدا کرنا",
+    "bodyEn": "The Prophet ﷺ said: \"Whoever grants respite to someone in difficulty or waives a portion of his debt, Allah will shade him in His shade on the Day when there is no shade but His.\" (Sahih Muslim 3006). Mercy shown in financial hardship transforms business into supreme worship.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"جو شخص کسی تنگ دست کو مہلت دے یا اس کے قرض میں سے کچھ معاف کر دے، اللہ تعالیٰ اسے قیامت کے دن اپنے عرش کے سائے میں جگہ دے گا جس دن اس کے سائے کے سوا کوئی سایہ نہ ہوگا۔\"",
+    "category": "Financial Ethics",
+    "practicalTipUrdu": "اگر کسی شخص سے رقم لینی ہو اور وہ تنگی میں ہو تو اسے خوش دلی سے وقت دیں یا کچھ حصہ معاف کر دیں۔",
+    "practicalTipEn": "Extend flexible time or waive a minor loan for someone genuinely struggling financially; Allah repays generosity.",
+    "reference": "Sahih Muslim 3006, Sahih al-Bukhari 2078"
+  },
+  {
+    "id": "rem-89",
+    "titleEn": "Kind Treatment of Daughters and Sisters",
+    "titleUrdu": "بیٹیوں اور بہنوں کے ساتھ شفقت و عزت کا سلوک",
+    "bodyEn": "The Messenger of Allah ﷺ said: \"Whoever brings up three daughters or three sisters, teaches them good manners, treats them with compassion, and marries them off, will have Paradise.\" (Sunan Abi Dawud 5147). Honoring women in the home is an express path to the Prophet's company.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"جس شخص نے تین بیٹیوں یا بہنوں کی پرورش کی، انہیں بہترین ادب سکھایا، ان کے ساتھ شفقت کا برتاؤ کیا اور ان کا نکاح کروایا، اس کے لیے جنت ہے۔\"",
+    "category": "Family & Upbringing",
+    "practicalTipUrdu": "اپنی بیٹیوں اور بہنوں کے جذبات، خوشیوں اور تعلیمی ضروریات کا خصوصی محبت سے خیال رکھیں۔",
+    "practicalTipEn": "Express heartfelt appreciation and love to your daughter or sister today, reminding them of their high value in Islam.",
+    "reference": "Sunan Abi Dawud 5147, Jami at-Tirmidhi 1912"
+  },
+  {
+    "id": "rem-90",
+    "titleEn": "Upholding Pledges and Agreements (Al-Wafa')",
+    "titleUrdu": "عہد اور وعدوں کو پورا کرنے کی شرعی اہمیت",
+    "bodyEn": "Allah commands in the Holy Quran: \"And fulfill [every] commitment. Indeed, the commitment is ever [that about which one will be] questioned.\" (Surah Al-Isra 17:34). Keeping appointment times and honoring promises is the foundation of Islamic integrity and social trust.",
+    "bodyUrdu": "اللہ تعالیٰ کا فرمان ہے: \"اور عہد پورا کیا کرو، بے شک عہد کے بارے میں بازپرس ہوگی۔\" وقت کی پابندی کرنا اور دیا گیا وعدہ نبھانا مسلمان کے ایماندار اور باوقار ہونے کی علامت ہے۔",
+    "category": "Moral Character",
+    "practicalTipUrdu": "کسی سے کیے گئے وعدے یا ملاقات کے وقت پر ہر ممکن طریقے سے پورا اتریں؛ اگر تاخیر ہو تو پیشگی معذرت کریں۔",
+    "practicalTipEn": "Be punctual for appointments; if unexpectedly delayed, inform the other person courteously in advance.",
+    "reference": "Surah Al-Isra 17:34, Sahih al-Bukhari 33"
+  },
+  {
+    "id": "rem-91",
+    "titleEn": "The Reward of Removing an Obstacle from the Path",
+    "titleUrdu": "راستے سے تکلیف دہ چیز ہٹانا بھی صدقہ ہے",
+    "bodyEn": "Prophet Muhammad ﷺ said: \"Removing harmful things from the road is an act of charity (Sadaqah).\" (Sahih al-Bukhari 2989, Sahih Muslim 1009). Islam views civic responsibility and community cleanliness as living branches of faith.",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"راستے سے تکلیف دہ چیز (پتھر، کانٹا، گندگی وغیرہ) کو ہٹا دینا بھی صدقہ ہے۔\" گلیوں اور راستوں کی صفائی اور شہریوں کی آسانی کا خیال رکھنا ایمان کا اہم شعبہ ہے۔",
+    "category": "Civic Duty",
+    "practicalTipUrdu": "چلتے پھرتے راستے میں پڑا کوئی کانٹا، پتھر یا کوڑا اٹھا کر کوڑے دان میں ڈال دیں تاکہ کسی کو تکلیف نہ ہو۔",
+    "practicalTipEn": "Pick up a piece of litter, sharp stone, or branch from the sidewalk and dispose of it to ease someone's path.",
+    "reference": "Sahih al-Bukhari 2989, Sahih Muslim 1009"
+  },
+  {
+    "id": "rem-92",
+    "titleEn": "The Secret Radiance of Concealing Others' Faults (Satr)",
+    "titleUrdu": "مسلمانوں کے عیبوں پر پردہ ڈالنا",
+    "bodyEn": "The Prophet ﷺ declared: \"Whoever conceals the fault of a Muslim, Allah will conceal his faults in this world and the Hereafter. Allah helps His servant as long as the servant is helping his brother.\" (Sahih Muslim 2699).",
+    "bodyUrdu": "رسول اللہ ﷺ نے فرمایا: \"جو شخص کسی مسلمان کے عیب کی پردہ پوشی کرتا ہے، اللہ تعالیٰ دنیا اور آخرت میں اس کے عیبوں پر پردہ ڈالے گا۔ اور اللہ بندے کی مدد میں رہتا ہے جب تک بندہ اپنے بھائی کی مدد میں رہتا ہے۔\"",
+    "category": "Social Ethics",
+    "practicalTipUrdu": "اگر کسی کی کوئی کمزوری یا غلطی آپ کے سامنے آئے تو اسے اچھالنے کے بجائے پردہ رکھیں اور تنہائی میں خیر خواہی کریں۔",
+    "practicalTipEn": "When you witness another person's shortcoming or mistake, protect their dignity and never gossip about it.",
+    "reference": "Sahih Muslim 2699, Sunan Abi Dawud 4946"
   }
 ];
 

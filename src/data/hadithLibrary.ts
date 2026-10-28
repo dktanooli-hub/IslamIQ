@@ -1105,6 +1105,126 @@ export const VERIFIED_HADITHS: HadithItem[] = [
     "grade": "Hasan Sahih",
     "lessonUrdu": "اپنے فرائض اور اخلاق کو سنوار کر اللہ کی نصرت اور توکل کو اپنی ڈھال بنائیں۔",
     "lessonEn": "Anchor your heart in unwavering monotheism, seeking refuge, provision, and assistance exclusively from Allah."
+  },
+  {
+    "id": "hadith-93",
+    "arabic": "لَيْسَ الْغِنَى عَنْ كَثْرَةِ الْعَرَضِ، وَلَكِنَّ الْغِنَى غِنَى النَّفْسِ",
+    "textUrdu": "مال و دولت کی کثرت کا نام امیری نہیں ہے، بلکہ حقیقی امیری دل کی بے نیازی اور قناعت ہے۔",
+    "textEn": "Richness does not lie in an abundance of worldly goods, but true richness is the contentment of the soul.",
+    "narrator": "Abu Hurairah (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "6482",
+    "grade": "Sahih",
+    "lessonUrdu": "دنیاوی مال کے لالچ کے بجائے قناعت اور شکرگزاری کو اپنی دولت بنائیں۔",
+    "lessonEn": "Cultivate spiritual contentment and freedom from greed; true affluence is peace of heart."
+  },
+  {
+    "id": "hadith-94",
+    "arabic": "مَثَلُ الَّذِي يَذْكُرُ رَبَّهُ وَالَّذِي لَا يَذْكُرُ رَبَّهُ، مَثَلُ الْحَيِّ وَالْمَيِّتِ",
+    "textUrdu": "اپنے رب کو یاد کرنے والے اور اپنے رب کو یاد نہ کرنے والے کی مثال زندہ اور مردہ جیسی ہے۔",
+    "textEn": "The example of the one who remembers his Lord compared to the one who does not remember his Lord is like that of the living and the dead.",
+    "narrator": "Abu Musa al-Ash'ari (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "6407",
+    "grade": "Sahih",
+    "lessonUrdu": "ذکرِ الٰہی سے دلوں کو زندہ رکھیں، غفلت روح کی موت ہے۔",
+    "lessonEn": "Keep your soul alive and vibrant through constant daily remembrance and supplication."
+  },
+  {
+    "id": "hadith-95",
+    "arabic": "إِنَّ لِلَّهِ تِسْعَةً وَتِسْعِينَ اسْمًا مِائَةً إِلَّا وَاحِدًا، مَنْ أَحْصَاهَا دَخَلَ الْجَنَّةَ",
+    "textUrdu": "بے شک اللہ تعالیٰ کے ننانوے (99) نام ہیں، یعنی ایک کم سو، جس نے ان کو یاد رکھا (اور ان کے تقاضوں پر عمل کیا) وہ جنت میں داخل ہوگا۔",
+    "textEn": "Indeed, Allah has ninety-nine names—one hundred less one; whoever enumerates and lives by them will enter Paradise.",
+    "narrator": "Abu Hurairah (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "2736",
+    "grade": "Sahih",
+    "lessonUrdu": "اللہ تعالیٰ کے مبارک ناموں کو سیکھیں، ان کے معانی سمجھیں اور ان کے وسیلے سے دعائیں مانگیں۔",
+    "lessonEn": "Learn, reflect upon, and call upon Allah using His ninety-nine most beautiful names."
+  },
+  {
+    "id": "hadith-96",
+    "arabic": "إِيَّاكُمْ وَالظَّنَّ، فَإِنَّ الظَّنَّ أَكْذَبُ الْحَدِيثِ، وَلَا تَحَسَّسُوا، وَلَا تَجَسَّسُوا",
+    "textUrdu": "بدگمانی سے بچو، کیونکہ بدگمانی سب سے جھوٹی بات ہے، اور نہ لوگوں کے عیوب ٹٹولو اور نہ جاسوسی کرو۔",
+    "textEn": "Beware of suspicion, for suspicion is the falsest of speech. Do not seek out faults or spy on one another.",
+    "narrator": "Abu Hurairah (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "6064",
+    "grade": "Sahih",
+    "lessonUrdu": "دوسروں کے بارے میں ہمیشہ حسنِ ظن رکھیں اور تجسس و جاسوسی سے اجتناب کریں۔",
+    "lessonEn": "Protect your heart from baseless negative assumptions and respect others' privacy."
+  },
+  {
+    "id": "hadith-97",
+    "arabic": "مَا اجْتَمَعَ قَوْمٌ فِي بَيْتٍ مِنْ بُيُوتِ اللَّهِ يَتْلُونَ كِتَابَ اللَّهِ وَيَتَدَارَسُونَهُ بَيْنَهُمْ إِلَّا نَزَلَتْ عَلَيْهِمُ السَّكِينَةُ، وَغَشِيَتْهُمُ الرَّحْمَةُ",
+    "textUrdu": "جب بھی کوئی قوم اللہ کے گھروں (مسجدوں) میں سے کسی گھر میں جمع ہو کر اللہ کی کتاب کی تلاوت کرتی ہے اور آپس میں اسے پڑھتی سکھاتی ہے، تو ان پر سکینت نازل ہوتی ہے اور رحمت انہیں ڈھانپ لیتی ہے۔",
+    "textEn": "Never do a people gather in one of the houses of Allah, reciting the Book of Allah and studying it together, except that tranquility descends upon them and mercy envelops them.",
+    "narrator": "Abu Hurairah (RA)",
+    "source": "Sahih Muslim",
+    "hadithNumber": "2699",
+    "grade": "Sahih",
+    "lessonUrdu": "مسجدوں اور گھروں میں قرآن کریم کی تعلیم اور فہم کے حلقے قائم کریں تاکہ رحمت و برکت نازل ہو۔",
+    "lessonEn": "Join circles of Quranic learning to invite divine peace and angelic presence into your life."
+  },
+  {
+    "id": "hadith-98",
+    "arabic": "الَّذِي يَقْرَأُ الْقُرْآنَ وَهُوَ مَاهِرٌ بِهِ مَعَ السَّفَرَةِ الْكِرَامِ الْبَرَرَةِ، وَالَّذِي يَقْرَأُ الْقُرْآنَ وَيَتَتَعْتَعُ فِيهِ وَهُوَ عَلَيْهِ شَاقٌّ لَهُ أَجْرَانِ",
+    "textUrdu": "وہ شخص جو قرآن پڑھتا ہے اور وہ اس میں ماہر ہے وہ معزز اور نیک فرشتوں کے ساتھ ہوگا، اور جو شخص قرآن اٹک اٹک کر پڑھتا ہے اور وہ اس پر دشوار ہوتا ہے تو اس کے لیے دوہرا اجر ہے۔",
+    "textEn": "The one who recites the Quran skillfully will be with the noble, obedient recording angels; and the one who stumbles while reciting, finding it difficult, will have a double reward.",
+    "narrator": "Aisha (RA)",
+    "source": "Sahih al-Bukhari",
+    "hadithNumber": "4937",
+    "grade": "Sahih",
+    "lessonUrdu": "تلاوت میں دشواری کے باوجود تلاوت جاری رکھیں، اللہ کوشش کرنے والے کو دوہرا اجر عطا فرماتا ہے۔",
+    "lessonEn": "Never let recitation difficulties discourage you; effort and perseverance earn double reward."
+  },
+  {
+    "id": "hadith-99",
+    "arabic": "حُفَّتِ الْجَنَّةُ بِالْمَكَارِهِ، وَحُفَّتِ النَّارُ بِالشَّهَوَاتِ",
+    "textUrdu": "جنت کو ناگوار و محنت طلب باتوں سے گھیر دیا گیا ہے، اور جہنم کو نفسانی خواہشات سے گھیر دیا گیا ہے۔",
+    "textEn": "Paradise is surrounded by hardships and trials, while Hellfire is surrounded by base desires and temptations.",
+    "narrator": "Anas ibn Malik (RA)",
+    "source": "Sahih Muslim",
+    "hadithNumber": "2622",
+    "grade": "Sahih",
+    "lessonUrdu": "عبادت اور نیکی کی مشقت پر صبر کریں، یہ سیدھی جنت کی طرف لے جانے والی راہ ہے۔",
+    "lessonEn": "Overcome fleeting temptations and embrace the effort of righteous discipline to reach Jannah."
+  },
+  {
+    "id": "hadith-100",
+    "arabic": "اغْتَنِمْ خَمْسًا قَبْلَ خَمْسٍ: شَبَابَكَ قَبْلَ هَرَمِكَ، وَصِحَّتَكَ قَبْلَ سَقَمِكَ، وَغِنَاكَ قَبْلَ فَقْرِكَ، وَفَرَاغَكَ قَبْلَ شُغْلِكَ، وَحَيَاتَكَ قَبْلَ مَوْتِكَ",
+    "textUrdu": "پانچ چیزوں کو پانچ چیزوں سے پہلے غنیمت جانو: اپنی جوانی کو بڑھاپے سے پہلے، اپنی صحت کو بیماری سے پہلے، اپنی امیری کو محتاجی سے پہلے، اپنی فراغت کو مصروفیت سے پہلے، اور اپنی زندگی کو موت سے پہلے۔",
+    "textEn": "Take advantage of five before five: your youth before your old age, your health before your sickness, your wealth before your poverty, your free time before your preoccupation, and your life before your death.",
+    "narrator": "Abdullah ibn Abbas (RA)",
+    "source": "Al-Mustadrak lil-Hakim",
+    "hadithNumber": "7846",
+    "grade": "Sahih",
+    "lessonUrdu": "زندگی کے ہر قیمتی موقع اور فرصت کو نیکی اور آخرت کی تیاری میں استعمال کریں۔",
+    "lessonEn": "Seize your current health, youth, and free time for good deeds before circumstances change."
+  },
+  {
+    "id": "hadith-101",
+    "arabic": "مَنْ صَلَّى عَلَيَّ صَلَاةً وَاحِدَةً صَلَّى اللَّهُ عَلَيْهِ عَشْرَ صَلَوَاتٍ، وَحَطَّ عَنْهُ عَشْرَ خَطِيئَاتٍ، وَرَفَعَ لَهُ عَشْرَ دَرَجَاتٍ",
+    "textUrdu": "جو شخص مجھ پر ایک مرتبہ درود بھیجتا ہے، اللہ تعالیٰ اس پر دس رحمتیں نازل فرماتا ہے، اس کے دس گناہ مٹا دیتا ہے اور اس کے دس درجات بلند فرماتا ہے۔",
+    "textEn": "Whoever sends blessings upon me once, Allah will send blessings upon him tenfold, erase ten of his sins, and elevate his status by ten ranks.",
+    "narrator": "Anas ibn Malik (RA)",
+    "source": "Sunan an-Nasa'i",
+    "hadithNumber": "1297",
+    "grade": "Sahih",
+    "lessonUrdu": "رسول اللہ ﷺ پر کثرت سے درود بھیجنے کو اپنے روزمرہ کے اذکار کا حصہ بنائیں۔",
+    "lessonEn": "Send abundant blessings upon the Prophet ﷺ to earn divine mercy, forgiveness, and elevation."
+  },
+  {
+    "id": "hadith-102",
+    "arabic": "الْمُؤْمِنُ مِرْآةُ أَخِيهِ، وَالْمُؤْمِنُ أَخُو الْمُؤْمِنِ؛ يَكُفُّ عَلَيْهِ ضَيْعَتَهُ، وَيَحُوطُهُ مِنْ وَرَائِهِ",
+    "textUrdu": "مومن اپنے مومن بھائی کا آئینہ ہے، اور مومن مومن کا بھائی ہے، وہ اس کی تباہی و نقصان کو روکتا ہے اور اس کی غیر موجودگی میں اس کی حفاظت کرتا ہے۔",
+    "textEn": "A believer is the mirror of his brother, and a believer is the brother of a believer; he protects him against harm and defends him from behind.",
+    "narrator": "Abu Hurairah (RA)",
+    "source": "Sunan Abi Dawud",
+    "hadithNumber": "4918",
+    "grade": "Hasan",
+    "lessonUrdu": "مسلمان بھائی کی خیر خواہی کریں، اسے تنہائی میں مخلصانہ اصلاح دیں اور اس کی پیٹھ پیچھے حفاظت کریں۔",
+    "lessonEn": "Be a gentle, sincere mirror for your fellow believers, offering helpful advice and standing up for them in their absence."
   }
 ];
 

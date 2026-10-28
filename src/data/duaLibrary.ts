@@ -865,6 +865,126 @@ export const VERIFIED_DUAS: DuaItem[] = [
     "reference": "Surah Al-Baqarah 2:201, Sahih al-Bukhari 6389",
     "occasionUrdu": "طواف، نمازوں کے بعد اور دعاؤں کے اختتام پر رسول اللہ ﷺ کی سب سے زیادہ مانگی جانے والی دعا۔",
     "occasionEn": "The most recited supplication of Prophet Muhammad ﷺ encompassing health, faith, provision, and salvation."
+  },
+  {
+    "id": "dua-73",
+    "titleEn": "Dua for Sighting the New Crescent Moon",
+    "titleUrdu": "نیا چاند (ہلال) دیکھنے کی مسنون دعا",
+    "arabic": "اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْيُمْنِ وَالإِيمَانِ وَالسَّلَامَةِ وَالإِسْلَامِ، رَبِّي وَرَبُّكَ اللَّهُ",
+    "transliteration": "Allahumma ahillahu 'alayna bil-yumni wal-iman, was-salamati wal-Islam, Rabbi wa Rabbuk-Allah",
+    "translationUrdu": "اے اللہ! اس چاند کو ہم پر برکت، ایمان، سلامتی اور اسلام کے ساتھ طلوع فرما، (اے چاند!) میرا اور تیرا رب اللہ ہے۔",
+    "translationEn": "O Allah, bring this crescent upon us with blessing, faith, peace, and Islam. My Lord and your Lord is Allah.",
+    "reference": "Jami at-Tirmidhi 3451, Sunan ad-Darimi 1729",
+    "occasionUrdu": "نیا اسلامی مہینہ شروع ہونے پر نیا چاند دیکھتے وقت پڑھیں۔",
+    "occasionEn": "Recited upon seeing the new crescent moon at the start of every Islamic lunar month."
+  },
+  {
+    "id": "dua-74",
+    "titleEn": "Dua of Complete Reliance in Fear and Hardship",
+    "titleUrdu": "خوف، پریشانی اور توکل کے وقت کی دعا (حسبنا اللہ ونعم الوکیل)",
+    "arabic": "حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ",
+    "transliteration": "HasbunAllahu wa ni'mal-Wakeel",
+    "translationUrdu": "ہمیں اللہ ہی کافی ہے اور وہ بہترین کارساز ہے۔",
+    "translationEn": "Allah is sufficient for us, and He is the best Disposer of affairs.",
+    "reference": "Surah Ali 'Imran 3:173, Sahih al-Bukhari 4563",
+    "occasionUrdu": "حضرت ابراہیم علیہ السلام نے آگ میں ڈالے جاتے وقت اور صحابہ نے جنگ کے خوف کے وقت یہ کلمہ پڑھا تھا۔",
+    "occasionEn": "Uttered by Prophet Ibrahim (AS) when cast into the fire and the believers when confronting overwhelming odds."
+  },
+  {
+    "id": "dua-75",
+    "titleEn": "Special Supplication for Laylat al-Qadr (Night of Decree)",
+    "titleUrdu": "شبِ قدر میں معافی مانگنے کی خصوصی مسنون دعا",
+    "arabic": "اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي",
+    "transliteration": "Allahumma innaka 'Afuwwun tuhibbul-'afwa fa'fu 'anni",
+    "translationUrdu": "اے اللہ! تو بہت معاف فرمانے والا ہے، معاف کرنے کو پسند فرماتا ہے، پس مجھے معاف فرما دے۔",
+    "translationEn": "O Allah, You are Most Forgiving, and You love forgiveness; so forgive me.",
+    "reference": "Jami at-Tirmidhi 3513, Sunan Ibn Majah 3850",
+    "occasionUrdu": "رسول اللہ ﷺ نے حضرت عائشہؓ کو شب قدر میں یہ دعا مانگنے کی خاص تعلیم فرمائی تھی۔",
+    "occasionEn": "Taught by Prophet Muhammad ﷺ to Aisha (RA) as the premier supplication for the last ten nights of Ramadan."
+  },
+  {
+    "id": "dua-76",
+    "titleEn": "Dua When Offering Sacrifice or Slaughtering",
+    "titleUrdu": "قربانی یا حلال جانور ذبح کرتے وقت کی دعا",
+    "arabic": "بِسْمِ اللَّهِ وَاللَّهُ أَكْبَرُ، اللَّهُمَّ هَذَا مِنْكَ وَلَكَ",
+    "transliteration": "Bismillahi wallahu Akbar, Allahumma hadha minka wa lak",
+    "translationUrdu": "اللہ کے نام سے (شروع) اور اللہ سب سے بڑا ہے، اے اللہ! یہ تیری ہی عطا ہے اور تیرے ہی لیے حاضر ہے۔",
+    "translationEn": "In the name of Allah, and Allah is the Greatest; O Allah, this is from You and for You.",
+    "reference": "Sahih Muslim 1967, Sunan Abi Dawud 2795",
+    "occasionUrdu": "عید الاضحیٰ کی قربانی یا عام حلال جانور ذبح کرتے وقت مسنون ہے۔",
+    "occasionEn": "Recited when slaughtering livestock for Udhiyyah (Qurbani) or general Halal consumption."
+  },
+  {
+    "id": "dua-77",
+    "titleEn": "Dua When Entering a New Town or City",
+    "titleUrdu": "کسی نئے شہر یا بستی میں داخل ہوتے وقت کی دعا",
+    "arabic": "اللَّهُمَّ رَبَّ السَّمَاوَاتِ السَّبْعِ وَمَا أَظْلَلْنَ، وَرَبَّ الْأَرَضِينَ السَّبْعِ وَمَا أَقْلَلْنَ، أَسْأَلُكَ خَيْرَ هَذِهِ الْقَرْيَةِ وَخَيْرَ أَهْلِهَا",
+    "transliteration": "Allahumma Rabbas-samawatis-sab'i wa ma azlalna, wa Rabbal-ardeenas-sab'i wa ma aqlalna, as'aluka khayra hadhihil-qaryati wa khayra ahliha",
+    "translationUrdu": "اے اللہ! ساتوں آسمانوں اور جن پر وہ سایہ کیے ہوئے ہیں کے رب! اور ساتوں زمینوں اور جنہیں وہ اٹھائے ہوئے ہیں کے رب! میں تجھ سے اس بستی کی بھلائی اور اس کے رہنے والوں کی بھلائی کا سوال کرتا ہوں۔",
+    "translationEn": "O Allah, Lord of the seven heavens and all they overshadow, Lord of the seven earths and all they carry, I ask You for the good of this town and the good of its people.",
+    "reference": "Al-Mustadrak lil-Hakim 1668, Sunan an-Nasa'i in Al-Kubra 8802",
+    "occasionUrdu": "کسی نئے شہر، گاؤں یا علاقے میں سفر کے دوران داخل ہوتے وقت حفاظت اور خیر و برکت کے لیے پڑھیں۔",
+    "occasionEn": "Recited upon arrival at a new city, municipality, or destination during travel for safety and blessing."
+  },
+  {
+    "id": "dua-78",
+    "titleEn": "Dua for Patience, Firmness, and Victory",
+    "titleUrdu": "صبرِ جمیل، ثابت قدمی اور نصرت کی قرآنی دعا",
+    "arabic": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+    "transliteration": "Rabbana afrigh 'alayna sabran wa thabbit aqdamana wansurna 'alal-qawmil-kafirin",
+    "translationUrdu": "اے ہمارے رب! ہم پر صبر انڈیل دے اور ہمارے قدم جما دے اور کافر قوم کے مقابلے میں ہماری مدد فرما۔",
+    "translationEn": "Our Lord, pour upon us patience and plant firmly our feet and give us victory over the disbelieving people.",
+    "reference": "Surah Al-Baqarah 2:250",
+    "occasionUrdu": "سخت آزمائشوں، پریشانیوں اور چیلنجز کے سامنے استقامت مانگنے کے لیے پڑھی جاتی ہے۔",
+    "occasionEn": "Supplicated during major personal trials, hardship, or defense of truth to request unwavering resilience."
+  },
+  {
+    "id": "dua-79",
+    "titleEn": "Dua for the Host After Eating or Breaking Fast",
+    "titleUrdu": "میزبان کے لیے کھانا کھانے یا افطار کے بعد کی دعا",
+    "arabic": "أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ، وَأَكَلَ طَعَامَكُمُ الأَبْرَارُ، وَصَلَّتْ عَلَيْكُمُ الْمَلَائِكَةُ",
+    "transliteration": "Aftara 'indakumus-sa'imun, wa akala ta'amakumul-abrar, wa sallat 'alaykumul-mala'ikah",
+    "translationUrdu": "روزے دار تمہارے پاس افطار کریں، نیک لوگ تمہارا کھانا کھائیں، اور فرشتے تمہارے لیے رحمت کی دعائیں کریں۔",
+    "translationEn": "May fasting people break their fast with you, may the righteous eat your food, and may the angels send blessings upon you.",
+    "reference": "Sunan Abi Dawud 3854, Sunan Ibn Majah 1747",
+    "occasionUrdu": "کسی رشتہ دار یا دوست کے ہاں افطاری یا دعوت کا کھانا کھانے کے بعد میزبان کو دعا دینے کے لیے۔",
+    "occasionEn": "Said to express sincere spiritual gratitude to a host after enjoying their hospitality or Iftar."
+  },
+  {
+    "id": "dua-80",
+    "titleEn": "The Profound Supplication for Forgiveness Taught to Abu Bakr",
+    "titleUrdu": "حضرت ابوبکر صدیقؓ کو نماز کے لیے سکھائی گئی جامع دعائے مغفرت",
+    "arabic": "اللَّهُمَّ إِنِّي ظَلَمْتُ نَفْسِي ظُلْمًا كَثِيرًا، وَلَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ، فَاغْفِرْ لِي مَغْفِرَةً مِنْ عِنْدِكَ وَارْحَمْنِي، إِنَّكَ أَنْتَ الْغَفُورُ الرَّحِيمُ",
+    "transliteration": "Allahumma inni zalamtu nafsi zulman katheeran, wa la yaghfirudh-dhunuba illa Ant, faghfir li maghfiratan min 'indik warhamni, innaka Antal-Ghafoorur-Raheem",
+    "translationUrdu": "اے اللہ! میں نے اپنی جان پر بہت زیادہ ظلم کیا ہے، اور تیرے سوا کوئی گناہوں کو معاف نہیں کر سکتا، پس تو اپنے پاس سے خصوصی مغفرت کے ذریعے مجھے بخش دے اور مجھ پر رحم فرما، بے شک تو ہی بڑا بخشنے والا نہایت رحم کرنے والا ہے۔",
+    "translationEn": "O Allah, I have wronged myself greatly, and none forgives sins except You; so grant me forgiveness from Yourself and have mercy upon me. Truly, You are the Forgiving, the Merciful.",
+    "reference": "Sahih al-Bukhari 834, Sahih Muslim 2705",
+    "occasionUrdu": "نماز کے آخری قعدہ میں درود شریف کے بعد سلام سے پہلے پڑھنا مسنون ہے۔",
+    "occasionEn": "Sunnah to recite in the final sitting of prayer after Tashahhud and Salawat prior to the Tasleem."
+  },
+  {
+    "id": "dua-81",
+    "titleEn": "Dua for Health and Protection of Hearing and Sight",
+    "titleUrdu": "بدن، سماعت اور بینائی کی عافیت و حفاظت کی صبح و شام کی دعا",
+    "arabic": "اللَّهُمَّ عَافِنِي فِي بَدَنِي، اللَّهُمَّ عَافِنِي فِي سَمْعِي، اللَّهُمَّ عَافِنِي فِي بَصَرِي، لَا إِلَهَ إِلَّا أَنْتَ",
+    "transliteration": "Allahumma 'afini fi badani, Allahumma 'afini fi sam'i, Allahumma 'afini fi basari, la ilaha illa Ant",
+    "translationUrdu": "اے اللہ! میرے بدن میں عافیت عطا فرما، اے اللہ! میری سماعت (کانوں) میں عافیت عطا فرما، اے اللہ! میری بصارت (آنکھوں) میں عافیت عطا فرما، تیرے سوا کوئی معبود نہیں۔",
+    "translationEn": "O Allah, grant well-being to my body; O Allah, grant well-being to my hearing; O Allah, grant well-being to my sight; there is no deity worthy of worship except You.",
+    "reference": "Sunan Abi Dawud 5090, Musnad Ahmad 20430",
+    "occasionUrdu": "صبح اور شام تین تین مرتبہ پڑھنا مسنون ہے۔",
+    "occasionEn": "Recommended to recite three times every morning and evening for physical and sensory preservation."
+  },
+  {
+    "id": "dua-82",
+    "titleEn": "Dua When Hearing a Rooster Crow",
+    "titleUrdu": "مرغ کی بانگ سن کر اللہ کے فضل مانگنے کی دعا",
+    "arabic": "اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ",
+    "transliteration": "Allahumma inni as'aluka min fadlik",
+    "translationUrdu": "اے اللہ! میں تجھ سے تیرے فضل کا سوال کرتا ہوں۔",
+    "translationEn": "O Allah, I ask You from Your divine bounty.",
+    "reference": "Sahih al-Bukhari 3303, Sahih Muslim 2729",
+    "occasionUrdu": "رسول اللہ ﷺ نے فرمایا کہ مرغ فرشتہ دیکھ کر اذان دیتا ہے، لہٰذا اس وقت اللہ سے اس کا فضل مانگو۔",
+    "occasionEn": "Sunnah when hearing a rooster crow, as it sees an angel and its moment is favorable for Dua."
   }
 ];
 

@@ -4292,6 +4292,1255 @@ export const NEW_KIDS_QUESTIONS: QuizQuestion[] = [
     "kidsHintUrdu": "اللہ کا پیار اور جنت کے باغات!",
     "kidsHintEn": "Allah's love and the gardens of Jannah!"
   }
+,
+{
+  "id": "kids-242",
+  "questionUrdu": "کھانا کھانے یا پانی پینے سے پہلے ہر اچھے بچے کو کیا پڑھنا چاہیے؟",
+  "questionEn": "What should every good Muslim child say before eating food or drinking water?",
+  "optionsUrdu": [
+    "بِسْمِ اللَّهِ (Bismillah)",
+    "الحمد للہ",
+    "سبحان اللہ",
+    "اللہ اکبر"
+  ],
+  "optionsEn": [
+    "Bismillah (In the Name of Allah)",
+    "Alhamdulillah",
+    "SubhanAllah",
+    "Allahu Akbar"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "کھانے سے پہلے بسم اللہ پڑھنے سے کھانے میں برکت ہوتی ہے اور شیطان اس کھانے میں شریک نہیں ہو سکتا۔",
+  "explanationEn": "Saying Bismillah before eating invites Allah's blessings and prevents Satan from sharing our food.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جس کا مطلب ہے: اللہ کے نام سے شروع کرتا ہوں!",
+  "kidsHintEn": "It means 'In the name of Allah'!"
+},
+{
+  "id": "kids-243",
+  "questionUrdu": "کھانا کھا کر اور پانی پی کر جب ہمارا پیٹ بھر جائے تو ہمیں اللہ کا شکر کیسے ادا کرنا چاہیے؟",
+  "questionEn": "What beautiful word of gratitude should we say to Allah right after finishing our meal?",
+  "optionsUrdu": [
+    "الْحَمْدُ لِلَّهِ (Alhamdulillah)",
+    "استغفر اللہ",
+    "سبحان اللہ",
+    "لا الہ الا اللہ"
+  ],
+  "optionsEn": [
+    "Alhamdulillah (All praise is for Allah)",
+    "Astaghfirullah",
+    "SubhanAllah",
+    "La ilaha illallah"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "الحمد للہ کہنے کا مطلب ہے: تمام تعریفیں اور شکر اللہ ہی کے لیے ہیں جس نے ہمیں کھلایا اور پلایا۔",
+  "explanationEn": "Alhamdulillah means 'All praise belongs to Allah' who blessed us with delicious food and sweet water.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "اللہ کا شکر ادا کرنے کا پیارا کلمہ!",
+  "kidsHintEn": "The blessed word we use to say thank you to Allah!"
+},
+{
+  "id": "kids-244",
+  "questionUrdu": "چمکتا ہوا سورج، خوبصورت چاند، ستارے اور پیاری دنیا کو کس نے بنایا ہے؟",
+  "questionEn": "Who created the shining sun, bright moon, twinkling stars, and this beautiful world?",
+  "optionsUrdu": [
+    "اللہ تعالیٰ نے (Allah Almighty)",
+    "انسانوں نے",
+    "فرشتوں نے",
+    "خود بخود بن گئے"
+  ],
+  "optionsEn": [
+    "Allah Almighty",
+    "Human beings",
+    "Angels",
+    "They appeared by themselves"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "اللہ تعالیٰ اکیلا خالق اور مالک ہے جس نے زمین و آسمان اور ہم سب کو بہت پیار سے پیدا فرمایا ہے۔",
+  "explanationEn": "Allah is the only Creator who crafted the heavens, earth, and all living things with love and power.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ہمارا مہربان اور اکیلا رب!",
+  "kidsHintEn": "Our Loving and One True Lord!"
+},
+{
+  "id": "kids-245",
+  "questionUrdu": "ہم سب کے پیارے اور آخری نبی کا کیا مبارک نام ہے جن پر ہم سب درود بھیجتے ہیں؟",
+  "questionEn": "What is the blessed name of our beloved final Prophet sent as a mercy to all creation?",
+  "optionsUrdu": [
+    "حضرت محمد مصطفیٰ ﷺ",
+    "حضرت موسیٰ علیہ السلام",
+    "حضرت عیسیٰ علیہ السلام",
+    "حضرت ابراہیم علیہ السلام"
+  ],
+  "optionsEn": [
+    "Prophet Muhammad ﷺ",
+    "Prophet Musa (AS)",
+    "Prophet Isa (AS)",
+    "Prophet Ibrahim (AS)"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "ہمارے پیارے نبی حضرت محمد ﷺ اللہ کے آخری رسول ہیں اور تمام جہانوں کے لیے رحمت بنا کر بھیجے گئے۔",
+  "explanationEn": "Prophet Muhammad ﷺ is Allah's beloved final Messenger and a guiding light of mercy for all mankind.",
+  "category": "Seerah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جن کا نام سن کر ہم درود شریف (ﷺ) پڑھتے ہیں!",
+  "kidsHintEn": "Upon hearing his name, we send peace and blessings (ﷺ)!"
+},
+{
+  "id": "kids-246",
+  "questionUrdu": "پیارے نبی حضرت محمد ﷺ کی والدہ محترمہ کا کیا نام تھا؟",
+  "questionEn": "What was the noble name of our beloved Prophet Muhammad's ﷺ mother?",
+  "optionsUrdu": [
+    "حضرت آمنہ (Sayyidah Aminah)",
+    "حضرت خدیجہ",
+    "حضرت عائشہ",
+    "حضرت فاطمہ"
+  ],
+  "optionsEn": [
+    "Sayyidah Aminah",
+    "Sayyidah Khadijah",
+    "Sayyidah Aisha",
+    "Sayyidah Fatimah"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ کی والدہ ماجدہ کا نام حضرت آمنہ تھا جو مکہ کی نہایت بااخلاق اور پاکدامن خاتون تھیں۔",
+  "explanationEn": "The Prophet's ﷺ mother was Sayyidah Aminah, a noble and respected lady of Makkah.",
+  "category": "Seerah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ان کا نام 'امن' اور 'سلامتی' کے معنی رکھتا ہے!",
+  "kidsHintEn": "Her name is related to safety and trustworthiness!"
+},
+{
+  "id": "kids-247",
+  "questionUrdu": "پیارے نبی حضرت محمد ﷺ کے والدِ گرامی کا کیا نام تھا؟",
+  "questionEn": "What was the name of Prophet Muhammad's ﷺ respected father?",
+  "optionsUrdu": [
+    "حضرت عبد اللہ (Abdullah)",
+    "حضرت ابو طالب",
+    "حضرت عبد المطلب",
+    "حضرت حمزہ"
+  ],
+  "optionsEn": [
+    "Abdullah",
+    "Abu Talib",
+    "Abdul Muttalib",
+    "Hamzah"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ کے والد کا نام حضرت عبد اللہ تھا جن کا انتقال آپ ﷺ کی ولادت سے کچھ عرصہ قبل ہو گیا تھا۔",
+  "explanationEn": "The father of the Prophet ﷺ was Abdullah, who passed away shortly before the Prophet's birth.",
+  "category": "Seerah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جس نام کا مطلب ہے: اللہ کا بندہ!",
+  "kidsHintEn": "The name means 'The servant of Allah'!"
+},
+{
+  "id": "kids-248",
+  "questionUrdu": "اللہ تعالیٰ نے پیارے نبی ﷺ پر مسلمانوں کی رہنمائی کے لیے کون سی سب سے پیاری اور آخری کتاب اتاری؟",
+  "questionEn": "Which holy book was revealed to Prophet Muhammad ﷺ to guide all Muslims with wisdom and love?",
+  "optionsUrdu": [
+    "قرآن مجید (The Holy Quran)",
+    "زبور",
+    "تورات",
+    "انجیل"
+  ],
+  "optionsEn": [
+    "The Holy Quran",
+    "Zabur",
+    "Tawrah",
+    "Injeel"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "قرآن مجید اللہ کا سچا کلام ہے جو ہمارے پیارے نبی ﷺ پر عربی زبان میں نازل ہوا اور ہمیشہ محفوظ رہے گا۔",
+  "explanationEn": "The Holy Quran is the final, unchanged word of Allah revealed to guide us to happiness in this life and Jannah.",
+  "category": "Quran",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جسے ہم روزانہ ادب سے پڑھتے ہیں اور چومتے ہیں!",
+  "kidsHintEn": "The blessed Book of Allah we recite every day!"
+},
+{
+  "id": "kids-249",
+  "questionUrdu": "ہر مسلمان بچے اور بڑے پر دن اور رات میں کل کتنی فرض نمازیں پڑھنا ضروری ہیں؟",
+  "questionEn": "How many obligatory prayers (Salah) do Muslims pray each day and night?",
+  "optionsUrdu": [
+    "5 نمازیں (فجر، ظہر، عصر، مغرب، عشاء)",
+    "3 نمازیں",
+    "7 نمازیں",
+    "2 نمازیں"
+  ],
+  "optionsEn": [
+    "5 prayers (Fajr, Dhuhr, Asr, Maghrib, Isha)",
+    "3 prayers",
+    "7 prayers",
+    "2 prayers"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "اللہ تعالیٰ نے مسلمانوں پر دن اور رات میں 5 نمازیں فرض فرمائی ہیں جو دل کو سکون اور پاکیزگی بخشتی ہیں۔",
+  "explanationEn": "Allah prescribed five daily prayers: Fajr, Dhuhr, Asr, Maghrib, and Isha, keeping our hearts pure.",
+  "category": "Salah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ہمارے ایک ہاتھ کی انگلیوں کے برابر تعداد!",
+  "kidsHintEn": "The same count as the fingers on one hand!"
+},
+{
+  "id": "kids-250",
+  "questionUrdu": "نماز پڑھنے سے پہلے صاف پانی سے ہاتھ، منہ، بازو، سر کا مسح اور پاؤں دھونے کو کیا کہتے ہیں؟",
+  "questionEn": "What do we call the refreshing wash with clean water that Muslims perform before praying Salah?",
+  "optionsUrdu": [
+    "وضو (Wudu)",
+    "تیمم",
+    "غسل",
+    "کھانا"
+  ],
+  "optionsEn": [
+    "Wudu (Ablution)",
+    "Tayammum",
+    "Ghusl",
+    "Eating"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "وضو نماز کی چابی ہے، وضو کرنے سے جسم بھی صاف ہو جاتا ہے اور اللہ گناہ بھی معاف فرما دیتا ہے۔",
+  "explanationEn": "Wudu is the key to prayer; it washes away dirt and sins, leaving us fresh, clean, and ready to meet Allah.",
+  "category": "Salah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جو ہر نماز سے پہلے صاف پانی سے کیا جاتا ہے!",
+  "kidsHintEn": "The clean washing before standing to pray!"
+},
+{
+  "id": "kids-251",
+  "questionUrdu": "دنیا بھر کے تمام مسلمان نماز پڑھتے وقت کس مبارک سمت (قبلہ) کی طرف منہ کرتے ہیں؟",
+  "questionEn": "In which sacred direction (Qibla) do all Muslims around the world face during prayer?",
+  "optionsUrdu": [
+    "خانہ کعبہ (مکہ مکرمہ)",
+    "کسی بھی طرف",
+    "سورج کی طرف",
+    "چاند کی طرف"
+  ],
+  "optionsEn": [
+    "The Holy Ka'bah in Makkah",
+    "Any random direction",
+    "Toward the rising sun",
+    "Toward the moon"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "خانہ کعبہ مکہ مکرمہ میں اللہ کا گھر ہے، تمام مسلمان نماز میں کعبہ کی سمت رخ کر کے اتحاد کا مظاہرہ کرتے ہیں۔",
+  "explanationEn": "The Holy Ka'bah in Makkah is our Qibla, uniting all Muslims worldwide as one brotherhood in prayer.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "اللہ کا گھر جو مکہ مکرمہ میں ہے!",
+  "kidsHintEn": "The sacred black-draped House of Allah in Makkah!"
+},
+{
+  "id": "kids-252",
+  "questionUrdu": "مسلمانوں کے لیے روزے رکھنے کا پیارا اور بابرکت مہینہ کون سا ہے؟",
+  "questionEn": "Which joyful, blessed month is dedicated to fasting from dawn until sunset?",
+  "optionsUrdu": [
+    "رمضان المبارک (Ramadan)",
+    "شوال",
+    "محرم",
+    "صفر"
+  ],
+  "optionsEn": [
+    "Ramadan",
+    "Shawwal",
+    "Muharram",
+    "Safar"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رمضان کا مہینہ برکتوں والا مہینہ ہے جس میں ہم سحری اور افطاری کرتے ہیں اور قرآن پڑھتے ہیں۔",
+  "explanationEn": "Ramadan is the special month of mercy and treats, where families fast, pray together, and share meals.",
+  "category": "Fasting",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جس مہینے کے بعد ہم خوشیوں بھری عید مناتے ہیں!",
+  "kidsHintEn": "The month before Eid al-Fitr celebrations!"
+},
+{
+  "id": "kids-253",
+  "questionUrdu": "رمضان المبارک کے روزے ختم ہونے کے فوراً بعد ہم کون سی پیاری عید مناتے ہیں؟",
+  "questionEn": "Which festive Eid holiday do Muslims joyfully celebrate right after the month of Ramadan ends?",
+  "optionsUrdu": [
+    "عید الفطر (میٹھی عید)",
+    "عید الاضحیٰ",
+    "نوروز",
+    "کوئی نہیں"
+  ],
+  "optionsEn": [
+    "Eid al-Fitr (The sweet celebration of breaking the fast)",
+    "Eid al-Adha",
+    "Nowruz",
+    "None"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "عید الفطر یکم شوال کو منائی جاتی ہے جس میں بچے نئے کپڑے پہنتے ہیں، عیدی لیتے ہیں اور سویّاں کھاتے ہیں۔",
+  "explanationEn": "Eid al-Fitr is celebrated on the first day of Shawwal, wearing new clothes, receiving gifts, and sharing sweets.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جسے بچے 'میٹھی عید' اور عیدی والی عید بھی کہتے ہیں!",
+  "kidsHintEn": "The sweet festival where elders give Eidi gifts to kids!"
+},
+{
+  "id": "kids-254",
+  "questionUrdu": "ذوالحجہ کے مہینے میں حج کے ساتھ کون سی عید آتی ہے جس میں قربانی کی جاتی ہے؟",
+  "questionEn": "Which major Eid festival occurs in Dhul-Hijjah during Hajj, commemorating the sacrifice of Prophet Ibrahim?",
+  "optionsUrdu": [
+    "عید الاضحیٰ (بقر عید)",
+    "عید الفطر",
+    "شب برات",
+    "شب معراج"
+  ],
+  "optionsEn": [
+    "Eid al-Adha (The Feast of Sacrifice)",
+    "Eid al-Fitr",
+    "Shab-e-Barat",
+    "Shab-e-Mi'raj"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "عید الاضحیٰ 10 ذوالحجہ کو منائی جاتی ہے جس میں اللہ کی رضا کے لیے قربانی کی جاتی ہے اور گوشت غریبوں میں بانٹا جاتا ہے۔",
+  "explanationEn": "Eid al-Adha marks the sacrifice of Prophet Ibrahim (AS), where meat is shared with families and needy neighbors.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جس میں ہم گائے، بکری یا دنبے کی قربانی کرتے ہیں!",
+  "kidsHintEn": "The big Eid where animals are sacrificed and meat shared!"
+},
+{
+  "id": "kids-255",
+  "questionUrdu": "ہمیں اپنے امی اور ابو کے ساتھ کیسا برتاؤ کرنا چاہیے؟",
+  "questionEn": "How should obedient Muslim children always treat their loving mothers and fathers?",
+  "optionsUrdu": [
+    "پیار، عزت اور ادب کے ساتھ ان کا کہنا ماننا",
+    "چیخ کر بات کرنا",
+    "ان کی بات نہ سننا",
+    "ضد کرنا"
+  ],
+  "optionsEn": [
+    "With love, honor, politeness, and smiling obedience",
+    "Yelling or talking back loudly",
+    "Ignoring what they ask",
+    "Throwing tantrums"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "قرآن مجید میں اللہ نے حکم دیا ہے کہ والدین کے ساتھ نیکی اور نرمی سے پیش آؤ اور ان کے سامنے 'اف' تک نہ کہو۔",
+  "explanationEn": "Allah tells us in the Quran to be kind, gentle, and respectful to our parents and never say harsh words to them.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ماں باپ کو خوش رکھنے سے اللہ تعالیٰ بھی خوش ہوتا ہے!",
+  "kidsHintEn": "Making parents smile earns Allah's greatest pleasure!"
+},
+{
+  "id": "kids-256",
+  "questionUrdu": "جب کوئی ہمیں تحفہ دے یا ہمارے ساتھ کوئی بھلائی کرے تو ہمیں کیا کہہ کر شکریہ ادا کرنا چاہیے؟",
+  "questionEn": "What blessed Islamic phrase of gratitude should we say when someone gives us a gift or helps us?",
+  "optionsUrdu": [
+    "جَزَاكَ اللَّهُ خَيْرًا (JazakAllahu Khairan)",
+    "مجھے نہیں چاہیے",
+    "ٹھیک ہے",
+    "خدا حافظ"
+  ],
+  "optionsEn": [
+    "JazakAllahu Khairan (May Allah reward you with goodness)",
+    "I don't need this",
+    "Okay",
+    "Goodbye"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ نے فرمایا کہ جس کو کوئی احسان پہنچے اور وہ 'جزاک اللہ خیراً' کہے تو اس نے بہترین تعریف اور دعا کر دی۔",
+  "explanationEn": "The Prophet ﷺ taught that saying 'JazakAllahu Khairan' is the highest prayer and gratitude we can give someone.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جس کا مطلب ہے: اللہ آپ کو بہترین بدلہ عطا فرمائے!",
+  "kidsHintEn": "It means: May Allah grant you the best reward!"
+},
+{
+  "id": "kids-257",
+  "questionUrdu": "بلی، پرندوں اور جانوروں کے ساتھ ہمیں کیسا سلوک کرنا چاہیے؟",
+  "questionEn": "How should we treat animals, birds, and little pets around our home?",
+  "optionsUrdu": [
+    "رحم دلی، شفقت اور پانی کھانا دینا",
+    "پتھر مارنا",
+    "تنگ کرنا اور ڈرانا",
+    "بھوکا رکھنا"
+  ],
+  "optionsEn": [
+    "With mercy, gentle kindness, feeding, and watering them",
+    "Throwing stones at them",
+    "Scaring or hurting them",
+    "Starving them"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "پیارے نبی ﷺ نے سکھایا کہ جانوروں پر رحم کرنے والے پر اللہ رحم فرماتا ہے، ایک عورت نے پیاسے کتے کو پانی پلایا تو اللہ نے اس کے گناہ معاف کر دیے۔",
+  "explanationEn": "Our Prophet ﷺ taught that showing mercy to animals earns great rewards, like the person forgiven for giving water to a thirsty dog.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "نبی کریم ﷺ تمام مخلوق کے لیے رحمت بن کر آئے!",
+  "kidsHintEn": "The Prophet ﷺ was sent as a mercy to all creatures!"
+},
+{
+  "id": "kids-258",
+  "questionUrdu": "جب ہمیں جمائی (Yawn) آئے تو اچھے بچوں کو کیا ادب سکھایا گیا ہے؟",
+  "questionEn": "What polite sunnah manner should we practice whenever we need to yawn?",
+  "optionsUrdu": [
+    "اپنے بائیں ہاتھ کی پشت سے منہ کو ڈھانپ لینا",
+    "زور سے چیخنا",
+    "منہ کھلا رکھنا",
+    "ہنسنا"
+  ],
+  "optionsEn": [
+    "Covering our mouth gently with the back of the left hand",
+    "Making loud funny noises",
+    "Keeping mouth wide open",
+    "Laughing"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ نے فرمایا کہ جمائی آئے تو اپنے منہ پر ہاتھ رکھ لیا کرو تاکہ شیطان داخل نہ ہو سکے۔",
+  "explanationEn": "Prophet Muhammad ﷺ taught us to cover our mouth with our hand when yawning to show good manners.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "منہ پر ہاتھ رکھنا تاکہ جمائی کی آواز نہ نکلے!",
+  "kidsHintEn": "Gently covering our mouth quietly!"
+},
+{
+  "id": "kids-259",
+  "questionUrdu": "جب ہم مسجد میں داخل ہوں تو ہمیں سب سے پہلے کون سا پاؤں اندر رکھنا چاہیے؟",
+  "questionEn": "With which foot should we step forward first when entering the mosque (Masjid)?",
+  "optionsUrdu": [
+    "دایاں پاؤں (Right foot)",
+    "بایاں پاؤں",
+    "دونوں پاؤں ایک ساتھ",
+    "کوئی بھی پاؤں"
+  ],
+  "optionsEn": [
+    "The right foot first",
+    "The left foot",
+    "Both feet jumping",
+    "Any foot without caring"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "مسجد اللہ کا پاک گھر ہے، اس میں دایاں پاؤں رکھ کر داخل ہونا اور مسنون دعا پڑھنا سنتِ نبوی ہے۔",
+  "explanationEn": "The mosque is Allah's house; stepping in with the right foot while reciting Dua is our Prophet's blessed Sunnah.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جس پاؤں سے اچھے اور برکت والے کام شروع کیے جاتے ہیں!",
+  "kidsHintEn": "The blessed right foot!"
+},
+{
+  "id": "kids-260",
+  "questionUrdu": "جب ہم واش روم یا بیت الخلاء میں جائیں تو پہلے کون سا پاؤں اندر رکھنا چاہیے؟",
+  "questionEn": "With which foot should we step into the bathroom or restroom first?",
+  "optionsUrdu": [
+    "بایاں پاؤں (Left foot)",
+    "دایاں پاؤں",
+    "دونوں پاؤں",
+    "کوئی بھی پاؤں"
+  ],
+  "optionsEn": [
+    "The left foot first",
+    "The right foot",
+    "Both feet together",
+    "Any foot"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "بیت الخلاء میں جاتے وقت دعا پڑھ کر بایاں پاؤں پہلے اندر رکھنا اور نکلتے وقت دایاں پاؤں باہر نکالنا سنت ہے۔",
+  "explanationEn": "Entering the restroom with the left foot after reciting the protective Dua keeps us clean and protected.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "داخل ہوتے وقت بایاں اور نکلتے وقت دایاں پاؤں!",
+  "kidsHintEn": "Left foot in, right foot out!"
+},
+{
+  "id": "kids-261",
+  "questionUrdu": "اللہ تعالیٰ نے سب سے پہلے انسان اور سب سے پہلے نبی کن کو بنایا؟",
+  "questionEn": "Who was the very first human being and the first prophet created by Allah?",
+  "optionsUrdu": [
+    "حضرت آدم علیہ السلام (Prophet Adam AS)",
+    "حضرت نوح علیہ السلام",
+    "حضرت ابراہیم علیہ السلام",
+    "حضرت محمد ﷺ"
+  ],
+  "optionsEn": [
+    "Prophet Adam (AS)",
+    "Prophet Nuh (AS)",
+    "Prophet Ibrahim (AS)",
+    "Prophet Muhammad ﷺ"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "اللہ تعالیٰ نے سب سے پہلے حضرت آدم علیہ السلام کو اپنے دستِ قدرت سے مٹی سے پیدا فرمایا اور وہ تمام انسانوں کے والد ہیں۔",
+  "explanationEn": "Allah created Prophet Adam (AS) as the first human being and first prophet, making him the father of mankind.",
+  "category": "History",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "تمام انسانوں کے پہلے باپ اور پہلے نبی!",
+  "kidsHintEn": "The father of all human beings!"
+},
+{
+  "id": "kids-262",
+  "questionUrdu": "سیلابِ عظیم کے وقت کس پیغمبر نے اللہ کے حکم سے ایک بہت بڑی کشتی بنائی تھی؟",
+  "questionEn": "Which Prophet constructed a giant Ark by Allah's divine command to save believers and pairs of animals from the great flood?",
+  "optionsUrdu": [
+    "حضرت نوح علیہ السلام (Prophet Nuh AS)",
+    "حضرت موسیٰ علیہ السلام",
+    "حضرت ہود علیہ السلام",
+    "حضرت صالح علیہ السلام"
+  ],
+  "optionsEn": [
+    "Prophet Nuh (Noah) AS",
+    "Prophet Musa (AS)",
+    "Prophet Hud (AS)",
+    "Prophet Salih (AS)"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت نوح علیہ السلام نے اللہ کے حکم سے لکڑی کی ایک بڑی کشتی بنائی جس میں مومنوں اور تمام جانداروں کے جوڑوں کو سوار کر کے طوفان سے بچایا گیا۔",
+  "explanationEn": "Prophet Nuh (AS) built the famous Ark, carrying faithful believers and pairs of every animal across the waves.",
+  "category": "History",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "کشتی والے نبی جن کا ذکر قرآن میں ہے!",
+  "kidsHintEn": "The prophet of the famous wooden Ark!"
+},
+{
+  "id": "kids-263",
+  "questionUrdu": "مکہ مکرمہ میں خانہ کعبہ کی دیواریں کن دو عظیم پیغمبروں (باپ اور بیٹے) نے مل کر تعمیر فرمائیں؟",
+  "questionEn": "Which two noble prophets (father and son) rebuilt the sacred walls of the Holy Ka'bah in Makkah?",
+  "optionsUrdu": [
+    "حضرت ابراہیم اور حضرت اسماعیل علیہما السلام",
+    "حضرت داؤد اور حضرت سلیمان علیہما السلام",
+    "حضرت یعقوب اور حضرت یوسف علیہما السلام",
+    "حضرت زکریا اور حضرت یحییٰ علیہما السلام"
+  ],
+  "optionsEn": [
+    "Prophet Ibrahim and Prophet Ismail (AS)",
+    "Prophet Dawud and Prophet Sulayman (AS)",
+    "Prophet Ya'qub and Prophet Yusuf (AS)",
+    "Prophet Zakariyya and Prophet Yahya (AS)"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت ابراہیم اور ان کے سعادت مند بیٹے حضرت اسماعیلؑ نے مل کر کعبہ کی بنیادیں اٹھائیں اور دعا فرمائی: ربنا تقبل منا۔ (سورۃ البقرہ: 127)۔",
+  "explanationEn": "Prophet Ibrahim and his son Ismail (AS) laid the stones of the Ka'bah praying: 'Our Lord, accept this from us.' (Surah Al-Baqarah 2:127).",
+  "category": "History",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "حضرت ابراہیم خلیل اللہ اور ان کے پیارے بیٹے!",
+  "kidsHintEn": "Prophet Ibrahim and his devoted son!"
+},
+{
+  "id": "kids-264",
+  "questionUrdu": "اللہ تعالیٰ نے کس پیغمبر کو پرندوں، چیونٹیوں اور جانوروں کی بولیاں سمجھنے کی معجزاتی طاقت دی تھی؟",
+  "questionEn": "Which Prophet was gifted by Allah with the miraculous ability to speak to and understand birds, ants, and animals?",
+  "optionsUrdu": [
+    "حضرت سلیمان علیہ السلام (Prophet Sulayman AS)",
+    "حضرت یوسف علیہ السلام",
+    "حضرت ہارون علیہ السلام",
+    "حضرت الیاس علیہ السلام"
+  ],
+  "optionsEn": [
+    "Prophet Sulayman (Solomon) AS",
+    "Prophet Yusuf (AS)",
+    "Prophet Harun (AS)",
+    "Prophet Ilyas (AS)"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت سلیمانؑ پرندوں اور چیونٹیوں کی گفتگو سن کر مسکرا پڑے اور اللہ کے اس عظیم انعام پر شکر ادا کیا۔ (سورۃ النمل: 19)۔",
+  "explanationEn": "Prophet Sulayman (AS) could hear and understand little ants and birds, praising Allah for such a unique gift (Surah An-Naml 27:19).",
+  "category": "History",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ہدہد پرندے اور چیونٹیوں کے ساتھ بات کرنے والے نبی!",
+  "kidsHintEn": "The wise king prophet who spoke to the hoopoe bird!"
+},
+{
+  "id": "kids-265",
+  "questionUrdu": "سمندر میں بڑی مچھلی (حوت) کے پیٹ میں کس پیغمبر کو بحفاظت رکھا گیا جہاں انہوں نے دعا مانگی؟",
+  "questionEn": "Which Prophet was swallowed safely by a giant fish in the sea, where he turned to Allah in sincere prayer?",
+  "optionsUrdu": [
+    "حضرت یونس علیہ السلام (Prophet Yunus AS)",
+    "حضرت شعیب علیہ السلام",
+    "حضرت لوط علیہ السلام",
+    "حضرت یسع علیہ السلام"
+  ],
+  "optionsEn": [
+    "Prophet Yunus (Jonah) AS",
+    "Prophet Shu'ayb (AS)",
+    "Prophet Lut (AS)",
+    "Prophet Al-Yasa (AS)"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت یونسؑ نے مچھلی کے پیٹ میں دعا فرمائی: 'لا الہ الا انت سبحانک انی کنت من الظالمین'، تو اللہ نے انہیں سمندر کے کنارے صحیح سلامت پہنچا دیا۔",
+  "explanationEn": "Prophet Yunus (AS) prayed inside the fish's belly, and Allah commanded the whale to deliver him safely to shore.",
+  "category": "History",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جن کا ذکر 'ذوالنون' (مچھلی والے) کے نام سے بھی آتا ہے!",
+  "kidsHintEn": "The prophet who prayed in the whale's belly!"
+},
+{
+  "id": "kids-266",
+  "questionUrdu": "اللہ تعالیٰ کی طرف سے قرآن مجید اور آسمانی پیغامات لے کر آنے والے عظیم فرشتے کا کیا نام ہے؟",
+  "questionEn": "What is the name of the great archangel who brought the Holy Quran from Allah down to Prophet Muhammad ﷺ?",
+  "optionsUrdu": [
+    "حضرت جبرائیل علیہ السلام (Angel Jibril)",
+    "حضرت میکائیل علیہ السلام",
+    "حضرت اسرافیل علیہ السلام",
+    "حضرت عزرائیل علیہ السلام"
+  ],
+  "optionsEn": [
+    "Angel Jibril (Gabriel)",
+    "Angel Mikail (Michael)",
+    "Angel Israfil",
+    "Angel Azrail"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت جبرائیلؑ تمام فرشتوں کے سردار ہیں جو اللہ کا پیغام لے کر غارِ حرا میں پیارے نبی ﷺ کے پاس آئے تھے۔",
+  "explanationEn": "Angel Jibril (AS) is the leader of all angels, bringing divine revelation down to our Prophet ﷺ.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جو غارِ حرا میں سب سے پہلی وحی لے کر آئے تھے!",
+  "kidsHintEn": "The noble angel of divine revelation!"
+},
+{
+  "id": "kids-267",
+  "questionUrdu": "پیارے کلمے 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ' کا اردو میں کیا مطلب ہے؟",
+  "questionEn": "What is the beautiful English meaning of the phrase 'Bismillah ir-Rahman ir-Rahim'?",
+  "optionsUrdu": [
+    "اللہ کے نام سے شروع جو بڑا مہربان نہایت رحم فرمانے والا ہے",
+    "اللہ سب سے بڑا ہے",
+    "تمام تعریفیں اللہ کے لیے ہیں",
+    "میں اللہ سے معافی مانگتا ہوں"
+  ],
+  "optionsEn": [
+    "In the Name of Allah, the Entirely Merciful, the Especially Merciful",
+    "Allah is the Greatest",
+    "All praise belongs to Allah",
+    "I ask Allah for forgiveness"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "بسم اللہ پڑھ کر ہر اچھا کام شروع کرنا چاہیے تاکہ اللہ تعالیٰ اس کام میں خیر، آسانی اور برکت پیدا فرمائے۔",
+  "explanationEn": "Starting tasks with Bismillah means inviting Allah's endless mercy, ease, and blessing into whatever we do.",
+  "category": "Quran",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ہر سورت اور ہر اچھے کام کے آغاز کا کلمہ!",
+  "kidsHintEn": "The opening words of almost every Surah in the Quran!"
+},
+{
+  "id": "kids-268",
+  "questionUrdu": "جب ہم 'الْحَمْدُ لِلَّهِ' کہتے ہیں تو اس کا کیا مطلب ہوتا ہے؟",
+  "questionEn": "What does the blessed phrase 'Alhamdulillah' mean?",
+  "optionsUrdu": [
+    "تمام تعریفیں اور شکر صرف اللہ ہی کے لیے ہیں",
+    "اللہ پاک ہے ہر عیب سے",
+    "اللہ کے سوا کوئی معبود نہیں",
+    "اگر اللہ نے چاہا"
+  ],
+  "optionsEn": [
+    "All praise and gratitude belong exclusively to Allah",
+    "Glory be to Allah",
+    "There is no god but Allah",
+    "If Allah wills"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "الحمد للہ شکر گزاری کا کلمہ ہے، جب بھی کوئی اچھی خبر ملے یا نعمت حاصل ہو تو الحمد للہ کہنا چاہیے۔",
+  "explanationEn": "Alhamdulillah expresses pure gratefulness to Allah for health, family, safety, and all lovely blessings.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "سورۃ الفاتحہ کا پہلا جملہ اور نعمتوں کے شکر کا کلمہ!",
+  "kidsHintEn": "The opening verse of Surah Al-Fatihah!"
+},
+{
+  "id": "kids-269",
+  "questionUrdu": "تکبیر 'اللَّهُ أَكْبَرُ' کا کیا مطلب ہے جو ہم اذان اور نماز میں بار بار سنتے ہیں؟",
+  "questionEn": "What is the inspiring meaning of 'Allahu Akbar' that we hear in the Adhan and repeat in prayer?",
+  "optionsUrdu": [
+    "اللہ سب سے بڑا ہے (Allah is the Greatest)",
+    "اللہ پاک ہے",
+    "اللہ میرا رب ہے",
+    "اللہ مہربان ہے"
+  ],
+  "optionsEn": [
+    "Allah is the Greatest",
+    "Allah is pure",
+    "Allah is my Lord",
+    "Allah is kind"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "اللہ اکبر کا مطلب ہے کہ اللہ ہر چیز سے، ہر طاقت سے اور پوری کائنات سے سب سے زیادہ بڑا اور عظیم ہے۔",
+  "explanationEn": "Allahu Akbar reminds our hearts that Allah is greater than anything in the universe, filling us with courage.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جو مؤذن اذان میں سب سے پہلے پکارتا ہے!",
+  "kidsHintEn": "The very first words proclaimed in the Adhan!"
+},
+{
+  "id": "kids-270",
+  "questionUrdu": "تسبیح کے کلمے 'سُبْحَانَ اللَّهِ' کا کیا پیارا مطلب ہے؟",
+  "questionEn": "What is the meaning of the beautiful phrase 'SubhanAllah' recited in Tasbih?",
+  "optionsUrdu": [
+    "اللہ پاک ہے ہر عیب اور خامی سے (Glory be to Allah)",
+    "اللہ میرا مددگار ہے",
+    "اللہ سنتا ہے",
+    "اللہ دیکھتا ہے"
+  ],
+  "optionsEn": [
+    "Glory be to Allah (Allah is free from any imperfection)",
+    "Allah is my helper",
+    "Allah hears",
+    "Allah sees"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "جب ہم کوئی خوبصورت پھول، رنگ برنگی تیتلی یا قدرت کا نظارہ دیکھیں تو 'سبحان اللہ' کہنا مسنون ہے۔",
+  "explanationEn": "SubhanAllah praises the perfection of Allah; we say it when admiring nature, sunsets, birds, and flowers.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "قدرت کی خوبصورتی اور عجائبات دیکھ کر بولا جانے والا کلمہ!",
+  "kidsHintEn": "What we say when marveling at Allah's wonders!"
+},
+{
+  "id": "kids-271",
+  "questionUrdu": "اگر ہم گلی یا سڑک پر چلتے ہوئے کوئی کیلے کا چھلکا، شیشہ یا کانٹا دیکھیں تو اچھے مسلمان بچے کو کیا کرنا چاہیے؟",
+  "questionEn": "If you see a banana peel, sharp glass, or branch on the street, what should a thoughtful Muslim child do?",
+  "optionsUrdu": [
+    "اسے احتیاط سے اٹھا کر کوڑے دان میں ڈال دینا تاکہ کسی کو چوٹ نہ لگے",
+    "اسے وہیں چھوڑ کر چلے جانا",
+    "اس پر پاؤں مارنا",
+    "کسی اور کا مذاق اڑانا"
+  ],
+  "optionsEn": [
+    "Carefully pick it up and place it in the dustbin so nobody gets hurt",
+    "Ignore it completely",
+    "Kick it into the middle of the road",
+    "Laugh at someone slipping"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ نے فرمایا کہ راستے سے تکلیف دہ چیز ہٹا دینا صدقہ ہے اور یہ ایمان کی خوبصورت نشانی ہے۔",
+  "explanationEn": "Our Prophet ﷺ told us that removing harm from walkways is an act of charity (Sadaqah) and a branch of faith.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "راستے سے تکلیف دہ چیز ہٹانا بھی نیکی اور صدقہ ہے!",
+  "kidsHintEn": "Removing litter and hazards is rewarded by Allah!"
+},
+{
+  "id": "kids-272",
+  "questionUrdu": "قرآن مجید کی سب سے چھوٹی سورت کون سی ہے جس میں صرف 3 آیات ہیں؟",
+  "questionEn": "What is the shortest Surah in the Holy Quran, containing only three beautiful verses?",
+  "optionsUrdu": [
+    "سورۃ الکوثر (Surah Al-Kawthar)",
+    "سورۃ الناس",
+    "سورۃ الفلق",
+    "سورۃ النصر"
+  ],
+  "optionsEn": [
+    "Surah Al-Kawthar",
+    "Surah An-Nas",
+    "Surah Al-Falaq",
+    "Surah An-Nasr"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "سورۃ الکوثر قرآن کی سب سے چھوٹی سورت ہے، جس میں اللہ نے پیارے نبی ﷺ کو حوضِ کوثر اور بے شمار بھلائیوں کی بشارت دی۔",
+  "explanationEn": "Surah Al-Kawthar is the shortest Surah in the Quran, promising abundant good and the blessed River Kawthar in Jannah.",
+  "category": "Quran",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جس کا آغاز 'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ' سے ہوتا ہے!",
+  "kidsHintEn": "It starts with: Inna a'taynakal-Kawthar!"
+},
+{
+  "id": "kids-273",
+  "questionUrdu": "قرآن مجید کی سب سے پہلی سورت کون سی ہے جسے ہر نماز کی ہر رکعت میں پڑھنا ضروری ہوتا ہے؟",
+  "questionEn": "What is the first opening Surah of the Holy Quran, recited in every unit of our prayers?",
+  "optionsUrdu": [
+    "سورۃ الفاتحہ (Surah Al-Fatihah)",
+    "سورۃ البقرہ",
+    "سورۃ الاخلاص",
+    "سورۃ الضحیٰ"
+  ],
+  "optionsEn": [
+    "Surah Al-Fatihah",
+    "Surah Al-Baqarah",
+    "Surah Al-Ikhlas",
+    "Surah Ad-Duha"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "سورۃ الفاتحہ کو 'ام القرآن' کہا جاتا ہے، اس سورت کے بغیر کوئی نماز مکمل نہیں ہوتی اور یہ دعا اور شفا ہے۔",
+  "explanationEn": "Surah Al-Fatihah is the heart and opening of the Quran; no prayer is complete without its recitation.",
+  "category": "Quran",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جسے قرآن مجید کی چابی اور آغاز بھی کہا جاتا ہے!",
+  "kidsHintEn": "The opening Chapter 1 of the Quran!"
+},
+{
+  "id": "kids-274",
+  "questionUrdu": "صبح کے وقت ادا کی جانے والی فجر کی نماز میں کل کتنی فرض رکعتیں ہوتی ہیں؟",
+  "questionEn": "How many obligatory (Fard) Rak'ahs are there in the dawn Fajr prayer?",
+  "optionsUrdu": [
+    "2 رکعت فرض (Two Rak'ahs)",
+    "4 رکعت",
+    "3 رکعت",
+    "1 رکعت"
+  ],
+  "optionsEn": [
+    "2 Fard Rak'ahs",
+    "4 Rak'ahs",
+    "3 Rak'ahs",
+    "1 Rak'ah"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "نماز فجر میں 2 رکعت سنت موکدہ اور 2 رکعت فرض نماز ادا کی جاتی ہے۔ فجر کی نماز پورے دن کو پرنور بناتی ہے۔",
+  "explanationEn": "The Fajr prayer has 2 sunnah and 2 obligatory (Fard) units, filling the morning with peace and light.",
+  "category": "Salah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "صبح سویرے پڑھی جانے والی سب سے مختصر فرض نماز!",
+  "kidsHintEn": "The shortest obligatory prayer of two units at dawn!"
+},
+{
+  "id": "kids-275",
+  "questionUrdu": "شام کو سورج غروب ہونے کے فوراً بعد مغرب کی نماز میں کتنی فرض رکعتیں ہوتی ہیں؟",
+  "questionEn": "How many obligatory (Fard) Rak'ahs are prayed in the Maghrib prayer right at sunset?",
+  "optionsUrdu": [
+    "3 رکعت فرض (Three Rak'ahs)",
+    "2 رکعت",
+    "4 رکعت",
+    "1 رکعت"
+  ],
+  "optionsEn": [
+    "3 Fard Rak'ahs",
+    "2 Rak'ahs",
+    "4 Rak'ahs",
+    "1 Rak'ah"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "مغرب کی نماز میں 3 رکعت فرض ہوتی ہیں، جس کے بعد 2 رکعت سنت مؤکدہ پڑھی جاتی ہے۔",
+  "explanationEn": "Maghrib has 3 obligatory units followed by 2 sunnah units, prayed when the sun sinks below the horizon.",
+  "category": "Salah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "سورج ڈوبتے ہی پڑھی جانے والی تین رکعت والی نماز!",
+  "kidsHintEn": "The sunset prayer of three obligatory units!"
+},
+{
+  "id": "kids-276",
+  "questionUrdu": "دینِ اسلام کے بنیادی ستون کتنے ہیں جن پر ہماری عمارت کھڑی ہے؟",
+  "questionEn": "How many pillars of Islam are there that uphold our faith like strong pillars?",
+  "optionsUrdu": [
+    "5 ستون (شہادتین، نماز، روزہ، زکوٰۃ، حج)",
+    "4 ستون",
+    "7 ستون",
+    "3 ستون"
+  ],
+  "optionsEn": [
+    "5 pillars (Shahadah, Salah, Sawm, Zakat, Hajj)",
+    "4 pillars",
+    "7 pillars",
+    "3 pillars"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ نے فرمایا: اسلام کی بنیاد 5 ستونوں پر ہے: کلمہ شہادت، نماز قائم کرنا، زکوٰۃ دینا، رمضان کے روزے اور بیت اللہ کا حج۔",
+  "explanationEn": "Islam is built on five strong pillars: Faith (Shahadah), Prayer (Salah), Fasting (Sawm), Charity (Zakat), and Pilgrimage (Hajj).",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ایک ہاتھ کی پانچ انگلیاں!",
+  "kidsHintEn": "Five pillars of faith!"
+},
+{
+  "id": "kids-277",
+  "questionUrdu": "پیارے نبی حضرت محمد ﷺ کی لاڈلی صاحبزادی کا نام کیا ہے جنہیں جنت کی عورتوں کی سردار کہا گیا ہے؟",
+  "questionEn": "What is the name of Prophet Muhammad's beloved daughter, titled the leader of women in Jannah?",
+  "optionsUrdu": [
+    "حضرت فاطمہ الزہراء رضی اللہ عنہا",
+    "حضرت زینب",
+    "حضرت رقیہ",
+    "حضرت ام کلثوم"
+  ],
+  "optionsEn": [
+    "Sayyidah Fatimah az-Zahra (RA)",
+    "Sayyidah Zaynab",
+    "Sayyidah Ruqayyah",
+    "Sayyidah Umm Kulthum"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت فاطمہ الزہراءؓ رسول اللہ ﷺ کی سب سے چھوٹی اور پیاری بیٹی تھیں اور حضرت امام حسن و حسینؓ کی والدہ محترمہ ہیں۔",
+  "explanationEn": "Sayyidah Fatimah (RA) was the cherished youngest daughter of the Prophet ﷺ and mother of Hasan and Husayn (RA).",
+  "category": "Seerah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "حسن اور حسین رضی اللہ عنہما کی والدہ محترمہ!",
+  "kidsHintEn": "The mother of Hasan and Husayn (RA)!"
+},
+{
+  "id": "kids-278",
+  "questionUrdu": "اسلام میں سب سے پہلے میٹھی اور پر اثر آواز میں اذان دینے والے صحابی کون تھے؟",
+  "questionEn": "Who was the first person in Islam chosen by the Prophet ﷺ to call out the Adhan with his beautiful voice?",
+  "optionsUrdu": [
+    "حضرت بلال بن رباح رضی اللہ عنہ",
+    "حضرت علی رضی اللہ عنہ",
+    "حضرت سلمان رضی اللہ عنہ",
+    "حضرت عمار رضی اللہ عنہ"
+  ],
+  "optionsEn": [
+    "Bilal ibn Rabah (RA)",
+    "Ali ibn Abi Talib (RA)",
+    "Salman al-Farsi (RA)",
+    "Ammar ibn Yasir (RA)"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت بلالؓ کی اذان کی آواز مدینہ منورہ کے گلی کوچوں میں گونجتی تھی اور تمام مسلمان اذان سن کر مسجد نبوی آتے تھے۔",
+  "explanationEn": "Bilal (RA) had a powerful, melodic voice that called thousands of companions to pray behind the Prophet ﷺ.",
+  "category": "Seerah",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "مسجد نبوی شریف کے سب سے پہلے مؤذن!",
+  "kidsHintEn": "The very first Mu'adh-dhin of Islam!"
+},
+{
+  "id": "kids-279",
+  "questionUrdu": "جب ہم سے کوئی غلطی ہو جائے یا ہم نادانی میں کوئی بات کہہ بیٹھیں تو اللہ سے کیا کہنا چاہیے؟",
+  "questionEn": "Whenever we make a mistake or feel sorry, what sweet word should we whisper to ask Allah's forgiveness?",
+  "optionsUrdu": [
+    "أَسْتَغْفِرُ اللَّهَ (Astaghfirullah)",
+    "ما شاء اللہ",
+    "ان شاء اللہ",
+    "تبارک اللہ"
+  ],
+  "optionsEn": [
+    "Astaghfirullah (I seek forgiveness from Allah)",
+    "Masha'Allah",
+    "Insha'Allah",
+    "TabarakAllah"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "استغفر اللہ کہنے سے اللہ تعالیٰ اپنے بندوں کی خطائیں معاف فرما دیتا ہے اور دل کا میل دھو دیتا ہے۔",
+  "explanationEn": "Saying Astaghfirullah washes away our mistakes; Allah is so forgiving and loves children who turn back to Him.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "توبہ اور معافی مانگنے کا پیارا کلمہ!",
+  "kidsHintEn": "The prayer to ask Allah for forgiveness!"
+},
+{
+  "id": "kids-280",
+  "questionUrdu": "کیا اپنے کھلونے، کھانا اور کتابیں اپنے بہن بھائیوں اور دوستوں کے ساتھ بانٹنا (Share کرنا) اچھی عادت ہے؟",
+  "questionEn": "Is sharing our toys, treats, and coloring books with our siblings and friends a blessed Islamic deed?",
+  "optionsUrdu": [
+    "جی ہاں! اللہ تعالیٰ بانٹنے اور محبت کرنے والوں سے پیار کرتا ہے",
+    "نہیں، کسی کو کچھ نہیں دینا چاہیے",
+    "صرف لڑائی کرنی چاہیے",
+    "کچھ فرق نہیں پڑتا"
+  ],
+  "optionsEn": [
+    "Yes! Allah loves generous sharing and caring friends",
+    "No, never share anything",
+    "Keep everything selfishly",
+    "It doesn't matter"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "پیارے نبی ﷺ نے سکھایا کہ مسلمان وہ ہے جو اپنے بھائی کے لیے بھی وہی پسند کرے جو اپنے لیے پسند کرتا ہے۔",
+  "explanationEn": "The Prophet ﷺ taught that a true believer loves for their brother and sister what they love for themselves.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "مل جل کر رہنے اور کھلونے شیئر کرنے میں برکت ہے!",
+  "kidsHintEn": "Sharing brings smiles and Allah's blessings!"
+},
+{
+  "id": "kids-281",
+  "questionUrdu": "قرآن مجید میں اپنے امی اور ابو کے لیے کون سی سب سے پیاری دعا سکھائی گئی ہے؟",
+  "questionEn": "Which heartfelt Quranic prayer does Allah teach us to recite daily for our mother and father?",
+  "optionsUrdu": [
+    "رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+    "ربنا آتنا فی الدنیا حسنۃ",
+    "رب اشرح لی صدری",
+    "اللہم بارک لنا"
+  ],
+  "optionsEn": [
+    "Rabbi-rhamhuma kama rabbayani sagheera (My Lord, have mercy upon them as they brought me up when I was small)",
+    "Rabbana atina fid-dunya hasanah",
+    "Rabbi-shrah li sadri",
+    "Allahumma barik lana"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "سورۃ الاسراء آیت 24 میں یہ خوبصورت دعا ہے کہ اے میرے رب! میرے والدین پر رحم فرما جیسا کہ انہوں نے بچپن میں مجھے پیار سے پالا۔",
+  "explanationEn": "Surah Al-Isra (17:24) gives us this prayer: 'My Lord, have mercy upon them as they brought me up when I was small.'",
+  "category": "Quran",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "والدین کے لیے رحمت مانگنے کی قرآنی دعا!",
+  "kidsHintEn": "The Quranic prayer asking Allah for mercy upon parents!"
+},
+{
+  "id": "kids-282",
+  "questionUrdu": "رات کو بستر پر سونے سے پہلے اچھے بچوں کو کیا سنت طریقہ اپنانا چاہیے؟",
+  "questionEn": "What sunnah habits should we follow before closing our eyes to sleep peacefully at night?",
+  "optionsUrdu": [
+    "وضو کرنا، بستر جھاڑنا اور مسنون دعائیں پڑھنا",
+    "دیر تک موبائل دیکھنا اور بغیر دعا سو جانا",
+    "لائٹ جلا کر شور مچانا",
+    "کھانا چھوڑ دینا"
+  ],
+  "optionsEn": [
+    "Making Wudu, dusting the bed, and reciting bedtime Duas",
+    "Watching loud screens until late without praying",
+    "Jumping around",
+    "Sleeping without brushing teeth"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ بستر جھاڑ کر دائیں کروٹ سوتے اور آیت الکرسی اور 3 قل پڑھ کر اپنے جسم پر دم فرماتے تھے۔",
+  "explanationEn": "Prophet Muhammad ﷺ dusted his bed, lay on his right side, and recited Ayat al-Kursi and the 3 Quls for protection.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "دائیں کروٹ لیٹنا اور سونے کی دعا پڑھنا!",
+  "kidsHintEn": "Lying on the right side with sweet Duas!"
+},
+{
+  "id": "kids-283",
+  "questionUrdu": "جب ہم اسکول یا کھیلنے کے لیے گھر سے باہر نکلیں تو کیا کہہ کر اللہ کی پناہ مانگنی چاہیے؟",
+  "questionEn": "What protective Dua should we recite whenever stepping outside our front door for school or park?",
+  "optionsUrdu": [
+    "بِسْمِ اللَّهِ تَوَكَّلْتُ عَلَى اللَّهِ (Bismillahi tawakkaltu 'alallah)",
+    "خدا حافظ",
+    "میں جا رہا ہوں",
+    "کچھ نہیں کہنا چاہیے"
+  ],
+  "optionsEn": [
+    "Bismillahi tawakkaltu 'alallah (In the Name of Allah, I place my trust in Allah)",
+    "Just waving goodbye",
+    "I am leaving",
+    "Saying nothing"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "یہ دعا پڑھ کر گھر سے نکلنے والے کو فرشتے کہتے ہیں: تجھے کافی کر دیا گیا، حفاظت دی گئی اور شیطان اس سے دور ہو جاتا ہے۔",
+  "explanationEn": "Reciting 'Bismillahi tawakkaltu 'alallah' prompts angels to protect you, guiding you safely until you return home.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "گھر سے نکلنے کی مسنون حفاظتی دعا!",
+  "kidsHintEn": "The Dua of stepping out with trust in Allah!"
+},
+{
+  "id": "kids-284",
+  "questionUrdu": "قیامت کے دن اللہ تعالیٰ کے حکم سے صور (بگل / ترہی) پھونکنے والے فرشتے کا کیا نام ہے؟",
+  "questionEn": "Which mighty angel is tasked with blowing the divine Trumpet (Soor) by Allah's command on the Last Day?",
+  "optionsUrdu": [
+    "حضرت اسرافیل علیہ السلام (Angel Israfil)",
+    "حضرت جبرائیل علیہ السلام",
+    "حضرت میکائیل علیہ السلام",
+    "حضرت رضوان علیہ السلام"
+  ],
+  "optionsEn": [
+    "Angel Israfil (AS)",
+    "Angel Jibril (AS)",
+    "Angel Mikail (AS)",
+    "Angel Ridwan (AS)"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "حضرت اسرافیلؑ صور کو منہ سے لگائے اللہ کے حکم کے منتظر ہیں، جب وہ صور پھونکیں گے تو قیامت برپا ہوگی۔",
+  "explanationEn": "Angel Israfil (AS) holds the Trumpet ready, waiting for Allah's divine permission to sound the signal.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "چار مقرب فرشتوں میں سے ایک فرشتے!",
+  "kidsHintEn": "One of the four archangels!"
+},
+{
+  "id": "kids-285",
+  "questionUrdu": "ہماری ہر دعا اور پکار، چاہے ہم دل میں آہستہ سے مانگیں، کون سنتا ہے؟",
+  "questionEn": "Who hears every prayer and secret thought we whisper in our heart, anytime and anywhere?",
+  "optionsUrdu": [
+    "اللہ تعالیٰ (السمیع، العلیم)",
+    "کوئی نہیں سنتا",
+    "صرف ہوا سنتی ہے",
+    "صرف ہم سنتے ہیں"
+  ],
+  "optionsEn": [
+    "Allah Almighty (The All-Hearing, All-Knowing)",
+    "Nobody",
+    "Only the wind",
+    "Only ourselves"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "اللہ تعالیٰ السمیع اور العلیم ہے، وہ ہر زبان اور دل کے اندر کی پوشیدہ دعاؤں کو بھی مکمل طور پر سنتا ہے۔",
+  "explanationEn": "Allah is As-Sami' (The All-Hearing) and Al-Aleem (The All-Knowing), hearing even the softest prayer of a child.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "اللہ السمیع ہے، یعنی سب کچھ سننے والا!",
+  "kidsHintEn": "Allah is As-Sami'—The All-Hearing!"
+},
+{
+  "id": "kids-286",
+  "questionUrdu": "اللہ تعالیٰ نے نیک، سچے اور اچھے کام کرنے والے بچوں اور انسانوں کے لیے کون سا خوبصورت باغ تیار کیا ہے؟",
+  "questionEn": "What breathtaking place of endless joy, rivers of honey, and sparkling gardens has Allah prepared for good believers?",
+  "optionsUrdu": [
+    "جنت الفردوس (Jannah / Paradise)",
+    "صرف ایک پارک",
+    "کچھ بھی نہیں",
+    "کوئی باغ نہیں"
+  ],
+  "optionsEn": [
+    "Jannah (Paradise / Gardens of Delight)",
+    "Just an amusement park",
+    "Nothing",
+    "An ordinary town"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "جنت میں ہر وہ چیز ملے گی جس کی انسان تمنا کرے گا: لذیذ پھل، دودھ اور شہد کی نہریں، پیارے محلات اور کبھی نہ ختم ہونے والی خوشیاں۔",
+  "explanationEn": "In Jannah, there are no tears, illnesses, or tiredness—only palaces, rivers of milk and honey, and endless happiness.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "جہاں ہر خواہش پوری ہوگی اور ہم ہمیشہ خوش رہیں گے!",
+  "kidsHintEn": "The eternal paradise of joyful gardens and delights!"
+},
+{
+  "id": "kids-287",
+  "questionUrdu": "ہمیں اپنے اساتذہ (Teachers) اور بزرگوں کے ساتھ کیسے بات کرنی چاہیے؟",
+  "questionEn": "How should we respectfully speak to our teachers, elders, and mentors?",
+  "optionsUrdu": [
+    "ادب، نرمی، احترام اور دھیمی آواز میں",
+    "بدتمیزی سے",
+    "ہنس ہنس کر مذاق اڑانا",
+    "بے رخی سے"
+  ],
+  "optionsEn": [
+    "Politely, gently, respectfully, and in an attentive tone",
+    "Rudely or cheekily",
+    "Mocking them behind their backs",
+    "Ignoring their guidance"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ نے فرمایا کہ وہ ہم میں سے نہیں جو ہمارے چھوٹوں پر رحم نہ کرے اور ہمارے بڑوں کے شرف کو نہ پہچانے۔ (ترمذی)۔",
+  "explanationEn": "The Prophet ﷺ taught: 'He is not one of us who does not show mercy to our young and respect to our elders.'",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "استاد روحانی باپ کی طرح عزت کا مستحق ہوتا ہے!",
+  "kidsHintEn": "Teachers give us knowledge and deserve our highest respect!"
+},
+{
+  "id": "kids-288",
+  "questionUrdu": "اگر کسی بات پر ہمیں غصہ آ جائے تو پیارے نبی ﷺ نے اس پر قابو پانے کا کیا طریقہ سکھایا ہے؟",
+  "questionEn": "What wise Sunnah steps did our beloved Prophet ﷺ teach us when we feel angry or upset?",
+  "optionsUrdu": [
+    "پانی پینا، بیٹھ جانا، اور 'أَعُوذُ بِاللَّهِ مِنَ الشَّيْطَانِ الرَّجِيمِ' پڑھنا",
+    "چیزیں توڑنا اور رونا",
+    "دوسروں کو مارنا",
+    "شور مچانا"
+  ],
+  "optionsEn": [
+    "Drink cold water, sit down, and say 'A'udhu billahi minash-shaytanir-rajim'",
+    "Throw things across the room",
+    "Hit or push others",
+    "Scream loudly"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "غصہ شیطان کی طرف سے ہوتا ہے، پانی پینے اور خاموش رہنے سے غصہ ٹھنڈا ہو جاتا ہے اور انسان نیکی پر قائم رہتا ہے۔",
+  "explanationEn": "Anger comes from shaytan; taking deep breaths, drinking water, sitting down, and seeking refuge in Allah calms the heart.",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "خاموش ہو جانا اور تعوذ پڑھ کر شیطان سے پناہ مانگنا!",
+  "kidsHintEn": "Pause, take a breath, and seek Allah's protection!"
+},
+{
+  "id": "kids-289",
+  "questionUrdu": "مکہ مکرمہ میں خانہ کعبہ کے قریب وہ کون سا مقدس اور میٹھا کنواں ہے جس کا پانی پی کر ہم دعا مانگتے ہیں؟",
+  "questionEn": "What is the name of the sacred, blessed well located near the Holy Ka'bah in Makkah whose sweet water we drink?",
+  "optionsUrdu": [
+    "آبِ زمزم (Zamzam Well)",
+    "کوثر کا چشمہ",
+    "نہرِ فرات",
+    "عام نلکا"
+  ],
+  "optionsEn": [
+    "Zamzam Well (Aab-e-Zamzam)",
+    "River Nile",
+    "Euphrates",
+    "Ordinary tap"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "زمزم کا پانی شفا اور برکت ہے، یہ چشمہ حضرت اسماعیل علیہ السلام کی ایڑیوں کے رگڑنے سے اللہ نے حضرت ہاجرہ کے لیے جاری فرمایا تھا۔",
+  "explanationEn": "Zamzam water is full of healing and nourishment, springing forth miraculously for baby Ismail and mother Hajar.",
+  "category": "History",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "حجاج کرام جو مبارک پانی اپنے ساتھ لاتے ہیں!",
+  "kidsHintEn": "The blessed water brought home by pilgrims from Makkah!"
+},
+{
+  "id": "kids-290",
+  "questionUrdu": "ایک اچھے، پیارے اور سچے مسلمان بچے کی زبان سے کیسی باتیں نکلنی چاہئیں؟",
+  "questionEn": "What kind of speech should flow from the lips of an honest Muslim boy or girl?",
+  "optionsUrdu": [
+    "سچی، میٹھی، نیک اور حوصلہ افزا باتیں",
+    "جھوٹ اور گالیاں",
+    "چغلیاں اور طعنے",
+    "بری باتیں"
+  ],
+  "optionsEn": [
+    "Truthful, sweet, encouraging, and polite words",
+    "Lies and bad language",
+    "Gossip and name-calling",
+    "Teasing and hurtful words"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "رسول اللہ ﷺ نے فرمایا: جو اللہ اور آخرت کے دن پر ایمان رکھتا ہے اسے چاہیے کہ اچھی بات کہے یا پھر خاموش رہے۔ (بخاری)۔",
+  "explanationEn": "The Prophet ﷺ taught: 'Whoever believes in Allah and the Last Day should speak good or remain silent.'",
+  "category": "Manners",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "سچائی اور میٹھی زبان دل جیت لیتی ہے!",
+  "kidsHintEn": "Sweet, truthful words bring love and peace!"
+},
+{
+  "id": "kids-291",
+  "questionUrdu": "دنیا میں سچے، نمازی اور دوسروں کی مدد کرنے والے اچھے بچوں سے سب سے زیادہ پیار کون فرماتا ہے؟",
+  "questionEn": "Who loves truthful, obedient, and helpful children more than anyone else in the entire universe?",
+  "optionsUrdu": [
+    "اللہ تعالیٰ (ہمارا رحمن اور رحیم رب)",
+    "کوئی نہیں",
+    "صرف دنیا",
+    "کوئی فرق نہیں"
+  ],
+  "optionsEn": [
+    "Allah Almighty (Our Most Merciful and Loving Lord)",
+    "Nobody",
+    "Only strangers",
+    "None"
+  ],
+  "correctIndex": 0,
+  "explanationUrdu": "اللہ تعالیٰ اپنے نیک اور سچے بندوں سے ایک ماں سے بھی ستر گنا زیادہ پیار فرماتا ہے اور ان کے لیے جنت کے دروازے کھولتا ہے۔",
+  "explanationEn": "Allah loves righteous, kind children more than seventy loving mothers, filling their lives with light and happiness.",
+  "category": "Faith",
+  "difficulty": "beginner",
+  "forKids": true,
+  "kidsHintUrdu": "ہمارا مہربان اور سب سے زیادہ پیار کرنے والا رب!",
+  "kidsHintEn": "Our Loving Creator and Lord!"
+}
 ];
-
-
