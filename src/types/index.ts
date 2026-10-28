@@ -64,6 +64,7 @@ export interface QuizQuestion {
   kidsHintUrdu?: string;
   kidsHintEn?: string;
   isActive?: boolean;
+  reference?: string;
 }
 
 export interface QuranVerse {

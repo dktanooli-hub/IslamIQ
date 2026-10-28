@@ -485,6 +485,11 @@ export const QuizSection: React.FC = () => {
                   <p className="text-slate-500 mt-1 italic">
                     {contentLang === 'urdu' ? item.question.explanationUrdu : item.question.explanationEn}
                   </p>
+                  {item.question.reference && (
+                    <p className="text-emerald-700 text-[11px] font-mono mt-1 font-semibold">
+                      {contentLang === 'urdu' ? `حوالہ: ${item.question.reference}` : `Ref: ${item.question.reference}`}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -623,6 +628,12 @@ export const QuizSection: React.FC = () => {
                 <p className={`text-xs sm:text-sm text-slate-700 ${contentLang === 'urdu' ? 'urdu-text' : ''}`}>
                   {contentLang === 'urdu' ? currentQ.explanationUrdu : currentQ.explanationEn}
                 </p>
+                {currentQ.reference && (
+                  <p className="text-[11px] sm:text-xs text-amber-800 font-mono mt-2 pt-2 border-t border-amber-200/60 font-medium">
+                    <span className="font-bold">{contentLang === 'urdu' ? 'مستند حوالہ: ' : 'Authentic Reference: '}</span>
+                    {currentQ.reference}
+                  </p>
+                )}
               </div>
             )}
 

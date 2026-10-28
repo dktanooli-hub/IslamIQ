@@ -241,6 +241,12 @@ export const IslamicQuizHub: React.FC = () => {
                       <span>{isUrdu ? `درست جواب: ${options[q.correctIndex]}` : `Correct Option: ${options[q.correctIndex]}`}</span>
                     </p>
                     <p className="leading-relaxed text-emerald-900/90">{explanation}</p>
+                    {q.reference && (
+                      <p className="text-[11px] font-mono text-emerald-800 font-medium pt-1.5 border-t border-emerald-200/50">
+                        <span className="font-bold">{isUrdu ? 'مستند حوالہ: ' : 'Source: '}</span>
+                        {q.reference}
+                      </p>
+                    )}
                   </div>
                 </details>
               </div>
